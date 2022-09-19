@@ -1,0 +1,450 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{35bae624-3ca4-4981-aacc-b588d88758c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\KeyExpr">
+      <UniqueIdentifier>{e0701715-092e-41be-9664-769c3f6742c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Document">
+      <UniqueIdentifier>{dec94a31-99fc-48fc-91e0-5a79f19fb716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\DB">
+      <UniqueIdentifier>{cc99b60e-e241-4983-b189-e282ea6b8675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DWB">
+      <UniqueIdentifier>{8f4bbc37-408b-4be9-b081-7acb2e0ee592}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dll">
+      <UniqueIdentifier>{a369c330-de66-4c06-b9b4-312fac600fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{67f51d62-a602-4967-87d2-01be855accf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget">
+      <UniqueIdentifier>{d968aba4-bbcb-45c2-b02e-9ed80d601bfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget\Style">
+      <UniqueIdentifier>{8bff72af-32aa-400a-8b34-e6f6a228b451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget\Widgets">
+      <UniqueIdentifier>{5e2f0503-cf9f-4eba-b964-ea939fef9fe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Action">
+      <UniqueIdentifier>{29c1ff07-2c30-49c1-b451-e3ac91d868de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DPO">
+      <UniqueIdentifier>{7d5ebe2c-edc0-46b1-8284-475a11713110}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Service">
+      <UniqueIdentifier>{11c55700-bc8b-453e-8ac4-40edbcb54ecf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IMainWindow.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="ACursorManager.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="AKeyExpressionManager.h">
+      <Filter>Application\KeyExpr</Filter>
+    </ClInclude>
+    <ClInclude Include="AKeyExpressionService.h">
+      <Filter>Application\KeyExpr</Filter>
+    </ClInclude>
+    <ClInclude Include="AAndKeyExpression.h">
+      <Filter>Application\KeyExpr</Filter>
+    </ClInclude>
+    <ClInclude Include="AOrKeyExpression.h">
+      <Filter>Application\KeyExpr</Filter>
+    </ClInclude>
+    <ClInclude Include="AAbstractKeyExpression.h">
+      <Filter>Application\KeyExpr</Filter>
+    </ClInclude>
+    <ClInclude Include="ACommandManager.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="ACommand.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="AAppConfigService.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="ASqlDataBase.h">
+      <Filter>Application\DB</Filter>
+    </ClInclude>
+    <ClInclude Include="APrivateAppConfigService.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="DWB\AData.h">
+      <Filter>DWB</Filter>
+    </ClInclude>
+    <ClInclude Include="DWB\Inc_DWB.h">
+      <Filter>DWB</Filter>
+    </ClInclude>
+    <ClInclude Include="AprochGlobal.h">
+      <Filter>Dll</Filter>
+    </ClInclude>
+    <ClInclude Include="AprochAPI.h">
+      <Filter>Dll</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\ABorderlessWidget.h">
+      <Filter>Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\AFlowLayout.h">
+      <Filter>Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Style\AUIStyle.h">
+      <Filter>Widget\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Style\AWindowsStyleManager.h">
+      <Filter>Widget\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="DPO\AAbstractObjectCreator.h">
+      <Filter>DPO</Filter>
+    </ClInclude>
+    <ClInclude Include="DPO\ABoxLayoutCreator.h">
+      <Filter>DPO</Filter>
+    </ClInclude>
+    <ClInclude Include="DPO\ADPWService.h">
+      <Filter>DPO</Filter>
+    </ClInclude>
+    <ClInclude Include="DPO\AEditCreator.h">
+      <Filter>DPO</Filter>
+    </ClInclude>
+    <ClInclude Include="DPO\Inc_DPO.h">
+      <Filter>DPO</Filter>
+    </ClInclude>
+    <ClInclude Include="DPO\IDPOService.h">
+      <Filter>DPO</Filter>
+    </ClInclude>
+    <ClInclude Include="APluginManager.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IAppConfigService.h">
+      <Filter>Common\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataBaseService.h">
+      <Filter>Common\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDocumentService.h">
+      <Filter>Common\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IKeyExpressionService.h">
+      <Filter>Common\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IService.h">
+      <Filter>Common\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ADataConverter.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AException.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AFileToolkit.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AIdentity.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AMathToolkit.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ANumberValidator.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\APrototype.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ASingleton.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AStringToolkit.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataConverter.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataReader.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataSerializable.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataWriter.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IFileSaveLoader.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IJsonSerializable.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IMainWindow.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IPlugin.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IStringSerializable.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AIconFont.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DWB\ADPWUtils.h">
+      <Filter>DWB</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ACategory.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ACommand.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ACommandManager.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ACursorManager.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="AAbstractKeyExpression.cpp">
+      <Filter>Application\KeyExpr</Filter>
+    </ClCompile>
+    <ClCompile Include="AKeyExpressionManager.cpp">
+      <Filter>Application\KeyExpr</Filter>
+    </ClCompile>
+    <ClCompile Include="AAndKeyExpression.cpp">
+      <Filter>Application\KeyExpr</Filter>
+    </ClCompile>
+    <ClCompile Include="AKeyExpressionService.cpp">
+      <Filter>Application\KeyExpr</Filter>
+    </ClCompile>
+    <ClCompile Include="AApplicationContext.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="AOrKeyExpression.cpp">
+      <Filter>Application\KeyExpr</Filter>
+    </ClCompile>
+    <ClCompile Include="AAppConfigService.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ADocumentService.cpp">
+      <Filter>Application\Document</Filter>
+    </ClCompile>
+    <ClCompile Include="ADocFile.cpp">
+      <Filter>Application\Document</Filter>
+    </ClCompile>
+    <ClCompile Include="ASqlDataBase.cpp">
+      <Filter>Application\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="APrivateAppConfigService.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="DWB\AAbstractDataManager.cpp">
+      <Filter>DWB</Filter>
+    </ClCompile>
+    <ClCompile Include="DWB\AAbstractEditorFactory.cpp">
+      <Filter>DWB</Filter>
+    </ClCompile>
+    <ClCompile Include="DWB\AData.cpp">
+      <Filter>DWB</Filter>
+    </ClCompile>
+    <ClCompile Include="DWB\AEditorFactory.cpp">
+      <Filter>DWB</Filter>
+    </ClCompile>
+    <ClCompile Include="DWB\ADataManager.cpp">
+      <Filter>DWB</Filter>
+    </ClCompile>
+    <ClCompile Include="AprochGlobal.cpp">
+      <Filter>Dll</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AAbstractColorPicker.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AAvatar.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ABorderlessWidget.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ACaptionBar.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AColorPickerIndicator.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AColorSliderControl.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AFlowLayout.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ANavigationBar.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\APromptWidget.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AToolBar.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AVerticalLabel.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWheelColorPicker.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWheelColorPickerWidget.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWindow.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\AUIStyle.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="AAction.cpp">
+      <Filter>Application\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="AActionManager.cpp">
+      <Filter>Application\Action</Filter>
+    </ClCompile>
+    <ClCompile Include="DPO\AAbstractObjectCreator.cpp">
+      <Filter>DPO</Filter>
+    </ClCompile>
+    <ClCompile Include="DPO\ABoxLayoutCreator.cpp">
+      <Filter>DPO</Filter>
+    </ClCompile>
+    <ClCompile Include="DPO\ADPWService.cpp">
+      <Filter>DPO</Filter>
+    </ClCompile>
+    <ClCompile Include="DPO\AEditCreator.cpp">
+      <Filter>DPO</Filter>
+    </ClCompile>
+    <ClCompile Include="APluginManager.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ADataConverter.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ADoubleValidator.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AException.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AFileToolkit.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AIdentity.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AMathToolkit.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AStringToolkit.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AIconFont.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="DWB\AVariantData.cpp">
+      <Filter>DWB</Filter>
+    </ClCompile>
+    <ClCompile Include="DWB\ADPWUtils.cpp">
+      <Filter>DWB</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ACategory.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="ADocFile.h">
+      <Filter>Application\Document</Filter>
+    </QtMoc>
+    <QtMoc Include="ADocumentService.h">
+      <Filter>Application\Document</Filter>
+    </QtMoc>
+    <QtMoc Include="AApplicationContext.h">
+      <Filter>Application</Filter>
+    </QtMoc>
+    <QtMoc Include="DWB\AAbstractDataManager.h">
+      <Filter>DWB</Filter>
+    </QtMoc>
+    <QtMoc Include="DWB\AAbstractEditorFactory.h">
+      <Filter>DWB</Filter>
+    </QtMoc>
+    <QtMoc Include="DWB\ADataManager.h">
+      <Filter>DWB</Filter>
+    </QtMoc>
+    <QtMoc Include="DWB\AEditorFactory.h">
+      <Filter>DWB</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AAbstractColorPicker.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AAvatar.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\ACaptionBar.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AColorPickerIndicator.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AColorSliderControl.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\ANavigationBar.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\APromptWidget.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AToolBar.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AVerticalLabel.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AWheelColorPicker.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AWheelColorPickerWidget.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AWindow.h">
+      <Filter>Widget\Widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="AAction.h">
+      <Filter>Application\Action</Filter>
+    </QtMoc>
+    <QtMoc Include="AActionManager.h">
+      <Filter>Application\Action</Filter>
+    </QtMoc>
+    <QtMoc Include="Common\ADoubleValidator.h">
+      <Filter>Common</Filter>
+    </QtMoc>
+    <QtMoc Include="DWB\AVariantData.h">
+      <Filter>DWB</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="Resource\Resource.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+  </ItemGroup>
+</Project>

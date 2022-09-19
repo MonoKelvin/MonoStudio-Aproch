@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shader/wheel_color_picker.frag</file>
+        <file>shader/wheel_color_picker.vert</file>
+        <file alias="icon/windowbtn_close">Icon/System/windowbtn_close.png</file>
+        <file alias="icon/windowbtn_maximize">Icon/System/windowbtn_maximize.png</file>
+        <file alias="icon/windowbtn_restore">Icon/System/windowbtn_restore.png</file>
+        <file>Icon/App/ico/aproch_16x16.ico</file>
+        <file>Icon/App/ico/aproch_24x24.ico</file>
+        <file>Icon/App/ico/aproch_32x32.ico</file>
+        <file>Icon/App/ico/aproch_48x48.ico</file>
+        <file>Icon/App/ico/aproch_64x64.ico</file>
+        <file>Icon/App/ico/aproch_128x128.ico</file>
+        <file alias="icon/windowbtn_minimize">Icon/System/windowbtn_minimize.png</file>
+    </qresource>
+</RCC>

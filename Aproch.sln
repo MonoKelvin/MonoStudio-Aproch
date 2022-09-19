@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Aproch", "Src\Aproch.vcxproj", "{22018BA3-D301-4C4F-85C0-620F4C9C50F6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_VLD|x64 = Debug_VLD|x64
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug_VLD|x64.ActiveCfg = Debug_VLD|x64
+		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug_VLD|x64.Build.0 = Debug_VLD|x64
+		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug|x64.ActiveCfg = Debug|x64
+		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug|x64.Build.0 = Debug|x64
+		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Release|x64.ActiveCfg = Release|x64
+		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {184A7B22-BF86-496C-8D50-C0BF6654A434}
+	EndGlobalSection
+EndGlobal

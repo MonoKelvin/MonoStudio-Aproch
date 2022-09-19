@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_VLD|x64">
+      <Configuration>Debug_VLD</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{22018BA3-D301-4C4F-85C0-620F4C9C50F6}</ProjectGuid>
+    <Keyword>QtVS_v303</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)'=='Debug_VLD|x64'">10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VLD|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutDir>$(SolutionDir)..\Output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\Output\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VLD|x64'">
+    <OutDir>$(SolutionDir)..\Output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\Output\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutDir>$(SolutionDir)..\Output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\Output\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>$(ProjectDir)..\CopyBuildFile.bat $(ProjectDir) $(ProjectDir)..\Build\ $(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VLD|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>$(ProjectDir)..\CopyBuildFile.bat $(ProjectDir) $(ProjectDir)..\Build\ $(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>$(ProjectDir)..\CopyBuildFile.bat $(ProjectDir) $(ProjectDir)..\Build\ $(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>msvc2019_64</QtInstall>
+    <QtModules>core;xml;sql;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VLD|x64'" Label="QtSettings">
+    <QtInstall>msvc2019_64</QtInstall>
+    <QtModules>core;xml;sql;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>msvc2019_64</QtInstall>
+    <QtModules>core;xml;sql;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <UsePrecompiledHeader>Use</UsePrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>APROCH_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <QtMoc>
+      <PrependInclude>stdafx.h;%(PrependInclude)</PrependInclude>
+    </QtMoc>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VLD|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <UsePrecompiledHeader>Use</UsePrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>APROCH_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <QtMoc>
+      <PrependInclude>stdafx.h;%(PrependInclude)</PrependInclude>
+    </QtMoc>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UsePrecompiledHeader>Use</UsePrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>APROCH_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <QtMoc>
+      <PrependInclude>stdafx.h;%(PrependInclude)</PrependInclude>
+    </QtMoc>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AAction.cpp" />
+    <ClCompile Include="AActionManager.cpp" />
+    <ClCompile Include="Common\ACategory.cpp" />
+    <ClCompile Include="Common\ADataConverter.cpp" />
+    <ClCompile Include="Common\ADoubleValidator.cpp" />
+    <ClCompile Include="Common\AException.cpp" />
+    <ClCompile Include="Common\AFileToolkit.cpp" />
+    <ClCompile Include="Common\AIconFont.cpp" />
+    <ClCompile Include="Common\AIdentity.cpp" />
+    <ClCompile Include="Common\AMathToolkit.cpp" />
+    <ClCompile Include="Common\AStringToolkit.cpp" />
+    <ClCompile Include="DPO\AAbstractObjectCreator.cpp" />
+    <ClCompile Include="DPO\ABoxLayoutCreator.cpp" />
+    <ClCompile Include="DPO\ADPWService.cpp" />
+    <ClCompile Include="DPO\AEditCreator.cpp" />
+    <ClCompile Include="DWB\ADPWUtils.cpp" />
+    <ClCompile Include="DWB\AVariantData.cpp" />
+    <ClCompile Include="Widget\AAbstractColorPicker.cpp" />
+    <ClCompile Include="Widget\AAvatar.cpp" />
+    <ClCompile Include="Widget\ABorderlessWidget.cpp" />
+    <ClCompile Include="Widget\ACaptionBar.cpp" />
+    <ClCompile Include="Widget\AColorPickerIndicator.cpp" />
+    <ClCompile Include="Widget\AColorSliderControl.cpp" />
+    <ClCompile Include="Widget\AFlowLayout.cpp" />
+    <ClCompile Include="Widget\ANavigationBar.cpp" />
+    <ClCompile Include="Widget\APromptWidget.cpp" />
+    <ClCompile Include="Widget\AToolBar.cpp" />
+    <ClCompile Include="Widget\AVerticalLabel.cpp" />
+    <ClCompile Include="Widget\AWheelColorPicker.cpp" />
+    <ClCompile Include="Widget\AWheelColorPickerWidget.cpp" />
+    <ClCompile Include="Widget\AWindow.cpp" />
+    <ClCompile Include="Widget\Style\AUIStyle.cpp" />
+    <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp" />
+    <QtMoc Include="AAction.h" />
+    <QtMoc Include="AActionManager.h" />
+    <ClInclude Include="AAppConfigService.h" />
+    <ClInclude Include="ACommand.h" />
+    <ClInclude Include="AAndKeyExpression.h" />
+    <ClInclude Include="Common\ACategory.h" />
+    <ClInclude Include="Common\ADataConverter.h" />
+    <QtMoc Include="Common\ADoubleValidator.h" />
+    <ClInclude Include="Common\AException.h" />
+    <ClInclude Include="Common\AFileToolkit.h" />
+    <ClInclude Include="Common\AIconFont.h" />
+    <ClInclude Include="Common\AIdentity.h" />
+    <ClInclude Include="Common\AMathToolkit.h" />
+    <ClInclude Include="Common\ANumberValidator.h" />
+    <ClInclude Include="Common\APrototype.h" />
+    <ClInclude Include="Common\ASingleton.h" />
+    <ClInclude Include="Common\AStringToolkit.h" />
+    <ClInclude Include="Common\IAppConfigService.h" />
+    <ClInclude Include="Common\IDataBaseService.h" />
+    <ClInclude Include="Common\IDataConverter.h" />
+    <ClInclude Include="Common\IDataReader.h" />
+    <ClInclude Include="Common\IDataSerializable.h" />
+    <ClInclude Include="Common\IDataWriter.h" />
+    <ClInclude Include="Common\IDocumentService.h" />
+    <ClInclude Include="Common\IFileSaveLoader.h" />
+    <ClInclude Include="Common\IJsonSerializable.h" />
+    <ClInclude Include="Common\IKeyExpressionService.h" />
+    <ClInclude Include="Common\IMainWindow.h" />
+    <ClInclude Include="Common\IPlugin.h" />
+    <ClInclude Include="Common\IService.h" />
+    <ClInclude Include="Common\IStringSerializable.h" />
+    <ClInclude Include="DPO\AAbstractObjectCreator.h" />
+    <ClInclude Include="DPO\ABoxLayoutCreator.h" />
+    <ClInclude Include="DPO\ADPWService.h" />
+    <ClInclude Include="DPO\AEditCreator.h" />
+    <ClInclude Include="DPO\IDPOService.h" />
+    <ClInclude Include="DPO\Inc_DPO.h" />
+    <QtMoc Include="DWB\AVariantData.h" />
+    <ClInclude Include="DWB\ADPWUtils.h" />
+    <ClInclude Include="Widget\ABorderlessWidget.h" />
+    <ClInclude Include="Widget\AFlowLayout.h" />
+    <ClInclude Include="Widget\Style\AUIStyle.h" />
+    <ClInclude Include="Widget\Style\AWindowsStyleManager.h" />
+    <QtMoc Include="Widget\AWindow.h" />
+    <QtMoc Include="Widget\AWheelColorPickerWidget.h" />
+    <QtMoc Include="Widget\AWheelColorPicker.h" />
+    <QtMoc Include="Widget\AVerticalLabel.h" />
+    <QtMoc Include="Widget\AToolBar.h" />
+    <QtMoc Include="Widget\APromptWidget.h" />
+    <QtMoc Include="Widget\ANavigationBar.h" />
+    <QtMoc Include="Widget\AColorSliderControl.h" />
+    <QtMoc Include="Widget\AColorPickerIndicator.h" />
+    <QtMoc Include="Widget\ACaptionBar.h" />
+    <QtMoc Include="Widget\AAvatar.h" />
+    <QtMoc Include="Widget\AAbstractColorPicker.h" />
+    <QtMoc Include="AApplicationContext.h" />
+    <ClInclude Include="AAbstractKeyExpression.h" />
+    <ClInclude Include="ACommandManager.h" />
+    <QtMoc Include="ADocFile.h" />
+    <QtMoc Include="ADocumentService.h" />
+    <ClInclude Include="AKeyExpressionManager.h" />
+    <ClInclude Include="ACursorManager.h" />
+    <ClInclude Include="AKeyExpressionService.h" />
+    <ClInclude Include="AOrKeyExpression.h" />
+    <ClInclude Include="APrivateAppConfigService.h" />
+    <ClInclude Include="APluginManager.h" />
+    <ClInclude Include="ASqlDataBase.h" />
+    <QtMoc Include="DWB\AAbstractDataManager.h" />
+    <QtMoc Include="DWB\AAbstractEditorFactory.h" />
+    <ClInclude Include="DWB\AData.h" />
+    <QtMoc Include="DWB\ADataManager.h" />
+    <QtMoc Include="DWB\AEditorFactory.h" />
+    <ClInclude Include="DWB\Inc_DWB.h" />
+    <ClInclude Include="AprochAPI.h" />
+    <ClInclude Include="IMainWindow.h" />
+    <ClInclude Include="AprochGlobal.h" />
+    <ClCompile Include="AAndKeyExpression.cpp" />
+    <ClCompile Include="AAppConfigService.cpp" />
+    <ClCompile Include="AApplicationContext.cpp" />
+    <ClCompile Include="ACommand.cpp" />
+    <ClCompile Include="AAbstractKeyExpression.cpp" />
+    <ClCompile Include="ACommandManager.cpp" />
+    <ClCompile Include="ADocFile.cpp" />
+    <ClCompile Include="ADocumentService.cpp" />
+    <ClCompile Include="AKeyExpressionManager.cpp" />
+    <ClCompile Include="ACursorManager.cpp" />
+    <ClCompile Include="AKeyExpressionService.cpp" />
+    <ClCompile Include="AOrKeyExpression.cpp" />
+    <ClCompile Include="APluginManager.cpp" />
+    <ClCompile Include="APrivateAppConfigService.cpp" />
+    <ClCompile Include="ASqlDataBase.cpp" />
+    <ClCompile Include="DWB\AAbstractDataManager.cpp" />
+    <ClCompile Include="DWB\AAbstractEditorFactory.cpp" />
+    <ClCompile Include="DWB\AData.cpp" />
+    <ClCompile Include="DWB\ADataManager.cpp" />
+    <ClCompile Include="DWB\AEditorFactory.cpp" />
+    <ClCompile Include="AprochGlobal.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="Resource\Resource.qrc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
