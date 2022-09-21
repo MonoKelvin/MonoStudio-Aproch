@@ -36,15 +36,7 @@
 #include <QStyleOption>
 #include <QStylePainter>
 
-#ifndef BUILD_STATIC
-#if defined(APROCH_LIB)
-#define APROCH_API Q_DECL_EXPORT
-#else
-#define APROCH_API Q_DECL_IMPORT
-#endif
-#else
-#define APROCH_API
-#endif
+#include "AprochExportDefine.h"
 
 #define APROCH_NAMESPACE_BEGIN namespace aproch {
 #define APROCH_NAMESPACE_END }

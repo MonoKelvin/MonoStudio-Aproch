@@ -206,6 +206,12 @@
     <ClInclude Include="Common\ACategory.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="AprochExportDefine.h">
+      <Filter>Dll</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Dll</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -369,6 +375,9 @@
     </ClCompile>
     <ClCompile Include="Common\ACategory.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Dll</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
