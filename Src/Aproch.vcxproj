@@ -16,7 +16,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{22018BA3-D301-4C4F-85C0-620F4C9C50F6}</ProjectGuid>
-    <Keyword>QtVS_v303</Keyword>
+    <Keyword>QtVS_v304</Keyword>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)'=='Debug_VLD|x64'">10.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0</WindowsTargetPlatformVersion>
@@ -60,8 +60,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;$(SolutionDir)Src;$(SolutionDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
     <PostBuildEvent>
       <Command>$(SolutionDir)CopyBuildFile.bat $(SolutionDir)Src\ $(SolutionDir)Build\ $(OutDir)</Command>
     </PostBuildEvent>
@@ -69,8 +69,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VLD|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;$(SolutionDir)Src;$(SolutionDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
     <PostBuildEvent>
       <Command>$(SolutionDir)CopyBuildFile.bat $(SolutionDir)Src\ $(SolutionDir)Build\ $(OutDir)</Command>
     </PostBuildEvent>
@@ -78,8 +78,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;$(SolutionDir)Src;$(SolutionDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
     <PostBuildEvent>
       <Command>$(SolutionDir)CopyBuildFile.bat $(SolutionDir)Src\ $(SolutionDir)Build\ $(OutDir)</Command>
     </PostBuildEvent>
@@ -112,7 +112,7 @@
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>APROCH_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
+    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -131,7 +131,7 @@
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>APROCH_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
+    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -150,7 +150,7 @@
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>APROCH_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
+    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
