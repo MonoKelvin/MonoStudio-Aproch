@@ -19,8 +19,8 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug_VLD|x64.ActiveCfg = Debug_VLD|x64
-		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug_VLD|x64.Build.0 = Debug_VLD|x64
+		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug_VLD|x64.ActiveCfg = Debug|x64
+		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug_VLD|x64.Build.0 = Debug|x64
 		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug_VLD|x86.ActiveCfg = Debug_VLD|x64
 		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug_VLD|x86.Build.0 = Debug_VLD|x64
 		{22018BA3-D301-4C4F-85C0-620F4C9C50F6}.Debug|x64.ActiveCfg = Debug|x64

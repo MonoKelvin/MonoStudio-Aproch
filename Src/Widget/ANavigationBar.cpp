@@ -173,6 +173,28 @@ namespace aproch
         return -1;
     }
 
+    void ANavigationBar::addGroup(const QString& text, const QIcon& icon, int index)
+    {
+        QLabel* group = new QLabel(text, this);
+
+        group->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        group->setObjectName(AOBJNAME_NAVBAR_GROUP);
+
+#ifndef QT_NO_TOOLTIP
+        group->setToolTip(group->text());
+#endif
+
+        mLayout->insertWidget(_findNavGrouppIndex(index), group);
+        mNavGroupVector.push_back(group);
+    }
+
+    QLabel* ANavigationBar::getGroup(int index)
+    {
+        if (index < 0 || index >= mNavGroupVector.size())
+            return nullptr;
+        return mNavGroupVector[index];
+    }
+
     Qt::Orientation ANavigationBar::getOrientation() const
     {
         return (mLayout->direction() == QBoxLayout::TopToBottom ||
@@ -303,38 +325,23 @@ namespace aproch
             }
         }
 
-        int dist = index * mLayout->spacing();
+        QAbstractButton* btn = mNavGroup->button(index);
+        if (!btn)
+            return -1;
 
+        const QRect itemGeometry = btn->geometry();
         if (getOrientation() == Qt::Vertical)
         {
-            dist += mLayout->contentsMargins().top();
-
-            for (int i = 0; i < index; ++i)
-            {
-                dist += mNavGroup->button(i)->height();
-            }
-
             if (isCenter)
-            {
-                dist += mNavGroup->button(index)->height() / 2;
-            }
+                return itemGeometry.center().y();
+            return itemGeometry.y();
         }
         else
         {
-            dist += mLayout->contentsMargins().left();
-
-            for (int i = 0; i < index; ++i)
-            {
-                dist += mNavGroup->button(i)->width();
-            }
-
             if (isCenter)
-            {
-                dist += mNavGroup->button(index)->width() / 2;
-            }
+                return itemGeometry.center().x();
+            return itemGeometry.x();
         }
-
-        return dist;
     }
 
     int ANavigationBar::getItemOffset(int index, bool isCenter)
@@ -638,5 +645,20 @@ namespace aproch
             scroll(scrollValue, 0);
             return offset + btn->width() / 2;
         }
+    }
+    
+    int ANavigationBar::_findNavItemIndex(int index) const
+    {
+        return _findWidgetIndexHelper(index, mNavGroup->buttons());
+    }
+    
+    int ANavigationBar::_findNavGrouppIndex(int index) const
+    {
+        return _findWidgetIndexHelper(index, mNavGroupVector);
+    }
+    
+    int ANavigationBar::_findIndexOfWidgetInLayout(QWidget* widget) const
+    {
+        return mLayout->indexOf(widget);
     }
 }

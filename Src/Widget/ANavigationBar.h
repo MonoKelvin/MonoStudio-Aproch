@@ -32,6 +32,7 @@
 #define AOBJNAME_NAVBAR AStr("aproch_navbar")
 #define AOBJNAME_NAVBAR_ITEM AStr("aproch_navbar_item")
 #define AOBJNAME_NAVBAR_TRACKBAR AStr("aproch_navbar_trackbar")
+#define AOBJNAME_NAVBAR_GROUP AStr("aproch_navbar_group")
 
 class QButtonGroup;
 
@@ -199,7 +200,7 @@ namespace aproch
         /**
          * @brief 根据索引获取导航项按钮
          * @param index 导航项索引
-         * @return 返回指定索引的导航项，如果索引不存在则什么也不做
+         * @return 返回指定索引的导航项，如果索引不存在则返回空
          */
         QPushButton *getItem(int index);
 
@@ -226,6 +227,21 @@ namespace aproch
         {
             return mPrevIndex;
         }
+
+        /**
+         * @brief 添加分组名称
+         * @param text 分组文本内容
+         * @param icon 分组文本图标
+         * @param index 要添加到导航栏的位置。0是开始位置，小于零则添加到最后。其中索引参照其他分组项和导航项的个数
+         */
+        void addGroup(const QString& text, const QIcon& icon = QIcon(), int index = -1);
+
+        /**
+         * @brief 根据索引获取分组项标签
+         * @param index 分组项索引
+         * @return 返回指定索引的分组项，如果索引不存在则返回空
+         */
+        QLabel* getGroup(int index);
 
         /**
          * @brief 获取当前导航栏的方向
@@ -413,12 +429,54 @@ namespace aproch
         void _updateContentPosition(void);
         int _updateItemPosition(int index);
 
+        /** @brief 找到导航项所在布局中的索引 */
+        int _findNavItemIndex(int index) const;
+
+        /** @brief 找到分组项所在布局中的索引 */
+        int _findNavGrouppIndex(int index) const;
+
+        /** @brief 找到控件所在布局中的索引 */
+        template<typename Type>
+        int _findWidgetIndexHelper(int index, const QList<Type>& container) const
+        {
+            QList<QLayoutItem*> layoutItems;
+            for (int i = 0; i < mLayout->count(); ++i)
+                layoutItems.push_back(mLayout->itemAt(i));
+
+            if (layoutItems.empty())
+                return 0;
+
+            if (container.empty() || index < 0)
+                return mLayout->indexOf(layoutItems.back()) + 1;
+
+            if (index > layoutItems.size())
+                return mLayout->indexOf(container.back()) + 1;
+
+            int realIndex = 0;
+            while (index >= 0 && realIndex < layoutItems.size())
+            {
+                Type navBtn = qobject_cast<Type>(layoutItems[realIndex++]->widget());
+                if (!navBtn)
+                    continue;
+                if (container.contains(navBtn))
+                    index--;
+            }
+
+            return realIndex;
+        }
+
+        /** @brief 找到布局中指定控件的索引 */
+        int _findIndexOfWidgetInLayout(QWidget* widget) const;
+
     private:
         /** @brief 导航追踪条样式 */
         SNavTrackBarStyle mTrackBarStyle;
 
         /** @brief 导航按钮组 */
         QButtonGroup *mNavGroup;
+
+        /** @brief 分组标签页集合 */
+        QList<QLabel*> mNavGroupVector;
 
         /** @brief 内容容器 */
         QWidget *mContent;
