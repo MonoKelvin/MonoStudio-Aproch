@@ -130,6 +130,17 @@ QPointF qBound(QPointF minVal, QPointF val, QPointF maxVal)
 
 APROCH_NAMESPACE_BEGIN
 
+void SetElidedText(QLabel* label, int maxWidth, Qt::TextElideMode mode)
+{
+    label->setFixedWidth(maxWidth);
+
+    const auto fw = label->fontMetrics();
+    const auto et = fw.elidedText(label->text(), mode, maxWidth - 3 * fw.averageCharWidth());
+
+    label->setText(et);
+    label->adjustSize();
+}
+
 QVariant GetDefaultValueByType(const QString& typeName)
 {
     if (0 == typeName.compare(AKey_Int, Qt::CaseInsensitive) ||

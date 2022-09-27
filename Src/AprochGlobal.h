@@ -38,6 +38,8 @@
 
 #include "AprochExportDefine.h"
 
+class QLabel;
+
 #define APROCH_NAMESPACE_BEGIN namespace aproch {
 #define APROCH_NAMESPACE_END }
 
@@ -409,6 +411,14 @@ inline int GetFontPixelHeight(const QFont &font)
 {
     return QFontMetrics(font).height();
 }
+
+/**
+ * @brief 给标签控件设置超出给定最大宽度的省略字符串
+ * @param label 给定的QLabel控件
+ * @param maxWidth 最大宽度，当控件字体像素宽度超过该值后就显示省略号
+ * @param mode 省略模式
+ */
+extern APROCH_API void SetElidedText(QLabel* label, int maxWidth, Qt::TextElideMode mode = Qt::ElideRight);
 
 /**
  * @brief 根据类型名称该类型的默认值。数字类型返回都是0，布尔类型返回false，字符（串）类型返回为空字符（串），容器类型返回返回空容器
