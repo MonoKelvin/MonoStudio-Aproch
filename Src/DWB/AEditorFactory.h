@@ -45,7 +45,7 @@ namespace aproch
         typedef QMap<AData*, EditorList> DataToEditorListMap;
         typedef QMap<Editor*, AData*> EditorToDataMap;
 
-        Editor* createEditor(AData* data, QWidget* parent);
+        Editor* createEditorImpl(AData* data, QWidget* parent);
         void initializeEditor(AData* data, Editor* e);
         void slotEditorDestroyed(QObject* object);
 
@@ -54,7 +54,7 @@ namespace aproch
     };
 
     template <class Editor>
-    Editor* EditorFactoryHelper<Editor>::createEditor(AData* data, QWidget* parent)
+    Editor* EditorFactoryHelper<Editor>::createEditorImpl(AData* data, QWidget* parent)
     {
         Editor* editor = new Editor(parent);
         initializeEditor(data, editor);
@@ -106,7 +106,7 @@ namespace aproch
 
     protected:
         virtual void connectDataManager(AStringDataManager* manager) override;
-        virtual QWidget* createEditor(AStringDataManager* manager, AData* data, QWidget* parent) override;
+        virtual QWidget* createEditorImpl(AStringDataManager* manager, AData* data, QWidget* parent) override;
         virtual void disconnectDataManager(AStringDataManager* manager) override;
 
     private Q_SLOTS:
@@ -133,7 +133,7 @@ namespace aproch
         ~ASpinBoxFactory();
     protected:
         void connectDataManager(AIntDataManager* manager);
-        QWidget* createEditor(AIntDataManager* manager, AData* data, QWidget* parent);
+        QWidget* createEditorImpl(AIntDataManager* manager, AData* data, QWidget* parent);
         void disconnectDataManager(AIntDataManager* manager);
 
     private Q_SLOTS:
@@ -161,7 +161,7 @@ namespace aproch
         ~ADoubleSpinBoxFactory();
     protected:
         void connectDataManager(ADoubleDataManager* manager);
-        QWidget* createEditor(ADoubleDataManager* manager, AData* data, QWidget* parent);
+        QWidget* createEditorImpl(ADoubleDataManager* manager, AData* data, QWidget* parent);
         void disconnectDataManager(ADoubleDataManager* manager);
 
     private Q_SLOTS:
@@ -190,7 +190,7 @@ namespace aproch
         ~ASliderFactory();
     protected:
         void connectDataManager(AIntDataManager* manager);
-        QWidget* createEditor(AIntDataManager* manager, AData* data, QWidget* parent);
+        QWidget* createEditorImpl(AIntDataManager* manager, AData* data, QWidget* parent);
         void disconnectDataManager(AIntDataManager* manager);
 
     private Q_SLOTS:
@@ -219,7 +219,7 @@ namespace aproch
 
     protected:
         virtual void connectDataManager(ABoolDataManager* manager) override;
-        virtual QWidget* createEditor(ABoolDataManager* manager, AData* data, QWidget* parent) override;
+        virtual QWidget* createEditorImpl(ABoolDataManager* manager, AData* data, QWidget* parent) override;
         virtual void disconnectDataManager(ABoolDataManager* manager) override;
 
     private Q_SLOTS:
@@ -246,7 +246,7 @@ namespace aproch
 
     protected:
         void connectDataManager(AEnumDataManager* manager);
-        QWidget* createEditor(AEnumDataManager* manager, AData* data, QWidget* parent);
+        QWidget* createEditorImpl(AEnumDataManager* manager, AData* data, QWidget* parent);
         void disconnectDataManager(AEnumDataManager* manager);
 
     private Q_SLOTS:
@@ -274,7 +274,7 @@ namespace aproch
         ~AColorEditorFactory();
     protected:
         void connectDataManager(AColorDataManager* manager);
-        QWidget* createEditor(AColorDataManager* manager, AData* data, QWidget* parent);
+        QWidget* createEditorImpl(AColorDataManager* manager, AData* data, QWidget* parent);
         void disconnectDataManager(AColorDataManager* manager);
 
     private Q_SLOTS:
@@ -300,7 +300,7 @@ namespace aproch
         ~AFontEditorFactory();
     protected:
         void connectDataManager(AFontDataManager* manager);
-        QWidget* createEditor(AFontDataManager* manager, AData* data, QWidget* parent);
+        QWidget* createEditorImpl(AFontDataManager* manager, AData* data, QWidget* parent);
         void disconnectDataManager(AFontDataManager* manager);
 
     private Q_SLOTS:

@@ -1443,8 +1443,8 @@ namespace aproch
             m_checkBoxFactory->addDataManager(manager->subBoolDataManager());*/
     }
 
-    QWidget* AVariantEditorFactory::createEditor(AVariantDataManager* manager, AData* data,
-                                                 QWidget* parent)
+    QWidget* AVariantEditorFactory::createEditorImpl(AVariantDataManager* manager, AData* data,
+                                                     QWidget* parent)
     {
         const int propType = manager->dataType(data);
         AAbstractEditorFactoryBase* factory = m_typeToFactory.value(propType, 0);

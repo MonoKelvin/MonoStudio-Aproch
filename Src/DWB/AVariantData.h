@@ -189,11 +189,11 @@ namespace aproch
         AVariantEditorFactory(QObject* parent = nullptr);
         ~AVariantEditorFactory();
 
-        using AAbstractEditorFactory<AVariantDataManager>::createEditor;
+        using AAbstractEditorFactory<AVariantDataManager>::createEditorImpl;
 
     protected:
         virtual void connectDataManager(AVariantDataManager* manager) override;
-        virtual QWidget* createEditor(AVariantDataManager* manager, AData* data, QWidget* parent) override;
+        virtual QWidget* createEditorImpl(AVariantDataManager* manager, AData* data, QWidget* parent) override;
         virtual void disconnectDataManager(AVariantDataManager* manager) override;
 
     private:

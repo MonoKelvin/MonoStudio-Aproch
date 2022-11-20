@@ -114,9 +114,9 @@ namespace aproch
         connect(manager, SIGNAL(singleStepChanged(AData*, int)), this, SLOT(slotSingleStepChanged(AData*, int)));
     }
 
-    QWidget* ASpinBoxFactory::createEditor(AIntDataManager* manager, AData* data, QWidget* parent)
+    QWidget* ASpinBoxFactory::createEditorImpl(AIntDataManager* manager, AData* data, QWidget* parent)
     {
-        QSpinBox* editor = m_helper.createEditor(data, parent);
+        QSpinBox* editor = m_helper.createEditorImpl(data, parent);
         editor->setSingleStep(manager->singleStep(data));
         editor->setRange(manager->minimum(data), manager->maximum(data));
         editor->setValue(manager->value(data));
@@ -249,9 +249,9 @@ namespace aproch
         connect(manager, SIGNAL(decimalsChanged(AData*, int)), this, SLOT(slotDecimalsChanged(AData*, int)));
     }
 
-    QWidget* ADoubleSpinBoxFactory::createEditor(ADoubleDataManager* manager, AData* data, QWidget* parent)
+    QWidget* ADoubleSpinBoxFactory::createEditorImpl(ADoubleDataManager* manager, AData* data, QWidget* parent)
     {
-        QDoubleSpinBox* editor = m_helper.createEditor(data, parent);
+        QDoubleSpinBox* editor = m_helper.createEditorImpl(data, parent);
         editor->setSingleStep(manager->singleStep(data));
         editor->setDecimals(manager->decimals(data));
         editor->setRange(manager->minimum(data), manager->maximum(data));
@@ -358,7 +358,7 @@ namespace aproch
         connect(manager, SIGNAL(singleStepChanged(AData*, int)), this, SLOT(slotSingleStepChanged(AData*, int)));
     }
 
-    QWidget* ASliderFactory::createEditor(AIntDataManager* manager, AData* data, QWidget* parent)
+    QWidget* ASliderFactory::createEditorImpl(AIntDataManager* manager, AData* data, QWidget* parent)
     {
         QSlider* editor = new QSlider(Qt::Horizontal, parent);
         m_helper.initializeEditor(data, editor);
@@ -401,9 +401,9 @@ namespace aproch
         connect(manager, SIGNAL(regExpChanged(AData*, QRegExp)), this, SLOT(slotRegExpChanged(AData*, QRegExp)));
     }
 
-    QWidget* ALineEditFactory::createEditor(AStringDataManager* manager, AData* data, QWidget* parent)
+    QWidget* ALineEditFactory::createEditorImpl(AStringDataManager* manager, AData* data, QWidget* parent)
     {
-        QLineEdit* editor = m_helper.createEditor(data, parent);
+        QLineEdit* editor = m_helper.createEditorImpl(data, parent);
         if (!editor)
             return nullptr;
 
@@ -505,9 +505,9 @@ namespace aproch
         connect(manager, SIGNAL(valueChanged(AData*, bool)), this, SLOT(slotDataChanged(AData*, bool)));
     }
 
-    QWidget* ACheckBoxFactory::createEditor(ABoolDataManager* manager, AData* data, QWidget* parent)
+    QWidget* ACheckBoxFactory::createEditorImpl(ABoolDataManager* manager, AData* data, QWidget* parent)
     {
-        QCheckBox* editor = m_helper.createEditor(data, parent);
+        QCheckBox* editor = m_helper.createEditorImpl(data, parent);
         editor->setChecked(manager->value(data));
 
         connect(editor, SIGNAL(toggled(bool)), this, SLOT(slotSetValue(bool)));
@@ -576,9 +576,9 @@ namespace aproch
         connect(manager, SIGNAL(enumNamesChanged(AData*, QStringList)), this, SLOT(slotEnumNamesChanged(AData*, QStringList)));
     }
 
-    QWidget* AEnumEditorFactory::createEditor(AEnumDataManager* manager, AData* data, QWidget* parent)
+    QWidget* AEnumEditorFactory::createEditorImpl(AEnumDataManager* manager, AData* data, QWidget* parent)
     {
-        QComboBox* editor = m_helper.createEditor(data, parent);
+        QComboBox* editor = m_helper.createEditorImpl(data, parent);
         editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
         editor->view()->setTextElideMode(Qt::ElideRight);
 
@@ -733,12 +733,12 @@ namespace aproch
         connect(manager, SIGNAL(valueChanged(AData*, QColor)), this, SLOT(slotDataChanged(AData*, QColor)));
     }
 
-    QWidget* AColorEditorFactory::createEditor(AColorDataManager* manager, AData* data, QWidget* parent)
+    QWidget* AColorEditorFactory::createEditorImpl(AColorDataManager* manager, AData* data, QWidget* parent)
     {
-        //AColorEditWidget* editor = createEditor(data, parent); // todo
+        //AColorEditWidget* editor = createEditorImpl(data, parent); // todo
         //editor->setValue(manager->value(data));
         //connect(editor, SIGNAL(valueChanged(QColor)), this, SLOT(slotSetValue(QColor))); // todo
-        QLabel* editor = m_helper.createEditor(data, parent);
+        QLabel* editor = m_helper.createEditorImpl(data, parent);
         editor->setText(manager->value(data).name());
         connect(editor, SIGNAL(destroyed(QObject*)), this, SLOT(slotEditorDestroyed(QObject*)));
         return editor;
@@ -801,13 +801,13 @@ namespace aproch
         connect(manager, SIGNAL(valueChanged(AData*, QFont)), this, SLOT(slotDataChanged(AData*, QFont)));
     }
 
-    QWidget* AFontEditorFactory::createEditor(AFontDataManager* manager, AData* data, QWidget* parent)
+    QWidget* AFontEditorFactory::createEditorImpl(AFontDataManager* manager, AData* data, QWidget* parent)
     {
-        /*AFontEditWidget* editor = createEditor(data, parent);
+        /*AFontEditWidget* editor = createEditorImpl(data, parent);
         editor->setValue(manager->value(data));
         connect(editor, SIGNAL(valueChanged(QFont)), this, SLOT(slotSetValue(QFont)));*/ // todo
 
-        QLabel* editor = m_helper.createEditor(data, parent);
+        QLabel* editor = m_helper.createEditorImpl(data, parent);
         editor->setText(ADPWUtils::FontText(manager->value(data)));
         connect(editor, SIGNAL(destroyed(QObject*)), this, SLOT(slotEditorDestroyed(QObject*)));
         return editor;

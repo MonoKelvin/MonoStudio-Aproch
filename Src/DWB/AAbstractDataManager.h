@@ -31,6 +31,19 @@
 
 namespace aproch
 {
+    /** @brief 数据绑定方法 */
+    enum EDataBindingMethod
+    {
+        /** @brief 数据修改时将通知绑定该数据的控件，控件内容修改时不通知数据修改 */
+        DBM_DataToWidget,
+
+        /** @brief 控件内容修改时将通知绑定的数据，数据修改时不通知控件 */
+        DBM_WidgetToData,
+
+        /** @brief 数据或控件内容修改时，将通知控件或数据 */
+        DBM_TwoWay,
+    };
+
     /**
      * @brief 抽象数据管理器。
      */
@@ -42,64 +55,46 @@ namespace aproch
         Q_DISABLE_COPY_MOVE(AAbstractDataManager)
 
     public:
-        explicit AAbstractDataManager(QObject *parent = nullptr);
+        explicit AAbstractDataManager(QObject* parent = nullptr);
         ~AAbstractDataManager();
 
-        /**
-         * @brief 获取数据集
-         * @return 数据集合
-         */
-        QSet<AData *> dataSet() const;
+        /** @brief 获取数据集 */
+        QSet<AData*> dataSet() const;
 
-        /**
-         * @brief 清楚所有创建的数据（释放内存）
-         */
+        /** @brief 删除所有创建的数据（释放内存） */
         void clear() const;
 
-        /**
-         * @brief 从给定名称添加数据
-         * @param name 数据名称
-         * @return 返回创建好的数据
-         */
-        AData *addData(const QString &name = QString());
+        /** @brief 从给定名称添加数据 */
+        AData* addData(const QString& name = QString());
 
     Q_SIGNALS:
-        void dataInserted(AData *data, AData *parent, AData *after);
-        void dataChanged(AData *data);
-        void dataRemoved(AData *data, AData *parent);
-        void dataDestroyed(AData *data);
+        void dataInserted(AData* data, AData* parent, AData* after);
+        void dataChanged(AData* data);
+        void dataRemoved(AData* data, AData* parent);
+        void dataDestroyed(AData* data);
 
     protected:
-        virtual bool hasValue(const AData *data) const;
-        virtual QIcon valueIcon(const AData *data) const;
-        virtual QString valueText(const AData *data) const;
+        virtual bool hasValue(const AData* data) const;
+        virtual QIcon valueIcon(const AData* data) const;
+        virtual QString valueText(const AData* data) const;
 
-        /**
-         * @brief 当初始化创建数据时调用，目的是让数据管理器知道数据已创建
-         * @param data 数据
-         */
-        virtual void initializeData(AData *data) = 0;
+        /** @brief 当初始化创建数据时调用，目的是让数据管理器知道数据已创建 */
+        virtual void initializeData(AData* data) = 0;
 
-        /**
-         * @brief 在销毁指定数据之前调用此函数。目的是让数据管理器知道正在销毁数据，以便删除数据的其他属性。
-         * @param data 数据
-         */
-        virtual void uninitializeData(AData *data);
+        /** @brief 在销毁指定数据之前调用此函数。目的是让数据管理器知道正在销毁数据，以便删除数据的其他属性。 */
+        virtual void uninitializeData(AData* data);
 
-        /**
-         * @brief 创建数据
-         * @return 数据
-         */
-        virtual AData *createData();
+        /** @brief 创建数据 */
+        virtual AData* createData();
 
     private:
         /**
          * @brief 销毁数据，删除内存
          * @param data 数据
          */
-        void destroyData(AData *data);
+        void destroyData(AData* data);
 
     private:
-        QSet<AData *> m_dataSet;
+        QSet<AData*> m_dataSet;
     };
 }

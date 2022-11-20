@@ -38,16 +38,8 @@ namespace aproch
     class AAbstractEditorFactoryBase : public QObject
     {
         Q_OBJECT
-
-    private:
-        friend class AAbstractDataBrowser;
     public:
-        /**
-         * @brief 创建绑定给定数据的控件
-         * @param data 数据源
-         * @param parent 父控件
-         * @return 创建的控件
-         */
+        /** @brief 创建绑定给定数据的控件 */
         virtual QWidget* createEditor(AData* data, QWidget* parent) = 0;
 
     protected:
@@ -56,10 +48,7 @@ namespace aproch
         {
         }
 
-        /**
-         * @brief 断开和创建的控件关联的信号
-         * @param manager 数据管理器
-         */
+        /** @brief 断开和创建的控件关联的信号 */
         virtual void breakConnection(AAbstractDataManager* manager) = 0;
 
     protected Q_SLOTS:
@@ -84,7 +73,7 @@ namespace aproch
             {
                 if (manager == data->dataManager())
                 {
-                    return createEditor(manager, data, parent);
+                    return createEditorImpl(manager, data, parent);
                 }
             }
             return nullptr;
@@ -128,7 +117,7 @@ namespace aproch
 
     protected:
         virtual void connectDataManager(DataManager* manager) = 0;
-        virtual QWidget* createEditor(DataManager* manager, AData* data, QWidget* parent) = 0;
+        virtual QWidget* createEditorImpl(DataManager* manager, AData* data, QWidget* parent) = 0;
         virtual void disconnectDataManager(DataManager* manager) = 0;
         void managerDestroyed(QObject* manager)
         {
