@@ -29,6 +29,7 @@
 #pragma once
 
 #include "ADPWUtils.h"
+#include "ADataType.h"
 #include "AData.h"
 #include "AAbstractDataManager.h"
 #include "AAbstractEditorFactory.h"

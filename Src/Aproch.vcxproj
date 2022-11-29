@@ -137,6 +137,7 @@
     <ClCompile Include="DPO\ABoxLayoutCreator.cpp" />
     <ClCompile Include="DPO\ADPWService.cpp" />
     <ClCompile Include="DPO\AEditCreator.cpp" />
+    <ClCompile Include="DWB\ADataType.cpp" />
     <ClCompile Include="DWB\ADPWUtils.cpp" />
     <ClCompile Include="DWB\AVariantData.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -198,6 +199,7 @@
     <ClInclude Include="DPO\IDPOService.h" />
     <ClInclude Include="DPO\Inc_DPO.h" />
     <QtMoc Include="DWB\AVariantData.h" />
+    <ClInclude Include="DWB\ADataType.h" />
     <ClInclude Include="DWB\ADPWUtils.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Widget\ABorderlessWidget.h" />
