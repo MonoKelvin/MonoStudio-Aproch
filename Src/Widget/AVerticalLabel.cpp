@@ -191,9 +191,9 @@ namespace aproch
 
         QString newLabel = label;
         if (option & TrimmedFirst)
-            newLabel = StringToolki::TrimmLeft(label);
+            newLabel = StringToolki::TrimLeft(label);
         if (option & TrimmedLast)
-            newLabel = StringToolki::TrimmRight(newLabel);
+            newLabel = StringToolki::TrimRight(newLabel);
         const auto& strList = label.split(AKey_NewLine, option & MergeLineBreaks ?
                                             QString::SkipEmptyParts :
                                             QString::KeepEmptyParts);

@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include "ADataType.h"
 
+
 namespace aproch
 {
+    //static QAtomicInteger<TDataTypeId> xAtomicId = 0;
+    static TDataTypeId xAtomicId = 0;
+
     TDataTypeMap ADataType::m_dataTypeMap;
 
     ADataType::ADataType()
@@ -17,55 +21,55 @@ namespace aproch
 
     bool ADataType::isValid() const
     {
-        return m_typeId > 0 && !m_name.trimmed().isEmpty();
+        return getId() > 0 && !m_name.trimmed().isEmpty();
     }
 
     bool ADataType::operator==(const ADataType& rhs) const
     {
-        return m_typeId == rhs.m_typeId || m_name == rhs.m_name;
+        return getId() == rhs.getId() || AStringToolkit::TrimCompare(m_name, rhs.m_name);
     }
 
     bool ADataType::operator!=(const ADataType& rhs) const
     {
-        return m_typeId != rhs.m_typeId || m_name != rhs.m_name;
+        return !(this->operator==(rhs));
     }
 
     bool ADataType::operator>(const ADataType& rhs) const
     {
-        return m_typeId > rhs.m_typeId;
+        return getId() > rhs.getId();
     }
 
     bool ADataType::operator>=(const ADataType& rhs) const
     {
-        return m_typeId >= rhs.m_typeId;
+        return getId() >= rhs.getId();
     }
 
     bool ADataType::operator<(const ADataType& rhs) const
     {
-        return m_typeId < rhs.m_typeId;
+        return getId() < rhs.getId();
     }
 
     bool ADataType::operator<=(const ADataType& rhs) const
     {
-        return m_typeId <= rhs.m_typeId;
+        return getId() <= rhs.getId();
     }
 
-    ADataType ADataType::Add(TDataTypeId id, const QString& name, const QString& description, const QIcon& icon)
+    ADataType ADataType::Register(const QString& name, const QString& description, const QIcon& icon)
     {
-        ADataType dataType;
-        dataType.m_typeId = id;
-        dataType.m_name = name;
-        dataType.m_description = description;
-        dataType.m_icon = icon;
-
+        ADataType dataType = Get(name);
         if (dataType.isValid())
         {
-            auto iter = m_dataTypeMap.find(id);
-            if (iter == m_dataTypeMap.end())
-                m_dataTypeMap.insert(id, dataType);
-            else
-                *iter = dataType;
+            qWarning() << QObject::tr("The type ") << '[' << name << ']' << QObject::tr(" already exists!");
+            return dataType;
         }
+
+        ++xAtomicId;
+
+        dataType.m_typeId = xAtomicId;
+        dataType.m_name = name.trimmed().toLower();
+        dataType.m_description = description;
+        dataType.m_icon = icon;
+        m_dataTypeMap.insert(xAtomicId, dataType);
         return dataType;
     }
 
@@ -82,12 +86,22 @@ namespace aproch
         return *iter;
     }
 
+    ADataType ADataType::Get(const QString& name)
+    {
+        for (const auto& item : m_dataTypeMap)
+        {
+            if (AStringToolkit::TrimCompare(item.getName(), name))
+                return item;
+        }
+        return ADataType();
+    }
+
     const TDataTypeMap& ADataType::GetAllType()
     {
         return m_dataTypeMap;
     }
 
-    bool ADataType::SetName(TDataTypeId id, const QString& newName)
+    /*bool ADataType::SetName(TDataTypeId id, const QString& newName)
     {
         if (newName.trimmed().isEmpty())
             return false;
@@ -97,7 +111,7 @@ namespace aproch
             return false;
         iter->m_name = newName;
         return true;
-    }
+    }*/
 
     bool ADataType::SetDescription(TDataTypeId id, const QString& newDescription)
     {

@@ -78,14 +78,20 @@ namespace aproch
         bool operator<=(const ADataType& rhs) const;
 
     public:
-        /** @brief 添加数据类型，如果存在相同<id>则进行覆盖。<name>要求不为空 */
-        static ADataType Add(TDataTypeId id, const QString& name, const QString& description = QString(), const QIcon& icon = QIcon());
+        /**
+         * @brief 注册数据类型
+         * @param name 类型名称。不区分大小写，不能为空，存在相同类型则注册失败并返回已注册的类型
+         * @param description 类型描述
+         * @param icon 类型图标
+         * @return 注册成功的数据类型，注册失败返回无效类型， @see ADataType::isValid
+         */
+        static ADataType Register(const QString& name, const QString& description = QString(), const QIcon& icon = QIcon());
         static void Remove(TDataTypeId id);
         static ADataType Get(TDataTypeId id);
+        static ADataType Get(const QString& name);
         static const TDataTypeMap& GetAllType();
 
-        /** @brief 设置类型名称，要求<newName>不为空，否则返回false */
-        static bool SetName(TDataTypeId id, const QString& newName);
+        //static bool SetName(TDataTypeId id, const QString& newName);
         static bool SetDescription(TDataTypeId id, const QString& newDescription);
         static bool SetIcon(TDataTypeId id, const QIcon& newIcon);
 

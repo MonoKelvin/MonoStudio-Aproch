@@ -135,7 +135,7 @@ namespace aproch
         return hexStr;
     }
 
-    QString AStringToolkit::TrimmLeft(const QString& str)
+    QString AStringToolkit::TrimLeft(const QString& str)
     {
         const QChar* begin = str.cbegin();
         const QChar* end = str.cend();
@@ -156,7 +156,7 @@ namespace aproch
         return QString(begin, end - begin);
     }
 
-    QString AStringToolkit::TrimmRight(const QString& str)
+    QString AStringToolkit::TrimRight(const QString& str)
     {
         const QChar* begin = str.cbegin();
         const QChar* end = str.cend();
@@ -175,6 +175,14 @@ namespace aproch
         }
 
         return QString(begin, end - begin);
+    }
+
+    bool AStringToolkit::TrimCompare(const QString& str1, const QString& str2, Qt::CaseSensitivity cs)
+    {
+        QString trimmedStr1 = str1.trimmed();
+        QString trimmedStr2 = str2.trimmed();
+
+        return trimmedStr1.compare(trimmedStr2, cs) == 0;
     }
 
     QString AStringToolkit::ReplaceContinuousString(const QString& str, const QString& rpStr)

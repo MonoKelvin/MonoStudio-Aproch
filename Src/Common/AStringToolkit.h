@@ -90,14 +90,23 @@ namespace aproch
          * @param str 原始字符
          * @return 返回修改后的新字符串
          */
-        static QString TrimmLeft(const QString &str);
+        static QString TrimLeft(const QString &str);
 
         /**
          * @brief 删除字符右边所有的空格和换行符号
          * @param str 原始字符
          * @return 返回修改后的新字符串
          */
-        static QString TrimmRight(const QString &str);
+        static QString TrimRight(const QString &str);
+
+        /**
+         * @brief 删除前后空白字符后进行比较是否相等
+         * @param str1 字符串1
+         * @param str2 字符串2
+         * @param cs 大小写敏感
+         * @return 是否相等
+         */
+        static bool TrimCompare(const QString& str1, const QString& str2, Qt::CaseSensitivity cs = Qt::CaseInsensitive);
 
         /**
          * @brief 将所有连续相同（至少连续出现两次）的字符替换为指定字符
