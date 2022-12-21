@@ -20,7 +20,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -70,12 +70,12 @@
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>core;xml;sql;gui;widgets</QtModules>
+    <QtModules>core;xml;sql;opengl;gui;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>core;xml;sql;gui;widgets</QtModules>
+    <QtModules>core;xml;sql;opengl;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -140,6 +140,7 @@
     <ClCompile Include="DWB\ADataType.cpp" />
     <ClCompile Include="DWB\ADPWUtils.cpp" />
     <ClCompile Include="DWB\AVariantData.cpp" />
+    <ClCompile Include="FUI\Element\FUIElement.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -201,6 +202,7 @@
     <QtMoc Include="DWB\AVariantData.h" />
     <ClInclude Include="DWB\ADataType.h" />
     <ClInclude Include="DWB\ADPWUtils.h" />
+    <ClInclude Include="FUIElement.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Widget\ABorderlessWidget.h" />
     <ClInclude Include="Widget\AFlowLayout.h" />

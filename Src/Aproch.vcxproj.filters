@@ -45,6 +45,12 @@
     <Filter Include="Common\Service">
       <UniqueIdentifier>{11c55700-bc8b-453e-8ac4-40edbcb54ecf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FUI">
+      <UniqueIdentifier>{5e8ffff1-444b-41be-a26e-be3eea9c9b19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FUI\Element">
+      <UniqueIdentifier>{1e85ff78-dad1-4fee-b8f8-32dbdef90d01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainWindow.h">
@@ -215,6 +221,9 @@
     <ClInclude Include="DWB\ADataType.h">
       <Filter>DWB</Filter>
     </ClInclude>
+    <ClInclude Include="FUIElement.h">
+      <Filter>FUI\Element</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -384,6 +393,9 @@
     </ClCompile>
     <ClCompile Include="DWB\ADataType.cpp">
       <Filter>DWB</Filter>
+    </ClCompile>
+    <ClCompile Include="FUI\Element\FUIElement.cpp">
+      <Filter>FUI\Element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
