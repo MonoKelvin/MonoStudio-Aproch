@@ -1,4 +1,4 @@
-﻿/****************************************************************************
+/****************************************************************************
  * @file    ACommandManager.cpp
  * @date    2021-1-10
  * @author  MonoKelvin
@@ -66,7 +66,6 @@ namespace aproch
     {
         if (nullptr == command || !ACommand::IsValid(command->mCommandId))
         {
-            // TODO: Ìí¼ÓÈÕÖ¾
             qDebug() << "Invalid Command";
             return;
         }

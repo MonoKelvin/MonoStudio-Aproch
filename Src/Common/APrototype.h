@@ -31,17 +31,31 @@
 #include <QString>
 #include "AIdentity.h"
 
-/** @brief 继承自原型对象<APrototypeT>的子类需要添加该宏以创建克隆原型，不可克隆的原型不需要添加 */
-#define APROCH_PROTOTYPE(_ClassName_) \
-virtual aproch::APrototype* clone(const aproch::FCopyOptions& op = aproch::DeepCopy) const \
-{ return new _ClassName_(*this, op); } \
-
 /** @brief 默认拷贝选项 */
-#ifdef A_DEFAULT_COPY_WITH_ID
-#define A_Default_Copy_Option (aproch::ECopyOption::DeepCopyWithID)
-#else
+#ifdef A_DEFAULT_COPY_WITHOUT_ID
 #define A_Default_Copy_Option (aproch::ECopyOption::DeepCopy)
+#else
+#define A_Default_Copy_Option (aproch::ECopyOption::DeepCopyWithID)
 #endif
+
+/** @brief 继承自原型对象<APrototype>的子类需要添加该宏以创建克隆原型，不可克隆的原型不需要添加 */
+#define APROCH_PROTOTYPE(_ClassName_) \
+public: \
+virtual aproch::APrototype* clone(const aproch::FCopyOptions& op = A_Default_Copy_Option) const override \
+{ return new _ClassName_(*this, op); } \
+private: \
+friend APrototype; \
+friend APrototypeDisclonable; \
+Q_DISABLE_MOVE(_ClassName_)
+
+/** @brief 继承自原型对象<APrototype>的子类需要添加该宏以创建私有克隆原型，不可克隆的原型不需要添加 */
+#define APROCH_PROTOTYPE_PRIVATE(_ClassName_) \
+private: \
+virtual aproch::APrototype* clone(const aproch::FCopyOptions& op = A_Default_Copy_Option) const override \
+{ return new _ClassName_(*this, op); } \
+friend APrototype; \
+friend APrototypeDisclonable; \
+Q_DISABLE_MOVE(_ClassName_)
 
 namespace aproch
 {
@@ -50,11 +64,20 @@ namespace aproch
      */
     enum ECopyOption
     {
-        IDCopy = 0x0001,                        // 仅拷贝ID
-        ShallowCopy = 0x0002,                   // 浅拷贝，但不拷贝ID
-        ShallowCopyWithID = 0x0004 ^ IDCopy,    // 浅拷贝，但不拷贝ID
-        DeepCopy = 0xFFFF ^ IDCopy,             // 深度拷贝，但不拷贝ID
-        DeepCopyWithID = 0xFFFF,                // 深度拷贝，同时拷贝ID
+        /** @brief 仅拷贝ID */
+        IDCopy = 0x0001,
+
+        /** @brief 浅拷贝，但不拷贝ID */
+        ShallowCopy = 0x0002,
+
+        /** @brief 浅拷贝，同时拷贝ID */
+        ShallowCopyWithID = 0x0004 ^ IDCopy,
+
+        /** @brief 深度拷贝，但不拷贝ID */
+        DeepCopy = 0xFFFF ^ IDCopy,
+
+        /** @brief 深度拷贝，同时拷贝ID */
+        DeepCopyWithID = 0xFFFF,
     };
     Q_DECLARE_FLAGS(FCopyOptions, ECopyOption)
     Q_DECLARE_OPERATORS_FOR_FLAGS(FCopyOptions)
@@ -67,27 +90,23 @@ namespace aproch
     template<bool IsClonable>
     class APrototypeT
     {
-        Q_DISABLE_COPY_MOVE(APrototypeT)
+        Q_DISABLE_MOVE(APrototypeT)
     public:
         APrototypeT()
-            : mID(aproch::AID::Identity())
+            : m_id(aproch::AID::Identity())
         {
-            mAttributeMap.insert(AStr("id"), mID.toString());
         }
 
-        APrototypeT(const APrototypeT& rhs, const FCopyOptions& op/* = A_Default_Copy_Option*/)
+        APrototypeT(const APrototypeT& rhs, const FCopyOptions& op = A_Default_Copy_Option)
         {
             if (op & ECopyOption::IDCopy)
             {
-                mID = rhs.mID;
+                m_id = rhs.m_id;
             }
             else
             {
-                mID = aproch::AID::Identity();
+                m_id = aproch::AID::Identity();
             }
-
-            mAttributeMap = rhs.mAttributeMap;
-            mAttributeMap[AStr("id")] = mID.toString();
         }
         virtual ~APrototypeT() = default;
 
@@ -109,112 +128,24 @@ namespace aproch
             return nullptr;
         }
 
+        /** @brief 是否有效 */
+        virtual bool isValid() const
+        {
+            return true;
+        }
+
         /**
          * @brief 获取对象唯一标识
          * @return 对象唯一标识
          */
-        inline const aproch::AID getID() const noexcept
+        inline const aproch::AID getId() const noexcept
         {
-            return mID;
-        }
-
-        /**
-         * @brief 获取属性表
-         * @return 属性表
-         */
-        inline QVariantMap getAttributeMap() const noexcept
-        {
-            return mAttributeMap;
-        }
-
-        /**
-         * @brief 获取属性表（引用）
-         * @return 属性表（引用）
-         */
-        inline QVariantMap& getAttributeMap() noexcept
-        {
-            return mAttributeMap;
-        }
-
-        /**
-         * @brief 设置属性表
-         * @param attributeMap 属性表
-         */
-        inline void setAttributeMap(const QVariantMap& attributeMap)
-        {
-            mAttributeMap = attributeMap;
-        }
-
-        /**
-         * @brief 添加属性。如果属性已经存在，则会覆盖源属性
-         * @param attrName 属性名
-         * @param attrValue 属性值
-         */
-        void addAttribute(const QString& attrName, const QVariant& attrValue)
-        {
-            mAttributeMap[attrName] = attrValue;
-        }
-
-        /**
-         * @brief 添加属性表。如果属性已存在，则会覆盖源属性
-         * @param rhs 属性表
-         */
-        void addAttribute(const QVariantMap& rhs)
-        {
-            const auto& keys = rhs.keys();
-            for (const auto& k : keys)
-            {
-                mAttributeMap[k] = rhs.value(k);
-            }
-        }
-
-        /**
-         * @brief 获取属性值
-         * @param key 键
-         * @return 属性值
-         */
-        QVariant getAttribute(const QString& key) const
-        {
-            auto iter = mAttributeMap.find(key);
-            if (mAttributeMap.cend() == iter)
-                return QVariant();
-            return iter.value();
-        }
-
-        /**
-         * @brief 添加属性
-         * @param attrName 属性名
-         * @return 是否移除成功
-         */
-        bool removeAttribute(const QString& attrName)
-        {
-            return 0 == mAttributeMap.remove(attrName);
-        }
-
-        /**
-         * @brief 改变属性
-         * @param attrName 属性名
-         * @param newAttrValue 新的属性值
-         * @return 是否更改成功
-         */
-        bool changeAttribute(const QString& attrName, const QVariant& newAttrValue)
-        {
-            auto iter = mAttributeMap.find(attrName);
-            if (iter != mAttributeMap.end())
-            {
-                iter->setValue(newAttrValue);
-                return true;
-            }
-
-            return false;
+            return m_id;
         }
 
     private:
         /** @brief 对象唯一标识 */
-        aproch::AID mID;
-
-        /** @brief 属性表 */
-        QVariantMap mAttributeMap;
+        aproch::AID m_id;
     };
 
     using APrototype = APrototypeT<true>;

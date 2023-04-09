@@ -86,7 +86,8 @@
 #include "APluginManager.h"
 
 // widgets
-#include "Widget/Style/AUIStyle.h"
+#include "Widget/Style/AStyleDefines.h"
+#include "Widget/Style/AUIStyleObject.h"
 #include "Widget/Style/AWindowsStyleManager.h"
 #include "Widget/ABorderlessWidget.h"
 #include "Widget/AFlowLayout.h"
@@ -103,5 +104,5 @@
 #include "Widget/APromptWidget.h"
 #include "Widget/AAvatar.h"
 
-#include "DWB/Inc_DWB.h"
+#include "Data/header.inc"
 #include "DPO/Inc_DPO.h"

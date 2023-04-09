@@ -33,10 +33,10 @@ namespace aproch
 {
     AFlowLayout::AFlowLayout(QWidget* parent)
         : QLayout(parent)
-        , mHorizontalSpacing(AppUIStyle.HorizontalSpacing)
-        , mVerticalSpacing(AppUIStyle.VerticalSpacing)
+        , mHorizontalSpacing(10/*AppUIStyle.HorizontalSpacing*/)
+        , mVerticalSpacing(10/*AppUIStyle.VerticalSpacing*/)
     {
-        setContentsMargins(AppUIStyle.Margin);
+        setContentsMargins(10, 10, 10, 10/*AppUIStyle.Margin*/);
     }
 
     AFlowLayout::~AFlowLayout()

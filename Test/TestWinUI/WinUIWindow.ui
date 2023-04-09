@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WinUIWindowClass</class>
+ <widget class="QWidget" name="WinUIWindowClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1102</width>
+    <height>675</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>WinUIWindow</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="WinUIWindow.qrc"/>
+ </resources>
+ <connections/>
+</ui>

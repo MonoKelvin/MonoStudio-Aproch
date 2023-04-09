@@ -195,7 +195,11 @@ namespace aproch
          */
         inline static const value_type get()
         {
+#ifdef Q_OS_WIN
             return _InterlockedIncrement64(&sCurrentNumber);
+#elif defined(Q_OS_LINUX)
+            // TODO
+#endif
         }
 
         /**

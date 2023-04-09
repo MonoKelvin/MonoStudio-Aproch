@@ -20,11 +20,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -37,45 +39,50 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;$(SolutionDir)Src;$(SolutionDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)ThirdParty;$(OutDir)moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>$(SolutionDir)CopyBuildFile.bat $(SolutionDir)Src\ $(SolutionDir)Build\ $(OutDir)</Command>
+      <Command>"$(SolutionDir)CopyBuildFile.bat" $(SolutionDir)Src\ $(SolutionDir)Build\$(Platform)-$(Configuration)\ $(OutDir)</Command>
     </PostBuildEvent>
     <Link>
-      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)pdb\$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;$(SolutionDir)Src;$(SolutionDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)ThirdParty;$(OutDir)moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>$(SolutionDir)CopyBuildFile.bat $(SolutionDir)Src\ $(SolutionDir)Build\ $(OutDir)</Command>
+      <Command>"$(SolutionDir)CopyBuildFile.bat" $(SolutionDir)Src\ $(SolutionDir)Build\$(Platform)-$(Configuration)\ $(OutDir)</Command>
     </PostBuildEvent>
+    <Link>
+      <ProgramDatabaseFile>$(OutDir)pdb\$(TargetName).pdb</ProgramDatabaseFile>
+    </Link>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>core;xml;sql;opengl;gui;widgets</QtModules>
+    <QtModules>core;xml;sql;opengl;gui;widgets;gui-private;widgets-private</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>core;xml;sql;opengl;gui;widgets</QtModules>
+    <QtModules>core;xml;sql;opengl;gui;widgets;gui-private;widgets-private</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -90,7 +97,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>APROCH_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>APROCH_LIB;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -105,12 +112,12 @@
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>APROCH_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>APROCH_LIB;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -129,17 +136,17 @@
     <ClCompile Include="Common\ADoubleValidator.cpp" />
     <ClCompile Include="Common\AException.cpp" />
     <ClCompile Include="Common\AFileToolkit.cpp" />
+    <ClCompile Include="Common\AGraphicsToolkit.cpp" />
     <ClCompile Include="Common\AIconFont.cpp" />
     <ClCompile Include="Common\AIdentity.cpp" />
     <ClCompile Include="Common\AMathToolkit.cpp" />
     <ClCompile Include="Common\AStringToolkit.cpp" />
+    <ClCompile Include="Data\AAbstractDataManager.cpp" />
+    <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="DPO\AAbstractObjectCreator.cpp" />
     <ClCompile Include="DPO\ABoxLayoutCreator.cpp" />
     <ClCompile Include="DPO\ADPWService.cpp" />
     <ClCompile Include="DPO\AEditCreator.cpp" />
-    <ClCompile Include="DWB\ADataType.cpp" />
-    <ClCompile Include="DWB\ADPWUtils.cpp" />
-    <ClCompile Include="DWB\AVariantData.cpp" />
     <ClCompile Include="FUI\Element\FUIElement.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -159,8 +166,29 @@
     <ClCompile Include="Widget\AWheelColorPicker.cpp" />
     <ClCompile Include="Widget\AWheelColorPickerWidget.cpp" />
     <ClCompile Include="Widget\AWindow.cpp" />
-    <ClCompile Include="Widget\Style\AUIStyle.cpp" />
+    <ClCompile Include="Widget\Style\AStyleDefines.cpp" />
+    <ClCompile Include="Widget\Style\AUIStyleObject.cpp" />
+    <ClCompile Include="WinUI\Private\AWinUIStyle.cpp" />
+    <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle.cpp" />
+    <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle.cpp" />
+    <ClCompile Include="WinUI\Style\AWinUIStyleObjects.cpp" />
+    <ClCompile Include="WinUI\WinUIGloabl.cpp" />
+    <QtMoc Include="WinUI\AWinUIStyleEngine.h" />
     <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp" />
+    <ClCompile Include="WinUI\AWinUIStyleEngine.cpp" />
+    <ClCompile Include="WinUI\Controls\ATextBlock.cpp" />
+    <ClCompile Include="WinUI\Controls\ATextBox.cpp" />
+    <QtMoc Include="WinUI\Controls\ATextBlock.h" />
+    <QtMoc Include="WinUI\Controls\ATextBox.h" />
+    <ClInclude Include="Common\AGraphicsToolkit.h" />
+    <ClInclude Include="Widget\Style\AUIStyleObject.h" />
+    <QtMoc Include="WinUI\Private\AWinUIStyle.h" />
+    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h" />
+    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p_p.h" />
+    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p.h" />
+    <ClInclude Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p_p.h" />
+    <ClInclude Include="WinUI\Style\AWinUIStyleObjects.h" />
+    <ClInclude Include="WinUI\WinUIGloabl.h" />
     <QtMoc Include="AAction.h" />
     <QtMoc Include="AActionManager.h" />
     <ClInclude Include="AAppConfigService.h" />
@@ -193,20 +221,19 @@
     <ClInclude Include="Common\IPlugin.h" />
     <ClInclude Include="Common\IService.h" />
     <ClInclude Include="Common\IStringSerializable.h" />
+    <QtMoc Include="Data\AAbstractDataManager.h" />
+    <ClInclude Include="Data\AData.h" />
     <ClInclude Include="DPO\AAbstractObjectCreator.h" />
     <ClInclude Include="DPO\ABoxLayoutCreator.h" />
     <ClInclude Include="DPO\ADPWService.h" />
     <ClInclude Include="DPO\AEditCreator.h" />
     <ClInclude Include="DPO\IDPOService.h" />
     <ClInclude Include="DPO\Inc_DPO.h" />
-    <QtMoc Include="DWB\AVariantData.h" />
-    <ClInclude Include="DWB\ADataType.h" />
-    <ClInclude Include="DWB\ADPWUtils.h" />
     <ClInclude Include="FUIElement.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Widget\ABorderlessWidget.h" />
     <ClInclude Include="Widget\AFlowLayout.h" />
-    <ClInclude Include="Widget\Style\AUIStyle.h" />
+    <ClInclude Include="Widget\Style\AStyleDefines.h" />
     <ClInclude Include="Widget\Style\AWindowsStyleManager.h" />
     <QtMoc Include="Widget\AWindow.h" />
     <QtMoc Include="Widget\AWheelColorPickerWidget.h" />
@@ -232,12 +259,6 @@
     <ClInclude Include="APrivateAppConfigService.h" />
     <ClInclude Include="APluginManager.h" />
     <ClInclude Include="ASqlDataBase.h" />
-    <QtMoc Include="DWB\AAbstractDataManager.h" />
-    <QtMoc Include="DWB\AAbstractEditorFactory.h" />
-    <ClInclude Include="DWB\AData.h" />
-    <QtMoc Include="DWB\ADataManager.h" />
-    <QtMoc Include="DWB\AEditorFactory.h" />
-    <ClInclude Include="DWB\Inc_DWB.h" />
     <ClInclude Include="AprochAPI.h" />
     <ClInclude Include="IMainWindow.h" />
     <ClInclude Include="AprochGlobal.h" />
@@ -256,15 +277,14 @@
     <ClCompile Include="APluginManager.cpp" />
     <ClCompile Include="APrivateAppConfigService.cpp" />
     <ClCompile Include="ASqlDataBase.cpp" />
-    <ClCompile Include="DWB\AAbstractDataManager.cpp" />
-    <ClCompile Include="DWB\AAbstractEditorFactory.cpp" />
-    <ClCompile Include="DWB\AData.cpp" />
-    <ClCompile Include="DWB\ADataManager.cpp" />
-    <ClCompile Include="DWB\AEditorFactory.cpp" />
     <ClCompile Include="AprochGlobal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\header.inc" />
+    <None Include="WinUI\include.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

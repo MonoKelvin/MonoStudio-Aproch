@@ -54,7 +54,7 @@ namespace aproch
         return getId() <= rhs.getId();
     }
 
-    ADataType ADataType::Register(const QString& name, const QString& description, const QIcon& icon)
+    ADataType ADataType::Register(const QString& name, const QString& description)
     {
         ADataType dataType = Get(name);
         if (dataType.isValid())
@@ -68,7 +68,6 @@ namespace aproch
         dataType.m_typeId = xAtomicId;
         dataType.m_name = name.trimmed().toLower();
         dataType.m_description = description;
-        dataType.m_icon = icon;
         m_dataTypeMap.insert(xAtomicId, dataType);
         return dataType;
     }
@@ -119,15 +118,6 @@ namespace aproch
         if (iter == m_dataTypeMap.end())
             return false;
         iter->m_description = newDescription;
-        return true;
-    }
-
-    bool ADataType::SetIcon(TDataTypeId id, const QIcon& newIcon)
-    {
-        auto iter = m_dataTypeMap.find(id);
-        if (iter == m_dataTypeMap.end())
-            return false;
-        iter->m_icon = newIcon;
         return true;
     }
 

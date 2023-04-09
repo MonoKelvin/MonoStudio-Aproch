@@ -35,7 +35,7 @@ namespace aproch
     typedef QMap<TDataTypeId, ADataType> TDataTypeMap;
 
     /**
-     * @brief Êı¾İÀàĞÍ
+     * @brief æ•°æ®ç±»å‹
      */
     class APROCH_API ADataType final
     {
@@ -43,31 +43,25 @@ namespace aproch
         ADataType();
         ~ADataType();
 
-        /** @brief »ñÈ¡ÀàĞÍID */
+        /** @brief è·å–ç±»å‹ID */
         TDataTypeId getId() const noexcept
         {
             return m_typeId;
         }
 
-        /** @brief »ñÈ¡ÀàĞÍÃû³Æ */
+        /** @brief è·å–ç±»å‹åç§° */
         const QString& getName() const noexcept
         {
             return m_name;
         }
 
-        /** @brief »ñÈ¡ÀàĞÍÃèÊö */
+        /** @brief è·å–ç±»å‹æè¿° */
         const QString& getDescription() const noexcept
         {
             return m_description;
         }
 
-        /** @brief »ñÈ¡ÀàĞÍÍ¼±ê */
-        const QIcon& getIcon() const noexcept
-        {
-            return m_icon;
-        }
-
-        /** @brief ÊÇ·ñÊı¾İÀàĞÍÓĞĞ§ */
+        /** @brief æ˜¯å¦æ•°æ®ç±»å‹æœ‰æ•ˆ */
         bool isValid() const;
 
         bool operator==(const ADataType& rhs) const;
@@ -79,13 +73,13 @@ namespace aproch
 
     public:
         /**
-         * @brief ×¢²áÊı¾İÀàĞÍ
-         * @param name ÀàĞÍÃû³Æ¡£²»Çø·Ö´óĞ¡Ğ´£¬²»ÄÜÎª¿Õ£¬´æÔÚÏàÍ¬ÀàĞÍÔò×¢²áÊ§°Ü²¢·µ»ØÒÑ×¢²áµÄÀàĞÍ
-         * @param description ÀàĞÍÃèÊö
-         * @param icon ÀàĞÍÍ¼±ê
-         * @return ×¢²á³É¹¦µÄÊı¾İÀàĞÍ£¬×¢²áÊ§°Ü·µ»ØÎŞĞ§ÀàĞÍ£¬ @see ADataType::isValid
+         * @brief æ³¨å†Œæ•°æ®ç±»å‹
+         * @param name ç±»å‹åç§°ã€‚ä¸åŒºåˆ†å¤§å°å†™ï¼Œä¸èƒ½ä¸ºç©ºï¼Œå­˜åœ¨ç›¸åŒç±»å‹åˆ™æ³¨å†Œå¤±è´¥å¹¶è¿”å›å·²æ³¨å†Œçš„ç±»å‹
+         * @param description ç±»å‹æè¿°
+         * @param icon ç±»å‹å›¾æ ‡
+         * @return æ³¨å†ŒæˆåŠŸçš„æ•°æ®ç±»å‹ï¼Œæ³¨å†Œå¤±è´¥è¿”å›æ— æ•ˆç±»å‹ï¼Œ @see ADataType::isValid
          */
-        static ADataType Register(const QString& name, const QString& description = QString(), const QIcon& icon = QIcon());
+        static ADataType Register(const QString& name, const QString& description = QString());
         static void Remove(TDataTypeId id);
         static ADataType Get(TDataTypeId id);
         static ADataType Get(const QString& name);
@@ -93,22 +87,18 @@ namespace aproch
 
         //static bool SetName(TDataTypeId id, const QString& newName);
         static bool SetDescription(TDataTypeId id, const QString& newDescription);
-        static bool SetIcon(TDataTypeId id, const QIcon& newIcon);
 
     private:
-        /** @brief ÀàĞÍID */
+        /** @brief ç±»å‹ID */
         TDataTypeId m_typeId;
 
-        /** @brief ÀàĞÍÃû³Æ */
+        /** @brief ç±»å‹åç§° */
         QString m_name;
 
-        /** @brief ÃèÊö */
+        /** @brief æè¿° */
         QString m_description;
 
-        /** @brief Êı¾İÀàĞÍ¶ÔÓ¦µÄÍ¼±ê */
-        QIcon m_icon;
-
-        /** @brief ÀàĞÍ±í */
+        /** @brief ç±»å‹è¡¨ */
         static TDataTypeMap m_dataTypeMap;
     };
 

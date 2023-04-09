@@ -149,7 +149,7 @@ namespace aproch
         // 空闲布局
         mDefaultWidgets.AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight);
         mDefaultWidgets.AppendixLayout->setMargin(0);
-        mDefaultWidgets.AppendixLayout->setSpacing(AppUIStyle.HorizontalSpacing);
+        //mDefaultWidgets.AppendixLayout->setSpacing(AppUIStyle.HorizontalSpacing);
         mainHLayout->addLayout(mDefaultWidgets.AppendixLayout);
 
         // 控制按钮
@@ -253,7 +253,7 @@ namespace aproch
         // 控制按钮
         QPushButton* winBtn = new QPushButton(this);
         winBtn->setIcon(iconPixmap);
-        winBtn->setFixedSize(AppUIStyle.WindowControllerSize);
+        //winBtn->setFixedSize(AppUIStyle.WindowControllerSize);
         winBtn->setProperty(APropName_BtnType, propValue);
 
         return winBtn;

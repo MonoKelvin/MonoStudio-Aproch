@@ -30,13 +30,10 @@
 #include "AData.h"
 #include "AAbstractDataManager.h"
 
-#include <QIcon>
-
 namespace aproch
 {
     AData::AData(AAbstractDataManager* manager)
         : m_enabled(true)
-        , m_modified(false)
         , m_manager(manager)
     {
     }
@@ -65,27 +62,17 @@ namespace aproch
         return m_manager;
     }
 
-    QString AData::toolTip() const
+    QString AData::getToolTip() const
     {
-        return m_valueToolTip;
+        return m_toolTip;
     }
 
-    QString AData::descriptionToolTip() const
+    QString AData::getDescription() const
     {
-        return m_descriptionToolTip;
+        return m_description;
     }
 
-    QString AData::statusTip() const
-    {
-        return m_statusTip;
-    }
-
-    QString AData::whatsThis() const
-    {
-        return m_whatsThis;
-    }
-
-    QString AData::dataName() const
+    QString AData::getDataName() const
     {
         return m_name;
     }
@@ -95,59 +82,27 @@ namespace aproch
         return m_enabled;
     }
 
-    bool AData::isModified() const
+    QString AData::toText() const
     {
-        return m_modified;
-    }
-
-    bool AData::hasValue() const
-    {
-        return m_manager->hasValue(this);
-    }
-
-    QIcon AData::valueIcon() const
-    {
-        return m_manager->valueIcon(this);
-    }
-
-    QString AData::valueText() const
-    {
-        return m_manager->valueText(this);
+        //return m_manager->toText(this);
+        return QString();
     }
 
     void AData::setToolTip(const QString& text)
     {
-        if (m_valueToolTip == text)
+        if (m_toolTip == text)
             return;
 
-        m_valueToolTip = text;
+        m_toolTip = text;
         dataChanged();
     }
 
-    void AData::setDescriptionToolTip(const QString& text)
+    void AData::setDescription(const QString& text)
     {
-        if (m_descriptionToolTip == text)
+        if (m_description == text)
             return;
 
-        m_descriptionToolTip = text;
-        dataChanged();
-    }
-
-    void AData::setStatusTip(const QString& text)
-    {
-        if (m_statusTip == text)
-            return;
-
-        m_statusTip = text;
-        dataChanged();
-    }
-
-    void AData::setWhatsThis(const QString& text)
-    {
-        if (m_whatsThis == text)
-            return;
-
-        m_whatsThis = text;
+        m_description = text;
         dataChanged();
     }
 
@@ -166,15 +121,6 @@ namespace aproch
             return;
 
         m_enabled = enable;
-        dataChanged();
-    }
-
-    void AData::setModified(bool modified)
-    {
-        if (m_modified == modified)
-            return;
-
-        m_modified = modified;
         dataChanged();
     }
 
@@ -257,5 +203,10 @@ namespace aproch
     void AData::dataChanged()
     {
         emit m_manager->dataChanged(this);
+    }
+    
+    bool AData::isValid() const
+    {
+        return false;
     }
 }

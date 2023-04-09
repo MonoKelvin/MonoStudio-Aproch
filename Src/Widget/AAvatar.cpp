@@ -29,6 +29,8 @@
 #include "stdafx.h"
 #include "AAvatar.h"
 
+#include <QPainterPath>
+
 namespace aproch
 {
     AAvatar::AAvatar(QWidget* parent)

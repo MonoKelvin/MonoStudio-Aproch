@@ -26,24 +26,6 @@ namespace aproch
         return m_dataSet;
     }
 
-    bool AAbstractDataManager::hasValue(const AData* data) const
-    {
-        Q_UNUSED(data);
-        return true;
-    }
-
-    QIcon AAbstractDataManager::valueIcon(const AData* data) const
-    {
-        Q_UNUSED(data);
-        return QIcon();
-    }
-
-    QString AAbstractDataManager::valueText(const AData* data) const
-    {
-        Q_UNUSED(data);
-        return QString();
-    }
-
     AData* AAbstractDataManager::addData(const QString& name)
     {
         AData* data = createData();

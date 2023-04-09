@@ -5,6 +5,8 @@
 #include <shlobj.h>
 #include <fstream>
 #include <sstream>
+#include <regex>
+
 #pragma comment(lib, "shell32.lib")
 
 using std::string;
@@ -81,7 +83,21 @@ private:
 
         string s;
         while (getline(file, s))
+        {
+            std::replace(s.begin(), s.end(), '\\', '/');
+
+            // add '.' before '*'
+            for (size_t i = 0; i < s.size(); ++i)
+            {
+                if (s[i] == '*' && (i == 0 || s[i - 1] != '.'))
+                {
+                    s.insert(i, 1, '.');
+                    ++i;
+                }
+            }
+
             exc_files.emplace_back(s);
+        }
         file.close();
     }
 
@@ -116,11 +132,25 @@ private:
             std::replace(file_path.begin(), file_path.end(), '\\', '/');
             if (entry.is_directory())
             {
-                size_t i = file_path.find_last_of('/');
-                if (i == std::string::npos)
-                    i = file_path.find_last_of('\\');
-                string new_path = src_path + "/" + file_path.substr(i + 1, file_path.size() - i);
-                _get_all_files(new_path, suffix_filters, exclude_files, files);
+                std::string src_clean_path = src_dir;
+                std::replace(src_clean_path.begin(), src_clean_path.end(), '\\', '/');
+                std::string relav_path = file_path.substr(src_clean_path.size(), file_path.size() - src_clean_path.size());
+
+                bool is_matched = false;
+                for (const std::string& ex_file : exclude_files)
+                {
+                    std::regex regex_pattern(ex_file, std::regex::icase);
+                    std::smatch match_result;
+                    if (std::regex_match(relav_path, match_result, regex_pattern))
+                    {
+                        is_matched = true;
+                        break;
+                    }
+                }
+                if (is_matched)
+                    continue;
+
+                _get_all_files(file_path, suffix_filters, exclude_files, files);
             }
             else
             {

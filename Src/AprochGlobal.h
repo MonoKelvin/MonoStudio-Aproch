@@ -279,6 +279,10 @@ private:                                                                        
 // 窗口缩放阈值
 #define APROCH_RESIZE_BOUNDARY 8
 
+/** * meta type defines */
+Q_DECLARE_METATYPE(QMargins)
+Q_DECLARE_METATYPE(QMarginsF)
+
 template <class SizeValue>
 static SizeValue qBoundSize(const SizeValue& minVal, const SizeValue& val, const SizeValue& maxVal)
 {
@@ -324,101 +328,6 @@ APROCH_API QPointF qBound(QPointF minVal, QPointF val, QPointF maxVal);
 // ----------------------------------------------------------------------------------------------------
 
 APROCH_NAMESPACE_BEGIN
-
-/** @brief 阴影参数 */
-struct SShadowParam
-{
-    /** @brief 阴影颜色 */
-    QColor color;
-
-    /** @brief 模糊半径 */
-    qreal radius;
-
-    /** @brief X方向偏移 */
-    qreal xOffset;
-
-    /** @brief Y方向偏移 */
-    qreal yOffset;
-
-    /** @brief 是否启用 */
-    bool isEnabled;
-
-    SShadowParam(void) noexcept
-        : color("#292929"), radius(20.0), xOffset(0.0), yOffset(0.0), isEnabled(true)
-    {
-    }
-};
-
-/** @brief 控件可见性状态 */
-enum EWidgetVisiblityState
-{
-    WVS_Show,
-    WVS_Hide,
-    WVS_Invisible,
-};
-
-/** @brief 窗口标题控件选项 */
-enum EWindowCaptionWidget
-{
-    WindowTitle = Qt::WindowTitleHint,
-    WindowSystemMenu = Qt::WindowSystemMenuHint,
-    WindowMinimizeButton = Qt::WindowMinimizeButtonHint,
-    WindowMaximizeButton = Qt::WindowMaximizeButtonHint,
-    WindowMinMaxButtons = WindowMinimizeButton | WindowMaximizeButton,
-    WindowContextHelpButton = Qt::WindowContextHelpButtonHint,
-    WindowStaysOnTop = Qt::WindowStaysOnTopHint,
-
-    CustomizeWindow = Qt::CustomizeWindowHint,
-    WindowStaysOnBottom = Qt::WindowStaysOnBottomHint,
-    WindowCloseButton = Qt::WindowCloseButtonHint,
-    WindowControllerButtons = WindowMinMaxButtons | WindowCloseButton,
-};
-Q_DECLARE_FLAGS(FWindowCaptionWidgets, EWindowCaptionWidget)
-Q_DECLARE_OPERATORS_FOR_FLAGS(FWindowCaptionWidgets)
-
-/**
- * @brief 边角数据结构，一般可以表示矩形四角的圆角大小
- */
-struct SCorner
-{
-    int leftTop;
-    int leftBootom;
-    int rightTop;
-    int rightBottom;
-};
-
-/**
- * @brief 边角数据结构，一般可以表示矩形四角的圆角大小
- */
-struct SCornerF
-{
-    qreal topLeft;
-    qreal topRight;
-    qreal bottomLeft;
-    qreal bottomRight;
-};
-
-inline int GetFontPixelWidth(const QFont &font, const QString &text)
-{
-#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
-    return QFontMetrics(font).horizontalAdvance(text);
-#else
-    return QFontMetrics(font).width(text);
-#endif
-}
-
-inline int GetFontPixelHeight(const QFont &font)
-{
-    return QFontMetrics(font).height();
-}
-
-/**
- * @brief 给标签控件设置超出给定最大宽度的省略字符串
- * @param label 给定的QLabel控件
- * @param maxWidth 最大宽度，当控件字体像素宽度超过该值后就显示省略号
- * @param mode 省略模式
- */
-extern APROCH_API void SetElidedText(QLabel* label, int maxWidth, Qt::TextElideMode mode = Qt::ElideRight);
 
 /**
  * @brief 根据类型名称该类型的默认值。数字类型返回都是0，布尔类型返回false，字符（串）类型返回为空字符（串），容器类型返回返回空容器

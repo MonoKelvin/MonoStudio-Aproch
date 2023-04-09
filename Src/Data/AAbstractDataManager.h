@@ -31,21 +31,8 @@
 
 namespace aproch
 {
-    /** @brief Êı¾İ°ó¶¨·½·¨ */
-    enum EDataBindingMethod
-    {
-        /** @brief Êı¾İĞŞ¸ÄÊ±½«Í¨Öª°ó¶¨¸ÃÊı¾İµÄ¿Ø¼ş£¬¿Ø¼şÄÚÈİĞŞ¸ÄÊ±²»Í¨ÖªÊı¾İĞŞ¸Ä */
-        DBM_DataToWidget,
-
-        /** @brief ¿Ø¼şÄÚÈİĞŞ¸ÄÊ±½«Í¨Öª°ó¶¨µÄÊı¾İ£¬Êı¾İĞŞ¸ÄÊ±²»Í¨Öª¿Ø¼ş */
-        DBM_WidgetToData,
-
-        /** @brief Êı¾İ»ò¿Ø¼şÄÚÈİĞŞ¸ÄÊ±£¬½«Í¨Öª¿Ø¼ş»òÊı¾İ */
-        DBM_TwoWay,
-    };
-
     /**
-     * @brief ³éÏóÊı¾İ¹ÜÀíÆ÷¡£
+     * @brief æŠ½è±¡æ•°æ®ç®¡ç†å™¨ã€‚
      */
     class APROCH_API AAbstractDataManager : public QObject
     {
@@ -58,14 +45,20 @@ namespace aproch
         explicit AAbstractDataManager(QObject* parent = nullptr);
         ~AAbstractDataManager();
 
-        /** @brief »ñÈ¡Êı¾İ¼¯ */
+        /** @brief è·å–æ•°æ®é›† */
         QSet<AData*> dataSet() const;
 
-        /** @brief É¾³ıËùÓĞ´´½¨µÄÊı¾İ£¨ÊÍ·ÅÄÚ´æ£© */
+        /** @brief åˆ é™¤æ‰€æœ‰åˆ›å»ºçš„æ•°æ®ï¼ˆé‡Šæ”¾å†…å­˜ï¼‰ */
         void clear() const;
 
-        /** @brief ´Ó¸ø¶¨Ãû³ÆÌí¼ÓÊı¾İ */
+        /** @brief ä»ç»™å®šåç§°æ·»åŠ æ•°æ® */
         AData* addData(const QString& name = QString());
+
+        /** @brief å¤åˆ¶æ•°æ® */
+        AData* cloneData(AData* srcData, const QString& name = QString());
+
+        /** @brief æ˜¯å¦å­˜åœ¨æ•°æ® */
+        bool hasData(const AData* data) const;
 
     Q_SIGNALS:
         void dataInserted(AData* data, AData* parent, AData* after);
@@ -74,27 +67,24 @@ namespace aproch
         void dataDestroyed(AData* data);
 
     protected:
-        virtual bool hasValue(const AData* data) const;
-        virtual QIcon valueIcon(const AData* data) const;
-        virtual QString valueText(const AData* data) const;
-
-        /** @brief µ±³õÊ¼»¯´´½¨Êı¾İÊ±µ÷ÓÃ£¬Ä¿µÄÊÇÈÃÊı¾İ¹ÜÀíÆ÷ÖªµÀÊı¾İÒÑ´´½¨ */
+        /** @brief å½“åˆå§‹åŒ–åˆ›å»ºæ•°æ®æ—¶è°ƒç”¨ï¼Œç›®çš„æ˜¯è®©æ•°æ®ç®¡ç†å™¨çŸ¥é“æ•°æ®å·²åˆ›å»º */
         virtual void initializeData(AData* data) = 0;
 
-        /** @brief ÔÚÏú»ÙÖ¸¶¨Êı¾İÖ®Ç°µ÷ÓÃ´Ëº¯Êı¡£Ä¿µÄÊÇÈÃÊı¾İ¹ÜÀíÆ÷ÖªµÀÕıÔÚÏú»ÙÊı¾İ£¬ÒÔ±ãÉ¾³ıÊı¾İµÄÆäËûÊôĞÔ¡£ */
+        /** @brief åœ¨é”€æ¯æŒ‡å®šæ•°æ®ä¹‹å‰è°ƒç”¨æ­¤å‡½æ•°ã€‚ç›®çš„æ˜¯è®©æ•°æ®ç®¡ç†å™¨çŸ¥é“æ­£åœ¨é”€æ¯æ•°æ®ï¼Œä»¥ä¾¿åˆ é™¤æ•°æ®çš„å…¶ä»–å±æ€§ã€‚ */
         virtual void uninitializeData(AData* data);
 
-        /** @brief ´´½¨Êı¾İ */
+        /** @brief åˆ›å»ºæ•°æ® */
         virtual AData* createData();
 
     private:
         /**
-         * @brief Ïú»ÙÊı¾İ£¬É¾³ıÄÚ´æ
-         * @param data Êı¾İ
+         * @brief é”€æ¯æ•°æ®ï¼Œåˆ é™¤å†…å­˜
+         * @param data æ•°æ®
          */
         void destroyData(AData* data);
 
     private:
+        /** @brief ç®¡ç†çš„æ‰€æœ‰æ•°æ® */
         QSet<AData*> m_dataSet;
     };
 }

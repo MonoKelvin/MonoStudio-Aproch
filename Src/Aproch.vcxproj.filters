@@ -18,12 +18,6 @@
     <Filter Include="Application\DB">
       <UniqueIdentifier>{cc99b60e-e241-4983-b189-e282ea6b8675}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DWB">
-      <UniqueIdentifier>{8f4bbc37-408b-4be9-b081-7acb2e0ee592}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dll">
-      <UniqueIdentifier>{a369c330-de66-4c06-b9b4-312fac600fc2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common">
       <UniqueIdentifier>{67f51d62-a602-4967-87d2-01be855accf6}</UniqueIdentifier>
     </Filter>
@@ -50,6 +44,42 @@
     </Filter>
     <Filter Include="FUI\Element">
       <UniqueIdentifier>{1e85ff78-dad1-4fee-b8f8-32dbdef90d01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{8f4bbc37-408b-4be9-b081-7acb2e0ee592}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinUI">
+      <UniqueIdentifier>{909e475f-e32b-4d9e-ae63-bf655731cfae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinUI\Controls">
+      <UniqueIdentifier>{77c7bae3-9cd6-4388-b00a-427e92d5b3b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinUI\Private">
+      <UniqueIdentifier>{377254ad-3e30-412c-8887-67ed26ed91b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinUI\Private\qwindowsstyle">
+      <UniqueIdentifier>{1acbde6d-c26e-4b44-904c-e0a4b93bddba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Defines">
+      <UniqueIdentifier>{a369c330-de66-4c06-b9b4-312fac600fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Toolkit">
+      <UniqueIdentifier>{6ee7f403-d3d7-4e0f-9639-a59d50bdd7f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Interface">
+      <UniqueIdentifier>{639b51c3-2e9e-4c54-b064-0d96e235d57d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Validator">
+      <UniqueIdentifier>{ac4c3272-4c82-4fb4-8a23-c088d04b9122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\UI">
+      <UniqueIdentifier>{b2df0160-50cb-4a7d-8ff1-fc8db66c1532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Utils">
+      <UniqueIdentifier>{5dbda83b-f6bb-4376-adc1-666bb55f4dc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinUI\Style">
+      <UniqueIdentifier>{ad98d920-c39b-47b3-9969-f6ca8407e2d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,17 +119,11 @@
     <ClInclude Include="APrivateAppConfigService.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="DWB\AData.h">
-      <Filter>DWB</Filter>
-    </ClInclude>
-    <ClInclude Include="DWB\Inc_DWB.h">
-      <Filter>DWB</Filter>
-    </ClInclude>
     <ClInclude Include="AprochGlobal.h">
-      <Filter>Dll</Filter>
+      <Filter>Defines</Filter>
     </ClInclude>
     <ClInclude Include="AprochAPI.h">
-      <Filter>Dll</Filter>
+      <Filter>Defines</Filter>
     </ClInclude>
     <ClInclude Include="Widget\ABorderlessWidget.h">
       <Filter>Widget\Widgets</Filter>
@@ -107,7 +131,7 @@
     <ClInclude Include="Widget\AFlowLayout.h">
       <Filter>Widget\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\Style\AUIStyle.h">
+    <ClInclude Include="Widget\Style\AStyleDefines.h">
       <Filter>Widget\Style</Filter>
     </ClInclude>
     <ClInclude Include="Widget\Style\AWindowsStyleManager.h">
@@ -149,80 +173,92 @@
     <ClInclude Include="Common\IService.h">
       <Filter>Common\Service</Filter>
     </ClInclude>
-    <ClInclude Include="Common\ADataConverter.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\AException.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\AFileToolkit.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\AIdentity.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\AMathToolkit.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\ANumberValidator.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\APrototype.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\ASingleton.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\AStringToolkit.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IDataConverter.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IDataReader.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IDataSerializable.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IDataWriter.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IFileSaveLoader.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IJsonSerializable.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IMainWindow.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IPlugin.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IStringSerializable.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\AIconFont.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="DWB\ADPWUtils.h">
-      <Filter>DWB</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\ACategory.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="AprochExportDefine.h">
-      <Filter>Dll</Filter>
+      <Filter>Defines</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>Dll</Filter>
-    </ClInclude>
-    <ClInclude Include="DWB\ADataType.h">
-      <Filter>DWB</Filter>
+      <Filter>Defines</Filter>
     </ClInclude>
     <ClInclude Include="FUIElement.h">
       <Filter>FUI\Element</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\AData.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUI\WinUIGloabl.h">
+      <Filter>WinUI</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p_p.h">
+      <Filter>WinUI\Private\qwindowsstyle</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AStringToolkit.h">
+      <Filter>Common\Toolkit</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AMathToolkit.h">
+      <Filter>Common\Toolkit</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AFileToolkit.h">
+      <Filter>Common\Toolkit</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ADataConverter.h">
+      <Filter>Common\Toolkit</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IStringSerializable.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataConverter.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataReader.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataSerializable.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IDataWriter.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IFileSaveLoader.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IJsonSerializable.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IMainWindow.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IPlugin.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ANumberValidator.h">
+      <Filter>Common\Validator</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AIconFont.h">
+      <Filter>Common\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ASingleton.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\APrototype.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AIdentity.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AException.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ACategory.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AGraphicsToolkit.h">
+      <Filter>Common\Toolkit</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Style\AUIStyleObject.h">
+      <Filter>Widget\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUI\Style\AWinUIStyleObjects.h">
+      <Filter>WinUI\Style</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -268,23 +304,8 @@
     <ClCompile Include="APrivateAppConfigService.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="DWB\AAbstractDataManager.cpp">
-      <Filter>DWB</Filter>
-    </ClCompile>
-    <ClCompile Include="DWB\AAbstractEditorFactory.cpp">
-      <Filter>DWB</Filter>
-    </ClCompile>
-    <ClCompile Include="DWB\AData.cpp">
-      <Filter>DWB</Filter>
-    </ClCompile>
-    <ClCompile Include="DWB\AEditorFactory.cpp">
-      <Filter>DWB</Filter>
-    </ClCompile>
-    <ClCompile Include="DWB\ADataManager.cpp">
-      <Filter>DWB</Filter>
-    </ClCompile>
     <ClCompile Include="AprochGlobal.cpp">
-      <Filter>Dll</Filter>
+      <Filter>Defines</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AAbstractColorPicker.cpp">
       <Filter>Widget\Widgets</Filter>
@@ -328,7 +349,7 @@
     <ClCompile Include="Widget\AWindow.cpp">
       <Filter>Widget\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\Style\AUIStyle.cpp">
+    <ClCompile Include="Widget\Style\AStyleDefines.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
     <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp">
@@ -355,47 +376,74 @@
     <ClCompile Include="APluginManager.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="Common\ADataConverter.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\ADoubleValidator.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\AException.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\AFileToolkit.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\AIdentity.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\AMathToolkit.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\AStringToolkit.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\AIconFont.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="DWB\AVariantData.cpp">
-      <Filter>DWB</Filter>
-    </ClCompile>
-    <ClCompile Include="DWB\ADPWUtils.cpp">
-      <Filter>DWB</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\ACategory.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Dll</Filter>
-    </ClCompile>
-    <ClCompile Include="DWB\ADataType.cpp">
-      <Filter>DWB</Filter>
+      <Filter>Defines</Filter>
     </ClCompile>
     <ClCompile Include="FUI\Element\FUIElement.cpp">
       <Filter>FUI\Element</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\AAbstractDataManager.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\AData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUI\Controls\ATextBlock.cpp">
+      <Filter>WinUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUI\Controls\ATextBox.cpp">
+      <Filter>WinUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUI\AWinUIStyleEngine.cpp">
+      <Filter>WinUI</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUI\Private\AWinUIStyle.cpp">
+      <Filter>WinUI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle.cpp">
+      <Filter>WinUI\Private\qwindowsstyle</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle.cpp">
+      <Filter>WinUI\Private\qwindowsstyle</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUI\WinUIGloabl.cpp">
+      <Filter>WinUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AStringToolkit.cpp">
+      <Filter>Common\Toolkit</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AMathToolkit.cpp">
+      <Filter>Common\Toolkit</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AFileToolkit.cpp">
+      <Filter>Common\Toolkit</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ADataConverter.cpp">
+      <Filter>Common\Toolkit</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ADoubleValidator.cpp">
+      <Filter>Common\Validator</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AIconFont.cpp">
+      <Filter>Common\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AIdentity.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AException.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ACategory.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AGraphicsToolkit.cpp">
+      <Filter>Common\Toolkit</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUI\Style\AWinUIStyleObjects.cpp">
+      <Filter>WinUI\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\AUIStyleObject.cpp">
+      <Filter>Widget\Style</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -407,18 +455,6 @@
     </QtMoc>
     <QtMoc Include="AApplicationContext.h">
       <Filter>Application</Filter>
-    </QtMoc>
-    <QtMoc Include="DWB\AAbstractDataManager.h">
-      <Filter>DWB</Filter>
-    </QtMoc>
-    <QtMoc Include="DWB\AAbstractEditorFactory.h">
-      <Filter>DWB</Filter>
-    </QtMoc>
-    <QtMoc Include="DWB\ADataManager.h">
-      <Filter>DWB</Filter>
-    </QtMoc>
-    <QtMoc Include="DWB\AEditorFactory.h">
-      <Filter>DWB</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AAbstractColorPicker.h">
       <Filter>Widget\Widgets</Filter>
@@ -462,16 +498,45 @@
     <QtMoc Include="AActionManager.h">
       <Filter>Application\Action</Filter>
     </QtMoc>
-    <QtMoc Include="Common\ADoubleValidator.h">
-      <Filter>Common</Filter>
+    <QtMoc Include="Data\AAbstractDataManager.h">
+      <Filter>Data</Filter>
     </QtMoc>
-    <QtMoc Include="DWB\AVariantData.h">
-      <Filter>DWB</Filter>
+    <QtMoc Include="WinUI\Controls\ATextBlock.h">
+      <Filter>WinUI\Controls</Filter>
+    </QtMoc>
+    <QtMoc Include="WinUI\Controls\ATextBox.h">
+      <Filter>WinUI\Controls</Filter>
+    </QtMoc>
+    <QtMoc Include="WinUI\AWinUIStyleEngine.h">
+      <Filter>WinUI</Filter>
+    </QtMoc>
+    <QtMoc Include="WinUI\Private\AWinUIStyle.h">
+      <Filter>WinUI\Private</Filter>
+    </QtMoc>
+    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h">
+      <Filter>WinUI\Private\qwindowsstyle</Filter>
+    </QtMoc>
+    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p_p.h">
+      <Filter>WinUI\Private\qwindowsstyle</Filter>
+    </QtMoc>
+    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p.h">
+      <Filter>WinUI\Private\qwindowsstyle</Filter>
+    </QtMoc>
+    <QtMoc Include="Common\ADoubleValidator.h">
+      <Filter>Common\Validator</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\header.inc">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="WinUI\include.inc">
+      <Filter>WinUI</Filter>
+    </None>
   </ItemGroup>
 </Project>

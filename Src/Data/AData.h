@@ -32,76 +32,77 @@
 namespace aproch
 {
     /**
-     * @brief Ö§³Ö¿Ø¼ş¡¢¶ÔÏóÊôĞÔ°ó¶¨µÄÊı¾İ
-     * Êı¾İÓÉ AAbstractDataManager µÄ×ÓÀà¶ÔÏó´´½¨£¬¹ÜÀíÆ÷¿ÉÒÔ´´½¨¸ø¶¨ÀàĞÍµÄÊı¾İ£¬Æä×ÓÊı¾İÉúÃüÖÜÆÚÓÉ´´½¨ËüµÄ¹ÜÀíÆ÷¹ÜÀí£¬²»ÊÇÆä¸¸¶ÔÏóµÄÊı¾İ¹ÜÀí
-     * @note ´úÂëÀ´Ô´ÓÚQtDesignerÖĞµÄ QtProperty
+     * @brief æ”¯æŒæ§ä»¶ã€å¯¹è±¡å±æ€§ç»‘å®šçš„æ•°æ®
+     * @note æ•°æ®ç”± AAbstractDataManager çš„å­ç±»å¯¹è±¡åˆ›å»ºï¼Œç®¡ç†å™¨å¯ä»¥åˆ›å»ºç»™å®šç±»å‹çš„æ•°æ®ï¼Œ
+     *       å…¶å­æ•°æ®ç”Ÿå‘½å‘¨æœŸç”±åˆ›å»ºå®ƒçš„ç®¡ç†å™¨ç®¡ç†ï¼Œä¸æ˜¯å…¶çˆ¶å¯¹è±¡çš„æ•°æ®ç®¡ç†
      */
     class APROCH_API AData
     {
-    private:
         friend class AAbstractDataManager;
-
     public:
         virtual ~AData();
 
         /**
-         * @brief »ñÈ¡´´½¨¸ÃÊı¾İµÄÊı¾İ¹ÜÀíÆ÷
-         * @return Êı¾İ¹ÜÀíÆ÷
+         * @brief è·å–åˆ›å»ºè¯¥æ•°æ®çš„æ•°æ®ç®¡ç†å™¨
+         * @return æ•°æ®ç®¡ç†å™¨
          */
         AAbstractDataManager *dataManager() const;
 
-        /** @brief »ñÈ¡Êı¾İÏà¹Ø²ÎÊı */
+        /** @brief è·å–æ•°æ®ç›¸å…³å‚æ•° */
 
-        QString toolTip() const;
-        QString descriptionToolTip() const;
-        QString statusTip() const;
-        QString whatsThis() const;
-        QString dataName() const;
+        QString getToolTip() const;
+        QString getDescription() const;
+        QString getDataName() const;
         bool isEnabled() const;
         bool isModified() const;
 
-        bool hasValue() const;
-        QIcon valueIcon() const;
-        QString valueText() const;
-
-        /** @brief ÉèÖÃÊı¾İÏà¹Ø²ÎÊı */
+        /** @brief è®¾ç½®æ•°æ®ç›¸å…³å‚æ•° */
 
         void setToolTip(const QString &text);
-        void setDescriptionToolTip(const QString &text);
-        void setStatusTip(const QString &text);
-        void setWhatsThis(const QString &text);
+        void setDescription(const QString &text);
         void setDataName(const QString &text);
         void setEnabled(bool enable);
-        void setModified(bool modified);
+
+        /** @brief æ•°æ®çš„æ–‡æœ¬å½¢å¼ */
+        QString toText() const;
 
         /**
-         * @brief »ñÈ¡×ÓÊı¾İ¼¯
-         * @return ×ÓÊı¾İ¼¯
+         * @brief è·å–å­æ•°æ®é›†
+         * @return å­æ•°æ®é›†
          */
         QList<AData *> subDataSet() const;
-
-        /** @brief ×ÓÊı¾İ */
-
         void addSubData(AData *dt);
         void insertSubData(AData *dt, AData *afterDt);
         void removeSubData(AData *dt);
 
+        /** @brief æ˜¯å¦æœ‰æ•ˆ */
+        virtual bool isValid() const;
+
     protected:
-        explicit AData(AAbstractDataManager *manager);
+        //explicit AData(const AData& rhs, const FCopyOptions& op = A_Default_Copy_Option);
+        explicit AData(AAbstractDataManager* manager);
         void dataChanged();
 
     private:
+        /** @brief çˆ¶å¯¹è±¡æ•°æ®é›† */
         QSet<AData *> m_parentItems;
+
+        /** @brief å­å¯¹è±¡æ•°æ®é›† */
         QList<AData *> m_subItems;
 
-        QString m_valueToolTip;
-        QString m_descriptionToolTip;
-        QString m_statusTip;
-        QString m_whatsThis;
-        QString m_name;
-        bool m_enabled;
-        bool m_modified;
+        /** @brief ç®¡ç†è¯¥æ•°æ®çš„æ•°æ®ç®¡ç†å™¨å¯¹è±¡ */
+        AAbstractDataManager* const m_manager;
 
-        AAbstractDataManager *const m_manager;
+        /** @brief æ•°æ®åç§° */
+        QString m_name;
+
+        /** @brief æ•°æ®æç¤ºå†…å®¹ */
+        QString m_toolTip;
+
+        /** @brief æ•°æ®æè¿°å†…å®¹ */
+        QString m_description;
+
+        /** @brief æ•°æ®æ˜¯å¦å¯ç”¨ */
+        bool m_enabled;
     };
 }
