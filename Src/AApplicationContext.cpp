@@ -31,87 +31,88 @@
 
 #include <QCoreApplication>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+APROCH_OBJECT_INIT_SINGLETON(AApplicationContext)
+
+QWidget *AApplicationContext::sMainWindow = nullptr;
+
+AApplicationContext::AApplicationContext(QObject *parent)
+    : QObject(parent)
 {
-    APROCH_OBJECT_INIT_SINGLETON(AApplicationContext)
+}
 
-    QWidget* AApplicationContext::sMainWindow = nullptr;
+AApplicationContext::~AApplicationContext()
+{
+}
 
-    AApplicationContext::AApplicationContext(QObject* parent)
-        : QObject(parent)
+void AApplicationContext::run(QWidget *mainWidget)
+{
+    sMainWindow = mainWidget;
+
+    // 加载插件
+    APluginManager::getInstance()->loadPlugins();
+
+    // 注册默认的服务
+    registerService<AKeyExpressionService>(AServiceName_KeyExpression);
+    registerService<AAppConfigService>(AServiceName_AppConfig);
+    registerService<ASqlDataBase>(AServiceName_DataBase);
+
+    // 注册默认的对象创建器
+    auto pDPWService = qSharedPointerCast<ADPWService>(registerService<ADPWService>(AServiceName_DPW));
+    pDPWService->registerObjectCreator(QSharedPointer<IObjectCreator>(new ABoxLayoutCreator()));
+    pDPWService->registerObjectCreator(QSharedPointer<IObjectCreator>(new AEditCreator()));
+
+    // 注册默认图标字体
+    const AIconFont fontAwesome(AStr(":/font/Fonts/fontawesome-webfont.ttf"));
+    AIconFont::AddIconFont(fontAwesome);
+
+    // 运行所有插件
+    const auto &plugins = APluginManager::getInstance()->getPlugins();
+    for (auto plg = plugins.begin(); plg != plugins.end(); ++plg)
     {
+        Q_ASSERT(nullptr != plg.key());
+        plg.key()->run();
     }
 
-    AApplicationContext::~AApplicationContext()
+    /// TEST
+    /*QFile file("E:/Project/Code/Aproch/Test/test_dpw.xml");
+    file.open(QFile::ReadOnly | QFile::Text);
+    QString data = file.readAll();
+    file.close();
+    QDialog dialog;
+    pDPWService->prase(data, &dialog);
+    dialog.exec();*/
+    ///
+}
+
+void AApplicationContext::unregisterService(const char *name)
+{
+    IServicePtr service = mServiceMap.value(name);
+    if (nullptr != service)
     {
-    }
-
-    void AApplicationContext::run(QWidget* mainWidget)
-    {
-        sMainWindow = mainWidget;
-
-        // 加载插件
-        APluginManager::getInstance()->loadPlugins();
-
-        // 注册默认的服务
-        registerService<AKeyExpressionService>(AServiceName_KeyExpression);
-        registerService<AAppConfigService>(AServiceName_AppConfig);
-        registerService<ASqlDataBase>(AServiceName_DataBase);
-
-        // 注册默认的对象创建器
-        auto pDPWService = qSharedPointerCast<ADPWService>(registerService<ADPWService>(AServiceName_DPW));
-        pDPWService->registerObjectCreator(QSharedPointer<aproch::IObjectCreator>(new ABoxLayoutCreator()));
-        pDPWService->registerObjectCreator(QSharedPointer<aproch::IObjectCreator>(new AEditCreator()));
-
-        // 注册默认图标字体
-        const AIconFont fontAwesome(AStr(":/font/Fonts/fontawesome-webfont.ttf"));
-        AIconFont::AddIconFont(fontAwesome);
-
-        // 运行所有插件
-        const auto& plugins = APluginManager::getInstance()->getPlugins();
-        for (auto plg = plugins.begin(); plg != plugins.end(); ++plg)
-        {
-            Q_ASSERT(nullptr != plg.key());
-            plg.key()->run();
-        }
-
-        /// TEST
-        /*QFile file("E:/Project/Code/Aproch/Test/test_dpw.xml");
-        file.open(QFile::ReadOnly | QFile::Text);
-        QString data = file.readAll();
-        file.close();
-        QDialog dialog;
-        pDPWService->prase(data, &dialog);
-        dialog.exec();*/
-        ///
-    }
-
-    void AApplicationContext::unregisterService(const char* name)
-    {
-        IServicePtr service = mServiceMap.value(name);
-        if (nullptr != service)
-        {
-            mServiceMap.remove(name);
-        }
-    }
-
-    QWidget* AApplicationContext::MainWindow() noexcept
-    {
-        return sMainWindow;
-    }
-
-    QString AApplicationContext::AppDirectory()
-    {
-        return QCoreApplication::applicationDirPath();
-    }
-
-    QString AApplicationContext::AppPath()
-    {
-        return QCoreApplication::applicationFilePath();
-    }
-
-    QString AApplicationContext::AppName()
-    {
-        return QCoreApplication::applicationName();
+        mServiceMap.remove(name);
     }
 }
+
+QWidget *AApplicationContext::MainWindow() noexcept
+{
+    return sMainWindow;
+}
+
+QString AApplicationContext::AppDirectory()
+{
+    return QCoreApplication::applicationDirPath();
+}
+
+QString AApplicationContext::AppPath()
+{
+    return QCoreApplication::applicationFilePath();
+}
+
+QString AApplicationContext::AppName()
+{
+    return QCoreApplication::applicationName();
+}
+
+APROCH_NAMESPACE_END

@@ -28,26 +28,27 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
-{
-    /**
-     * @brief 数学工具
-     */
-    class APROCH_API AMathToolkit
-    {
-    public:
-        /**
-         * @brief 位数
-         * @param n 正整数
-         * @return n>0: result = lg(n) + 1; n==0; result = 1
-         */
-        static int NumDigits(unsigned long long n);
+APROCH_NAMESPACE_BEGIN
 
-        /**
-         * @brief 计算10的<exp>次方
-         * @param exp 次方
-         * @return 10^exp
-         */
-        static unsigned long long Pow10(int exp);
-    };
-}
+/**
+ * @brief 数学工具
+ */
+class APROCH_API AMathToolkit
+{
+public:
+    /**
+     * @brief 位数
+     * @param n 正整数
+     * @return n>0: result = lg(n) + 1; n==0; result = 1
+     */
+    static int NumDigits(unsigned long long n);
+
+    /**
+     * @brief 计算10的<exp>次方
+     * @param exp 次方
+     * @return 10^exp
+     */
+    static unsigned long long Pow10(int exp);
+};
+
+APROCH_NAMESPACE_END

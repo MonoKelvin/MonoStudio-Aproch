@@ -35,183 +35,184 @@
 #include <QOpenGLBuffer>
 #endif
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+class AColorPickerIndicator;
+
+/**
+ * @brief 颜色取色器抽象基类
+ */
+class APROCH_API AAbstractColorPicker
+#ifndef QT_NO_OPENGL
+    : public QOpenGLWidget,
+      protected QOpenGLFunctions
+#else
+    : public QWidget
+#endif
 {
-    class AColorPickerIndicator;
+    Q_OBJECT
+    Q_DISABLE_COPY_MOVE(AAbstractColorPicker)
+    Q_PROPERTY(QColor color READ getColor WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(QColor defaultColor READ getDefaultColor WRITE setDefaultColor)
+public:
+    explicit AAbstractColorPicker(const QColor &initColor = Qt::white, QWidget *parent = nullptr);
+    virtual ~AAbstractColorPicker();
 
     /**
-     * @brief 颜色取色器抽象基类
+     * @brief 设置是否同步改变指示器的颜色
+     * @param enabled 是否开启
      */
-    class APROCH_API AAbstractColorPicker
-#ifndef QT_NO_OPENGL
-        : public QOpenGLWidget,
-            protected QOpenGLFunctions
-#else
-        : public QWidget
-#endif
+    void isSetColorForIndicator(bool enabled);
+
+    /**
+     * @brief 获取默认颜色
+     * @return 颜色
+     */
+    inline QColor getDefaultColor() const noexcept
     {
-        Q_OBJECT
-        Q_DISABLE_COPY_MOVE(AAbstractColorPicker)
-        Q_PROPERTY(QColor color READ getColor WRITE setColor NOTIFY colorChanged)
-        Q_PROPERTY(QColor defaultColor READ getDefaultColor WRITE setDefaultColor)
-    public:
-        explicit AAbstractColorPicker(const QColor &initColor = Qt::white, QWidget *parent = nullptr);
-        virtual ~AAbstractColorPicker();
+        return mDefaultColor;
+    }
 
-        /**
-         * @brief 设置是否同步改变指示器的颜色
-         * @param enabled 是否开启
-         */
-        void isSetColorForIndicator(bool enabled);
+    /**
+     * @brief 设置默认颜色
+     * @return 颜色
+     */
+    inline void setDefaultColor(const QColor &color)
+    {
+        mDefaultColor = color;
+    }
 
-        /**
-         * @brief 获取默认颜色
-         * @return 颜色
-         */
-        inline QColor getDefaultColor() const noexcept
-        {
-            return mDefaultColor;
-        }
+    /**
+     * @brief 获取像素位置的颜色
+     * @param x X坐标
+     * @param y Y坐标
+     * @return 颜色
+     */
+    virtual QColor getPixelColor(int x, int y) const = 0;
 
-        /**
-         * @brief 设置默认颜色
-         * @return 颜色
-         */
-        inline void setDefaultColor(const QColor &color)
-        {
-            mDefaultColor = color;
-        }
+    /**
+     * @brief 获取颜色所在的像素位置
+     * @param color 颜色
+     * @return 坐标
+     */
+    virtual QPoint getColorPixel(const QColor &color) const = 0;
 
-        /**
-         * @brief 获取像素位置的颜色
-         * @param x X坐标
-         * @param y Y坐标
-         * @return 颜色
-         */
-        virtual QColor getPixelColor(int x, int y) const = 0;
+    /**
+     * @brief 设置指示器位置
+     * @param x x坐标
+     * @param y y坐标
+     */
+    virtual void setIndicatorPos(int x, int y);
 
-        /**
-         * @brief 获取颜色所在的像素位置
-         * @param color 颜色
-         * @return 坐标
-         */
-        virtual QPoint getColorPixel(const QColor &color) const = 0;
+    /**
+     * @brief 获取指示器位置
+     * @return 坐标
+     */
+    virtual QPoint getIndicatorPos() const;
 
-        /**
-         * @brief 设置指示器位置
-         * @param x x坐标
-         * @param y y坐标
-         */
-        virtual void setIndicatorPos(int x, int y);
+    /**
+     * @brief 获取当前颜色
+     * @return 当前颜色
+     */
+    inline QColor getColor() const
+    {
+        return mCurrentColor;
+    }
 
-        /**
-         * @brief 获取指示器位置
-         * @return 坐标
-         */
-        virtual QPoint getIndicatorPos() const;
+    /**
+     * @brief 设置当前颜色
+     * @param color 颜色
+     */
+    void setColor(const QColor &color);
 
-        /**
-         * @brief 获取当前颜色
-         * @return 当前颜色
-         */
-        inline QColor getColor() const
-        {
-            return mCurrentColor;
-        }
+    /**
+     * @brief 获取指示器控件
+     * @return 指示器控件
+     */
+    inline AColorPickerIndicator *getIndicator() const noexcept
+    {
+        return mIndicator;
+    }
 
-        /**
-         * @brief 设置当前颜色
-         * @param color 颜色
-         */
-        void setColor(const QColor &color);
+    /**
+     * @brief 设置内边距
+     * @param paddings 内边距
+     */
+    inline void setPaddings(const QMargins &paddings)
+    {
+        mPaddings = paddings;
+    }
 
-        /**
-         * @brief 获取指示器控件
-         * @return 指示器控件
-         */
-        inline AColorPickerIndicator *getIndicator() const noexcept
-        {
-            return mIndicator;
-        }
+Q_SIGNALS:
+    /**
+     * @brief 信号：当前颜色改变了
+     */
+    void colorChanged();
 
-        /**
-         * @brief 设置内边距
-         * @param paddings 内边距
-         */
-        inline void setPaddings(const QMargins &paddings)
-        {
-            mPaddings = paddings;
-        }
+    /**
+     * @brief 信号：指示器位置改变了
+     */
+    void indicatorPosChanged();
 
-    Q_SIGNALS:
-        /**
-         * @brief 信号：当前颜色改变了
-         */
-        void colorChanged();
+public Q_SLOTS:
+    /**
+     * @brief 还原颜色到默认值
+     */
+    void resetColor();
 
-        /**
-         * @brief 信号：指示器位置改变了
-         */
-        void indicatorPosChanged();
-
-    public Q_SLOTS:
-        /**
-         * @brief 还原颜色到默认值
-         */
-        void resetColor();
-
-    protected:
-        virtual bool event(QEvent *ev) override;
+protected:
+    virtual bool event(QEvent *ev) override;
 
 #ifndef QT_NO_OPENGL
-        virtual void initializeGL() override;
-        virtual void resizeGL(int x, int y) override;
+    virtual void initializeGL() override;
+    virtual void resizeGL(int x, int y) override;
 
-        /**
-         * @brief 设置着色器
-         * @param vtxFileName 顶点着色器文件路径
-         * @param fragFileName 片元着色器文件路径
-         */
-        bool setShader(const QString &vtxFileName, const QString &fragFileName);
+    /**
+     * @brief 设置着色器
+     * @param vtxFileName 顶点着色器文件路径
+     * @param fragFileName 片元着色器文件路径
+     */
+    bool setShader(const QString &vtxFileName, const QString &fragFileName);
 
-    protected:
-        /** @brief 着色器程序 */
-        QOpenGLShaderProgram *mShaderProgram;
+protected:
+    /** @brief 着色器程序 */
+    QOpenGLShaderProgram *mShaderProgram;
 
-        /** @brief 顶点缓冲对象 */
-        QOpenGLBuffer mVBO;
+    /** @brief 顶点缓冲对象 */
+    QOpenGLBuffer mVBO;
 #else
-        /**
-         * @brief 绘制色盘
-         * @param ev 绘图事件
-         */
-        virtual void paintEvent(QPaintEvent *ev) override = 0;
+    /**
+     * @brief 绘制色盘
+     * @param ev 绘图事件
+     */
+    virtual void paintEvent(QPaintEvent *ev) override = 0;
 #endif
-        /**
-         * @brief 更新指示器
-         * @param x X坐标
-         * @param y Y坐标
-         * @param isStopAniForced 是否强制停止动画
-         */
-        void updateIndicator(int x, int y, bool isStopAniForced = false);
+    /**
+     * @brief 更新指示器
+     * @param x X坐标
+     * @param y Y坐标
+     * @param isStopAniForced 是否强制停止动画
+     */
+    void updateIndicator(int x, int y, bool isStopAniForced = false);
 
-    protected:
-        /** @brief 指示器控件 */
-        AColorPickerIndicator *mIndicator;
+protected:
+    /** @brief 指示器控件 */
+    AColorPickerIndicator *mIndicator;
 
-        /** @brief 默认颜色 */
-        QColor mDefaultColor;
+    /** @brief 默认颜色 */
+    QColor mDefaultColor;
 
-        /** @brief 当前颜色 */
-        QColor mCurrentColor;
+    /** @brief 当前颜色 */
+    QColor mCurrentColor;
 
-        /** @brief 内边距 */
-        QMargins mPaddings;
+    /** @brief 内边距 */
+    QMargins mPaddings;
 
-        /** @brief 鼠标是否按下 */
-        bool mIsMousePressed;
+    /** @brief 鼠标是否按下 */
+    bool mIsMousePressed;
 
-        /** @brief 是否给指示器同步颜色 */
-        bool mIsSetColorForIndicator;
-    };
-}
+    /** @brief 是否给指示器同步颜色 */
+    bool mIsSetColorForIndicator;
+};
+
+APROCH_NAMESPACE_END

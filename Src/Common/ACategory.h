@@ -28,98 +28,116 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief åˆ†ç±»ã€‚åˆ†ç±»æ˜¯ç”±éƒ¨åˆ†ç±»åç§°åŠ ä¸Šåˆ†éš”å­—ç¬¦ç»„æˆçš„å­—ç¬¦ä¸²æ ‡è¯†ï¼Œå½¢å¼å¦‚ï¼šA/B/Cï¼Œä½†åœ¨ACategoryç±»ä¸­æ¯çº§åˆ†ç±»éƒ½æ˜¯å•ç‹¬è®°å½•çš„ï¼Œç§°ä¸ºåˆ†çº§<Level>
+ * ä¸”åˆ†å‰²å­—ç¬¦<Splitter>å¯è‡ªå®šä¹‰å…¶ä»–å­—ç¬¦ï¼Œå¦‚å®šä¹‰æˆ'|'ï¼Œå¯¹åº”çš„åˆ†ç±»åç§°ä¸ºï¼šA|B|C
+ */
+class APROCH_API ACategory
 {
-    /**
-     * @brief ·ÖÀà¡£·ÖÀàÊÇÓÉ²¿·ÖÀàÃû³Æ¼ÓÉÏ·Ö¸ô×Ö·û×é³ÉµÄ×Ö·û´®±êÊ¶£¬ĞÎÊ½Èç£ºA/B/C£¬µ«ÔÚACategoryÀàÖĞÃ¿¼¶·ÖÀà¶¼ÊÇµ¥¶À¼ÇÂ¼µÄ£¬³ÆÎª·Ö¼¶<Level>
-     * ÇÒ·Ö¸î×Ö·û<Splitter>¿É×Ô¶¨ÒåÆäËû×Ö·û£¬Èç¶¨Òå³É'|'£¬¶ÔÓ¦µÄ·ÖÀàÃû³ÆÎª£ºA|B|C
-     */
-    class APROCH_API ACategory
+public:
+    /** @brief æ‹†åˆ†åˆ†ç±»è¡Œä¸ºé€‰é¡¹ */
+    enum ESplitBehavior
     {
-    public:
-        /** @brief ²ğ·Ö·ÖÀàĞĞÎªÑ¡Ïî */
-        enum ESplitBehavior
-        {
-            /** @brief Ã»ÓĞĞĞÎª */
-            NoBehavior = 0x000,
+        /** @brief æ²¡æœ‰è¡Œä¸º */
+        NoBehavior = 0x000,
 
-            /** @brief Ìø¹ı¿ÕµÄ·Ö¼¶ */
-            SkipEmptyLevel = 0x001,
+        /** @brief è·³è¿‡ç©ºçš„åˆ†çº§ */
+        SkipEmptyLevel = 0x001,
 
-            /** @brief ·Ö¸î×Ö·û²»Çø·Ö´óĞ¡Ğ´ */
-            CaseInsensitive = 0x002,
+        /** @brief åˆ†å‰²å­—ç¬¦ä¸åŒºåˆ†å¤§å°å†™ */
+        CaseInsensitive = 0x002,
 
-            /** @brief ½«·Ö¼¶µÄÇ°ºó¿Õ¸ñÈ¥³ı */
-            TrimmedLevel = 0x004,
-        };
-
-        ACategory();
-        explicit ACategory(const QString& category, ESplitBehavior behavior = SkipEmptyLevel);
-        explicit ACategory(const QStringList& stringList, ESplitBehavior behavior = SkipEmptyLevel);
-
-        /** @brief ´Ó×Ö·û´®½âÎö·ÖÀàÃû³Æ */
-        void fromString(const QString& category, ESplitBehavior behavior = SkipEmptyLevel);
-
-        /** @brief ×ªÎª×Ö·ûĞÎÊ½£¬Èç£ºA/B/C. */
-        QString toString() const;
-
-        /** @brief »ñÈ¡ËùÓĞµÄ·Ö¼¶£¨°´Ë³Ğò£© */
-        const QStringList& getLevels() const;
-
-        /** @brief »ñÈ¡Ö¸¶¨Î»ÖÃ·Ö¼¶µÄÄÚÈİ */
-        QString getLevel(int level) const;
-
-        /** @brief ÉèÖÃ·Ö¼¶Î»ÖÃµÄÄÚÈİ */
-        void setLevel(int level, const QString& str);
-
-        /** @brief Ïòºó×·¼Ó·Ö¼¶ */
-        ACategory& pushLevel(const QString& level, ESplitBehavior behavior = SkipEmptyLevel);
-
-        /** @brief ÔÚÖ¸¶¨Î»ÖÃÌí¼Ó·Ö¼¶ */
-        ACategory& insertLevel(int position, const QString& level, ESplitBehavior behavior = SkipEmptyLevel);
-
-        /** @brief ÒÆ³öÖ¸¶¨Î»ÖÃµÄ·Ö¼¶ */
-        ACategory& removeLevel(int position);
-
-        /** @brief ÒÆ³ı×îºóÎ»ÖÃµÄ·Ö¼¶ */
-        ACategory& popLevel();
-
-        /** @brief ÉèÖÃ·Ö¸î×Ö·û */
-        void setSplitter(const QString& splitter);
-
-        /** @brief »ñÈ¡·Ö¸î×Ö·û */
-        QString getSplitter() const;
-
-        /** @brief ·ÖÀàÊÇ·ñÎª¿Õ */
-        bool isVoid() const;
-
-        /** @brief ·ÖÀàÖĞÊÇ·ñÓĞ·Ö¼¶ */
-        bool hasLevel(const QString& level, Qt::CaseSensitivity cs = Qt::CaseInsensitive) const;
-
-        /** @brief ÉÏÒ»¼¶·ÖÀà */
-        ACategory previous() const;
-
-        /** @brief ×ªÎª×Ö·û´®£¬µÈÍ¬ÓÚ toString */
-        operator QString() const;
-
-        /** @brief ºÍÁíÒ»¸ö·ÖÀàÊÇ·ñÏàµÈ */
-        bool operator==(const ACategory& rhs) const;
-
-        /** @brief ºÍÁíÒ»¸ö·ÖÀàÊÇ·ñ²»µÈ */
-        bool operator!=(const ACategory& rhs) const;
-
-        /** @brief Ïòºó×·¼Ó·Ö¼¶£¬µÈÍ¬ÓÚ pushLevel(level, ESplitBehavior::SkipEmptyLevel) */
-        ACategory& operator<<(const QString& level);
-
-    protected:
-        /** @brief ¶¨Òåµ÷ÊÔÊä³ö */
-        friend APROCH_API QDebug operator<<(QDebug ds, const ACategory& category);
-
-    private:
-        /** @brief ·ÖÀà */
-        QStringList m_category;
-
-        /** @brief ·Ö¸î×Ö·û */
-        QString m_splitter;
+        /** @brief å°†åˆ†çº§çš„å‰åç©ºæ ¼å»é™¤ */
+        TrimmedLevel = 0x004,
     };
-}
+
+    ACategory();
+    explicit ACategory(const QString& category, ESplitBehavior behavior = SkipEmptyLevel);
+    explicit ACategory(const QStringList& stringList, ESplitBehavior behavior = SkipEmptyLevel);
+
+    /** @brief ä»å­—ç¬¦ä¸²è§£æåˆ†ç±»åç§° */
+    void fromString(const QString& category, ESplitBehavior behavior = SkipEmptyLevel);
+
+    /** @brief ä»å­—ç¬¦ä¸²åˆ—è¡¨è§£æåˆ†ç±»åç§° */
+    void fromStringList(const QStringList& categories, ESplitBehavior behavior = SkipEmptyLevel);
+
+    /** @brief è½¬ä¸ºå­—ç¬¦å½¢å¼ï¼Œå¦‚ï¼šA/B/C. */
+    QString toString() const;
+
+    /** @brief è·å–æ‰€æœ‰çš„åˆ†çº§ï¼ˆæŒ‰é¡ºåºï¼‰ */
+    const QStringList& getLevels() const;
+
+    /** @brief è·å–æŒ‡å®šä½ç½®åˆ†çº§çš„å†…å®¹ */
+    QString getLevel(int level) const;
+
+    /** @brief è®¾ç½®åˆ†çº§ä½ç½®çš„å†…å®¹ */
+    void setLevel(int level, const QString& str);
+
+    /** @brief å‘åè¿½åŠ åˆ†çº§ */
+    ACategory& pushLevel(const QString& level, ESplitBehavior behavior = SkipEmptyLevel);
+
+    /** @brief åœ¨æŒ‡å®šä½ç½®æ·»åŠ åˆ†çº§ */
+    ACategory& insertLevel(int position, const QString& level, ESplitBehavior behavior = SkipEmptyLevel);
+
+    /** @brief ç§»å‡ºæŒ‡å®šä½ç½®çš„åˆ†çº§ */
+    ACategory& removeLevel(int position);
+
+    /** @brief ç§»é™¤æœ€åä½ç½®çš„åˆ†çº§ */
+    ACategory& popLevel();
+
+    /** @brief è®¾ç½®åˆ†å‰²å­—ç¬¦ */
+    void setSplitter(const QString& splitter);
+
+    /** @brief è·å–åˆ†å‰²å­—ç¬¦ */
+    QString getSplitter() const;
+
+    /** @brief åˆ†ç±»æ˜¯å¦æœ‰æ•ˆ */
+    bool isValid() const;
+
+    /** @brief åˆ†ç±»ä¸­æ˜¯å¦æœ‰åˆ†çº§ */
+    bool hasLevel(const QString& level, Qt::CaseSensitivity cs = Qt::CaseInsensitive) const;
+
+    /** @brief ä¸Šä¸€çº§åˆ†ç±» */
+    ACategory previous() const;
+
+    /** @brief è½¬ä¸ºå­—ç¬¦ä¸²ï¼Œç­‰åŒäº toString */
+    operator QString() const;
+
+    /** @brief é€šè¿‡å­—ç¬¦ä¸²èµ‹å€¼ï¼Œé»˜è®¤æŒ‰ç…§ SkipEmptyLevel çš„è¡Œä¸ºè¿›è¡Œè§£æ */
+    ACategory& operator=(const QString& str);
+    ACategory& operator=(const char* str);
+
+    /** @brief å’Œå¦ä¸€ä¸ªåˆ†ç±»æ˜¯å¦ç›¸ç­‰ */
+    bool operator==(const ACategory& rhs) const;
+
+    /** @brief å’Œå¦ä¸€ä¸ªåˆ†ç±»æ˜¯å¦ä¸ç­‰ */
+    bool operator!=(const ACategory& rhs) const;
+
+    /** @brief å‘åè¿½åŠ åˆ†çº§ï¼Œç­‰åŒäº pushLevel(level, ESplitBehavior::SkipEmptyLevel) */
+    ACategory& operator<<(const QString& level);
+
+public:
+    /** the internal category named 'Aproch' */
+    static const ACategory Aproch;
+
+private:
+#if !defined(QT_NO_DATASTREAM)
+    friend QDataStream& operator<<(QDataStream&, const ACategory&);
+    friend QDataStream& operator>>(QDataStream&, ACategory&);
+#endif
+
+private:
+    /** @brief åˆ†ç±» */
+    QStringList m_category;
+
+    /** @brief åˆ†å‰²å­—ç¬¦ */
+    QString m_splitter;
+};
+
+#ifndef QT_NO_DEBUG_STREAM
+APROCH_API QDebug operator<<(QDebug dbg, const ACategory&);
+#endif
+
+APROCH_NAMESPACE_END

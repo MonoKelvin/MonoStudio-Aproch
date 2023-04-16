@@ -31,54 +31,55 @@
 
 #define AServiceName_Document "aproch.DocumentService"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 文档服务接口
+ */
+class IDocumentService : public IService
 {
+public:
+    virtual ~IDocumentService() = default;
+
     /**
-     * @brief 文档服务接口
+     * @brief 保存文档到指定路径
+     * @param docPath 文档路径
+     * @return 是否成功
      */
-    class IDocumentService : public IService
-    {
-    public:
-        virtual ~IDocumentService() = default;
+    virtual bool save(const QString &docPath) = 0;
 
-        /**
-         * @brief 保存文档到指定路径
-         * @param docPath 文档路径
-         * @return 是否成功
-         */
-        virtual bool save(const QString &docPath) = 0;
+    /**
+     * @brief 从指定路径加载文档
+     * @param docPath 文档路径
+     * @return 是否成功
+     */
+    virtual bool load(const QString &docPath) = 0;
 
-        /**
-         * @brief 从指定路径加载文档
-         * @param docPath 文档路径
-         * @return 是否成功
-         */
-        virtual bool load(const QString &docPath) = 0;
+    /**
+     * @brief 设置工作目录
+     * @param dir 目录
+     * @return 是否成功
+     */
+    virtual bool setWorkspace(const QDir &dir) = 0;
 
-        /**
-         * @brief 设置工作目录
-         * @param dir 目录
-         * @return 是否成功
-         */
-        virtual bool setWorkspace(const QDir &dir) = 0;
+    /**
+     * @brief 获取本地工作空间目录
+     * @return 目录
+     */
+    virtual QDir getWorkspace() const = 0;
 
-        /**
-         * @brief 获取本地工作空间目录
-         * @return 目录
-         */
-        virtual QDir getWorkspace() const = 0;
+    /**
+     * @brief 设置文档名称
+     * @param docName 文档名称
+     * @param 是否成功
+     */
+    virtual bool setDocumentName(const QString &docName) = 0;
 
-        /**
-         * @brief 设置文档名称
-         * @param docName 文档名称
-         * @param 是否成功
-         */
-        virtual bool setDocumentName(const QString &docName) = 0;
+    /**
+     * @brief 获取文档名称
+     * @return 文档名称
+     */
+    virtual QString getDocumentName() const = 0;
+};
 
-        /**
-         * @brief 获取文档名称
-         * @return 文档名称
-         */
-        virtual QString getDocumentName() const = 0;
-    };
-}
+APROCH_NAMESPACE_END

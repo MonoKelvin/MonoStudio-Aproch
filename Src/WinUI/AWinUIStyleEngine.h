@@ -28,7 +28,6 @@
  *****************************************************************************/
 #ifndef AWINUISTYLEENGINE_H
 #define AWINUISTYLEENGINE_H
-#include "WinUIGloabl.h"
 #include <QtWidgets/QStylePlugin>
 
 APROCH_NAMESPACE_BEGIN

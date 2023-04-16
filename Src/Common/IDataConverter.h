@@ -28,21 +28,22 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
-{
-    /**
-     * @brief 数据转换器接口
-     */
-    class IDataConverter
-    {
-    public:
-        virtual ~IDataConverter() = default;
+APROCH_NAMESPACE_BEGIN
 
-        /**
-         * @brief 将一种数据转换为另一种数据
-         * @param data 源始数据
-         * @return 转换后的数据
-         */
-        virtual QVariant convertTo(const QVariant& data) = 0;
-    };
-}
+/**
+ * @brief 数据转换器接口
+ */
+class IDataConverter
+{
+public:
+    virtual ~IDataConverter() = default;
+
+    /**
+     * @brief 将一种数据转换为另一种数据
+     * @param data 源始数据
+     * @return 转换后的数据
+     */
+    virtual QVariant convertTo(const QVariant &data) = 0;
+};
+
+APROCH_NAMESPACE_END

@@ -29,30 +29,31 @@
 #include "stdafx.h"
 #include "AOrKeyExpression.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+const char *AOrKeyExpression::symbol() const
 {
-    const char* AOrKeyExpression::symbol() const
-    {
-        return "||";
-    }
-
-    int AOrKeyExpression::type() const
-    {
-        return EKeyExprType::Or;
-    }
-
-    AAbstractKeyExpression::ESymbolPriority AOrKeyExpression::priority() const
-    {
-        return ESymbolPriority::Low;
-    }
-
-    int AOrKeyExpression::operationCount() const
-    {
-        return 2;
-    }
-
-    bool AOrKeyExpression::parse()
-    {
-        return key1() || key2();
-    }
+    return "||";
 }
+
+int AOrKeyExpression::type() const
+{
+    return EKeyExprType::Or;
+}
+
+AAbstractKeyExpression::ESymbolPriority AOrKeyExpression::priority() const
+{
+    return ESymbolPriority::Low;
+}
+
+int AOrKeyExpression::operationCount() const
+{
+    return 2;
+}
+
+bool AOrKeyExpression::parse()
+{
+    return key1() || key2();
+}
+
+APROCH_NAMESPACE_END

@@ -30,26 +30,27 @@
 
 #include <qjsonobject.h>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 接口 - 可以序列化为json格式的
+ */
+class IJsonSerializable
 {
+public:
+    virtual ~IJsonSerializable(void) = default;
+
     /**
-     * 接口 - 可以序列化为json格式的
+     * 转化为json格式
+     * @return QJsonObject* json对象指针
      */
-    class IJsonSerializable
-    {
-    public:
-        virtual ~IJsonSerializable(void) = default;
+    virtual QJsonObject toJson(void) const = 0;
 
-        /**
-         * 转化为json格式
-         * @return QJsonObject* json对象指针
-         */
-        virtual QJsonObject toJson(void) const = 0;
+    /**
+     * 从json格式解析
+     * @return bool 是否解析成功
+     */
+    virtual bool fromJson(const QJsonObject &jsonObject) = 0;
+};
 
-        /**
-         * 从json格式解析
-         * @return bool 是否解析成功
-         */
-        virtual bool fromJson(const QJsonObject& jsonObject) = 0;
-    };
-}
+APROCH_NAMESPACE_END

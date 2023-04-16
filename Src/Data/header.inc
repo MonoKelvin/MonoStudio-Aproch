@@ -29,4 +29,5 @@
 #pragma once
 
 #include "AData.h"
+#include "ADataContainer.h"
 #include "AAbstractDataManager.h"

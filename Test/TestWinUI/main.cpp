@@ -1,13 +1,13 @@
 #include "WinUIWindow.h"
 #include <QtWidgets/QApplication>
 #include <QTextCodec>
-#include "WinUI/AWinUIStyleEngine.h"
+#include "AprochAPI.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    aproch::AWinUIStyleEngine::instance()->initStyleTheme();
+    AWinUIStyleEngine::instance()->initStyleTheme();
 
     /*QPalette pt;
     pt.setColor(QPalette::Background, QColor(4, 159, 241));

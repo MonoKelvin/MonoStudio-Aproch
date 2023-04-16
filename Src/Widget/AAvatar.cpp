@@ -31,144 +31,145 @@
 
 #include <QPainterPath>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+AAvatar::AAvatar(QWidget *parent)
+    : QWidget(parent)
 {
-    AAvatar::AAvatar(QWidget* parent)
-        : QWidget(parent)
+    _init(QPixmap());
+}
+
+AAvatar::AAvatar(const QPixmap &pixmap, QWidget *parent)
+    : QWidget(parent)
+{
+    _init(pixmap);
+}
+
+AAvatar::~AAvatar()
+{
+}
+
+void AAvatar::setStateEnable(bool enable)
+{
+    if (enable == mStateEnable)
+        return;
+
+    mStateEnable = enable;
+    update();
+}
+
+void AAvatar::setStateColor(const QColor &color)
+{
+    if (color == mStateColor)
+        return;
+
+    mStateColor = color;
+    update();
+}
+
+void AAvatar::setStateRadius(int radius)
+{
+    if (radius == mStateRadius && radius >= 0)
+        return;
+
+    mStateRadius = radius;
+    update();
+}
+
+inline void AAvatar::setAvatar(const QPixmap &pixmap)
+{
+    mAvatar = pixmap;
+    update();
+}
+
+void AAvatar::setName(const QString &name)
+{
+    if (name == mName)
+        return;
+
+    mName = name;
+    update();
+}
+
+void AAvatar::setNameShowCount(unsigned int count)
+{
+    if (mNameShowCount == count)
+        return;
+
+    mNameShowCount = count;
+    update();
+}
+
+void AAvatar::drawAvatar(QPainter *painter, const QRect &rect, const QPixmap &pixmap, const QString &defalultText)
+{
+    QPainterPath path;
+    path.addEllipse(rect);
+
+    painter->setRenderHints(QPainter::Antialiasing, true);
+    painter->setPen(Qt::NoPen);
+
+    painter->save();
+    painter->setBrush(QBrush(palette().background().color()));
+    painter->setClipPath(path);
+
+    // 当没有图片时绘制背景色
+    if (pixmap.isNull())
     {
-        _init(QPixmap());
+        painter->drawRect(rect);
+
+        QString trimmedStr = defalultText.trimmed();
+        if (!trimmedStr.isEmpty() && mNameShowCount != 0)
+        {
+            if (mNameShowCount < trimmedStr.size())
+                trimmedStr = trimmedStr.left(mNameShowCount);
+
+            painter->setFont(font());
+            painter->setPen(palette().text().color());
+            painter->drawText(rect, Qt::AlignCenter, trimmedStr);
+        }
+    }
+    else
+    {
+        painter->drawPixmap(rect, pixmap);
     }
 
-    AAvatar::AAvatar(const QPixmap& pixmap, QWidget* parent)
-        : QWidget(parent)
+    painter->restore();
+
+    if (mStateEnable)
     {
-        _init(pixmap);
-    }
+        const qreal offset = 0.8535 * rect.width() - mStateRadius;
+        const QRectF rt(offset, offset, 2 * mStateRadius, 2 * mStateRadius);
 
-    AAvatar::~AAvatar()
-    {
-    }
-
-    void AAvatar::setStateEnable(bool enable)
-    {
-        if (enable == mStateEnable)
-            return;
-
-        mStateEnable = enable;
-        update();
-    }
-
-    void AAvatar::setStateColor(const QColor& color)
-    {
-        if (color == mStateColor)
-            return;
-
-        mStateColor = color;
-        update();
-    }
-
-    void AAvatar::setStateRadius(int radius)
-    {
-        if (radius == mStateRadius && radius >= 0)
-            return;
-
-        mStateRadius = radius;
-        update();
-    }
-
-    inline void AAvatar::setAvatar(const QPixmap& pixmap)
-    {
-        mAvatar = pixmap;
-        update();
-    }
-
-    void AAvatar::setName(const QString& name)
-    {
-        if (name == mName)
-            return;
-
-        mName = name;
-        update();
-    }
-
-    void AAvatar::setNameShowCount(unsigned int count)
-    {
-        if (mNameShowCount == count)
-            return;
-
-        mNameShowCount = count;
-        update();
-    }
-
-    void AAvatar::drawAvatar(QPainter* painter, const QRect& rect, const QPixmap& pixmap, const QString& defalultText)
-    {
-        QPainterPath path;
-        path.addEllipse(rect);
-
-        painter->setRenderHints(QPainter::Antialiasing, true);
         painter->setPen(Qt::NoPen);
-
-        painter->save();
-        painter->setBrush(QBrush(palette().background().color()));
-        painter->setClipPath(path);
-
-        // 当没有图片时绘制背景色
-        if (pixmap.isNull())
-        {
-            painter->drawRect(rect);
-
-            QString trimmedStr = defalultText.trimmed();
-            if (!trimmedStr.isEmpty() && mNameShowCount != 0)
-            {
-                if (mNameShowCount < trimmedStr.size())
-                    trimmedStr = trimmedStr.left(mNameShowCount);
-
-                painter->setFont(font());
-                painter->setPen(palette().text().color());
-                painter->drawText(rect, Qt::AlignCenter, trimmedStr);
-            }
-        }
-        else
-        {
-            painter->drawPixmap(rect, pixmap);
-        }
-
-        painter->restore();
-
-        if (mStateEnable)
-        {
-            const qreal offset = 0.8535 * rect.width() - mStateRadius;
-            const QRectF rt(offset, offset, 2 * mStateRadius, 2 * mStateRadius);
-
-            painter->setPen(Qt::NoPen);
-            painter->setBrush(QBrush(mStateColor));
-            painter->drawEllipse(rt);
-        }
-    }
-
-    void AAvatar::_init(const QPixmap& pixmap)
-    {
-        mStateColor = QColor("#1EE76E");
-        mStateRadius = 6;
-        mStateEnable = false;
-        mNameShowCount = 1;
-
-        setAutoFillBackground(true);
-        setAvatar(pixmap);
-        setCursor(Qt::PointingHandCursor);
-    }
-
-    void AAvatar::mousePressEvent(QMouseEvent*)
-    {
-        emit onClick();
-    }
-
-    void AAvatar::paintEvent(QPaintEvent* event)
-    {
-        APROCH_USE_STYLE_SHEET();
-
-        QPainter painter(this);
-        drawAvatar(&painter, rect(), mAvatar, mName);
-        return QWidget::paintEvent(event);
+        painter->setBrush(QBrush(mStateColor));
+        painter->drawEllipse(rt);
     }
 }
+
+void AAvatar::_init(const QPixmap &pixmap)
+{
+    mStateColor = QColor("#1EE76E");
+    mStateRadius = 6;
+    mStateEnable = false;
+    mNameShowCount = 1;
+
+    setAutoFillBackground(true);
+    setAvatar(pixmap);
+    setCursor(Qt::PointingHandCursor);
+}
+
+void AAvatar::mousePressEvent(QMouseEvent *)
+{
+    emit onClick();
+}
+
+void AAvatar::paintEvent(QPaintEvent *event)
+{
+    APROCH_USE_STYLE_SHEET();
+
+    QPainter painter(this);
+    drawAvatar(&painter, rect(), mAvatar, mName);
+    return QWidget::paintEvent(event);
+}
+
+APROCH_NAMESPACE_END

@@ -30,57 +30,58 @@
 
 #define AServiceName_PrivateAppConfig "aproch.PrivateAppConfigService"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 应用程序私有配置服务
+ */
+class APROCH_API APrivateAppConfigService : public IAppConfigService
 {
+public:
+    APrivateAppConfigService();
+
     /**
-     * @brief 应用程序私有配置服务
+     * @brief 设置文件配置路径
+     * @param filename 路径
      */
-    class APROCH_API APrivateAppConfigService : public IAppConfigService
-    {
-    public:
-        APrivateAppConfigService();
+    virtual void setFileName(const QString &filename) override;
 
-        /**
-         * @brief 设置文件配置路径
-         * @param filename 路径
-         */
-        virtual void setFileName(const QString &filename) override;
+    /**
+     * @brief 设置键值
+     * @param key 键
+     * @see setDefault
+     * @param value 值
+     */
+    virtual void setValue(const QString &key, const QVariant &value) override;
 
-        /**
-         * @brief 设置键值
-         * @param key 键
-         * @see setDefault
-         * @param value 值
-         */
-        virtual void setValue(const QString &key, const QVariant &value) override;
+    /**
+     * @brief 设置默认值
+     * @param key 键
+     * @param value 默认值
+     */
+    virtual void setDefault(const QString &, const QVariant &) override {}
 
-        /**
-         * @brief 设置默认值
-         * @param key 键
-         * @param value 默认值
-         */
-        virtual void setDefault(const QString &, const QVariant &) override {}
+    /**
+     * @brief 获取键对应的值
+     * @param key 键
+     * @return 值。如果没有将返回无效的空值
+     */
+    virtual QVariant getValue(const QString &key) const override;
 
-        /**
-         * @brief 获取键对应的值
-         * @param key 键
-         * @return 值。如果没有将返回无效的空值
-         */
-        virtual QVariant getValue(const QString &key) const override;
+    /**
+     * @brief 获取键对应的默认值
+     * @param key 键
+     * @return 默认值。如果没有将返回无效的空值
+     */
+    virtual QVariant getDefault(const QString &key) const override;
 
-        /**
-         * @brief 获取键对应的默认值
-         * @param key 键
-         * @return 默认值。如果没有将返回无效的空值
-         */
-        virtual QVariant getDefault(const QString &key) const override;
+    virtual void reset() override {}
+    virtual void reset(const QString &) override {}
+    virtual bool has(const QString &key) const override;
 
-        virtual void reset() override {}
-        virtual void reset(const QString &) override {}
-        virtual bool has(const QString &key) const override;
+private:
+    /** @brief 配置表 */
+    QVariantMap mConfigMap;
+};
 
-    private:
-        /** @brief 配置表 */
-        QVariantMap mConfigMap;
-    };
-}
+APROCH_NAMESPACE_END

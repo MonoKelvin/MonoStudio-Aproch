@@ -31,30 +31,31 @@
 #include "AException.h"
 
 #define Aproch_NullServiceException(_ServiceName_) \
-aproch::ANullServiceException(("the service [" + std::string(_ServiceName_) + "] is NULL!").c_str())
+    APROCH_CLASSNAME(ANullServiceException(("the service [" + std::string(_ServiceName_) + "] is NULL!").c_str()))
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 服务接口
+ */
+class IService
 {
-    /**
-     * @brief 服务接口
-     */
-    class IService
-    {
-    public:
-        virtual ~IService() = default;
-    };
+public:
+    virtual ~IService() = default;
+};
 
-    using IServicePtr = QSharedPointer<IService>;
+using IServicePtr = QSharedPointer<IService>;
 
-    /**
-     * @brief 空服务异常
-     */
-    class ANullServiceException : public AException
+/**
+ * @brief 空服务异常
+ */
+class ANullServiceException : public AException
+{
+public:
+    ANullServiceException(const char *message) noexcept
+        : AException(message)
     {
-    public:
-        ANullServiceException(const char* message) noexcept
-            : AException(message)
-        {
-        }
-    };
-}
+    }
+};
+
+APROCH_NAMESPACE_END

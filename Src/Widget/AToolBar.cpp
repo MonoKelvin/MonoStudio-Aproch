@@ -29,16 +29,15 @@
 #include "stdafx.h"
 #include "AToolBar.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+AToolBar::AToolBar(QWidget *parent /*= nullptr*/)
+    : QToolBar(parent)
 {
-    AToolBar::AToolBar(QWidget *parent /*= nullptr*/)
-        : QToolBar(parent)
-    {
-
-    }
-
-    AToolBar::~AToolBar(void)
-    {
-
-    }
 }
+
+AToolBar::~AToolBar(void)
+{
+}
+
+APROCH_NAMESPACE_END

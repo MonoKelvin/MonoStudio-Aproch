@@ -29,73 +29,70 @@
 #include "stdafx.h"
 #include "AColorPickerIndicator.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+AColorPickerIndicator::AColorPickerIndicator(QWidget *parent)
+    : QWidget(parent), mEasingCurve(QEasingCurve::OutCubic), mColor(Qt::white), mDuration(120), mIsUseAnimation(true)
 {
-    AColorPickerIndicator::AColorPickerIndicator(QWidget* parent)
-        : QWidget(parent)
-        , mEasingCurve(QEasingCurve::OutCubic)
-        , mColor(Qt::white)
-        , mDuration(120)
-        , mIsUseAnimation(true)
+    setFixedSize(20, 20);
+    setAttribute(Qt::WA_TranslucentBackground);
+    setToolTipDuration(4000);
+
+    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(this);
+    effect->setOffset(0, 2);
+    effect->setColor(Qt::lightGray);
+    effect->setBlurRadius(5);
+    setGraphicsEffect(effect);
+}
+
+void AColorPickerIndicator::setColor(const QColor &color)
+{
+    if (color != mColor)
     {
-        setFixedSize(20, 20);
-        setAttribute(Qt::WA_TranslucentBackground);
-        setToolTipDuration(4000);
-
-        QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect(this);
-        effect->setOffset(0, 2);
-        effect->setColor(Qt::lightGray);
-        effect->setBlurRadius(5);
-        setGraphicsEffect(effect);
-    }
-
-    void AColorPickerIndicator::setColor(const QColor& color)
-    {
-        if (color != mColor)
-        {
-            mColor = color;
-            update();
-        }
-    }
-
-    void AColorPickerIndicator::moveTo(int x, int y, bool isStopAniForced)
-    {
-        const QPoint thePos(x - width() / 2, y - height() / 2);
-        if (!isStopAniForced && mIsUseAnimation)
-        {
-            if (mDuration <= 0)
-                mDuration = 50;
-
-            QPropertyAnimation* pPosAnimation = new QPropertyAnimation(this, "pos", this);
-            pPosAnimation->setDuration(mDuration);
-            pPosAnimation->setStartValue(pos());
-            pPosAnimation->setEndValue(thePos);
-            pPosAnimation->setEasingCurve(mEasingCurve);
-            pPosAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-        }
-        else
-        {
-            move(thePos);
-        }
-    }
-
-    void AColorPickerIndicator::updateTooltip(const QColor& color)
-    {
-        setToolTip(AStringToolkit::Color2HexStr(color) + AKey_NewLine + AStringToolkit::Color2RgbStr(color));
-    }
-
-    void AColorPickerIndicator::paintEvent(QPaintEvent* ev)
-    {
-        APROCH_USE_STYLE_SHEET();
-
-        constexpr int thickness = 6;
-
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);
-        //painter.setPen(QPen(mColor, thickness));
-        //painter.drawEllipse(thickness / 2, thickness / 2, width() - thickness, height() - thickness);
-        painter.setPen(QPen(QColor("#5e6482"), 2));
-        painter.setBrush(QBrush(mColor));
-        painter.drawEllipse(rect().adjusted(1,1,-1,-1));
+        mColor = color;
+        update();
     }
 }
+
+void AColorPickerIndicator::moveTo(int x, int y, bool isStopAniForced)
+{
+    const QPoint thePos(x - width() / 2, y - height() / 2);
+    if (!isStopAniForced && mIsUseAnimation)
+    {
+        if (mDuration <= 0)
+            mDuration = 50;
+
+        QPropertyAnimation *pPosAnimation = new QPropertyAnimation(this, "pos", this);
+        pPosAnimation->setDuration(mDuration);
+        pPosAnimation->setStartValue(pos());
+        pPosAnimation->setEndValue(thePos);
+        pPosAnimation->setEasingCurve(mEasingCurve);
+        pPosAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+    }
+    else
+    {
+        move(thePos);
+    }
+}
+
+void AColorPickerIndicator::updateTooltip(const QColor &color)
+{
+    setToolTip(AStringToolkit::Color2HexStr(color) + AKey_NewLine + AStringToolkit::Color2RgbStr(color));
+}
+
+void AColorPickerIndicator::paintEvent(QPaintEvent *ev)
+{
+    APROCH_USE_STYLE_SHEET();
+
+    constexpr int thickness = 6;
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    // painter.setPen(QPen(mColor, thickness));
+    // painter.drawEllipse(thickness / 2, thickness / 2, width() - thickness, height() - thickness);
+    painter.setPen(QPen(QColor("#5e6482"), 2));
+    painter.setBrush(QBrush(mColor));
+    painter.drawEllipse(rect().adjusted(1, 1, -1, -1));
+}
+
+APROCH_NAMESPACE_END

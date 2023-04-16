@@ -31,88 +31,89 @@
 
 #include <QFile>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+APROCH_INIT_SINGLETON(AActionManager);
+
+AActionManager::AActionManager()
 {
-    APROCH_INIT_SINGLETON(AActionManager);
+}
 
-    AActionManager::AActionManager()
+AActionManager::~AActionManager()
+{
+}
+
+void AActionManager::addAction(AAction *action)
+{
+    if (nullptr == action || action->getActionId().isEmpty())
     {
+        qDebug() << "Action Invalid";
+        return;
     }
 
-    AActionManager::~AActionManager()
+    if (!mActions.contains(action))
     {
+        mActions.push_back(action);
+    }
+    else
+    {
+        qDebug() << "Action Exists";
+    }
+}
+
+bool AActionManager::loadFile(const QString &jsonFilePath)
+{
+    QFile jsonFile(jsonFilePath);
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        return false;
     }
 
-    void AActionManager::addAction(AAction* action)
-    {
-        if (nullptr == action || action->getActionId().isEmpty())
-        {
-            qDebug() << "Action Invalid";
-            return;
-        }
+    const QByteArray &data = jsonFile.readAll();
+    jsonFile.close();
 
-        if (!mActions.contains(action))
+    QJsonParseError error;
+    const QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &error);
+    if (error.error != QJsonParseError::NoError)
+    {
+        qDebug() << error.errorString();
+        return false;
+    }
+
+    if (jsonDoc.isObject())
+    {
+        const QJsonObject jsonObj = jsonDoc.object();
+    }
+
+    return true;
+}
+
+AAction *AActionManager::getActionById(const ActionId &actionId)
+{
+    for (const auto &action : mActions)
+    {
+        if (action->getActionId() == actionId)
         {
-            mActions.push_back(action);
-        }
-        else
-        {
-            qDebug() << "Action Exists";
+            return action;
         }
     }
 
-    bool AActionManager::loadFile(const QString& jsonFilePath)
+    return nullptr;
+}
+
+void AActionManager::createActionFromJsonObject(const QJsonObject &jsonObj)
+{
+    QPointer<AAction> newAction = QPointer<AAction>(new AAction(this));
+    if (newAction->fromJson(jsonObj))
     {
-        QFile jsonFile(jsonFilePath);
-        if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
+        for (const auto &action : mActions)
         {
-            return false;
-        }
-
-        const QByteArray& data = jsonFile.readAll();
-        jsonFile.close();
-
-        QJsonParseError error;
-        const QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &error);
-        if (error.error != QJsonParseError::NoError)
-        {
-            qDebug() << error.errorString();
-            return false;
-        }
-
-        if (jsonDoc.isObject())
-        {
-            const QJsonObject jsonObj = jsonDoc.object();
-        }
-
-        return true;
-    }
-
-    AAction* AActionManager::getActionById(const ActionId& actionId)
-    {
-        for (const auto& action : mActions)
-        {
-            if (action->getActionId() == actionId)
+            if (newAction->getActionId() == action->getActionId())
             {
-                return action;
-            }
-        }
-
-        return nullptr;
-    }
-
-    void AActionManager::createActionFromJsonObject(const QJsonObject& jsonObj)
-    {
-        QPointer<AAction> newAction = QPointer<AAction>(new AAction(this));
-        if (newAction->fromJson(jsonObj))
-        {
-            for (const auto& action : mActions)
-            {
-                if (newAction->getActionId() == action->getActionId())
-                {
-                    // TODO
-                }
+                // TODO
             }
         }
     }
 }
+
+APROCH_NAMESPACE_END

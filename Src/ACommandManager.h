@@ -28,59 +28,61 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 命令管理器
+ */
+class APROCH_API ACommandManager
 {
+    APROCH_SINGLETON(ACommandManager);
+
+public:
+    ~ACommandManager();
+
     /**
-     * 命令管理器
+     * @brief 执行命令
+     * @param commandId 要执行的命令ID
      */
-    class APROCH_API ACommandManager
+    void executeCommand(const CommandId &commandId);
+
+    /**
+     * @brief 执行命令
+     * @param commandId 要执行的命令ID
+     * @param args 执行命令所使用的参数
+     */
+    void executeCommand(const CommandId &commandId, const CommandArgs &args);
+
+    /**
+     * 注册一个命令，如果命令存在则覆盖
+     * @param command 命令
+     * @note 命令注册成功会发送 commandRegisted 信号
+     * @see commandRegisted
+     */
+    void registerCommand(const QSharedPointer<ACommand> &command);
+
+    /**
+     * 通过ID获取命令
+     * @param commandId 命令ID
+     * @return ACommand* 通过ID获取到的命令，如果不存在该命令返回nullptr
+     */
+    QSharedPointer<ACommand> getCommand(const CommandId &commandId);
+
+    /**
+     * 获取命令列表（引用）
+     * @return QList<ACommand*> 命令列表引用
+     */
+    QList<QSharedPointer<ACommand>> &getCommandList()
     {
-        APROCH_SINGLETON(ACommandManager);
-    public:
-        ~ACommandManager();
+        return mCommandList;
+    }
 
-        /**
-         * @brief 执行命令
-         * @param commandId 要执行的命令ID
-         */
-        void executeCommand(const CommandId& commandId);
+private:
+    ACommandManager();
 
-        /**
-         * @brief 执行命令
-         * @param commandId 要执行的命令ID
-         * @param args 执行命令所使用的参数
-         */
-        void executeCommand(const CommandId& commandId, const CommandArgs& args);
+private:
+    /** @brief 命令列表 */
+    QList<QSharedPointer<ACommand>> mCommandList;
+};
 
-        /**
-         * 注册一个命令，如果命令存在则覆盖
-         * @param command 命令
-         * @note 命令注册成功会发送 commandRegisted 信号
-         * @see commandRegisted
-         */
-        void registerCommand(const QSharedPointer<ACommand>& command);
-
-        /**
-         * 通过ID获取命令
-         * @param commandId 命令ID
-         * @return ACommand* 通过ID获取到的命令，如果不存在该命令返回nullptr
-         */
-        QSharedPointer<ACommand> getCommand(const CommandId& commandId);
-
-        /**
-         * 获取命令列表（引用）
-         * @return QList<ACommand*> 命令列表引用
-         */
-        QList<QSharedPointer<ACommand>>& getCommandList()
-        {
-            return mCommandList;
-        }
-
-    private:
-        ACommandManager();
-
-    private:
-        /** @brief 命令列表 */
-        QList<QSharedPointer<ACommand>> mCommandList;
-    };
-}
+APROCH_NAMESPACE_END

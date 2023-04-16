@@ -28,50 +28,51 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 动作管理器，用于存储软件所有动作
+ */
+class APROCH_API AActionManager : public QObject
 {
+    Q_OBJECT
+    APROCH_SINGLETON(AActionManager);
+
+public:
+    ~AActionManager();
+
     /**
-     * 动作管理器，用于存储软件所有动作
+     * 添加动作
+     * @param action 动作
      */
-    class APROCH_API AActionManager : public QObject
-    {
-        Q_OBJECT
-        APROCH_SINGLETON(AActionManager);
+    void addAction(AAction *action);
 
-    public:
-        ~AActionManager();
+    /**
+     * 从文件中加载动作。如果文件中存在动作ID相等的动作，则默认将只读取最后一个动作
+     * @param jsonFilePath json文件路径
+     * @return bool 是否加载成功
+     */
+    bool loadFile(const QString &jsonFilePath);
 
-        /**
-         * 添加动作
-         * @param action 动作
-         */
-        void addAction(AAction *action);
+    /**
+     * 通过Id获取动作
+     * @param actionId 动作Id
+     * @return AAction* 获取到的动作，如果不存在该Id对应的动作返回nullptr
+     */
+    AAction *getActionById(const ActionId &actionId);
 
-        /**
-         * 从文件中加载动作。如果文件中存在动作ID相等的动作，则默认将只读取最后一个动作
-         * @param jsonFilePath json文件路径
-         * @return bool 是否加载成功
-         */
-        bool loadFile(const QString &jsonFilePath);
+private:
+    AActionManager();
 
-        /**
-         * 通过Id获取动作
-         * @param actionId 动作Id
-         * @return AAction* 获取到的动作，如果不存在该Id对应的动作返回nullptr
-         */
-        AAction *getActionById(const ActionId &actionId);
+    /**
+     * @brief 从json对象加载动作
+     * @param jsonObj json对象
+     * @return 是否加载成功
+     */
+    void createActionFromJsonObject(const QJsonObject &jsonObj);
 
-    private:
-        AActionManager();
+private:
+    QList<QPointer<AAction>> mActions;
+};
 
-        /**
-         * @brief 从json对象加载动作
-         * @param jsonObj json对象
-         * @return 是否加载成功
-         */
-        void createActionFromJsonObject(const QJsonObject &jsonObj);
-
-    private:
-        QList<QPointer<AAction>> mActions;
-    };
-}
+APROCH_NAMESPACE_END

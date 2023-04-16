@@ -50,7 +50,6 @@
 //
 // We mean it.
 //
-#include "../../WinUIGloabl.h"
 #include <QtWidgets/private/qtwidgetsglobal_p.h>
 #include "qwindowsxpstyle_p_p.h"
 #include <QtWidgets/private/qwindowsstyle_p_p.h>

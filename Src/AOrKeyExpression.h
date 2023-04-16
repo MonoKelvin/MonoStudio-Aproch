@@ -29,20 +29,21 @@
 #pragma once
 #include "AAbstractKeyExpression.h"
 
-namespace aproch
-{
-    /**
-     * @brief “或(||)”键值表达式
-     */
-    class APROCH_API AOrKeyExpression : public AAbstractKeyExpression
-    {
-    public:
-        virtual const char *symbol() const override;
-        virtual int type() const override;
-        virtual ESymbolPriority priority() const;
-        virtual int operationCount() const;
+APROCH_NAMESPACE_BEGIN
 
-    protected:
-        virtual bool parse() override;
-    };
-}
+/**
+ * @brief “或(||)”键值表达式
+ */
+class APROCH_API AOrKeyExpression : public AAbstractKeyExpression
+{
+public:
+    virtual const char *symbol() const override;
+    virtual int type() const override;
+    virtual ESymbolPriority priority() const;
+    virtual int operationCount() const;
+
+protected:
+    virtual bool parse() override;
+};
+
+APROCH_NAMESPACE_END

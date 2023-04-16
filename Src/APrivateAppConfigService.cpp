@@ -29,51 +29,52 @@
 #include "stdafx.h"
 #include "APrivateAppConfigService.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+APrivateAppConfigService::APrivateAppConfigService()
 {
-    APrivateAppConfigService::APrivateAppConfigService()
-    {
-    }
-
-    void APrivateAppConfigService::setFileName(const QString& filename)
-    {
-        QFile file(filename);
-        if (!file.open(QFile::ReadOnly))
-            return;
-
-        file.readAll();
-
-        auto jsonDoc = QJsonDocument::fromJson(QByteArray().fromBase64(file.readAll()));
-        if (jsonDoc.isNull() || !jsonDoc.isObject())
-            return;
-
-        mConfigMap.clear();
-
-        QJsonObject jsonObj = jsonDoc.object();
-        mConfigMap = jsonObj.toVariantMap();
-    }
-
-    void APrivateAppConfigService::setValue(const QString& key, const QVariant& value)
-    {
-        mConfigMap[key] = value;
-    }
-
-    QVariant APrivateAppConfigService::getValue(const QString& key) const
-    {
-        auto iter = mConfigMap.find(key);
-        if (iter == mConfigMap.end())
-            return ANull_Variant;
-
-        return iter.value();
-    }
-
-    QVariant APrivateAppConfigService::getDefault(const QString& key) const
-    {
-        return getValue(key);
-    }
-
-    bool APrivateAppConfigService::has(const QString& key) const
-    {
-        return mConfigMap.contains(key);
-    }
 }
+
+void APrivateAppConfigService::setFileName(const QString &filename)
+{
+    QFile file(filename);
+    if (!file.open(QFile::ReadOnly))
+        return;
+
+    file.readAll();
+
+    auto jsonDoc = QJsonDocument::fromJson(QByteArray().fromBase64(file.readAll()));
+    if (jsonDoc.isNull() || !jsonDoc.isObject())
+        return;
+
+    mConfigMap.clear();
+
+    QJsonObject jsonObj = jsonDoc.object();
+    mConfigMap = jsonObj.toVariantMap();
+}
+
+void APrivateAppConfigService::setValue(const QString &key, const QVariant &value)
+{
+    mConfigMap[key] = value;
+}
+
+QVariant APrivateAppConfigService::getValue(const QString &key) const
+{
+    auto iter = mConfigMap.find(key);
+    if (iter == mConfigMap.end())
+        return ANull_Variant;
+
+    return iter.value();
+}
+
+QVariant APrivateAppConfigService::getDefault(const QString &key) const
+{
+    return getValue(key);
+}
+
+bool APrivateAppConfigService::has(const QString &key) const
+{
+    return mConfigMap.contains(key);
+}
+
+APROCH_NAMESPACE_END

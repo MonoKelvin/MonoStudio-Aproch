@@ -30,183 +30,244 @@
 #include "AData.h"
 #include "AAbstractDataManager.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+AData::AData(AAbstractDataManager* manager)
+    : APrototype()
+    , m_enabled(true)
+    , m_manager(manager)
 {
-    AData::AData(AAbstractDataManager* manager)
-        : m_enabled(true)
-        , m_manager(manager)
+    //m_value = QVariant(QVariant::Type(type));
+    Q_ASSERT_X(manager, Q_FUNC_INFO, "the manager is nullptr");
+}
+
+AData::AData(const AData& rhs, const FCopyOptions& op)
+    : APrototype(rhs, op)
+    , m_manager(rhs.m_manager)
+    , m_name(rhs.m_name)
+    , m_toolTip(rhs.m_toolTip)
+    , m_description(rhs.m_description)
+    , m_enabled(rhs.m_enabled)
+{
+    // 这里不处理父子级关系，而是由数据管理器构建
+}
+
+AData::~AData()
+{
+    for (AData* data : m_parentItems)
+        emit data->m_manager->dataRemoved(this, data);
+
+    emit m_manager->destroyData(this);
+
+    for (AData* data : m_subItems)
+        data->m_parentItems.remove(this);
+
+    for (AData* data : m_parentItems)
+        data->m_subItems.removeAll(this);
+}
+
+QList<AData*> AData::getSubDataSet() const
+{
+    return m_subItems;
+}
+
+AAbstractDataManager* AData::dataManager() const
+{
+    return m_manager;
+}
+
+APrototype* AData::clone(const FCopyOptions& op) const
+{
+    if (!m_manager)
+        return nullptr;
+
+    return m_manager->cloneData((AData*)(this));
+}
+
+const QVariant& AData::getValue() noexcept
+{
+    return m_value;
+}
+
+QVariant AData::getValue() const noexcept
+{
+    return m_value;
+}
+
+void AData::setValue(const QVariant& data)
+{
+    if (data == m_value)
+        return;
+
+    m_value = data;
+    dataChanged();
+}
+
+EMetaType AData::getType() const noexcept
+{
+    return EMetaType(m_value.type());
+}
+
+QString AData::getToolTip() const
+{
+    return m_toolTip;
+}
+
+QString AData::getDescription() const
+{
+    return m_description;
+}
+
+QString AData::getName() const
+{
+    return m_name;
+}
+
+bool AData::isEnabled() const
+{
+    return m_enabled;
+}
+
+QString AData::toText() const
+{
+    return m_manager->toText(this);
+}
+
+void AData::setToolTip(const QString& text)
+{
+    if (m_toolTip == text)
+        return;
+
+    m_toolTip = text;
+    dataChanged();
+}
+
+void AData::setDescription(const QString& text)
+{
+    if (m_description == text)
+        return;
+
+    m_description = text;
+    dataChanged();
+}
+
+void AData::setName(const QString& text)
+{
+    if (m_name == text)
+        return;
+
+    m_name = text;
+    dataChanged();
+}
+
+void AData::setEnabled(bool enable)
+{
+    if (m_enabled == enable)
+        return;
+
+    m_enabled = enable;
+    dataChanged();
+}
+
+void AData::addSubData(AData* data)
+{
+    AData* after = nullptr;
+
+    if (m_subItems.count() > 0)
+        after = m_subItems.last();
+
+    insertSubData(data, after);
+}
+
+void AData::insertSubData(AData* data, AData* afterData)
+{
+    if (!data)
+        return;
+
+    if (data == this)
+        return;
+
+    // traverse all children of item. if this item is a child of item then cannot add.
+    QList<AData*> pendingList = data->getSubDataSet();
+    QMap<AData*, bool> visited;
+    while (!pendingList.isEmpty())
     {
+        AData* i = pendingList.first();
+        if (i == this)
+            return;
+        pendingList.removeFirst();
+        if (visited.contains(i))
+            continue;
+        visited[i] = true;
+        pendingList += i->getSubDataSet();
     }
 
-    AData::~AData()
+    pendingList = getSubDataSet();
+    int pos = 0;
+    int newPos = 0;
+    AData* properAfterData = 0;
+    while (pos < pendingList.count())
     {
-        for (AData* data : m_parentItems)
-            emit data->m_manager->dataRemoved(this, data);
+        AData* i = pendingList.at(pos);
+        if (i == data)
+            return; // if item is already inserted in this item then cannot add.
+        if (i == afterData)
+        {
+            newPos = pos + 1;
+            properAfterData = afterData;
+        }
+        pos++;
+    }
 
-        emit m_manager->destroyData(this);
+    m_subItems.insert(newPos, data);
+    data->m_parentItems.insert(this);
 
-        for (AData* data : m_subItems)
+    emit m_manager->dataInserted(data, this, properAfterData);
+}
+
+void AData::insertSubData(AData* dt, int index)
+{
+    if (index > m_subItems.size())
+        return;
+
+    if (index > 0)
+        insertSubData(dt, m_subItems.at(index - 1));
+    else if (index == 0)
+        insertSubData(dt, nullptr);
+    else
+        insertSubData(dt, m_subItems.back());
+}
+
+void AData::removeSubData(AData* data)
+{
+    if (!data)
+        return;
+
+    emit m_manager->dataRemoved(data, this);
+
+    QList<AData*> pendingList = getSubDataSet();
+    int pos = 0;
+    while (pos < pendingList.count())
+    {
+        if (pendingList.at(pos) == data)
+        {
+            m_subItems.removeAt(pos);
             data->m_parentItems.remove(this);
 
-        for (AData* data : m_parentItems)
-            data->m_subItems.removeAll(this);
-    }
-
-    QList<AData*> AData::subDataSet() const
-    {
-        return m_subItems;
-    }
-
-    AAbstractDataManager* AData::dataManager() const
-    {
-        return m_manager;
-    }
-
-    QString AData::getToolTip() const
-    {
-        return m_toolTip;
-    }
-
-    QString AData::getDescription() const
-    {
-        return m_description;
-    }
-
-    QString AData::getDataName() const
-    {
-        return m_name;
-    }
-
-    bool AData::isEnabled() const
-    {
-        return m_enabled;
-    }
-
-    QString AData::toText() const
-    {
-        //return m_manager->toText(this);
-        return QString();
-    }
-
-    void AData::setToolTip(const QString& text)
-    {
-        if (m_toolTip == text)
             return;
-
-        m_toolTip = text;
-        dataChanged();
-    }
-
-    void AData::setDescription(const QString& text)
-    {
-        if (m_description == text)
-            return;
-
-        m_description = text;
-        dataChanged();
-    }
-
-    void AData::setDataName(const QString& text)
-    {
-        if (m_name == text)
-            return;
-
-        m_name = text;
-        dataChanged();
-    }
-
-    void AData::setEnabled(bool enable)
-    {
-        if (m_enabled == enable)
-            return;
-
-        m_enabled = enable;
-        dataChanged();
-    }
-
-    void AData::addSubData(AData* data)
-    {
-        AData* after = 0;
-        if (m_subItems.count() > 0)
-            after = m_subItems.last();
-        insertSubData(data, after);
-    }
-
-    void AData::insertSubData(AData* data, AData* afterData)
-    {
-        if (!data)
-            return;
-
-        if (data == this)
-            return;
-
-        // traverse all children of item. if this item is a child of item then cannot add.
-        QList<AData*> pendingList = data->subDataSet();
-        QMap<AData*, bool> visited;
-        while (!pendingList.isEmpty())
-        {
-            AData* i = pendingList.first();
-            if (i == this)
-                return;
-            pendingList.removeFirst();
-            if (visited.contains(i))
-                continue;
-            visited[i] = true;
-            pendingList += i->subDataSet();
         }
-
-        pendingList = subDataSet();
-        int pos = 0;
-        int newPos = 0;
-        AData* properAfterData = 0;
-        while (pos < pendingList.count())
-        {
-            AData* i = pendingList.at(pos);
-            if (i == data)
-                return; // if item is already inserted in this item then cannot add.
-            if (i == afterData)
-            {
-                newPos = pos + 1;
-                properAfterData = afterData;
-            }
-            pos++;
-        }
-
-        m_subItems.insert(newPos, data);
-        data->m_parentItems.insert(this);
-
-        emit m_manager->dataInserted(data, this, properAfterData);
-    }
-
-    void AData::removeSubData(AData* data)
-    {
-        if (!data)
-            return;
-
-        emit m_manager->dataRemoved(data, this);
-
-        QList<AData*> pendingList = subDataSet();
-        int pos = 0;
-        while (pos < pendingList.count())
-        {
-            if (pendingList.at(pos) == data)
-            {
-                m_subItems.removeAt(pos);
-                data->m_parentItems.remove(this);
-
-                return;
-            }
-            pos++;
-        }
-    }
-
-    void AData::dataChanged()
-    {
-        emit m_manager->dataChanged(this);
-    }
-    
-    bool AData::isValid() const
-    {
-        return false;
+        pos++;
     }
 }
+
+void AData::dataChanged()
+{
+    emit m_manager->dataChanged(this);
+}
+
+bool AData::isValid() const
+{
+    return m_manager && m_value.isValid();
+}
+
+APROCH_NAMESPACE_END

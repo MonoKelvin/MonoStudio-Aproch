@@ -29,6 +29,6 @@
 #include "stdafx.h"
 #include "ADataConverter.h"
 
-namespace aproch
-{
-}
+APROCH_NAMESPACE_BEGIN
+
+APROCH_NAMESPACE_END

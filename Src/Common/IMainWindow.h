@@ -30,26 +30,27 @@
 
 class QWidget;
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 主窗口接口
+ */
+class IMainWindow
 {
+public:
+    virtual ~IMainWindow(void) = default;
+
     /**
-     * 主窗口接口
+     * 获取菜单栏
+     * @return QWidget* 菜单栏控件
      */
-    class IMainWindow
-    {
-    public:
-        virtual ~IMainWindow(void) = default;
+    virtual QWidget *getMenuBar(void) = 0;
 
-        /**
-         * 获取菜单栏
-         * @return QWidget* 菜单栏控件
-         */
-        virtual QWidget* getMenuBar(void) = 0;
+    /**
+     * 获取工具栏控件
+     * @return QWidget* 工具栏控件
+     */
+    virtual QWidget *getToolBar(void) = 0;
+};
 
-        /**
-         * 获取工具栏控件
-         * @return QWidget* 工具栏控件
-         */
-        virtual QWidget* getToolBar(void) = 0;
-    };
-}
+APROCH_NAMESPACE_END

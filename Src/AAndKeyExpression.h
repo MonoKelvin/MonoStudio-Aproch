@@ -29,20 +29,21 @@
 #pragma once
 #include "AAbstractKeyExpression.h"
 
-namespace aproch
-{
-    /**
-     * @brief “与(&&)”键值表达式
-     */
-    class APROCH_API AAndKeyExpression : public AAbstractKeyExpression
-    {
-    public:
-        virtual const char *symbol() const override;
-        virtual int type() const override;
-        virtual ESymbolPriority priority() const;
-        virtual int operationCount() const;
+APROCH_NAMESPACE_BEGIN
 
-    protected:
-        virtual bool parse() override;
-    };
-}
+/**
+ * @brief “与(&&)”键值表达式
+ */
+class APROCH_API AAndKeyExpression : public AAbstractKeyExpression
+{
+public:
+    virtual const char *symbol() const override;
+    virtual int type() const override;
+    virtual ESymbolPriority priority() const;
+    virtual int operationCount() const;
+
+protected:
+    virtual bool parse() override;
+};
+
+APROCH_NAMESPACE_END

@@ -28,7 +28,6 @@
  *****************************************************************************/
 #ifndef ATEXTBLOCK_H
 #define ATEXTBLOCK_H
-#include "WinUI/WinUIGloabl.h"
 #include <QLabel>
 
 APROCH_NAMESPACE_BEGIN

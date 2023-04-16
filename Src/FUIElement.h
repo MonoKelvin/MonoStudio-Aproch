@@ -2,28 +2,26 @@
 #include <QOpenGLWidget>
 #include <QOpenGLExtraFunctions>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+class FUICanvas;
+
+/**
+ * @brief FUI基本元素
+ */
+class APROCH_API FUIElement : public QOpenGLWidget, protected QOpenGLExtraFunctions
 {
-    namespace fui
-    {
-        class FUICanvas;
+public:
+    explicit FUIElement(FUICanvas *canvas = nullptr);
+    ~FUIElement();
 
-        /**
-         * @brief FUI基本元素
-         */
-        class APROCH_API FUIElement : public QOpenGLWidget, protected QOpenGLExtraFunctions
-        {
-        public:
-            explicit FUIElement(FUICanvas* canvas = nullptr);
-            ~FUIElement();
+protected:
+    virtual void initializeGL() override;
+    virtual void resizeGL(int w, int h) override;
+    virtual void paintGL() override;
 
-        protected:
-            virtual void initializeGL() override;
-            virtual void resizeGL(int w, int h) override;
-            virtual void paintGL() override;
+private:
+    Q_DISABLE_COPY(FUIElement)
+};
 
-        private:
-            Q_DISABLE_COPY(FUIElement)
-        };
-    }
-}
+APROCH_NAMESPACE_END

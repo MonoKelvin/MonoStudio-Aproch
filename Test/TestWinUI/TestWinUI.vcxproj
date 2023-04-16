@@ -69,6 +69,7 @@
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Src\WinUI;$(SolutionDir)Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <PostBuildEvent>
       <Command>$(QtInstallDir)\bin\windeployqt.exe $(OutDir)$(TargetName)$(TargetExt)
@@ -79,6 +80,7 @@ xcopy /y $(OutDir)..\..\Bin\Aprochd.dll $(OutDir)</Command>
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Src\WinUI;$(SolutionDir)Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <PostBuildEvent>
       <Command>$(QtInstallDir)\bin\windeployqt.exe $(OutDir)$(TargetName)$(TargetExt)

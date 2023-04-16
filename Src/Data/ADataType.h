@@ -28,82 +28,79 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+using ADataType = QMetaType;
+
+#if 0
+class ADataTypePrivate;
+class ADataType;
+
+/**
+ * @brief 数据类型
+ */
+class APROCH_API ADataType final
 {
-    class ADataType;
-    typedef unsigned int TDataTypeId;
-    typedef QMap<TDataTypeId, ADataType> TDataTypeMap;
+public:
+    ADataType();
+    explicit ADataType(int type);
+    explicit ADataType(const QString& name);
+    ADataType(const ADataType& rhs) noexcept;
+    ~ADataType();
 
-    /**
-     * @brief 数据类型
-     */
-    class APROCH_API ADataType final
+    using Type = QVariant::Type;
+
+    int getType() const;
+    QMetaType::Type getMetaType() const;
+    QString getName() const;
+    QString getDescription() const;
+    bool isValid() const;
+    
+    ADataType& operator=(const ADataType& rhs);
+    ADataType& operator=(ADataType&& rhs) noexcept;
+    bool operator==(const ADataType& rhs) const;
+    bool operator!=(const ADataType& rhs) const;
+    bool operator>(const ADataType& rhs) const;
+    bool operator>=(const ADataType& rhs) const;
+    bool operator<(const ADataType& rhs) const;
+    bool operator<=(const ADataType& rhs) const;
+
+public:
+    /** the internal category named 'Aproch.DataType.Default' */
+    static const ACategory DefaultCategory;
+
+public:
+    /** 注册类型。已存在的数据类型不会被覆盖，将注册失败，并返回该存在的类型 */
+    inline static ADataType Register(const QString& name, const ACategory& category = ADataType::DefaultCategory)
     {
-    public:
-        ADataType();
-        ~ADataType();
+        Register(name, QString(), category);
+    }
+    static ADataType Register(const QString& name, const QString& description,
+                              const ACategory& category = ADataType::DefaultCategory);
 
-        /** @brief 获取类型ID */
-        TDataTypeId getId() const noexcept
-        {
-            return m_typeId;
-        }
+    static void Remove(int type);
+    static void Remove(const QString& name);
+    static ADataType Get(int type);
+    static ADataType Get(const QString& name);
+    static ADataType Get(const QVariant& value);
+    static QList<ADataType> AllTypes();
 
-        /** @brief 获取类型名称 */
-        const QString& getName() const noexcept
-        {
-            return m_name;
-        }
+    static bool SetDescription(int type, const QString& newDescription);
+    static bool SetDescription(const QString& name, const QString& newDescription);
 
-        /** @brief 获取类型描述 */
-        const QString& getDescription() const noexcept
-        {
-            return m_description;
-        }
-
-        /** @brief 是否数据类型有效 */
-        bool isValid() const;
-
-        bool operator==(const ADataType& rhs) const;
-        bool operator!=(const ADataType& rhs) const;
-        bool operator>(const ADataType& rhs) const;
-        bool operator>=(const ADataType& rhs) const;
-        bool operator<(const ADataType& rhs) const;
-        bool operator<=(const ADataType& rhs) const;
-
-    public:
-        /**
-         * @brief 注册数据类型
-         * @param name 类型名称。不区分大小写，不能为空，存在相同类型则注册失败并返回已注册的类型
-         * @param description 类型描述
-         * @param icon 类型图标
-         * @return 注册成功的数据类型，注册失败返回无效类型， @see ADataType::isValid
-         */
-        static ADataType Register(const QString& name, const QString& description = QString());
-        static void Remove(TDataTypeId id);
-        static ADataType Get(TDataTypeId id);
-        static ADataType Get(const QString& name);
-        static const TDataTypeMap& GetAllType();
-
-        //static bool SetName(TDataTypeId id, const QString& newName);
-        static bool SetDescription(TDataTypeId id, const QString& newDescription);
-
-    private:
-        /** @brief 类型ID */
-        TDataTypeId m_typeId;
-
-        /** @brief 类型名称 */
-        QString m_name;
-
-        /** @brief 描述 */
-        QString m_description;
-
-        /** @brief 类型表 */
-        static TDataTypeMap m_dataTypeMap;
-    };
+private:
+    ADataTypePrivate* d_ptr;
+};
 
 #ifndef QT_NO_DEBUG_STREAM
-    APROCH_API QDebug operator<<(QDebug, const ADataType&);
+APROCH_API QDebug operator<<(QDebug, const ADataType&);
 #endif
 
-}
+#if !defined(QT_NO_DATASTREAM) || (defined(QT_BOOTSTRAPPED) && !defined(QT_BUILD_QMAKE))
+APROCH_API QDataStream &operator<<(QDataStream &, const ADataType&);
+APROCH_API QDataStream &operator>>(QDataStream &, ADataType&);
+#endif
+
+#endif
+
+APROCH_NAMESPACE_END

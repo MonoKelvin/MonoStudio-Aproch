@@ -97,7 +97,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>APROCH_LIB;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>APROCH_LIB;APROCH_NAMESPACE;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -117,7 +117,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>APROCH_LIB;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>APROCH_LIB;APROCH_NAMESPACE;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -143,6 +143,8 @@
     <ClCompile Include="Common\AStringToolkit.cpp" />
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
+    <ClCompile Include="Data\ADataContainer.cpp" />
+    <ClCompile Include="Data\ADataType.cpp" />
     <ClCompile Include="DPO\AAbstractObjectCreator.cpp" />
     <ClCompile Include="DPO\ABoxLayoutCreator.cpp" />
     <ClCompile Include="DPO\ADPWService.cpp" />
@@ -172,7 +174,6 @@
     <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle.cpp" />
     <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle.cpp" />
     <ClCompile Include="WinUI\Style\AWinUIStyleObjects.cpp" />
-    <ClCompile Include="WinUI\WinUIGloabl.cpp" />
     <QtMoc Include="WinUI\AWinUIStyleEngine.h" />
     <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp" />
     <ClCompile Include="WinUI\AWinUIStyleEngine.cpp" />
@@ -181,6 +182,9 @@
     <QtMoc Include="WinUI\Controls\ATextBlock.h" />
     <QtMoc Include="WinUI\Controls\ATextBox.h" />
     <ClInclude Include="Common\AGraphicsToolkit.h" />
+    <ClInclude Include="Common\ITextTranslatable.h" />
+    <QtMoc Include="Data\ADataContainer.h" />
+    <ClInclude Include="Data\ADataType.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
     <QtMoc Include="WinUI\Private\AWinUIStyle.h" />
     <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h" />
@@ -188,7 +192,6 @@
     <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p.h" />
     <ClInclude Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p_p.h" />
     <ClInclude Include="WinUI\Style\AWinUIStyleObjects.h" />
-    <ClInclude Include="WinUI\WinUIGloabl.h" />
     <QtMoc Include="AAction.h" />
     <QtMoc Include="AActionManager.h" />
     <ClInclude Include="AAppConfigService.h" />

@@ -28,43 +28,44 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief DWB工具类
+ */
+class APROCH_API ADPWUtils
 {
+public:
     /**
-     * @brief DWB工具类
+     * @brief 颜色转字符串
+     * @param c 颜色
+     * @return 颜色字符串，带有RGBA信息
      */
-    class APROCH_API ADPWUtils
-    {
-    public:
-        /**
-         * @brief 颜色转字符串
-         * @param c 颜色
-         * @return 颜色字符串，带有RGBA信息
-         */
-        static QString ColorText(const QColor& c);
+    static QString ColorText(const QColor &c);
 
-        /**
-         * @brief 将笔刷颜色绘制到图片中
-         * @param b 笔刷
-         * @param size 图片大小
-         * @return 图片
-         */
-        static QPixmap DrawBrushToPixmap(const QBrush& b, const QSize& size = QSize(16, 16));
+    /**
+     * @brief 将笔刷颜色绘制到图片中
+     * @param b 笔刷
+     * @param size 图片大小
+     * @return 图片
+     */
+    static QPixmap DrawBrushToPixmap(const QBrush &b, const QSize &size = QSize(16, 16));
 
-        /**
-         * @brief 字体转字符串
-         * @param f 字体
-         * @return 字体字符串，带有大小信息
-         */
-        static QString FontText(const QFont& f);
+    /**
+     * @brief 字体转字符串
+     * @param f 字体
+     * @return 字体字符串，带有大小信息
+     */
+    static QString FontText(const QFont &f);
 
-        /**
-         * @brief 将字体绘制到图片上
-         * @param font 字体
-         * @param size 图片大小
-         * @param ptSize 字体大小
-         * @return 图片
-         */
-        static QPixmap DrawFontToPixmap(const QFont& font, const QSize& size = QSize(16, 16), int ptSize = 13);
-    };
-}
+    /**
+     * @brief 将字体绘制到图片上
+     * @param font 字体
+     * @param size 图片大小
+     * @param ptSize 字体大小
+     * @return 图片
+     */
+    static QPixmap DrawFontToPixmap(const QFont &font, const QSize &size = QSize(16, 16), int ptSize = 13);
+};
+
+APROCH_NAMESPACE_END

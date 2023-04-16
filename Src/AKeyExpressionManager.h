@@ -28,62 +28,63 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 键值表达式管理器
+ */
+class APROCH_API AKeyExpressionManager
 {
+    APROCH_SINGLETON(AKeyExpressionManager);
+
+public:
+    ~AKeyExpressionManager();
+
     /**
-     * 键值表达式管理器
+     * @brief 注册键值表达式
+     * @tparam KeyExprType 键值表达式类型
      */
-    class APROCH_API AKeyExpressionManager
+    template <class KeyExprType>
+    void registerKeyExpression()
     {
-        APROCH_SINGLETON(AKeyExpressionManager);
+        APROCH_ASSERT_IS_DERIVED(AAbstractKeyExpression, KeyExprType);
+        QSharedPointer<AAbstractKeyExpression> keyExpr = QSharedPointer<AAbstractKeyExpression>(new KeyExprType);
+        mKeyExprMap[keyExpr->symbol()] = keyExpr;
+    }
 
-    public:
-        ~AKeyExpressionManager();
+    /**
+     * @brief 根据符号获取键值表达式
+     * @param symbol 符号
+     * @return 键值表达式，如果符号不存在则返回nullptr
+     */
+    QSharedPointer<AAbstractKeyExpression> getKeyExpr(const QString &symbol) const;
 
-        /**
-         * @brief 注册键值表达式
-         * @tparam KeyExprType 键值表达式类型
-         */
-        template <class KeyExprType>
-        void registerKeyExpression()
-        {
-            APROCH_ASSERT_IS_DERIVED(aproch::AAbstractKeyExpression, KeyExprType);
-            QSharedPointer<AAbstractKeyExpression> keyExpr = QSharedPointer<AAbstractKeyExpression>(new KeyExprType);
-            mKeyExprMap[keyExpr->symbol()] = keyExpr;
-        }
+    /**
+     * @brief 获取所有支持的符号
+     * @return 符号列表
+     */
+    QStringList getAllSymbols() const;
 
-        /**
-         * @brief 根据符号获取键值表达式
-         * @param symbol 符号
-         * @return 键值表达式，如果符号不存在则返回nullptr
-         */
-        QSharedPointer<AAbstractKeyExpression> getKeyExpr(const QString &symbol) const;
+    /**
+     * @brief 是否是运算符号
+     * @param symbol 运算符
+     * @return 是否是运算符号
+     */
+    bool isSymbol(const QString &symbol) const;
 
-        /**
-         * @brief 获取所有支持的符号
-         * @return 符号列表
-         */
-        QStringList getAllSymbols() const;
+    /**
+     * @brief 获取符号的优先级大小，越小优先级越大
+     * @param symbol 符号
+     * @return 优先级。如果没有该符号则返回-1
+     */
+    int getSymbolPriority(const QString &symbol) const;
 
-        /**
-         * @brief 是否是运算符号
-         * @param symbol 运算符
-         * @return 是否是运算符号
-         */
-        bool isSymbol(const QString &symbol) const;
+private:
+    AKeyExpressionManager();
 
-        /**
-         * @brief 获取符号的优先级大小，越小优先级越大
-         * @param symbol 符号
-         * @return 优先级。如果没有该符号则返回-1
-         */
-        int getSymbolPriority(const QString &symbol) const;
+private:
+    /** 键值表达式列表 */
+    QMap<QString, QSharedPointer<AAbstractKeyExpression>> mKeyExprMap;
+};
 
-    private:
-        AKeyExpressionManager();
-
-    private:
-        /** 键值表达式列表 */
-        QMap<QString, QSharedPointer<AAbstractKeyExpression>> mKeyExprMap;
-    };
-}
+APROCH_NAMESPACE_END

@@ -27,64 +27,110 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-#include <QSet>
+#include "AData.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+class ADataContainer;
+class AAbstractDataManagerPrivate;
+
+/**
+ * @brief 抽象数据管理器。
+ */
+class APROCH_API AAbstractDataManager : public QObject
 {
+    Q_OBJECT
+private:
+    friend class AData;
+    friend class ADataContainer;
+    friend class ADataContainerPrivate;
+    Q_DISABLE_COPY_MOVE(AAbstractDataManager);
+    Q_DECLARE_PRIVATE(AAbstractDataManager);
+
+public:
+    explicit AAbstractDataManager(ADataContainer* parent);
+    ~AAbstractDataManager();
+
     /**
-     * @brief 抽象数据管理器。
+     * @brief 复制数据
+     * @note 复制的数据没有指定父级对象；复制时不拷贝子集；复制后的对象没有进行数据绑定
+     * @param srcData 源数据
+     * @return 新数据
      */
-    class APROCH_API AAbstractDataManager : public QObject
-    {
-        Q_OBJECT
-    private:
-        friend class AData;
-        Q_DISABLE_COPY_MOVE(AAbstractDataManager)
+    virtual AData* cloneData(AData* srcData);
 
-    public:
-        explicit AAbstractDataManager(QObject* parent = nullptr);
-        ~AAbstractDataManager();
+    /** @brief 将数据转换为文本 */
+    virtual QString toText(const AData* dt) const = 0;
 
-        /** @brief 获取数据集 */
-        QSet<AData*> dataSet() const;
+    /** @brief 所管理的元数据类型 */
+    virtual EMetaType type() const = 0;
 
-        /** @brief 删除所有创建的数据（释放内存） */
-        void clear() const;
+    /** @brief 获取默认数据 */
+    virtual QVariant getDefaultValue(AData* dt) const;
 
-        /** @brief 从给定名称添加数据 */
-        AData* addData(const QString& name = QString());
+    /** @brief 设置默认数据 */
+    bool setDefaultValue(AData* dt, const QVariant& defaultVal) const;
 
-        /** @brief 复制数据 */
-        AData* cloneData(AData* srcData, const QString& name = QString());
+    /** @brief 获取数据集 */
+    ADataSet* getDataSet() const;
 
-        /** @brief 是否存在数据 */
-        bool hasData(const AData* data) const;
+    /** @brief 获取数据集 */
+    const ADataSet& getDataSet();
 
-    Q_SIGNALS:
-        void dataInserted(AData* data, AData* parent, AData* after);
-        void dataChanged(AData* data);
-        void dataRemoved(AData* data, AData* parent);
-        void dataDestroyed(AData* data);
+    /** @brief 获取管理器所在数据容器 */
+    ADataContainer* getDataContainer() const;
 
-    protected:
-        /** @brief 当初始化创建数据时调用，目的是让数据管理器知道数据已创建 */
-        virtual void initializeData(AData* data) = 0;
+    /** @brief 是否有效 */
+    bool isValid() const;
 
-        /** @brief 在销毁指定数据之前调用此函数。目的是让数据管理器知道正在销毁数据，以便删除数据的其他属性。 */
-        virtual void uninitializeData(AData* data);
+    /** @brief 删除所有创建的数据（释放内存） */
+    void clear();
 
-        /** @brief 创建数据 */
-        virtual AData* createData();
+    /** @brief 从给定名称添加数据 */
+    AData* addData(const QString& name = QString());
 
-    private:
-        /**
-         * @brief 销毁数据，删除内存
-         * @param data 数据
-         */
-        void destroyData(AData* data);
+    /**
+     * @brief 从给定名称添加数据。
+     * @param name 名称
+     * @param defaultValue 默认值，数据类型必须和所管理的数据类型一致
+     * @return 数据
+     * @see type()
+     */
+    AData* addData(const QString& name, const QVariant& defaultValue);
 
-    private:
-        /** @brief 管理的所有数据 */
-        QSet<AData*> m_dataSet;
-    };
-}
+Q_SIGNALS:
+    void dataInserted(AData* data, AData* parent, AData* after);
+    void dataChanged(AData* data);
+    void dataRemoved(AData* data, AData* parent);
+    void dataDestroyed(AData* data);
+
+protected:
+    /** @brief 当初始化创建数据时调用，目的是让数据管理器知道数据已创建 */
+    virtual void initializeData(AData* data) = 0;
+
+    /** @brief 在销毁指定数据之前调用此函数。目的是让数据管理器知道正在销毁数据，以便删除数据的其他属性。 */
+    virtual void uninitializeData(AData* data) = 0;
+
+    /**
+     * @brief 创建数据。注意创建的数据类型如果不是所管理的数据类型，则无法添加成功.
+     * @return 新数据
+     * @see type(), addData()
+     */
+    virtual AData* createData();
+
+private:
+    /**
+     * @brief 销毁数据，删除内存
+     * @param data 数据
+     */
+    void destroyData(AData* data);
+
+    /** @brief 初始化数据 */
+    void init(ADataSet*);
+};
+
+#ifndef QT_NO_DEBUG_STREAM
+APROCH_API QDebug operator<<(QDebug dbg, const AAbstractDataManager&);
+#endif
+
+APROCH_NAMESPACE_END

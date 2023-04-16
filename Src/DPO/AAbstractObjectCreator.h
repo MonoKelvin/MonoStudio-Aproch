@@ -29,45 +29,46 @@
 #pragma once
 #include "DPO/IDPOService.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 抽象对象创建器
+ */
+class APROCH_API AAbstractObjectCreator : public aproch::IObjectCreator
 {
+public:
+    virtual ~AAbstractObjectCreator() = default;
+
+    using AttrMap = QMap<QString, QString>;
+
+    virtual QString name(void) const;
+
     /**
-     * @brief 抽象对象创建器
+     * @brief 给定的名称是否存在
+     * @param name 名称
+     * @return 是否存在
      */
-    class APROCH_API AAbstractObjectCreator : public aproch::IObjectCreator
-    {
-    public:
-        virtual ~AAbstractObjectCreator() = default;
+    bool hasName(const QString &name) const;
 
-        using AttrMap = QMap<QString, QString>;
+protected:
+    /**
+     * @brief 添加支持创建的对象名称
+     * @param name 名称
+     * @param ns 命名空间
+     * @return 是否添加成功
+     */
+    bool addName(const QString &name, const QString &ns = QString());
 
-        virtual QString name(void) const;
+    /**
+     * @brief 设置属性，如果没有对应的属性，则不设置
+     * @param obj 对象
+     * @param propName 属性名称
+     * @param attrs 属性列表
+     */
+    void setProperty(QObject *obj, const char *propName, const AttrMap &attrs) const;
 
-        /**
-         * @brief 给定的名称是否存在
-         * @param name 名称
-         * @return 是否存在
-         */
-        bool hasName(const QString& name) const;
+private:
+    QVector<QString> m_nameList;
+};
 
-    protected:
-        /**
-         * @brief 添加支持创建的对象名称
-         * @param name 名称
-         * @param ns 命名空间
-         * @return 是否添加成功
-         */
-        bool addName(const QString& name, const QString& ns = QString());
-
-        /**
-         * @brief 设置属性，如果没有对应的属性，则不设置
-         * @param obj 对象
-         * @param propName 属性名称
-         * @param attrs 属性列表
-         */
-        void setProperty(QObject* obj, const char* propName, const AttrMap& attrs) const;
-
-    private:
-        QVector<QString> m_nameList;
-    };
-}
+APROCH_NAMESPACE_END

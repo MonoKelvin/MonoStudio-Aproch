@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    WinUIGloabl.cpp
- * @date    2023-04-08 
+ * @file    ITextTranslatable.h
+ * @date    2023-04-16 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -26,9 +26,19 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
-#include "stdafx.h"
-#include "WinUIGloabl.h"
+#pragma once
 
 APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 可转换为文本数据的接口.
+ */
+class ITextTranslatable
+{
+public:
+    virtual ~ITextTranslatable() = default;
+
+    virtual QString toText() const = 0;
+};
 
 APROCH_NAMESPACE_END

@@ -29,55 +29,56 @@
 #include "stdafx.h"
 #include "AKeyExpressionManager.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+APROCH_INIT_SINGLETON(AKeyExpressionManager);
+
+AKeyExpressionManager::AKeyExpressionManager()
 {
-    APROCH_INIT_SINGLETON(AKeyExpressionManager);
-
-    AKeyExpressionManager::AKeyExpressionManager()
-    {
-        // 注册默认的键值表达式
-        registerKeyExpression<AAndKeyExpression>();
-        registerKeyExpression<AOrKeyExpression>();
-    }
-
-    AKeyExpressionManager::~AKeyExpressionManager()
-    {
-    }
-
-    int AKeyExpressionManager::getSymbolPriority(const QString& symbol) const
-    {
-        if (symbol == AKey_LeftBracket)
-            return 0;
-        if (symbol == AKey_RightBracket)
-            return 10;
-
-        const auto& keyExpr = getKeyExpr(symbol);
-        if (nullptr == keyExpr)
-            return -1;
-
-        return int(keyExpr->priority());
-    }
-
-    bool AKeyExpressionManager::isSymbol(const QString& symbol) const
-    {
-        return getKeyExpr(symbol) || symbol == AKey_LeftBracket || symbol == AKey_RightBracket;
-    }
-
-    QSharedPointer<AAbstractKeyExpression> AKeyExpressionManager::getKeyExpr(const QString& symbol) const
-    {
-        return mKeyExprMap.value(symbol, nullptr);
-    }
-
-    QStringList AKeyExpressionManager::getAllSymbols() const
-    {
-        QSet<QString> symbolSet;
-        symbolSet.insert(AKey_LeftBracket);
-        symbolSet.insert(AKey_RightBracket);
-
-        const auto& keys = mKeyExprMap.keys();
-        for (const auto& key : keys)
-            symbolSet.insert(key);
-
-        return symbolSet.toList();
-    }
+    // 注册默认的键值表达式
+    registerKeyExpression<AAndKeyExpression>();
+    registerKeyExpression<AOrKeyExpression>();
 }
+
+AKeyExpressionManager::~AKeyExpressionManager()
+{
+}
+
+int AKeyExpressionManager::getSymbolPriority(const QString &symbol) const
+{
+    if (symbol == AKey_LeftBracket)
+        return 0;
+    if (symbol == AKey_RightBracket)
+        return 10;
+
+    const auto &keyExpr = getKeyExpr(symbol);
+    if (nullptr == keyExpr)
+        return -1;
+
+    return int(keyExpr->priority());
+}
+
+bool AKeyExpressionManager::isSymbol(const QString &symbol) const
+{
+    return getKeyExpr(symbol) || symbol == AKey_LeftBracket || symbol == AKey_RightBracket;
+}
+
+QSharedPointer<AAbstractKeyExpression> AKeyExpressionManager::getKeyExpr(const QString &symbol) const
+{
+    return mKeyExprMap.value(symbol, nullptr);
+}
+
+QStringList AKeyExpressionManager::getAllSymbols() const
+{
+    QSet<QString> symbolSet;
+    symbolSet.insert(AKey_LeftBracket);
+    symbolSet.insert(AKey_RightBracket);
+
+    const auto &keys = mKeyExprMap.keys();
+    for (const auto &key : keys)
+        symbolSet.insert(key);
+
+    return symbolSet.toList();
+}
+
+APROCH_NAMESPACE_END

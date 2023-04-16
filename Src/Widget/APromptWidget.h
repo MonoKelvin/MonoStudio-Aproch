@@ -28,73 +28,74 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 提示控件类。
+ */
+class APROCH_API APromptWidget : public QWidget
 {
+    Q_OBJECT
+    Q_DISABLE_COPY_MOVE(APromptWidget)
+
+public:
     /**
-     * @brief 提示控件类。
+     * @brief 提示控件的类型
      */
-    class APROCH_API APromptWidget : public QWidget
+    enum EPromptType
     {
-        Q_OBJECT
-        Q_DISABLE_COPY_MOVE(APromptWidget)
-
-    public:
-        /**
-         * @brief 提示控件的类型
-         */
-        enum EPromptType
-        {
-            Alert, // 警告
-            Prompt // 普通的提示
-        };
-        Q_ENUM(EPromptType);
-
-        /**
-         * @brief 构造函数
-         * @param prompt 文本内容
-         * @param parent 要显示在那个父对象上
-         * @param type 提示控件的类型 @see EPromptType
-         * @param duration 等待时长
-         * @note 一般在构建时只要通过new构建出来即可，不许过多步骤，显示完后会自动释放
-         * @example
-         *
-         * QWidget mainWindow;
-         * mainWindow.show();
-         *
-         * new PromptWidget("This is an alert!", &mainWindow, EPromptType::Alert);
-         *
-         */
-        APromptWidget(const QString &content, QWidget *parent, EPromptType type = Prompt, int duration = 3000);
-
-    protected:
-        /**
-         * @brief 构建UI方法
-         * @param prompt 文本内容
-         */
-        /*virtual */ void buildUI(const QString &prompt);
-
-        /**
-         * @brief 显示方法
-         */
-        // virtual  void show();
-
-        void paintEvent(QPaintEvent *) override;
-        void showEvent(QShowEvent *) override;
-
-        /**
-         * @brief 调整文本内容（增加换行），使之可达到的宽度为给定的最大宽度
-         * @param maxWidth 最大宽度
-         * @param font 文本的字体
-         * @param text 文本
-         * @return 调整后的文本大小
-         */
-        QSize adjustText(int maxWidth, const QFont &font, QString &text);
-
-    private:
-        /** @brief 内容文本 */
-        QLabel *mContentLabel;
-
-        /** @brief 停留时长 */
-        int mDuration;
+        Alert, // 警告
+        Prompt // 普通的提示
     };
-}
+    Q_ENUM(EPromptType);
+
+    /**
+     * @brief 构造函数
+     * @param prompt 文本内容
+     * @param parent 要显示在那个父对象上
+     * @param type 提示控件的类型 @see EPromptType
+     * @param duration 等待时长
+     * @note 一般在构建时只要通过new构建出来即可，不许过多步骤，显示完后会自动释放
+     * @example
+     *
+     * QWidget mainWindow;
+     * mainWindow.show();
+     *
+     * new PromptWidget("This is an alert!", &mainWindow, EPromptType::Alert);
+     *
+     */
+    APromptWidget(const QString &content, QWidget *parent, EPromptType type = Prompt, int duration = 3000);
+
+protected:
+    /**
+     * @brief 构建UI方法
+     * @param prompt 文本内容
+     */
+    /*virtual */ void buildUI(const QString &prompt);
+
+    /**
+     * @brief 显示方法
+     */
+    // virtual  void show();
+
+    void paintEvent(QPaintEvent *) override;
+    void showEvent(QShowEvent *) override;
+
+    /**
+     * @brief 调整文本内容（增加换行），使之可达到的宽度为给定的最大宽度
+     * @param maxWidth 最大宽度
+     * @param font 文本的字体
+     * @param text 文本
+     * @return 调整后的文本大小
+     */
+    QSize adjustText(int maxWidth, const QFont &font, QString &text);
+
+private:
+    /** @brief 内容文本 */
+    QLabel *mContentLabel;
+
+    /** @brief 停留时长 */
+    int mDuration;
+};
+
+APROCH_NAMESPACE_END

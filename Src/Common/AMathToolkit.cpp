@@ -29,20 +29,21 @@
 #include "stdafx.h"
 #include "AMathToolkit.h"
 
-namespace aproch
-{
-    int AMathToolkit::NumDigits(unsigned long long n)
-    {
-        if (n == 0)
-            return 1;
-        return (int)std::log10(double(n)) + 1;
-    }
+APROCH_NAMESPACE_BEGIN
 
-    unsigned long long AMathToolkit::Pow10(int exp)
-    {
-        unsigned long long result = 1;
-        for (int i = 0; i < exp; ++i)
-            result *= 10;
-        return result;
-    }
+int AMathToolkit::NumDigits(unsigned long long n)
+{
+    if (n == 0)
+        return 1;
+    return (int)std::log10(double(n)) + 1;
 }
+
+unsigned long long AMathToolkit::Pow10(int exp)
+{
+    unsigned long long result = 1;
+    for (int i = 0; i < exp; ++i)
+        result *= 10;
+    return result;
+}
+
+APROCH_NAMESPACE_END

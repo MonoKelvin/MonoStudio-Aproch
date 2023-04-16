@@ -28,21 +28,22 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
-{
-    /**
-     * @brief 双精度浮点数验证器
-     * @note 解决 QDoubleValidator 无法设置上下限的问题。默认 Notation 设置为@see QDoubleValidator::StandardNotation
-     */
-    class APROCH_API ADoubleValidator : public QDoubleValidator
-    {
-        Q_OBJECT
-        Q_DISABLE_COPY_MOVE(ADoubleValidator)
-    public:
-        explicit ADoubleValidator(QObject *parent = nullptr);
-        ADoubleValidator(double bottom, double top, int decimals, QObject *parent = nullptr);
+APROCH_NAMESPACE_BEGIN
 
-        QValidator::State validate(QString &str, int &i) const override;
-        void fixup(QString &s) const override;
-    };
-}
+/**
+ * @brief 双精度浮点数验证器
+ * @note 解决 QDoubleValidator 无法设置上下限的问题。默认 Notation 设置为@see QDoubleValidator::StandardNotation
+ */
+class APROCH_API ADoubleValidator : public QDoubleValidator
+{
+    Q_OBJECT
+    Q_DISABLE_COPY_MOVE(ADoubleValidator)
+public:
+    explicit ADoubleValidator(QObject *parent = nullptr);
+    ADoubleValidator(double bottom, double top, int decimals, QObject *parent = nullptr);
+
+    QValidator::State validate(QString &str, int &i) const override;
+    void fixup(QString &s) const override;
+};
+
+APROCH_NAMESPACE_END

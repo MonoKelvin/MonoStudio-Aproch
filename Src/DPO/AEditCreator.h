@@ -29,17 +29,18 @@
 #pragma once
 #include "AAbstractObjectCreator.h"
 
-namespace aproch
-{
-    /**
-     * @brief 输入框创建器。
-     * @note 支持创建类型为：QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit
-     */
-    class APROCH_API AEditCreator : public AAbstractObjectCreator
-    {
-    public:
-        AEditCreator();
+APROCH_NAMESPACE_BEGIN
 
-        virtual QObject *createObject(const QString &name, aproch::IDPOData &data, QObject *parent = nullptr);
-    };
-}
+/**
+ * @brief 输入框创建器。
+ * @note 支持创建类型为：QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit
+ */
+class APROCH_API AEditCreator : public AAbstractObjectCreator
+{
+public:
+    AEditCreator();
+
+    virtual QObject *createObject(const QString &name, IDPOData &data, QObject *parent = nullptr);
+};
+
+APROCH_NAMESPACE_END

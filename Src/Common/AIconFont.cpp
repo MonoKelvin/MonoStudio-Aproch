@@ -31,111 +31,112 @@
 
 #include <QFontDatabase>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+QList<AIconFont> AIconFont::sFontList = QList<AIconFont>();
+
+AIconFont::AIconFont(const QString &iconFontPath, const QString &iconNameFile)
 {
-    QList<AIconFont> AIconFont::sFontList = QList<AIconFont>();
-
-    AIconFont::AIconFont(const QString& iconFontPath, const QString& iconNameFile)
+    mID = QFontDatabase::addApplicationFont(iconFontPath);
+    const QStringList fontFamilies = QFontDatabase::applicationFontFamilies(mID);
+    if (!fontFamilies.empty())
     {
-        mID = QFontDatabase::addApplicationFont(iconFontPath);
-        const QStringList fontFamilies = QFontDatabase::applicationFontFamilies(mID);
-        if (!fontFamilies.empty())
-        {
-            mFontFamily = fontFamilies.at(0);
-            parseIconFont(iconNameFile, mCharMap);
-        }
-    }
-
-    AIconFont::~AIconFont()
-    {
-    }
-
-    TIcon AIconFont::getIcon(const TIconName& iconName)
-    {
-        return mCharMap.value(iconName);
-    }
-
-    TIconName AIconFont::getIconName(const TIcon& iconChar)
-    {
-        for (auto kv = mCharMap.constKeyValueBegin(); kv != mCharMap.constKeyValueEnd(); ++kv)
-        {
-            if (kv.base().key() == iconChar)
-                return kv.base().value();
-        }
-
-        return TIconName();
-    }
-
-    QString AIconFont::getFontFamily() const
-    {
-        return mFontFamily;
-    }
-
-    int AIconFont::AddIconFont(const AIconFont& iconFont)
-    {
-        const int index = sFontList.indexOf(iconFont);
-        if (index >= 0)
-        {
-            sFontList.replace(index, iconFont);
-            return true;
-        }
-
-        sFontList.push_back(iconFont);
-        return false;
-    }
-
-    void AIconFont::RemoveIconFont(const QString& iconFontName)
-    {
-        for (auto iter = sFontList.begin(); iter != sFontList.end(); )
-        {
-            if (iter->mFontFamily.toUpper() == iconFontName.trimmed().toUpper())
-                iter = sFontList.erase(iter);
-            else
-                ++iter;
-        }
-    }
-
-    TIcon AIconFont::Icon(const TIconName& iconName, const QString& iconFontName)
-    {
-        const QString normalIFN = iconFontName.trimmed().toUpper();
-        for (const auto& iFont : sFontList)
-        {
-            if (iFont.mFontFamily.toUpper() == normalIFN)
-            {
-                return iFont.mCharMap.value(iconName);
-            }
-        }
-
-        return TIcon();
-    }
-
-    QFont AIconFont::IconFont(const QString& iconFontName)
-    {
-        const QString normalIFN = iconFontName.trimmed().toUpper();
-        for (const auto& iFont : sFontList)
-        {
-            if (iFont.mFontFamily.toUpper() == normalIFN)
-            {
-                return QFont(iFont.mFontFamily);
-            }
-        }
-
-        return QFont();
-    }
-
-    QFont AIconFont::IconFont(int fontId)
-    {
-        const QStringList fontFamilies = QFontDatabase::applicationFontFamilies(fontId);
-        if (!fontFamilies.empty())
-        {
-            return QFont(fontFamilies.at(0));
-        }
-
-        return QFont();
-    }
-
-    bool AIconFont::parseIconFont(const QString& charNameFile, QMap<TIconName, TIcon>& charMap) const
-    {
-        return false;
+        mFontFamily = fontFamilies.at(0);
+        parseIconFont(iconNameFile, mCharMap);
     }
 }
+
+AIconFont::~AIconFont()
+{
+}
+
+TIcon AIconFont::getIcon(const TIconName &iconName)
+{
+    return mCharMap.value(iconName);
+}
+
+TIconName AIconFont::getIconName(const TIcon &iconChar)
+{
+    for (auto kv = mCharMap.constKeyValueBegin(); kv != mCharMap.constKeyValueEnd(); ++kv)
+    {
+        if (kv.base().key() == iconChar)
+            return kv.base().value();
+    }
+
+    return TIconName();
+}
+
+QString AIconFont::getFontFamily() const
+{
+    return mFontFamily;
+}
+
+int AIconFont::AddIconFont(const AIconFont &iconFont)
+{
+    const int index = sFontList.indexOf(iconFont);
+    if (index >= 0)
+    {
+        sFontList.replace(index, iconFont);
+        return true;
+    }
+
+    sFontList.push_back(iconFont);
+    return false;
+}
+
+void AIconFont::RemoveIconFont(const QString &iconFontName)
+{
+    for (auto iter = sFontList.begin(); iter != sFontList.end();)
+    {
+        if (iter->mFontFamily.toUpper() == iconFontName.trimmed().toUpper())
+            iter = sFontList.erase(iter);
+        else
+            ++iter;
+    }
+}
+
+TIcon AIconFont::Icon(const TIconName &iconName, const QString &iconFontName)
+{
+    const QString normalIFN = iconFontName.trimmed().toUpper();
+    for (const auto &iFont : sFontList)
+    {
+        if (iFont.mFontFamily.toUpper() == normalIFN)
+        {
+            return iFont.mCharMap.value(iconName);
+        }
+    }
+
+    return TIcon();
+}
+
+QFont AIconFont::IconFont(const QString &iconFontName)
+{
+    const QString normalIFN = iconFontName.trimmed().toUpper();
+    for (const auto &iFont : sFontList)
+    {
+        if (iFont.mFontFamily.toUpper() == normalIFN)
+        {
+            return QFont(iFont.mFontFamily);
+        }
+    }
+
+    return QFont();
+}
+
+QFont AIconFont::IconFont(int fontId)
+{
+    const QStringList fontFamilies = QFontDatabase::applicationFontFamilies(fontId);
+    if (!fontFamilies.empty())
+    {
+        return QFont(fontFamilies.at(0));
+    }
+
+    return QFont();
+}
+
+bool AIconFont::parseIconFont(const QString &charNameFile, QMap<TIconName, TIcon> &charMap) const
+{
+    return false;
+}
+
+APROCH_NAMESPACE_END

@@ -29,80 +29,92 @@
 #pragma once
 #include <QSet>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+class AData;
+using EMetaType = QMetaType::Type;
+using ADataSet = QSet<AData*>;
+
+/**
+ * @brief 支持控件、对象属性绑定的数据
+ * @note 数据由 AAbstractDataManager 的子类对象创建，管理器可以创建给定类型的数据，
+ *       其子数据生命周期由创建它的管理器管理，不是其父对象的数据管理
+ */
+class APROCH_API AData : public APrototype
 {
+    friend class AAbstractDataManager;
+public:
+    virtual ~AData();
+
     /**
-     * @brief 支持控件、对象属性绑定的数据
-     * @note 数据由 AAbstractDataManager 的子类对象创建，管理器可以创建给定类型的数据，
-     *       其子数据生命周期由创建它的管理器管理，不是其父对象的数据管理
+     * @brief 获取创建该数据的数据管理器
+     * @return 数据管理器
      */
-    class APROCH_API AData
-    {
-        friend class AAbstractDataManager;
-    public:
-        virtual ~AData();
+    AAbstractDataManager* dataManager() const;
 
-        /**
-         * @brief 获取创建该数据的数据管理器
-         * @return 数据管理器
-         */
-        AAbstractDataManager *dataManager() const;
+    /** @brief 克隆数据，并将数据加入到当前数据所在的数据管理器中 */
+    virtual APrototype* clone(const FCopyOptions& op = DeepCopy) const override;
 
-        /** @brief 获取数据相关参数 */
+    const QVariant& getValue() noexcept;
+    QVariant getValue() const noexcept;
+    void setValue(const QVariant& data);
+    EMetaType getType() const noexcept;
 
-        QString getToolTip() const;
-        QString getDescription() const;
-        QString getDataName() const;
-        bool isEnabled() const;
-        bool isModified() const;
+    QString getName() const;
+    void setName(const QString& text);
 
-        /** @brief 设置数据相关参数 */
+    QString getToolTip() const;
+    void setToolTip(const QString& text);
 
-        void setToolTip(const QString &text);
-        void setDescription(const QString &text);
-        void setDataName(const QString &text);
-        void setEnabled(bool enable);
+    QString getDescription() const;
+    void setDescription(const QString& text);
 
-        /** @brief 数据的文本形式 */
-        QString toText() const;
+    bool isEnabled() const;
+    virtual void setEnabled(bool enable);
 
-        /**
-         * @brief 获取子数据集
-         * @return 子数据集
-         */
-        QList<AData *> subDataSet() const;
-        void addSubData(AData *dt);
-        void insertSubData(AData *dt, AData *afterDt);
-        void removeSubData(AData *dt);
+    /** @brief 数据是否有效 */
+    virtual bool isValid() const override;
 
-        /** @brief 是否有效 */
-        virtual bool isValid() const;
+    /** @brief 数据的文本形式 */
+    QString toText() const;
 
-    protected:
-        //explicit AData(const AData& rhs, const FCopyOptions& op = A_Default_Copy_Option);
-        explicit AData(AAbstractDataManager* manager);
-        void dataChanged();
+    QList<AData*> getSubDataSet() const;
+    void addSubData(AData* dt);
 
-    private:
-        /** @brief 父对象数据集 */
-        QSet<AData *> m_parentItems;
+    /** @brief 插入子数据，afterDt为空则在子列表首部插入 */
+    void insertSubData(AData* dt, AData* afterDt);
+    void insertSubData(AData* dt, int index = -1);
+    void removeSubData(AData* dt);
 
-        /** @brief 子对象数据集 */
-        QList<AData *> m_subItems;
+protected:
+    AData(AAbstractDataManager* manager);
+    explicit AData(const AData& rhs, const FCopyOptions& op = A_DEFAULT_COPY_OPTION);
+    void dataChanged();
 
-        /** @brief 管理该数据的数据管理器对象 */
-        AAbstractDataManager* const m_manager;
+private:
+    /** @brief 父对象数据集 */
+    QSet<AData*> m_parentItems;
 
-        /** @brief 数据名称 */
-        QString m_name;
+    /** @brief 子对象数据集 */
+    QList<AData*> m_subItems;
 
-        /** @brief 数据提示内容 */
-        QString m_toolTip;
+    /** @brief 管理该数据的数据管理器对象 */
+    AAbstractDataManager* const m_manager;
 
-        /** @brief 数据描述内容 */
-        QString m_description;
+    /** @brief 数据内容 */
+    QVariant m_value;
 
-        /** @brief 数据是否可用 */
-        bool m_enabled;
-    };
-}
+    /** @brief 数据名称 */
+    QString m_name;
+
+    /** @brief 数据提示内容 */
+    QString m_toolTip;
+
+    /** @brief 数据描述内容 */
+    QString m_description;
+
+    /** @brief 数据是否可用 */
+    bool m_enabled;
+};
+
+APROCH_NAMESPACE_END

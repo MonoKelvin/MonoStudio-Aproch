@@ -31,26 +31,27 @@
 #include "IDataReader.h"
 #include "IDataWriter.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 接口 - 可序列化数据
+ */
+class IDataSerializable
 {
+public:
+    virtual ~IDataSerializable() = default;
+
     /**
-     * @brief 接口 - 可序列化数据
+     * @brief 转换为数据表
+     * @return 数据表
      */
-    class IDataSerializable
-    {
-    public:
-        virtual ~IDataSerializable() = default;
+    virtual void save(IDataWriter *writer) = 0;
 
-        /**
-         * @brief 转换为数据表
-         * @return 数据表
-         */
-        virtual void save(IDataWriter* writer) = 0;
+    /**
+     * @brief 从数据表中读取数据
+     * @param dataMap 数据表
+     */
+    virtual void load(IDataReader *reader) = 0;
+};
 
-        /**
-         * @brief 从数据表中读取数据
-         * @param dataMap 数据表
-         */
-        virtual void load(IDataReader* reader) = 0;
-    };
-}
+APROCH_NAMESPACE_END

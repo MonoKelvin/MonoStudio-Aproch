@@ -27,7 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-#include "WinUI/WinUIGloabl.h"
 #include "../Style/AWinUIStyleObjects.h"
 #include <QLineEdit>
 

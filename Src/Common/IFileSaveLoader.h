@@ -28,28 +28,29 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 接口 - 文件保存和加载
+ */
+class IFileSaveLoader
 {
+public:
+    virtual ~IFileSaveLoader() = default;
+
     /**
-     * 接口 - 文件保存和加载
+     * 保存到文件
+     * @param fileName 文件名
+     * @return bool 是否保存成功
      */
-    class IFileSaveLoader
-    {
-    public:
-        virtual ~IFileSaveLoader() = default;
+    virtual bool save(const QString &fileName) = 0;
 
-        /**
-         * 保存到文件
-         * @param fileName 文件名
-         * @return bool 是否保存成功
-         */
-        virtual bool save(const QString& fileName) = 0;
+    /**
+     * 从文件加载
+     * @param fileName 文件名
+     * @return bool 是否加载成功
+     */
+    virtual bool load(const QString &fileName) = 0;
+};
 
-        /**
-         * 从文件加载
-         * @param fileName 文件名
-         * @return bool 是否加载成功
-         */
-        virtual bool load(const QString& fileName) = 0;
-    };
-}
+APROCH_NAMESPACE_END

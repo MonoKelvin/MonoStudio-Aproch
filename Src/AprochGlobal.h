@@ -38,10 +38,24 @@
 
 #include "AprochExportDefine.h"
 
-class QLabel;
+#if defined(APROCH_NAMESPACE)
+#define APROCH_NAMESPACE aproch
+#endif
 
-#define APROCH_NAMESPACE_BEGIN namespace aproch {
+#if !defined(APROCH_NAMESPACE)
+#define APROCH_NAMESPACE_BEGIN
+#define APROCH_NAMESPACE_END
+#define APROCH_USE_NAMESPACE
+#define APROCH_CLASSNAME(classname) classname
+#define APROCH_PRE_NAMESPACE(classname) classname
+#else
+#define APROCH_NAMESPACE_BEGIN namespace APROCH_NAMESPACE {
 #define APROCH_NAMESPACE_END }
+#define APROCH_USE_NAMESPACE using namespace APROCH_NAMESPACE;
+#define APROCH_CLASSNAME(classname) APROCH_NAMESPACE::classname
+#define APROCH_PRE_NAMESPACE(classname) APROCH_NAMESPACE::classname
+#endif
+
 
 /** 定义接口类型宏 */
 #ifdef interface
@@ -219,7 +233,7 @@ extern APROCH_API const char* APropValue_Panel;     // 面板
 
 /** @brief 获取服务 */
 #define APROCH_SERVICE(_ServiceInterface_, _ServiceName_) \
-    qSharedPointerCast<_ServiceInterface_, aproch::IService>(aproch::AApplicationContext::getInstance()->getService(_ServiceName_))
+    qSharedPointerCast<_ServiceInterface_, APROCH_NAMESPACE::IService>(APROCH_NAMESPACE::AApplicationContext::getInstance()->getService(_ServiceName_))
 
 /** @brief 判断两个类是否有继承关系，并且继承自<_BaseName_>的类需要Q_GADGET或者Q_OBJECT的元对象声明宏 */
 #define APROCH_ASSERT_IS_DERIVED_BY_METAOBJECT(_BaseName_, _DerivedName_) \
@@ -337,3 +351,5 @@ APROCH_NAMESPACE_BEGIN
 extern APROCH_API QVariant GetDefaultValueByType(const QString& typeName);
 
 APROCH_NAMESPACE_END
+
+APROCH_USE_NAMESPACE

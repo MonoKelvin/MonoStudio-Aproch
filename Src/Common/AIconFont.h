@@ -28,115 +28,116 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+using TIcon = QChar;
+using TIconName = QString;
+
+/**
+ * @brief 图标字体
+ * @note 默认使用了 Font Awesome 系列的图标字体。
+ */
+class APROCH_API AIconFont
 {
-    using TIcon = QChar;
-    using TIconName = QString;
+public:
+    explicit AIconFont(const QString &iconFontPath, const QString &iconNameFile = QString());
+    virtual ~AIconFont();
 
     /**
-     * @brief 图标字体
-     * @note 默认使用了 Font Awesome 系列的图标字体。
+     * @brief 获取图标对应的字符
+     * @param iconName 图标名
+     * @return 图标字符
      */
-    class APROCH_API AIconFont
+    TIcon getIcon(const TIconName &iconName);
+
+    /**
+     * @brief 获取图标字符对应的名称
+     * @param iconChar 图标字符
+     * @return 图标名称。如果没有对应的名称则返回空字符
+     */
+    TIconName getIconName(const TIcon &iconChar);
+
+    /**
+     * @brief 获取字体名称
+     * @return 字体名称
+     */
+    QString getFontFamily() const;
+
+    /**
+     * @brief 获取字体ID
+     * @return 字体ID
+     */
+    inline int getFontID() const noexcept
     {
-    public:
-        explicit AIconFont(const QString &iconFontPath, const QString &iconNameFile = QString());
-        virtual ~AIconFont();
+        return mID;
+    }
 
-        /**
-         * @brief 获取图标对应的字符
-         * @param iconName 图标名
-         * @return 图标字符
-         */
-        TIcon getIcon(const TIconName &iconName);
+    /**
+     * @brief 添加图标字体。如果存在则覆盖
+     * @param iconFont 图标字体
+     * @return 字体ID
+     */
+    static int AddIconFont(const AIconFont &iconFont);
 
-        /**
-         * @brief 获取图标字符对应的名称
-         * @param iconChar 图标字符
-         * @return 图标名称。如果没有对应的名称则返回空字符
-         */
-        TIconName getIconName(const TIcon &iconChar);
+    /**
+     * @brief 删除图标字体
+     * @param iconFontName 图标字体名称
+     */
+    static void RemoveIconFont(const QString &iconFontName);
 
-        /**
-         * @brief 获取字体名称
-         * @return 字体名称
-         */
-        QString getFontFamily() const;
+    /**
+     * @brief 获取图标字符
+     * @param iconName 图标名称
+     * @param iconFontName 图标字体名称
+     * @return 图标名称
+     */
+    static TIcon Icon(const TIconName &iconName, const QString &iconFontName);
 
-        /**
-         * @brief 获取字体ID
-         * @return 字体ID
-         */
-        inline int getFontID() const noexcept
-        {
-            return mID;
-        }
+    /**
+     * @brief 获取图标字体
+     * @param iconFontName 图标字体名称
+     * @return 图标字体。如果字体不存在，则返回默认字体
+     */
+    static QFont IconFont(const QString &iconFontName);
 
-        /**
-         * @brief 添加图标字体。如果存在则覆盖
-         * @param iconFont 图标字体
-         * @return 字体ID
-         */
-        static int AddIconFont(const AIconFont &iconFont);
+    /**
+     * @brief 获取图标字体
+     * @param fontId 图标字体ID
+     * @return 图标字体。如果字体不存在，则返回默认字体
+     */
+    static QFont IconFont(int fontId);
 
-        /**
-         * @brief 删除图标字体
-         * @param iconFontName 图标字体名称
-         */
-        static void RemoveIconFont(const QString &iconFontName);
+    /**
+     * @brief 是否和另一个图标字体相等
+     * @param rhs 图标字体
+     * @return 是否相等
+     */
+    inline bool operator==(const AIconFont &rhs) const
+    {
+        return mFontFamily.toUpper() == rhs.mFontFamily.toUpper();
+    }
 
-        /**
-         * @brief 获取图标字符
-         * @param iconName 图标名称
-         * @param iconFontName 图标字体名称
-         * @return 图标名称
-         */
-        static TIcon Icon(const TIconName &iconName, const QString &iconFontName);
+protected:
+    /**
+     * @brief 解析字符名称
+     * @param iconNameFile 字符名称文件
+     * @param charMap 字符表
+     * @return 是否解析成功
+     */
+    virtual bool parseIconFont(const QString &iconNameFile, QMap<TIconName, TIcon> &charMap) const;
 
-        /**
-         * @brief 获取图标字体
-         * @param iconFontName 图标字体名称
-         * @return 图标字体。如果字体不存在，则返回默认字体
-         */
-        static QFont IconFont(const QString &iconFontName);
+private:
+    /** @brief 字体表。<字体名称, 字体> */
+    static QList<AIconFont> sFontList;
 
-        /**
-         * @brief 获取图标字体
-         * @param fontId 图标字体ID
-         * @return 图标字体。如果字体不存在，则返回默认字体
-         */
-        static QFont IconFont(int fontId);
+    /** @brief 字符表 */
+    QMap<TIconName, TIcon> mCharMap;
 
-        /**
-         * @brief 是否和另一个图标字体相等
-         * @param rhs 图标字体
-         * @return 是否相等
-         */
-        inline bool operator==(const AIconFont &rhs) const
-        {
-            return mFontFamily.toUpper() == rhs.mFontFamily.toUpper();
-        }
+    /** @brief 字体名称 */
+    QString mFontFamily;
 
-    protected:
-        /**
-         * @brief 解析字符名称
-         * @param iconNameFile 字符名称文件
-         * @param charMap 字符表
-         * @return 是否解析成功
-         */
-        virtual bool parseIconFont(const QString &iconNameFile, QMap<TIconName, TIcon> &charMap) const;
+    /** @brief 字体ID */
+    int mID;
+};
 
-    private:
-        /** @brief 字体表。<字体名称, 字体> */
-        static QList<AIconFont> sFontList;
-
-        /** @brief 字符表 */
-        QMap<TIconName, TIcon> mCharMap;
-
-        /** @brief 字体名称 */
-        QString mFontFamily;
-
-        /** @brief 字体ID */
-        int mID;
-    };
-}
+APROCH_NAMESPACE_END

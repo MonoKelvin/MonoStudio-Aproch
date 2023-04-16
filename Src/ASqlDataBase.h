@@ -31,80 +31,81 @@
 
 class QRecursiveMutex;
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 封装QtSqlDataBase的数据库服务
+ */
+class APROCH_API ASqlDataBase : public IDataBaseService
 {
+public:
+    ASqlDataBase();
+    virtual ~ASqlDataBase();
+
     /**
-     * @brief 封装QtSqlDataBase的数据库服务
+     * @brief 添加数据库
+     * @param url 数据路地址
+     * @param username 账户名
+     * @param password 密码
+     * @param connectionName 连接名称。连接名称不能和现有连接的数据库连接名称重复
+     * @return bool 是否添加成功
      */
-    class APROCH_API ASqlDataBase : public IDataBaseService
-    {
-    public:
-        ASqlDataBase();
-        virtual ~ASqlDataBase();
+    virtual bool addDatabase(const QString &url, const QString &username, const QString &password, const QString &connectionName) override;
 
-        /**
-         * @brief 添加数据库
-         * @param url 数据路地址
-         * @param username 账户名
-         * @param password 密码
-         * @param connectionName 连接名称。连接名称不能和现有连接的数据库连接名称重复
-         * @return bool 是否添加成功
-         */
-        virtual bool addDatabase(const QString &url, const QString &username, const QString &password, const QString &connectionName) override;
+    /**
+     * @brief 移除连接的数据库
+     * @param connectionName 连接名称
+     */
+    virtual void removeDatabase(const QString &connectionName) override;
 
-        /**
-         * @brief 移除连接的数据库
-         * @param connectionName 连接名称
-         */
-        virtual void removeDatabase(const QString &connectionName) override;
+    /**
+     * @brief 打开指定连接名称的数据库
+     * @param connectionName 连接名称，如果为空则打开当前正连接的数据库
+     * @return 是否打开成功
+     */
+    virtual bool open(const QString &connectionName = ANull_String) override;
 
-        /**
-         * @brief 打开指定连接名称的数据库
-         * @param connectionName 连接名称，如果为空则打开当前正连接的数据库
-         * @return 是否打开成功
-         */
-        virtual bool open(const QString &connectionName = ANull_String) override;
+    /**
+     * @brief 打开指定连接名称的数据库
+     * @param username 账户名
+     * @param password 密码
+     * @param connectionName 连接名称，如果为空则打开当前正连接的数据库
+     * @return 是否打开成功
+     */
+    virtual bool open(const QString &username, const QString &password, const QString &connectionName = ANull_String) override;
 
-        /**
-         * @brief 打开指定连接名称的数据库
-         * @param username 账户名
-         * @param password 密码
-         * @param connectionName 连接名称，如果为空则打开当前正连接的数据库
-         * @return 是否打开成功
-         */
-        virtual bool open(const QString &username, const QString &password, const QString &connectionName = ANull_String) override;
+    /**
+     * @brief 关闭数据库
+     * @param connectionName 连接名称，如果为空则关闭当前正连接的数据库
+     */
+    virtual void close(const QString &connectionName = ANull_String) override;
 
-        /**
-         * @brief 关闭数据库
-         * @param connectionName 连接名称，如果为空则关闭当前正连接的数据库
-         */
-        virtual void close(const QString &connectionName = ANull_String) override;
+    /**
+     * @brief 执行语句
+     * @param query sql语句
+     * @return 错误结果
+     */
+    virtual QSqlError exec(const QString &query) override;
 
-        /**
-         * @brief 执行语句
-         * @param query sql语句
-         * @return 错误结果
-         */
-        virtual QSqlError exec(const QString &query) override;
+    /**
+     * @brief 执行查询语句
+     * @param sqlQuery 查询语句
+     * @return 查询结果
+     */
+    virtual QSqlQuery query(const QString &sqlQuery) override;
 
-        /**
-         * @brief 执行查询语句
-         * @param sqlQuery 查询语句
-         * @return 查询结果
-         */
-        virtual QSqlQuery query(const QString &sqlQuery) override;
+    /**
+     * @brief 获取当前开打的数据库
+     * @return SQL数据库
+     */
+    virtual QSqlDatabase &dataBase() override;
 
-        /**
-         * @brief 获取当前开打的数据库
-         * @return SQL数据库
-         */
-        virtual QSqlDatabase &dataBase() override;
+protected:
+    /** @brief 当前数据库对象 */
+    QSharedPointer<QSqlDatabase> mSqlDB;
 
-    protected:
-        /** @brief 当前数据库对象 */
-        QSharedPointer<QSqlDatabase> mSqlDB;
+    /** @brief 互斥锁 */
+    QRecursiveMutex *mMutex;
+};
 
-        /** @brief 互斥锁 */
-        QRecursiveMutex *mMutex;
-    };
-}
+APROCH_NAMESPACE_END

@@ -29,32 +29,33 @@
 #pragma once
 #include "AWindow.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+class AWheelColorPicker;
+class AColorSliderControl;
+
+/**
+ * @brief HSV色盘拾取控件
+ */
+class APROCH_API AWheelColorPickerWidget : public AWindow
 {
-    class AWheelColorPicker;
-    class AColorSliderControl;
+    Q_OBJECT
+public:
+    explicit AWheelColorPickerWidget(const QColor &color = Qt::white, QWidget *parent = nullptr);
 
-    /**
-     * @brief HSV色盘拾取控件
-     */
-    class APROCH_API AWheelColorPickerWidget : public AWindow
-    {
-        Q_OBJECT
-    public:
-        explicit AWheelColorPickerWidget(const QColor &color = Qt::white, QWidget *parent = nullptr);
+protected:
+protected:
+    /** @brief 颜色拾取圆盘 */
+    AWheelColorPicker *mColorPicker;
 
-    protected:
-    protected:
-        /** @brief 颜色拾取圆盘 */
-        AWheelColorPicker *mColorPicker;
+    /** @brief 滑动条H */
+    AColorSliderControl *mSliderH;
 
-        /** @brief 滑动条H */
-        AColorSliderControl *mSliderH;
+    /** @brief 滑动条S */
+    AColorSliderControl *mSliderS;
 
-        /** @brief 滑动条S */
-        AColorSliderControl *mSliderS;
+    /** @brief 滑动条V */
+    AColorSliderControl *mSliderV;
+};
 
-        /** @brief 滑动条V */
-        AColorSliderControl *mSliderV;
-    };
-}
+APROCH_NAMESPACE_END

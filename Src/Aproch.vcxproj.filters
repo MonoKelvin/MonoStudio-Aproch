@@ -185,9 +185,6 @@
     <ClInclude Include="Data\AData.h">
       <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="WinUI\WinUIGloabl.h">
-      <Filter>WinUI</Filter>
-    </ClInclude>
     <ClInclude Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p_p.h">
       <Filter>WinUI\Private\qwindowsstyle</Filter>
     </ClInclude>
@@ -259,6 +256,12 @@
     </ClInclude>
     <ClInclude Include="WinUI\Style\AWinUIStyleObjects.h">
       <Filter>WinUI\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ADataType.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ITextTranslatable.h">
+      <Filter>Common\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -406,9 +409,6 @@
     <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle.cpp">
       <Filter>WinUI\Private\qwindowsstyle</Filter>
     </ClCompile>
-    <ClCompile Include="WinUI\WinUIGloabl.cpp">
-      <Filter>WinUI</Filter>
-    </ClCompile>
     <ClCompile Include="Common\AStringToolkit.cpp">
       <Filter>Common\Toolkit</Filter>
     </ClCompile>
@@ -444,6 +444,12 @@
     </ClCompile>
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp">
       <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ADataType.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ADataContainer.cpp">
+      <Filter>Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -524,6 +530,9 @@
     </QtMoc>
     <QtMoc Include="Common\ADoubleValidator.h">
       <Filter>Common\Validator</Filter>
+    </QtMoc>
+    <QtMoc Include="Data\ADataContainer.h">
+      <Filter>Data</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

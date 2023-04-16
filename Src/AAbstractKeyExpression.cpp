@@ -29,31 +29,31 @@
 #include "stdafx.h"
 #include "AAbstractKeyExpression.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+AAbstractKeyExpression::AAbstractKeyExpression()
 {
-    AAbstractKeyExpression::AAbstractKeyExpression()
-    {
-    }
-
-    AAbstractKeyExpression::~AAbstractKeyExpression()
-    {
-    }
-
-    bool AAbstractKeyExpression::key1() const
-    {
-        const auto& theService = APROCH_SERVICE(IKeyExpressionService, AServiceName_KeyExpression);
-        if (nullptr == theService)
-            return false;
-
-        return mKeys.empty() ? false : theService->getValue(mKeys.front()).toBool();
-    }
-
-    bool AAbstractKeyExpression::key2() const
-    {
-        const auto& theService = APROCH_SERVICE(IKeyExpressionService, AServiceName_KeyExpression);
-        if (nullptr == theService)
-            return false;
-
-        return mKeys.size() < 1 ? false : theService->getValue(mKeys[1]).toBool();
-    }
 }
+
+AAbstractKeyExpression::~AAbstractKeyExpression()
+{
+}
+
+bool AAbstractKeyExpression::key1() const
+{
+    const auto &theService = APROCH_SERVICE(IKeyExpressionService, AServiceName_KeyExpression);
+    if (nullptr == theService)
+        return false;
+
+    return mKeys.empty() ? false : theService->getValue(mKeys.front()).toBool();
+}
+
+bool AAbstractKeyExpression::key2() const
+{
+    const auto &theService = APROCH_SERVICE(IKeyExpressionService, AServiceName_KeyExpression);
+    if (nullptr == theService)
+        return false;
+
+    return mKeys.size() < 1 ? false : theService->getValue(mKeys[1]).toBool();
+}
+
+APROCH_NAMESPACE_END

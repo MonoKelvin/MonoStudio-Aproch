@@ -29,90 +29,91 @@
 #pragma once
 #include "Common/IService.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 应用程序上下文
+ */
+class APROCH_API AApplicationContext : public QObject
 {
+    Q_OBJECT
+    APROCH_OBJECT_SINGLETON(AApplicationContext);
+
+public:
+    ~AApplicationContext();
+
     /**
-     * @brief 应用程序上下文
+     * @brief 运行应用
+     * @param mainWidget 主窗口
      */
-    class APROCH_API AApplicationContext : public QObject
+    void run(QWidget *mainWidget = nullptr);
+
+    /**
+     * @brief 注册服务。如果服务已存在则会被覆盖
+     * @tparam ServiceName 服务类名
+     */
+    template <class ServiceName>
+    IServicePtr registerService(const char *name)
     {
-        Q_OBJECT
-        APROCH_OBJECT_SINGLETON(AApplicationContext);
+        APROCH_ASSERT_IS_DERIVED(IService, ServiceName);
+        unregisterService(name);
+        const IServicePtr pService = IServicePtr(new ServiceName);
+        mServiceMap[name] = pService;
+        return pService;
+    }
 
-    public:
-        ~AApplicationContext();
+    /**
+     * @brief 取消注册服务
+     * @tparam ServiceName 服务名称
+     * @return 是否取消注册成功
+     */
+    void unregisterService(const char *name);
 
-        /**
-         * @brief 运行应用
-         * @param mainWidget 主窗口
-         */
-        void run(QWidget* mainWidget = nullptr);
+    /**
+     * @brief 获取服务
+     * @tparam ServiceName 服务名称
+     * @return 服务
+     */
+    IServicePtr getService(const char *name) const
+    {
+        return mServiceMap.value(name);
+    }
 
-        /**
-         * @brief 注册服务。如果服务已存在则会被覆盖
-         * @tparam ServiceName 服务类名
-         */
-        template <class ServiceName>
-        IServicePtr registerService(const char* name)
-        {
-            APROCH_ASSERT_IS_DERIVED(aproch::IService, ServiceName);
-            unregisterService(name);
-            const IServicePtr pService = IServicePtr(new ServiceName);
-            mServiceMap[name] = pService;
-            return pService;
-        }
+    /**
+     * @brief 获取应用程序的主窗口
+     * @return 应用程序的主窗口
+     */
+    static QWidget *MainWindow() noexcept;
 
-        /**
-         * @brief 取消注册服务
-         * @tparam ServiceName 服务名称
-         * @return 是否取消注册成功
-         */
-        void unregisterService(const char* name);
+    /**
+     * @brief 获取程序所在的绝对路径，不包含文件名。如程序路径为 C:/Work/Dir/aproch.exe，则得到的绝对路径为 C:/Work/Dir
+     * @see AppPath
+     * @return 绝对路径
+     */
+    static QString AppDirectory();
 
-        /**
-         * @brief 获取服务
-         * @tparam ServiceName 服务名称
-         * @return 服务
-         */
-        IServicePtr getService(const char* name) const
-        {
-            return mServiceMap.value(name);
-        }
+    /**
+     * @brief 获取程序所在的绝对路径文件名。如程序路径为 C:/Work/Dir/aproch.exe，则得到的绝对路径为 C:/Work/Dir/aproch.exe
+     * @see AppDirectory
+     * @return 绝对路径文件名
+     */
+    static QString AppPath();
 
-        /**
-         * @brief 获取应用程序的主窗口
-         * @return 应用程序的主窗口
-         */
-        static QWidget* MainWindow() noexcept;
+    /**
+     * @brief 应用程序的名称。如程序路径为 C:/Work/Dir/aproch.exe，则得到的程序名称为 aproch
+     * @return 名称
+     */
+    static QString AppName();
 
-        /**
-         * @brief 获取程序所在的绝对路径，不包含文件名。如程序路径为 C:/Work/Dir/aproch.exe，则得到的绝对路径为 C:/Work/Dir
-         * @see AppPath
-         * @return 绝对路径
-         */
-        static QString AppDirectory();
+private:
+    AApplicationContext(QObject *parent = nullptr);
 
-        /**
-         * @brief 获取程序所在的绝对路径文件名。如程序路径为 C:/Work/Dir/aproch.exe，则得到的绝对路径为 C:/Work/Dir/aproch.exe
-         * @see AppDirectory
-         * @return 绝对路径文件名
-         */
-        static QString AppPath();
+private:
+    /** @brief 服务表 */
+    QMap<QString, IServicePtr> mServiceMap;
 
-        /**
-         * @brief 应用程序的名称。如程序路径为 C:/Work/Dir/aproch.exe，则得到的程序名称为 aproch
-         * @return 名称
-         */
-        static QString AppName();
+    /** @brief 主窗口 */
+    static QWidget *sMainWindow;
+};
 
-    private:
-        AApplicationContext(QObject* parent = nullptr);
-
-    private:
-        /** @brief 服务表 */
-        QMap<QString, IServicePtr> mServiceMap;
-
-        /** @brief 主窗口 */
-        static QWidget* sMainWindow;
-    };
-}
+APROCH_NAMESPACE_END

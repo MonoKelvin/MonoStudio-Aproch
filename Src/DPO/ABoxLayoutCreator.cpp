@@ -29,54 +29,55 @@
 #include "stdafx.h"
 #include "ABoxLayoutCreator.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+const QString aStr_VLayout = "vlayout";
+const QString aStr_HLayout = "hlayout";
+const QString aStr_BoxLayout = "boxlayout";
+const QString aStr_Layout = "layout";
+const QString aStr_Direction = "direction";
+
+ABoxLayoutCreator::ABoxLayoutCreator()
 {
-    const QString aStr_VLayout = "vlayout";
-    const QString aStr_HLayout = "hlayout";
-    const QString aStr_BoxLayout = "boxlayout";
-    const QString aStr_Layout = "layout";
-    const QString aStr_Direction = "direction";
-
-    ABoxLayoutCreator::ABoxLayoutCreator()
-    {
-        addName(aStr_VLayout);
-        addName(aStr_HLayout);
-        addName(aStr_BoxLayout);
-        addName(aStr_Layout);
-        addName(aStr_Direction);
-    }
-
-    QObject *ABoxLayoutCreator::createObject(const QString &name, aproch::IDPOData &data, QObject *parent)
-    {
-        const QString objName = name.trimmed().toLower();
-        ADPWData &dpwData = (ADPWData &)data;
-
-        QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight, qobject_cast<QWidget *>(parent));
-
-        // direction
-        if (objName == aStr_VLayout)
-            layout->setDirection(QBoxLayout::TopToBottom);
-        else if (objName == aStr_BoxLayout || objName == aStr_Layout)
-        {
-            const QString direction = dpwData.value(aStr_Direction).toLower();
-            if (direction.isEmpty() || direction == "lefttoright" || direction == "l2r")
-                layout->setDirection(QBoxLayout::LeftToRight);
-            else if (direction == "righttoleft" || direction == "r2l")
-                layout->setDirection(QBoxLayout::RightToLeft);
-            else if (direction == "toptobottom" || direction == "t2b")
-                layout->setDirection(QBoxLayout::TopToBottom);
-            else if (direction == "bottomtotop" || direction == "b2t")
-                layout->setDirection(QBoxLayout::BottomToTop);
-            else
-            {
-                // todo: log
-                qWarning(QString("Unrecognized attribute value \'%1\' for \'%2\'")
-                                .arg(direction)
-                                .arg(objName)
-                                .toLatin1());
-            }
-        }
-
-        return layout;
-    }
+    addName(aStr_VLayout);
+    addName(aStr_HLayout);
+    addName(aStr_BoxLayout);
+    addName(aStr_Layout);
+    addName(aStr_Direction);
 }
+
+QObject *ABoxLayoutCreator::createObject(const QString &name, IDPOData &data, QObject *parent)
+{
+    const QString objName = name.trimmed().toLower();
+    ADPWData &dpwData = (ADPWData &)data;
+
+    QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight, qobject_cast<QWidget *>(parent));
+
+    // direction
+    if (objName == aStr_VLayout)
+        layout->setDirection(QBoxLayout::TopToBottom);
+    else if (objName == aStr_BoxLayout || objName == aStr_Layout)
+    {
+        const QString direction = dpwData.value(aStr_Direction).toLower();
+        if (direction.isEmpty() || direction == "lefttoright" || direction == "l2r")
+            layout->setDirection(QBoxLayout::LeftToRight);
+        else if (direction == "righttoleft" || direction == "r2l")
+            layout->setDirection(QBoxLayout::RightToLeft);
+        else if (direction == "toptobottom" || direction == "t2b")
+            layout->setDirection(QBoxLayout::TopToBottom);
+        else if (direction == "bottomtotop" || direction == "b2t")
+            layout->setDirection(QBoxLayout::BottomToTop);
+        else
+        {
+            // todo: log
+            qWarning(QString("Unrecognized attribute value \'%1\' for \'%2\'")
+                         .arg(direction)
+                         .arg(objName)
+                         .toLatin1());
+        }
+    }
+
+    return layout;
+}
+
+APROCH_NAMESPACE_END

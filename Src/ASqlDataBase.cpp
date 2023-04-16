@@ -34,110 +34,111 @@
 #include <QSqlQuery>
 #include <QRecursiveMutex>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+ASqlDataBase::ASqlDataBase()
 {
-    ASqlDataBase::ASqlDataBase()
-    {
-        mSqlDB = QSharedPointer<QSqlDatabase>(new QSqlDatabase());
-        mMutex = new QRecursiveMutex();
-    }
-
-    ASqlDataBase::~ASqlDataBase()
-    {
-        mMutex->lock();
-        const auto& connectinonNameList = QSqlDatabase::connectionNames();
-        for (const auto& connectionName : connectinonNameList)
-            QSqlDatabase::removeDatabase(connectionName);
-        mMutex->unlock();
-
-        delete mMutex;
-        mMutex = nullptr;
-    }
-
-    bool ASqlDataBase::addDatabase(const QString& url, const QString& username, const QString& password,
-                                    const QString& connectionName)
-    {
-        QMutexLocker locker(mMutex);
-
-        // 是否已经存在连接名
-        if (QSqlDatabase::connectionNames().contains(connectionName))
-            return false;
-
-        mSqlDB.reset(new QSqlDatabase(QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), connectionName)));
-        mSqlDB->setDatabaseName(url);
-        if (mSqlDB->password().isEmpty())
-        {
-            mSqlDB->setUserName(username);
-            mSqlDB->setPassword(password);
-        }
-
-        const bool ok = mSqlDB->open(username, password);
-
-        return ok;
-    }
-
-    void ASqlDataBase::removeDatabase(const QString& connectionName)
-    {
-        QMutexLocker locker(mMutex);
-        QSqlDatabase::removeDatabase(connectionName);
-    }
-
-    bool ASqlDataBase::open(const QString& connectionName)
-    {
-        QMutexLocker locker(mMutex);
-
-        if (!connectionName.isEmpty())
-            mSqlDB.reset(new QSqlDatabase(QSqlDatabase::database(connectionName)));
-
-        return mSqlDB->open();
-    }
-
-    bool ASqlDataBase::open(const QString& username, const QString& password, const QString& connectionName)
-    {
-        QMutexLocker locker(mMutex);
-
-        if (!connectionName.isEmpty())
-            mSqlDB.reset(new QSqlDatabase(QSqlDatabase::database(connectionName)));
-
-        return mSqlDB->open(username, password);
-    }
-
-    void ASqlDataBase::close(const QString& connectionName)
-    {
-        QMutexLocker locker(mMutex);
-
-        if (!connectionName.isEmpty())
-            mSqlDB.reset(new QSqlDatabase(QSqlDatabase::database(connectionName)));
-
-        mSqlDB->close();
-    }
-
-    QSqlError ASqlDataBase::exec(const QString& query)
-    {
-        QMutexLocker locker(mMutex);
-
-        if (!mSqlDB->isOpen())
-            open();
-
-        QSqlQuery sqlQuery(*mSqlDB);
-        sqlQuery.exec(query);
-        return sqlQuery.lastError();
-    }
-
-    QSqlQuery ASqlDataBase::query(const QString& sqlQuery)
-    {
-        QMutexLocker locker(mMutex);
-
-        if (!mSqlDB->isOpen())
-            open();
-
-        QSqlQuery query(*mSqlDB);
-        query.exec(sqlQuery);
-        return query;
-    }
-
-    QSqlDatabase& ASqlDataBase::dataBase()
-    {
-        return *mSqlDB;
-    }
+    mSqlDB = QSharedPointer<QSqlDatabase>(new QSqlDatabase());
+    mMutex = new QRecursiveMutex();
 }
+
+ASqlDataBase::~ASqlDataBase()
+{
+    mMutex->lock();
+    const auto &connectinonNameList = QSqlDatabase::connectionNames();
+    for (const auto &connectionName : connectinonNameList)
+        QSqlDatabase::removeDatabase(connectionName);
+    mMutex->unlock();
+
+    delete mMutex;
+    mMutex = nullptr;
+}
+
+bool ASqlDataBase::addDatabase(const QString &url, const QString &username, const QString &password,
+                               const QString &connectionName)
+{
+    QMutexLocker locker(mMutex);
+
+    // 是否已经存在连接名
+    if (QSqlDatabase::connectionNames().contains(connectionName))
+        return false;
+
+    mSqlDB.reset(new QSqlDatabase(QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), connectionName)));
+    mSqlDB->setDatabaseName(url);
+    if (mSqlDB->password().isEmpty())
+    {
+        mSqlDB->setUserName(username);
+        mSqlDB->setPassword(password);
+    }
+
+    const bool ok = mSqlDB->open(username, password);
+
+    return ok;
+}
+
+void ASqlDataBase::removeDatabase(const QString &connectionName)
+{
+    QMutexLocker locker(mMutex);
+    QSqlDatabase::removeDatabase(connectionName);
+}
+
+bool ASqlDataBase::open(const QString &connectionName)
+{
+    QMutexLocker locker(mMutex);
+
+    if (!connectionName.isEmpty())
+        mSqlDB.reset(new QSqlDatabase(QSqlDatabase::database(connectionName)));
+
+    return mSqlDB->open();
+}
+
+bool ASqlDataBase::open(const QString &username, const QString &password, const QString &connectionName)
+{
+    QMutexLocker locker(mMutex);
+
+    if (!connectionName.isEmpty())
+        mSqlDB.reset(new QSqlDatabase(QSqlDatabase::database(connectionName)));
+
+    return mSqlDB->open(username, password);
+}
+
+void ASqlDataBase::close(const QString &connectionName)
+{
+    QMutexLocker locker(mMutex);
+
+    if (!connectionName.isEmpty())
+        mSqlDB.reset(new QSqlDatabase(QSqlDatabase::database(connectionName)));
+
+    mSqlDB->close();
+}
+
+QSqlError ASqlDataBase::exec(const QString &query)
+{
+    QMutexLocker locker(mMutex);
+
+    if (!mSqlDB->isOpen())
+        open();
+
+    QSqlQuery sqlQuery(*mSqlDB);
+    sqlQuery.exec(query);
+    return sqlQuery.lastError();
+}
+
+QSqlQuery ASqlDataBase::query(const QString &sqlQuery)
+{
+    QMutexLocker locker(mMutex);
+
+    if (!mSqlDB->isOpen())
+        open();
+
+    QSqlQuery query(*mSqlDB);
+    query.exec(sqlQuery);
+    return query;
+}
+
+QSqlDatabase &ASqlDataBase::dataBase()
+{
+    return *mSqlDB;
+}
+
+APROCH_NAMESPACE_END

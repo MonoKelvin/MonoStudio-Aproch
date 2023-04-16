@@ -29,30 +29,31 @@
 #include "stdafx.h"
 #include "AAndKeyExpression.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+const char *AAndKeyExpression::symbol() const
 {
-    const char* AAndKeyExpression::symbol() const
-    {
-        return "&&";
-    }
-
-    int AAndKeyExpression::type() const
-    {
-        return EKeyExprType::And;
-    }
-
-    AAbstractKeyExpression::ESymbolPriority AAndKeyExpression::priority() const
-    {
-        return ESymbolPriority::Low;
-    }
-
-    int AAndKeyExpression::operationCount() const
-    {
-        return 2;
-    }
-
-    bool AAndKeyExpression::parse()
-    {
-        return key1() && key2();
-    }
+    return "&&";
 }
+
+int AAndKeyExpression::type() const
+{
+    return EKeyExprType::And;
+}
+
+AAbstractKeyExpression::ESymbolPriority AAndKeyExpression::priority() const
+{
+    return ESymbolPriority::Low;
+}
+
+int AAndKeyExpression::operationCount() const
+{
+    return 2;
+}
+
+bool AAndKeyExpression::parse()
+{
+    return key1() && key2();
+}
+
+APROCH_NAMESPACE_END

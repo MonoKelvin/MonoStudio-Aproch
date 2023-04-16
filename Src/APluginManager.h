@@ -28,44 +28,45 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 插件管理器
+ */
+class APROCH_API APluginManager
 {
+    APROCH_SINGLETON(APluginManager);
+
+public:
+    ~APluginManager();
+
     /**
-     * 插件管理器
+     * @brief 加载插件
+     * @param dllFileName 插件文件名称，相对于软件目录的相对路径或者绝对路径
+     * @return 是否加载成功
      */
-    class APROCH_API APluginManager
+    bool loadPlugin(const QString &dllFileName);
+
+    /**
+     * @brief 默认加载所有的插件
+     */
+    void loadPlugins();
+
+    /**
+     * @brief 获取所有的插件及信息
+     * @return 插件表
+     */
+    inline const QMap<IPlugin *, SPluginInfo> &getPlugins() const noexcept
     {
-        APROCH_SINGLETON(APluginManager);
+        return mPlugins;
+    }
 
-    public:
-        ~APluginManager();
+private:
+    APluginManager();
 
-        /**
-         * @brief 加载插件
-         * @param dllFileName 插件文件名称，相对于软件目录的相对路径或者绝对路径
-         * @return 是否加载成功
-         */
-        bool loadPlugin(const QString &dllFileName);
+private:
+    /** 加载成功的插件列表即插件信息 */
+    QMap<IPlugin *, SPluginInfo> mPlugins;
+};
 
-        /**
-         * @brief 默认加载所有的插件
-         */
-        void loadPlugins();
-
-        /**
-         * @brief 获取所有的插件及信息
-         * @return 插件表
-         */
-        inline const QMap<IPlugin *, SPluginInfo> &getPlugins() const noexcept
-        {
-            return mPlugins;
-        }
-
-    private:
-        APluginManager();
-
-    private:
-        /** 加载成功的插件列表即插件信息 */
-        QMap<IPlugin *, SPluginInfo> mPlugins;
-    };
-}
+APROCH_NAMESPACE_END

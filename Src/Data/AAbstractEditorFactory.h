@@ -30,121 +30,122 @@
 
 #include <QSet>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 用于创建数据编辑控件的抽象工厂基类
+ */
+class AAbstractEditorFactoryBase : public QObject
 {
-    /**
-     * @brief 用于创建数据编辑控件的抽象工厂基类
-     */
-    class AAbstractEditorFactoryBase : public QObject
+    Q_OBJECT
+public:
+    /** @brief 创建绑定给定数据的控件 */
+    virtual QWidget *createEditor(AData *data, QWidget *parent) = 0;
+
+protected:
+    explicit AAbstractEditorFactoryBase(QObject *parent = 0)
+        : QObject(parent)
     {
-        Q_OBJECT
-    public:
-        /** @brief 创建绑定给定数据的控件 */
-        virtual QWidget* createEditor(AData* data, QWidget* parent) = 0;
+    }
 
-    protected:
-        explicit AAbstractEditorFactoryBase(QObject* parent = 0)
-            : QObject(parent)
-        {
-        }
+    /** @brief 断开和创建的控件关联的信号 */
+    virtual void breakConnection(AAbstractDataManager *manager) = 0;
 
-        /** @brief 断开和创建的控件关联的信号 */
-        virtual void breakConnection(AAbstractDataManager* manager) = 0;
+protected Q_SLOTS:
+    virtual void managerDestroyed(QObject *manager) = 0;
+};
 
-    protected Q_SLOTS:
-        virtual void managerDestroyed(QObject* manager) = 0;
-    };
-
-    /**
-     * @brief 用于创建数据编辑控件的抽象工厂类
-     */
-    template <class DataManager>
-    class AAbstractEditorFactory : public AAbstractEditorFactoryBase
+/**
+ * @brief 用于创建数据编辑控件的抽象工厂类
+ */
+template <class DataManager>
+class AAbstractEditorFactory : public AAbstractEditorFactoryBase
+{
+public:
+    explicit AAbstractEditorFactory(QObject *parent)
+        : AAbstractEditorFactoryBase(parent)
     {
-    public:
-        explicit AAbstractEditorFactory(QObject* parent)
-            : AAbstractEditorFactoryBase(parent)
-        {
-        }
+    }
 
-        QWidget* createEditor(AData* data, QWidget* parent)
+    QWidget *createEditor(AData *data, QWidget *parent)
+    {
+        for (DataManager *manager : qAsConst(m_managers))
         {
-            for (DataManager* manager : qAsConst(m_managers))
+            if (manager == data->dataManager())
             {
-                if (manager == data->dataManager())
-                {
-                    return createEditorImpl(manager, data, parent);
-                }
+                return createEditorImpl(manager, data, parent);
             }
-            return nullptr;
         }
+        return nullptr;
+    }
 
-        void addDataManager(DataManager* manager)
+    void addDataManager(DataManager *manager)
+    {
+        if (m_managers.contains(manager))
+            return;
+        m_managers.insert(manager);
+        connectDataManager(manager);
+        connect(manager, SIGNAL(destroyed(QObject *)), this, SLOT(managerDestroyed(QObject *)));
+    }
+
+    void removeDataManager(DataManager *manager)
+    {
+        if (!m_managers.contains(manager))
+            return;
+        disconnect(manager, SIGNAL(destroyed(QObject *)), this, SLOT(managerDestroyed(QObject *)));
+        disconnectDataManager(manager);
+        m_managers.remove(manager);
+    }
+
+    QSet<DataManager *> dataManagers() const
+    {
+        return m_managers;
+    }
+
+    DataManager *dataManager(AData *data) const
+    {
+        AAbstractDataManager *manager = data->dataManager();
+        for (DataManager *m : qAsConst(m_managers))
         {
-            if (m_managers.contains(manager))
+            if (m == manager)
+            {
+                return m;
+            }
+        }
+        return nullptr;
+    }
+
+protected:
+    virtual void connectDataManager(DataManager *manager) = 0;
+    virtual QWidget *createEditorImpl(DataManager *manager, AData *data, QWidget *parent) = 0;
+    virtual void disconnectDataManager(DataManager *manager) = 0;
+    void managerDestroyed(QObject *manager)
+    {
+        for (DataManager *m : qAsConst(m_managers))
+        {
+            if (m == manager)
+            {
+                m_managers.remove(m);
                 return;
-            m_managers.insert(manager);
-            connectDataManager(manager);
-            connect(manager, SIGNAL(destroyed(QObject*)), this, SLOT(managerDestroyed(QObject*)));
+            }
         }
+    }
 
-        void removeDataManager(DataManager* manager)
+private:
+    void breakConnection(AAbstractDataManager *manager)
+    {
+        for (DataManager *m : qAsConst(m_managers))
         {
-            if (!m_managers.contains(manager))
+            if (m == manager)
+            {
+                removeDataManager(m);
                 return;
-            disconnect(manager, SIGNAL(destroyed(QObject*)), this, SLOT(managerDestroyed(QObject*)));
-            disconnectDataManager(manager);
-            m_managers.remove(manager);
-        }
-
-        QSet<DataManager*> dataManagers() const
-        {
-            return m_managers;
-        }
-
-        DataManager* dataManager(AData* data) const
-        {
-            AAbstractDataManager* manager = data->dataManager();
-            for (DataManager* m : qAsConst(m_managers))
-            {
-                if (m == manager)
-                {
-                    return m;
-                }
-            }
-            return nullptr;
-        }
-
-    protected:
-        virtual void connectDataManager(DataManager* manager) = 0;
-        virtual QWidget* createEditorImpl(DataManager* manager, AData* data, QWidget* parent) = 0;
-        virtual void disconnectDataManager(DataManager* manager) = 0;
-        void managerDestroyed(QObject* manager)
-        {
-            for (DataManager* m : qAsConst(m_managers))
-            {
-                if (m == manager)
-                {
-                    m_managers.remove(m);
-                    return;
-                }
             }
         }
+    }
 
-    private:
-        void breakConnection(AAbstractDataManager* manager)
-        {
-            for (DataManager* m : qAsConst(m_managers))
-            {
-                if (m == manager)
-                {
-                    removeDataManager(m);
-                    return;
-                }
-            }
-        }
+private:
+    QSet<DataManager *> m_managers;
+};
 
-    private:
-        QSet<DataManager*> m_managers;
-    };
-}
+APROCH_NAMESPACE_END

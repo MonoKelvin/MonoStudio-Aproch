@@ -29,54 +29,55 @@
 #include "stdafx.h"
 #include "AEditCreator.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+const QString aStr_LineEdit = "lineedit";
+const QString aStr_Edit = "edit";
+const QString aStr_TextEdit = "textedit";
+const QString aStr_SpinEdit = "spinedit";
+const QString aStr_SpinBox = "spinbox";
+const QString aStr_DoubleSpinEdit = "doublespinedit";
+const QString aStr_DoubleSpinBox = "doublespinbox";
+const QString aStr_DateEdit = "dateedit";
+const QString aStr_TimeEdit = "timeedit";
+const QString aStr_DateTimeEdit = "datetimeedit";
+
+AEditCreator::AEditCreator()
 {
-    const QString aStr_LineEdit = "lineedit";
-    const QString aStr_Edit = "edit";
-    const QString aStr_TextEdit = "textedit";
-    const QString aStr_SpinEdit = "spinedit";
-    const QString aStr_SpinBox = "spinbox";
-    const QString aStr_DoubleSpinEdit = "doublespinedit";
-    const QString aStr_DoubleSpinBox = "doublespinbox";
-    const QString aStr_DateEdit = "dateedit";
-    const QString aStr_TimeEdit = "timeedit";
-    const QString aStr_DateTimeEdit = "datetimeedit";
-
-    AEditCreator::AEditCreator()
-    {
-        addName(aStr_LineEdit);
-        addName(aStr_Edit);
-        addName(aStr_TextEdit);
-        addName(aStr_SpinEdit);
-        addName(aStr_SpinBox);
-        addName(aStr_DoubleSpinEdit);
-        addName(aStr_DoubleSpinBox);
-        addName(aStr_DateEdit);
-        addName(aStr_TimeEdit);
-        addName(aStr_DateTimeEdit);
-    }
-
-    QObject* AEditCreator::createObject(const QString& name, aproch::IDPOData& data, QObject* parent)
-    {
-        const QString objName = name.trimmed().toLower();
-        QWidget* parWidget = qobject_cast<QWidget*>(parent);
-
-        QObject* pEdit = nullptr;
-        if (objName == aStr_LineEdit || objName == aStr_Edit)
-            pEdit = new QLineEdit(parWidget);
-        else if (objName == aStr_TextEdit)
-            pEdit = new QTextEdit(parWidget);
-        else if (objName == aStr_SpinEdit || objName == aStr_SpinBox)
-            pEdit = new QSpinBox(parWidget);
-        else if (objName == aStr_DoubleSpinEdit || objName == aStr_DoubleSpinBox)
-            pEdit = new QDoubleSpinBox(parWidget);
-        else if (objName == aStr_DateEdit)
-            pEdit = new QDateEdit(parWidget);
-        else if (objName == aStr_TimeEdit)
-            pEdit = new QTimeEdit(parWidget);
-        else if (objName == aStr_DateTimeEdit)
-            pEdit = new QDateTimeEdit(parWidget);
-
-        return pEdit;
-    }
+    addName(aStr_LineEdit);
+    addName(aStr_Edit);
+    addName(aStr_TextEdit);
+    addName(aStr_SpinEdit);
+    addName(aStr_SpinBox);
+    addName(aStr_DoubleSpinEdit);
+    addName(aStr_DoubleSpinBox);
+    addName(aStr_DateEdit);
+    addName(aStr_TimeEdit);
+    addName(aStr_DateTimeEdit);
 }
+
+QObject *AEditCreator::createObject(const QString &name, IDPOData &data, QObject *parent)
+{
+    const QString objName = name.trimmed().toLower();
+    QWidget *parWidget = qobject_cast<QWidget *>(parent);
+
+    QObject *pEdit = nullptr;
+    if (objName == aStr_LineEdit || objName == aStr_Edit)
+        pEdit = new QLineEdit(parWidget);
+    else if (objName == aStr_TextEdit)
+        pEdit = new QTextEdit(parWidget);
+    else if (objName == aStr_SpinEdit || objName == aStr_SpinBox)
+        pEdit = new QSpinBox(parWidget);
+    else if (objName == aStr_DoubleSpinEdit || objName == aStr_DoubleSpinBox)
+        pEdit = new QDoubleSpinBox(parWidget);
+    else if (objName == aStr_DateEdit)
+        pEdit = new QDateEdit(parWidget);
+    else if (objName == aStr_TimeEdit)
+        pEdit = new QTimeEdit(parWidget);
+    else if (objName == aStr_DateTimeEdit)
+        pEdit = new QDateTimeEdit(parWidget);
+
+    return pEdit;
+}
+
+APROCH_NAMESPACE_END

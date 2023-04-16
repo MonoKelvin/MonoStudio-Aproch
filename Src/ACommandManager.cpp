@@ -29,77 +29,76 @@
 #include "stdafx.h"
 #include "ACommandManager.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+APROCH_INIT_SINGLETON(ACommandManager);
+
+ACommandManager::ACommandManager()
 {
-    APROCH_INIT_SINGLETON(ACommandManager);
+}
 
-    ACommandManager::ACommandManager()
+ACommandManager::~ACommandManager()
+{
+}
+
+void ACommandManager::executeCommand(const CommandId &commandId)
+{
+    CommandArgs args;
+    executeCommand(commandId, args);
+}
+
+void ACommandManager::executeCommand(const CommandId &commandId, const CommandArgs &args)
+{
+    for (const auto &cmd : mCommandList)
     {
-
-    }
-
-    ACommandManager::~ACommandManager()
-    {
-
-    }
-
-    void ACommandManager::executeCommand(const CommandId& commandId)
-    {
-        CommandArgs args;
-        executeCommand(commandId, args);
-    }
-
-    void ACommandManager::executeCommand(const CommandId& commandId, const CommandArgs& args)
-    {
-        for (const auto& cmd : mCommandList)
+        if (nullptr != cmd && cmd->mCommandId == commandId)
         {
-            if (nullptr != cmd && cmd->mCommandId == commandId)
-            {
-                cmd->handle(args);
-                //QMetaObject::invokeMethod(cmd, "handle", Qt::AutoConnection, Q_ARG(CommandArgs, args));
-                break;
-            }
+            cmd->handle(args);
+            // QMetaObject::invokeMethod(cmd, "handle", Qt::AutoConnection, Q_ARG(CommandArgs, args));
+            break;
         }
-    }
-
-    void ACommandManager::registerCommand(const QSharedPointer<ACommand>& command)
-    {
-        if (nullptr == command || !ACommand::IsValid(command->mCommandId))
-        {
-            qDebug() << "Invalid Command";
-            return;
-        }
-
-        int i = 0;
-        for (; i < mCommandList.size(); ++i)
-        {
-            if (mCommandList.at(i)->mCommandId == command->mCommandId)
-            {
-                break;
-            }
-        }
-
-        if (i != mCommandList.size())
-        {
-            qDebug() << "Command Exists";
-            mCommandList.replace(i, command);
-        }
-        else
-        {
-            mCommandList.push_back(command);
-        }
-    }
-
-    QSharedPointer<ACommand> ACommandManager::getCommand(const CommandId& commandId)
-    {
-        for (const auto& command : mCommandList)
-        {
-            if (command->mCommandId == commandId)
-            {
-                return command;
-            }
-        }
-
-        return nullptr;
     }
 }
+
+void ACommandManager::registerCommand(const QSharedPointer<ACommand> &command)
+{
+    if (nullptr == command || !ACommand::IsValid(command->mCommandId))
+    {
+        qDebug() << "Invalid Command";
+        return;
+    }
+
+    int i = 0;
+    for (; i < mCommandList.size(); ++i)
+    {
+        if (mCommandList.at(i)->mCommandId == command->mCommandId)
+        {
+            break;
+        }
+    }
+
+    if (i != mCommandList.size())
+    {
+        qDebug() << "Command Exists";
+        mCommandList.replace(i, command);
+    }
+    else
+    {
+        mCommandList.push_back(command);
+    }
+}
+
+QSharedPointer<ACommand> ACommandManager::getCommand(const CommandId &commandId)
+{
+    for (const auto &command : mCommandList)
+    {
+        if (command->mCommandId == commandId)
+        {
+            return command;
+        }
+    }
+
+    return nullptr;
+}
+
+APROCH_NAMESPACE_END

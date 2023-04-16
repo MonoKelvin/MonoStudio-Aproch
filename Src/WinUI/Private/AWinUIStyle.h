@@ -27,7 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-#include "../WinUIGloabl.h"
 #include "qwindowsstyle/qwindowsvistastyle_p.h"
 
 APROCH_NAMESPACE_BEGIN

@@ -32,106 +32,113 @@
 #include <QPluginLoader>
 #include <qmessagebox.h>
 
-using CreatePluginInstanceFunc = aproch::IPlugin* (*)(void);
-using GetPluginConfigInfoFunc = QVariantMap(*)(void);
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+APROCH_INIT_SINGLETON(APluginManager);
+
+using CreatePluginInstanceFunc = IPlugin *(*)(void);
+using GetPluginConfigInfoFunc = QVariantMap (*)(void);
+
+APluginManager::APluginManager()
 {
-    APROCH_INIT_SINGLETON(APluginManager);
+}
 
-    APluginManager::APluginManager()
+APluginManager::~APluginManager()
+{
+    auto plugins = mPlugins.keys();
+    for (auto &&pPlugin : plugins)
     {
+        pPlugin->end();
+        delete pPlugin;
+        pPlugin = nullptr;
+    }
+    mPlugins.clear();
+}
+
+bool APluginManager::loadPlugin(const QString &dllFileName)
+{
+    QLibrary mylib(dllFileName);
+    if (!mylib.load())
+    {
+        // TODO: 日志
+        qDebug() << mylib.errorString();
+        return false;
     }
 
-    APluginManager::~APluginManager()
+    CreatePluginInstanceFunc pFunc = (CreatePluginInstanceFunc)mylib.resolve("AprochCreatePluginInstance");
+    if (nullptr == pFunc)
     {
-        auto plugins = mPlugins.keys();
-        for (auto&& pPlugin: plugins)
-        {
-            pPlugin->end();
-            delete pPlugin;
-            pPlugin = nullptr;
-        }
-        mPlugins.clear();
+        qDebug() << "No export function for library: " << dllFileName;
+        return false;
     }
 
-    bool APluginManager::loadPlugin(const QString& dllFileName)
+    IPlugin *pPlugin = pFunc();
+    if (nullptr == pPlugin)
     {
-        QLibrary mylib(dllFileName);
-        if (!mylib.load())
-        {
-            // TODO: 日志
-            qDebug() << mylib.errorString();
-            return false;
-        }
+        qDebug() << "Dynamic library instantiation failed：" << dllFileName;
+        return false;
+    }
 
-        CreatePluginInstanceFunc pFunc = (CreatePluginInstanceFunc)mylib.resolve("AprochCreatePluginInstance");
-        if (nullptr == pFunc)
-        {
-            qDebug() << "No export function for library: " << dllFileName;
-            return false;
-        }
+    /*QPluginLoader loader(dllFileName);
+    if (!loader.isLoaded())
+    {
+        // TODO: 日志
+        qDebug() << loader.errorString();
+        return false;
+    }
 
-        IPlugin* pPlugin = pFunc();
-        if (nullptr == pPlugin)
-        {
-            qDebug() << "Dynamic library instantiation failed：" << dllFileName;
-            return false;
-        }
+    IPlugin* pPlugin = qobject_cast<IPlugin*>(loader.instance());
+    if (nullptr == pPlugin)
+        return false;*/
 
-        /*QPluginLoader loader(dllFileName);
-        if (!loader.isLoaded())
-        {
-            // TODO: 日志
-            qDebug() << loader.errorString();
-            return false;
-        }
+    SPluginInfo info;
+    GetPluginConfigInfoFunc pGetPIFunc = (GetPluginConfigInfoFunc)mylib.resolve("AprochGetPluginConfigInfo");
+    if (nullptr != pGetPIFunc)
+    {
+        auto dataMap = pGetPIFunc();
+        info.author = dataMap.take(AStr("author")).toString();
+        info.organization = dataMap.take(AStr("organization")).toString();
+        info.version = dataMap.take(AStr("version")).toString();
+        info.description = dataMap.take(AStr("description")).toString();
+        info.config = dataMap;
+    }
 
-        IPlugin* pPlugin = qobject_cast<IPlugin*>(loader.instance());
-        if (nullptr == pPlugin)
-            return false;*/
-
-        SPluginInfo info;
-        GetPluginConfigInfoFunc pGetPIFunc = (GetPluginConfigInfoFunc)mylib.resolve("AprochGetPluginConfigInfo");
-        if (nullptr != pGetPIFunc)
-        {
-            auto dataMap = pGetPIFunc();
-            info.author = dataMap.take(AStr("author")).toString();
-            info.organization = dataMap.take(AStr("organization")).toString();
-            info.version = dataMap.take(AStr("version")).toString();
-            info.description = dataMap.take(AStr("description")).toString();
-            info.config = dataMap;
-        }
-
-        if (!pPlugin->start())
-            return true;
-
-        mPlugins[pPlugin] = info;
+    if (!pPlugin->start())
         return true;
-    }
 
-    void APluginManager::loadPlugins()
+    mPlugins[pPlugin] = info;
+    return true;
+}
+
+void APluginManager::loadPlugins()
+{
+    QStringList dirList;
+    dirList << AApplicationContext::getInstance()->AppDirectory();
+
+    AAppConfigService configService;
+    dirList << configService.getValue("Application/PluginsDirectory").toString();
+
+    QStringList fileFilters;
+    fileFilters << "*.dll"
+                << "*.a"
+                << "*.so"
+                << "*.sl"
+                << "*.dylib"
+                << "*.bundle";
+
+    for (auto &&path : dirList)
     {
-        QStringList dirList;
-        dirList << AApplicationContext::getInstance()->AppDirectory();
+        QDir dir(path);
+        if (dir.isEmpty()) // TODO: 日志
+            continue;
 
-        AAppConfigService configService;
-        dirList << configService.getValue("Application/PluginsDirectory").toString();
-
-        QStringList fileFilters;
-        fileFilters << "*.dll" << "*.a" << "*.so" << "*.sl" << "*.dylib" << "*.bundle";
-
-        for (auto&& path : dirList)
+        const auto &fileInfoList = dir.entryInfoList(fileFilters, QDir::Files | QDir::Hidden);
+        for (const QFileInfo &fileInfo : fileInfoList)
         {
-            QDir dir(path);
-            if (dir.isEmpty())  // TODO: 日志
-                continue;
-
-            const auto& fileInfoList = dir.entryInfoList(fileFilters, QDir::Files | QDir::Hidden);
-            for (const QFileInfo& fileInfo : fileInfoList)
-            {
-                loadPlugin(fileInfo.absoluteFilePath());
-            }
+            loadPlugin(fileInfo.absoluteFilePath());
         }
     }
 }
+
+APROCH_NAMESPACE_END

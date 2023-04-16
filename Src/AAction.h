@@ -32,105 +32,106 @@
 
 #include <QAction>
 
-namespace aproch
-{
-    class AAbstractKeyExpression;
+APROCH_NAMESPACE_BEGIN
 
-    /** 动作ID */
-    using ActionId = QString;
+class AAbstractKeyExpression;
+
+/** 动作ID */
+using ActionId = QString;
+
+/**
+ * UI动作
+ */
+class APROCH_API AAction : public QAction, public IJsonSerializable
+{
+    Q_OBJECT
+
+    Q_PROPERTY(ActionId mActionId READ getActionId WRITE setActionId NOTIFY actionIdChanged)
+    Q_PROPERTY(CommandId mCommandId READ getCommandId WRITE setCommandId NOTIFY commandIdChanged)
+public:
+    explicit AAction(QObject *parent = nullptr);
 
     /**
-     * UI动作
+     * 转化为json格式
+     * @return QJsonObject* json对象指针
      */
-    class APROCH_API AAction : public QAction, public aproch::IJsonSerializable
+    QJsonObject toJson(void) const override;
+
+    /**
+     * 从json格式解析
+     * @return bool 是否解析成功
+     */
+    bool fromJson(const QJsonObject &jsonObject) override;
+
+    /**
+     * 获取动作ID
+     * @return ActionId 动作Id
+     */
+    inline ActionId getActionId() const
     {
-        Q_OBJECT
+        return mActionId;
+    }
 
-        Q_PROPERTY(ActionId mActionId READ getActionId WRITE setActionId NOTIFY actionIdChanged)
-        Q_PROPERTY(aproch::CommandId mCommandId READ getCommandId WRITE setCommandId NOTIFY commandIdChanged)
-    public:
-        explicit AAction(QObject *parent = nullptr);
+    /**
+     * 设置动作Id
+     * @param actionId 动作Id
+     */
+    void setActionId(const ActionId &actionId);
 
-        /**
-         * 转化为json格式
-         * @return QJsonObject* json对象指针
-         */
-        QJsonObject toJson(void) const override;
+    /**
+     * 获取命令ID
+     * @return CommandId 命令Id
+     */
+    inline CommandId getCommandId() const
+    {
+        return mActionId;
+    }
 
-        /**
-         * 从json格式解析
-         * @return bool 是否解析成功
-         */
-        bool fromJson(const QJsonObject &jsonObject) override;
+    /**
+     * 设置命令Id
+     * @param commandId 命令Id
+     */
+    void setCommandId(const ActionId &commandId);
 
-        /**
-         * 获取动作ID
-         * @return ActionId 动作Id
-         */
-        inline ActionId getActionId() const
-        {
-            return mActionId;
-        }
+    /**
+     * 获取上下文使能表达式
+     */
+    inline QSharedPointer<AAbstractKeyExpression> getEnableExpression() const
+    {
+        return mEnableExpression;
+    }
 
-        /**
-         * 设置动作Id
-         * @param actionId 动作Id
-         */
-        void setActionId(const ActionId &actionId);
+    /**
+     * 设置上下文使能表达式
+     * @param expr 上下文使能表达式
+     */
+    void setEnableExpression(const AAbstractKeyExpression &expr);
 
-        /**
-         * 获取命令ID
-         * @return CommandId 命令Id
-         */
-        inline aproch::CommandId getCommandId() const
-        {
-            return mActionId;
-        }
+Q_SIGNALS:
+    /**
+     * 动作Id改变信号
+     */
+    void actionIdChanged();
 
-        /**
-         * 设置命令Id
-         * @param commandId 命令Id
-         */
-        void setCommandId(const ActionId &commandId);
+    /**
+     * 命令Id改变信号
+     */
+    void commandIdChanged();
 
-        /**
-         * 获取上下文使能表达式
-         */
-        inline QSharedPointer<AAbstractKeyExpression> getEnableExpression() const
-        {
-            return mEnableExpression;
-        }
+    /**
+     * 使能表达式改变信号
+     */
+    void enableExpressionChanged();
 
-        /**
-         * 设置上下文使能表达式
-         * @param expr 上下文使能表达式
-         */
-        void setEnableExpression(const AAbstractKeyExpression &expr);
+protected:
+    /** 动作ID */
+    ActionId mActionId;
 
-    Q_SIGNALS:
-        /**
-         * 动作Id改变信号
-         */
-        void actionIdChanged();
+    /** 命令Id */
+    CommandId mCommandId;
 
-        /**
-         * 命令Id改变信号
-         */
-        void commandIdChanged();
+    /** 上下文使能表达式 */
+    QSharedPointer<AAbstractKeyExpression> mEnableExpression;
+};
 
-        /**
-         * 使能表达式改变信号
-         */
-        void enableExpressionChanged();
-
-    protected:
-        /** 动作ID */
-        ActionId mActionId;
-
-        /** 命令Id */
-        aproch::CommandId mCommandId;
-
-        /** 上下文使能表达式 */
-        QSharedPointer<aproch::AAbstractKeyExpression> mEnableExpression;
-    };
-}
+APROCH_NAMESPACE_END

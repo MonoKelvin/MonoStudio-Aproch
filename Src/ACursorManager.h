@@ -31,95 +31,96 @@
 #include <QStack>
 #include <QCursor>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 鼠标指针管理器
+ */
+class APROCH_API ACursorManager
 {
+    APROCH_SINGLETON(ACursorManager);
+
+public:
     /**
-     * @brief 鼠标指针管理器
+     * @brief 设置默认鼠标指针
      */
-    class APROCH_API ACursorManager
-    {
-        APROCH_SINGLETON(ACursorManager);
+    void setDefault(const QCursor &cursor);
 
-    public:
-        /**
-         * @brief 设置默认鼠标指针
-         */
-        void setDefault(const QCursor &cursor);
+    /**
+     * @brief 获取默认鼠标指针
+     * @return 默认鼠标指针
+     */
+    QCursor getDefault(void) const;
 
-        /**
-         * @brief 获取默认鼠标指针
-         * @return 默认鼠标指针
-         */
-        QCursor getDefault(void) const;
+    /**
+     * @brief 设置当前鼠标指针
+     * @param isNoPushIfSameShape 如果为true，则当前鼠标指针和上一次设置的鼠标指针形状 @see Qt::CursorShape 一样，就不记录到栈中
+     * @param cursor
+     */
+    void setCurrent(const QCursor &cursor, bool isNoPushIfSameShape = true);
 
-        /**
-         * @brief 设置当前鼠标指针
-         * @param isNoPushIfSameShape 如果为true，则当前鼠标指针和上一次设置的鼠标指针形状 @see Qt::CursorShape 一样，就不记录到栈中
-         * @param cursor
-         */
-        void setCurrent(const QCursor &cursor, bool isNoPushIfSameShape = true);
+    /**
+     * @brief 获取当前鼠标指针
+     * @return 当前鼠标指针
+     */
+    QCursor getCurrent(void) const;
 
-        /**
-         * @brief 获取当前鼠标指针
-         * @return 当前鼠标指针
-         */
-        QCursor getCurrent(void) const;
+    /**
+     * @brief 删除当前鼠标指针，返回到上一个鼠标指针并返回。如果没有通过@see setCurrent 设置上一个鼠标指针，则返回默认的@see getDefault
+     * @return 上一个设置的鼠标指针
+     */
+    QCursor pop();
 
-        /**
-         * @brief 删除当前鼠标指针，返回到上一个鼠标指针并返回。如果没有通过@see setCurrent 设置上一个鼠标指针，则返回默认的@see getDefault
-         * @return 上一个设置的鼠标指针
-         */
-        QCursor pop();
+    /**
+     * @brief 获取上一次的鼠标指针，不会删除当前的
+     * @return 上一个设置的鼠标指针
+     */
+    QCursor getLast(void) const;
 
-        /**
-         * @brief 获取上一次的鼠标指针，不会删除当前的
-         * @return 上一个设置的鼠标指针
-         */
-        QCursor getLast(void) const;
+    /**
+     * @brief 设置全局鼠标
+     * @param cursor 鼠标指针
+     */
+    static void SetGlobalCursor(const QCursor &cursor);
 
-        /**
-         * @brief 设置全局鼠标
-         * @param cursor 鼠标指针
-         */
-        static void SetGlobalCursor(const QCursor &cursor);
+    /**
+     * @brief 还原到上一次的鼠标指针
+     */
+    static void RestoreGlobalCursor();
 
-        /**
-         * @brief 还原到上一次的鼠标指针
-         */
-        static void RestoreGlobalCursor();
+    /**
+     * @brief 动态修改鼠标指针
+     * @note 该方法一般放在频繁调用的函数内部，如鼠标移动、悬停移动等事件中。此外，需要确保condition可以覆盖到true和false两种情况，也可以
+     * 在不同地方分别调用该方法，但同样要确保condition覆盖到true和false
+     * @param condition 条件
+     * @param cursor 当前鼠标
+     * @example
+     * 1. 单个状态切换
+     *
+     *      ACursorManager::DynamicCursor(condition, Qt::CrossCursor);
+     *
+     * condition需要覆盖true和false，为true时鼠标指针为十字光标，为false时还原上一次的图标
+     *
+     * 2. 在两个状态之间切换
+     *
+     *      ACursorManager::DynamicCursor(false);
+     *      ACursorManager::DynamicCursor(true, condition ?  Qt::ForbiddenCursor : Qt::CrossCursor);
+     *
+     * 当condition为真时，鼠标指针变为<ForbiddenCursor>禁用图标，否则变为<CrossCursor>十字光标
+     *
+     */
+    static void DynamicCursor(bool condition, const QCursor &cursor = QCursor());
 
-        /**
-         * @brief 动态修改鼠标指针
-         * @note 该方法一般放在频繁调用的函数内部，如鼠标移动、悬停移动等事件中。此外，需要确保condition可以覆盖到true和false两种情况，也可以
-         * 在不同地方分别调用该方法，但同样要确保condition覆盖到true和false
-         * @param condition 条件
-         * @param cursor 当前鼠标
-         * @example
-         * 1. 单个状态切换
-         *
-         *      ACursorManager::DynamicCursor(condition, Qt::CrossCursor);
-         *
-         * condition需要覆盖true和false，为true时鼠标指针为十字光标，为false时还原上一次的图标
-         *
-         * 2. 在两个状态之间切换
-         *
-         *      ACursorManager::DynamicCursor(false);
-         *      ACursorManager::DynamicCursor(true, condition ?  Qt::ForbiddenCursor : Qt::CrossCursor);
-         *
-         * 当condition为真时，鼠标指针变为<ForbiddenCursor>禁用图标，否则变为<CrossCursor>十字光标
-         *
-         */
-        static void DynamicCursor(bool condition, const QCursor &cursor = QCursor());
+private:
+    Q_DISABLE_COPY_MOVE(ACursorManager)
+    ACursorManager();
 
-    private:
-        Q_DISABLE_COPY_MOVE(ACursorManager)
-        ACursorManager();
+private:
+    /** @brief 鼠标指针堆栈 */
+    QStack<QCursor> mCursorStack;
 
-    private:
-        /** @brief 鼠标指针堆栈 */
-        QStack<QCursor> mCursorStack;
+    /** @brief 默认鼠标指针 */
+    QCursor mDefaultCursor;
+};
 
-        /** @brief 默认鼠标指针 */
-        QCursor mDefaultCursor;
-    };
-}
+APROCH_NAMESPACE_END

@@ -32,68 +32,69 @@
 
 #define AServiceName_DPW "aproch.DPWService"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief DPW数据
+ */
+class APROCH_API ADPWData : public IDPOData
 {
+public:
     /**
-     * @brief DPW数据
+     * @brief 获取属性对应的值
+     * @param attrName 属性名称
+     * @return 属性对应的值，没有属性返回空
      */
-    class APROCH_API ADPWData : public aproch::IDPOData
-    {
-    public:
-        /**
-         * @brief 获取属性对应的值
-         * @param attrName 属性名称
-         * @return 属性对应的值，没有属性返回空
-         */
-        QString value(const QString &attrName) const;
-
-        /**
-         * @brief 获取所有的属性
-         * @param normalize 是否标准化，去除属性名称的前后空格(QString::trimmed)、全部转换为小写(QString::toLower)
-         * @return 属性表
-         * @see properties
-         */
-        QMap<QString, QString> attributes(bool normalize = false) const;
-
-        /** @brief XML元素节点 */
-        QDomElement domElement;
-
-        /** @brief 键值名称 */
-        static const QString key;
-    };
+    QString value(const QString &attrName) const;
 
     /**
-     * @brief 动态解析控件（DPW, Dynamically Parse Widget）服务。支持创建最外层节点为布局 QLayout 对象
-     * @note 解析方案为xml解析
+     * @brief 获取所有的属性
+     * @param normalize 是否标准化，去除属性名称的前后空格(QString::trimmed)、全部转换为小写(QString::toLower)
+     * @return 属性表
+     * @see properties
      */
-    class APROCH_API ADPWService : public aproch::IDPOService
-    {
-    public:
-        ~ADPWService();
+    QMap<QString, QString> attributes(bool normalize = false) const;
 
-        /** @brief 对象创建器的字符分割符号 */
-        static QString nameSplitterChar;
+    /** @brief XML元素节点 */
+    QDomElement domElement;
 
-        virtual bool registerObjectCreator(const QSharedPointer<aproch::IObjectCreator> &creator) override;
-        virtual bool unregisterObjectCreator(const QString &name) override;
-        virtual QSharedPointer<aproch::IObjectCreator> getObjectCreator(const QString &name) const override;
-        virtual QObject *prase(const QString &data, QObject *parent = nullptr) override;
-        virtual QString serialize(QObject *object) override;
+    /** @brief 键值名称 */
+    static const QString key;
+};
 
-    protected:
-        /**
-         * @brief 根据XML节点创建对象
-         * @param domElement XML节点
-         * @param parent 父对象
-         * @return 控件（或布局）对象
-         */
-        QObject *createObjectByDomElement(const QDomElement &domElement, QObject *parent);
+/**
+ * @brief 动态解析控件（DPW, Dynamically Parse Widget）服务。支持创建最外层节点为布局 QLayout 对象
+ * @note 解析方案为xml解析
+ */
+class APROCH_API ADPWService : public IDPOService
+{
+public:
+    ~ADPWService();
 
-    private:
-        const QString _key(const QString &str) const;
+    /** @brief 对象创建器的字符分割符号 */
+    static QString nameSplitterChar;
 
-    private:
-        /** @brief 对象创建器表 */
-        QMap<QString, QSharedPointer<aproch::IObjectCreator>> mCreatorMap;
-    };
-}
+    virtual bool registerObjectCreator(const QSharedPointer<IObjectCreator> &creator) override;
+    virtual bool unregisterObjectCreator(const QString &name) override;
+    virtual QSharedPointer<IObjectCreator> getObjectCreator(const QString &name) const override;
+    virtual QObject *prase(const QString &data, QObject *parent = nullptr) override;
+    virtual QString serialize(QObject *object) override;
+
+protected:
+    /**
+     * @brief 根据XML节点创建对象
+     * @param domElement XML节点
+     * @param parent 父对象
+     * @return 控件（或布局）对象
+     */
+    QObject *createObjectByDomElement(const QDomElement &domElement, QObject *parent);
+
+private:
+    const QString _key(const QString &str) const;
+
+private:
+    /** @brief 对象创建器表 */
+    QMap<QString, QSharedPointer<IObjectCreator>> mCreatorMap;
+};
+
+APROCH_NAMESPACE_END

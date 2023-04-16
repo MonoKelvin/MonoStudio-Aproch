@@ -30,18 +30,19 @@
 
 #include <qtoolbar.h>
 
-namespace aproch
-{
-    /**
-     * 工具栏，支持通过配置文件加载、保存等
-     */
-    class APROCH_API AToolBar : public QToolBar
-    {
-        Q_OBJECT
-    public:
-        AToolBar(QWidget *parent = nullptr);
-        ~AToolBar(void);
+APROCH_NAMESPACE_BEGIN
 
-    protected:
-    };
-}
+/**
+ * 工具栏，支持通过配置文件加载、保存等
+ */
+class APROCH_API AToolBar : public QToolBar
+{
+    Q_OBJECT
+public:
+    AToolBar(QWidget *parent = nullptr);
+    ~AToolBar(void);
+
+protected:
+};
+
+APROCH_NAMESPACE_END

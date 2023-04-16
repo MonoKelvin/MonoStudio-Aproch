@@ -29,50 +29,51 @@
 #include "stdafx.h"
 #include "AAbstractObjectCreator.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+QString AAbstractObjectCreator::name(void) const
 {
-    QString AAbstractObjectCreator::name(void) const
-    {
-        QString strName;
-        for (int i = 0; i < m_nameList.size(); ++i)
-            strName += m_nameList.at(i) + ADPWService::nameSplitterChar;
-        return strName;
-    }
+    QString strName;
+    for (int i = 0; i < m_nameList.size(); ++i)
+        strName += m_nameList.at(i) + ADPWService::nameSplitterChar;
+    return strName;
+}
 
-    bool AAbstractObjectCreator::hasName(const QString& name) const
+bool AAbstractObjectCreator::hasName(const QString &name) const
+{
+    for (int i = 1; i < m_nameList.size(); ++i)
     {
-        for (int i = 1; i < m_nameList.size(); ++i)
-        {
-            if (0 == m_nameList.at(i).compare(name.trimmed(), Qt::CaseInsensitive))
-                return true;
-        }
+        if (0 == m_nameList.at(i).compare(name.trimmed(), Qt::CaseInsensitive))
+            return true;
+    }
+    return false;
+}
+
+bool AAbstractObjectCreator::addName(const QString &name, const QString &ns)
+{
+    const QString newNS = ns.trimmed();
+    QString newName = name.trimmed().toLower();
+    if (newName.isEmpty())
         return false;
-    }
 
-    bool AAbstractObjectCreator::addName(const QString& name, const QString& ns)
+    if (!newNS.isEmpty())
+        newName = newNS + ":" + newName;
+
+    if (m_nameList.contains(newName))
+        return false;
+
+    m_nameList.push_back(newName);
+    return true;
+}
+
+void AAbstractObjectCreator::setProperty(QObject *obj, const char *propName, const AttrMap &attrs) const
+{
+    if (obj->property(propName).isValid())
     {
-        const QString newNS = ns.trimmed();
-        QString newName = name.trimmed().toLower();
-        if (newName.isEmpty())
-            return false;
-
-        if (!newNS.isEmpty())
-            newName = newNS + ":" + newName;
-
-        if (m_nameList.contains(newName))
-            return false;
-
-        m_nameList.push_back(newName);
-        return true;
-    }
-
-    void AAbstractObjectCreator::setProperty(QObject* obj, const char* propName, const AttrMap& attrs) const
-    {
-        if (obj->property(propName).isValid())
-        {
-            const auto& iter = attrs.find(propName);
-            if (iter != attrs.end())
-                obj->setProperty(propName, iter.value());
-        }
+        const auto &iter = attrs.find(propName);
+        if (iter != attrs.end())
+            obj->setProperty(propName, iter.value());
     }
 }
+
+APROCH_NAMESPACE_END

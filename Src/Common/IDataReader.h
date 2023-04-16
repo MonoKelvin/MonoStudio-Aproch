@@ -28,34 +28,34 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+/**
+ * @brief 接口 - 数据读取器
+ */
+class IDataReader
 {
+public:
+    virtual ~IDataReader() = default;
+
     /**
-     * @brief 接口 - 数据读取器
+     * @brief 获取当前的完整数据
+     * @return 数据
      */
-    class IDataReader
-    {
-    public:
-        virtual ~IDataReader() = default;
+    virtual QVariant data() const = 0;
 
-        /**
-         * @brief 获取当前的完整数据
-         * @return 数据
-         */
-        virtual QVariant data() const = 0;
+    /**
+     * @brief 是否存在指定名称的数据
+     * @param name 数据
+     * @return
+     */
+    virtual bool has(const QString &name) const = 0;
 
-        /**
-         * @brief 是否存在指定名称的数据
-         * @param name 数据
-         * @return
-         */
-        virtual bool has(const QString& name) const = 0;
+    /**
+     * @brief 读取数据
+     * @param name 数据名称
+     * @return 数据
+     */
+    virtual QVariant read(const QString &name) = 0;
+};
 
-        /**
-         * @brief 读取数据
-         * @param name 数据名称
-         * @return 数据
-         */
-        virtual QVariant read(const QString& name) = 0;
-    };
-}
+APROCH_NAMESPACE_END

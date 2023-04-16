@@ -30,26 +30,27 @@
 
 #include <qstring.h>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 接口 - 可以序列化为字符串类型的
+ */
+class IStringSerializable
 {
+public:
+    virtual ~IStringSerializable(void) = default;
+
     /**
-     * 接口 - 可以序列化为字符串类型的
+     * 序列化为字符串
+     * @return QJsonObject* json对象指针
      */
-    class IStringSerializable
-    {
-    public:
-        virtual ~IStringSerializable(void) = default;
+    virtual QString serialize(void) const = 0;
 
-        /**
-         * 序列化为字符串
-         * @return QJsonObject* json对象指针
-         */
-        virtual QString serialize(void) const = 0;
+    /**
+     * 从字符串反序列化
+     * @return bool 是否反序列化成功
+     */
+    virtual bool deserialize(const QString &stringValue) = 0;
+};
 
-        /**
-         * 从字符串反序列化
-         * @return bool 是否反序列化成功
-         */
-        virtual bool deserialize(const QString& stringValue) = 0;
-    };
-}
+APROCH_NAMESPACE_END

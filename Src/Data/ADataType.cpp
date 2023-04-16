@@ -1,146 +1,163 @@
 #include "stdafx.h"
 #include "ADataType.h"
 
+APROCH_NAMESPACE_BEGIN
 
-namespace aproch
+#if 0
+class ADataTypePrivate;
+static QHash<int, QSharedPointer<ADataTypePrivate>> sDataTypeMap;
+
+class ADataTypePrivate
 {
-    //static QAtomicInteger<TDataTypeId> xAtomicId = 0;
-    static TDataTypeId xAtomicId = 0;
-
-    TDataTypeMap ADataType::m_dataTypeMap;
-
-    ADataType::ADataType()
-        : m_typeId(0)
-        , m_name(QObject::tr("NONEYPE"))
+public:
+    inline bool operator==(const ADataTypePrivate& other) const
     {
+        return typeId == other.typeId && name == other.name;
     }
-    
-    ADataType::~ADataType()
+    inline bool operator!=(const ADataTypePrivate& other) const
     {
+        return typeId != other.typeId || name != other.name;
     }
 
-    bool ADataType::isValid() const
+    int typeId = QMetaType::UnknownType;
+    QString name;
+    QString description;
+};
+
+static ADataTypePrivate* findType(int type) noexcept
+{
+    return sDataTypeMap.value(type, nullptr).get();
+}
+
+static ADataTypePrivate* findType(const QString& name)
+{
+    for (const auto& item : sDataTypeMap)
     {
-        return getId() > 0 && !m_name.trimmed().isEmpty();
+        if (nullptr != item && item->name == name)
+            return item.get();
     }
+    return nullptr;
+}
 
-    bool ADataType::operator==(const ADataType& rhs) const
+static void newType(int type, const QString& name, const QString& desc)
+{
+
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+ADataType::ADataType()
+    : d_ptr(nullptr)
+{
+}
+
+ADataType::ADataType(int type)
+{
+    d_ptr = findType(type);
+}
+
+ADataType::ADataType(const QString& name)
+{
+    d_ptr = findType(name);
+}
+
+ADataType::ADataType(const ADataType& rhs) noexcept
+    : d_ptr(rhs.d_ptr)
+{
+}
+
+ADataType::~ADataType()
+{
+    d_ptr = nullptr;
+}
+
+int ADataType::getType() const
+{
+    return d_ptr ? d_ptr->typeId : QVariant::Type::Invalid;
+}
+
+QMetaType::Type ADataType::getMetaType() const
+{
+    return d_ptr ? QMetaType::Type(d_ptr->typeId) : QMetaType::UnknownType;
+}
+
+QString ADataType::getName() const
+{
+    return d_ptr ? d_ptr->name : QString();
+}
+
+QString ADataType::getDescription() const
+{
+    return d_ptr ? d_ptr->description : QString();
+}
+
+bool ADataType::isValid() const
+{
+    return d_ptr && d_ptr->typeId >= 0 && !d_ptr->name.isEmpty();
+}
+
+ADataType& ADataType::operator=(const ADataType& rhs)
+{
+    d_ptr = rhs.d_ptr;
+    return *this;
+}
+
+ADataType& ADataType::operator=(ADataType&& rhs) noexcept
+{
+    d_ptr = rhs.d_ptr;
+    return *this;
+}
+
+bool ADataType::operator==(const ADataType& rhs) const
+{
+    return d_ptr && rhs.d_ptr && d_ptr->operator==(*rhs.d_ptr);
+}
+
+bool ADataType::operator!=(const ADataType& rhs) const
+{
+    return !(this->operator==(rhs));
+}
+
+bool ADataType::operator>(const ADataType& rhs) const
+{
+    return getType() > rhs.getType();
+}
+
+bool ADataType::operator>=(const ADataType& rhs) const
+{
+    return getType() >= rhs.getType();
+}
+
+bool ADataType::operator<(const ADataType& rhs) const
+{
+    return getType() < rhs.getType();
+}
+
+bool ADataType::operator<=(const ADataType& rhs) const
+{
+    return getType() <= rhs.getType();
+}
+
+ADataType ADataType::Register(const QString& name, const QString& description, const ACategory& category)
+{
+    ADataType dataType = Get(name);
+    if (dataType.isValid())
     {
-        return getId() == rhs.getId() || AStringToolkit::TrimCompare(m_name, rhs.m_name);
-    }
-
-    bool ADataType::operator!=(const ADataType& rhs) const
-    {
-        return !(this->operator==(rhs));
-    }
-
-    bool ADataType::operator>(const ADataType& rhs) const
-    {
-        return getId() > rhs.getId();
-    }
-
-    bool ADataType::operator>=(const ADataType& rhs) const
-    {
-        return getId() >= rhs.getId();
-    }
-
-    bool ADataType::operator<(const ADataType& rhs) const
-    {
-        return getId() < rhs.getId();
-    }
-
-    bool ADataType::operator<=(const ADataType& rhs) const
-    {
-        return getId() <= rhs.getId();
-    }
-
-    ADataType ADataType::Register(const QString& name, const QString& description)
-    {
-        ADataType dataType = Get(name);
-        if (dataType.isValid())
-        {
-            qWarning() << QObject::tr("The type ") << '[' << name << ']' << QObject::tr(" already exists!");
-            return dataType;
-        }
-
-        ++xAtomicId;
-
-        dataType.m_typeId = xAtomicId;
-        dataType.m_name = name.trimmed().toLower();
-        dataType.m_description = description;
-        m_dataTypeMap.insert(xAtomicId, dataType);
+        qWarning() << QObject::tr("The type ") << '[' << name << ']' << QObject::tr(" already exists!");
         return dataType;
     }
 
-    void ADataType::Remove(TDataTypeId id)
+    const int id = QMetaType::type(name.toLocal8Bit());
+    if (id == QMetaType::UnknownType)
     {
-        m_dataTypeMap.remove(id);
+        qWarning() << QObject::tr("The name of data type called ") << '[' << name << ']' << QObject::tr(" is not exists!");
+        return dataType;
     }
 
-    ADataType ADataType::Get(TDataTypeId id)
-    {
-        auto iter = m_dataTypeMap.constFind(id);
-        if (iter == m_dataTypeMap.constEnd())
-            return ADataType();
-        return *iter;
-    }
-
-    ADataType ADataType::Get(const QString& name)
-    {
-        for (const auto& item : m_dataTypeMap)
-        {
-            if (AStringToolkit::TrimCompare(item.getName(), name))
-                return item;
-        }
-        return ADataType();
-    }
-
-    const TDataTypeMap& ADataType::GetAllType()
-    {
-        return m_dataTypeMap;
-    }
-
-    /*bool ADataType::SetName(TDataTypeId id, const QString& newName)
-    {
-        if (newName.trimmed().isEmpty())
-            return false;
-
-        auto iter = m_dataTypeMap.find(id);
-        if (iter == m_dataTypeMap.end())
-            return false;
-        iter->m_name = newName;
-        return true;
-    }*/
-
-    bool ADataType::SetDescription(TDataTypeId id, const QString& newDescription)
-    {
-        auto iter = m_dataTypeMap.find(id);
-        if (iter == m_dataTypeMap.end())
-            return false;
-        iter->m_description = newDescription;
-        return true;
-    }
-
-    QDebug operator<<(QDebug dbg, const ADataType& dataType)
-    {
-        QDebugStateSaver saver(dbg);
-        dbg.nospace();
-
-        dbg << "ADataType";
-        if (dataType.getId() == 0)
-        {
-            if (!dataType.getName().isEmpty())
-                dbg << ":" << dataType.getName() << " " << QObject::tr("is invalid data type!");
-            else
-                dbg << ": " << QObject::tr("Invalid data type!");
-        }
-        else
-        {
-            dbg << "(Id:" << dataType.getId() << ", " << "Name:" << dataType.getName() << ')';
-            if (!dataType.getDescription().isEmpty())
-                dbg << " - " << dataType.getDescription();
-        }
-
-        return dbg;
-    }
+    newType(id, name, description);
+    return dataType;
 }
+
+#endif
+
+APROCH_NAMESPACE_END

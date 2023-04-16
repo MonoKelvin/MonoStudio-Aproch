@@ -53,6 +53,7 @@
 #include "Common/IDataReader.h"
 #include "Common/IDataWriter.h"
 #include "Common/IDataConverter.h"
+#include "Common/ITextTranslatable.h"
 #include "Common/IPlugin.h"
 #include "Common/AException.h"
 #include "Common/APrototype.h"
@@ -106,3 +107,7 @@
 
 #include "Data/header.inc"
 #include "DPO/Inc_DPO.h"
+
+#ifdef APROCH_WINUI
+#include "WinUI/include.inc"
+#endif // APROCH_WINUI

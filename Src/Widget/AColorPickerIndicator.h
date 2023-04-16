@@ -29,52 +29,53 @@
 #pragma once
 #include <QEasingCurve>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * @brief 颜色拾取器指示器控件
+ */
+class APROCH_API AColorPickerIndicator : public QWidget
 {
+    Q_OBJECT
+    Q_DISABLE_COPY(AColorPickerIndicator)
+public:
+    explicit AColorPickerIndicator(QWidget *parent = nullptr);
+
     /**
-     * @brief 颜色拾取器指示器控件
+     * @brief 设置指示器颜色
+     * @param color 指示器颜色
      */
-    class APROCH_API AColorPickerIndicator : public QWidget
-    {
-        Q_OBJECT
-        Q_DISABLE_COPY(AColorPickerIndicator)
-    public:
-        explicit AColorPickerIndicator(QWidget *parent = nullptr);
+    void setColor(const QColor &color);
 
-        /**
-         * @brief 设置指示器颜色
-         * @param color 指示器颜色
-         */
-        void setColor(const QColor &color);
+    /**
+     * @brief 移动到指定位置
+     * @param x X坐标
+     * @param y Y坐标
+     * @param isStopAniForced 是否强制停止使用动画
+     */
+    virtual void moveTo(int x, int y, bool isStopAniForced = false);
 
-        /**
-         * @brief 移动到指定位置
-         * @param x X坐标
-         * @param y Y坐标
-         * @param isStopAniForced 是否强制停止使用动画
-         */
-        virtual void moveTo(int x, int y, bool isStopAniForced = false);
+    /**
+     * @brief 更新提示
+     * @param 颜色
+     */
+    virtual void updateTooltip(const QColor &color);
 
-        /**
-         * @brief 更新提示
-         * @param 颜色
-         */
-        virtual void updateTooltip(const QColor &color);
+protected:
+    virtual void paintEvent(QPaintEvent *ev) override;
 
-    protected:
-        virtual void paintEvent(QPaintEvent *ev) override;
+public:
+    /** @brief 动画曲线，@see mIsUseAnimation 为true时该字段才起作用 */
+    QEasingCurve mEasingCurve;
 
-    public:
-        /** @brief 动画曲线，@see mIsUseAnimation 为true时该字段才起作用 */
-        QEasingCurve mEasingCurve;
+    /** @brief 指示器颜色 */
+    QColor mColor;
 
-        /** @brief 指示器颜色 */
-        QColor mColor;
+    /** @brief 一次动画的时间（毫秒） */
+    int mDuration;
 
-        /** @brief 一次动画的时间（毫秒） */
-        int mDuration;
+    /** @brief 是否使用动画 */
+    bool mIsUseAnimation;
+};
 
-        /** @brief 是否使用动画 */
-        bool mIsUseAnimation;
-    };
-}
+APROCH_NAMESPACE_END

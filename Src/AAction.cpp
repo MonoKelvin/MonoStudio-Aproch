@@ -31,57 +31,56 @@
 
 #include <QJsonArray>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+AAction::AAction(QObject *parent /*= nullptr*/)
+    : QAction(parent)
 {
-    AAction::AAction(QObject* parent /*= nullptr*/)
-        : QAction(parent)
+}
+
+QJsonObject AAction::toJson(void) const
+{
+    QJsonObject jsonObj;
+
+    return jsonObj;
+}
+
+bool AAction::fromJson(const QJsonObject &jsonObject)
+{
+    setActionId(jsonObject.value(AStr("id")).toString());
+    setText(jsonObject.value(AStr("name")).toString());
+    setShortcut(QKeySequence(jsonObject.value(AStr("key")).toString()));
+    setCommandId(jsonObject.value(AStr("command")).toString());
+    // setEnableExpression(jsonObject.value(AStr("when")).toString());
+
+    return true;
+}
+
+void AAction::setActionId(const ActionId &actionId)
+{
+    if (mActionId != actionId)
     {
-
-    }
-
-    QJsonObject AAction::toJson(void) const
-    {
-        QJsonObject jsonObj;
-
-        return jsonObj;
-    }
-
-    bool AAction::fromJson(const QJsonObject& jsonObject)
-    {
-        setActionId(jsonObject.value(AStr("id")).toString());
-        setText(jsonObject.value(AStr("name")).toString());
-        setShortcut(QKeySequence(jsonObject.value(AStr("key")).toString()));
-        setCommandId(jsonObject.value(AStr("command")).toString());
-        //setEnableExpression(jsonObject.value(AStr("when")).toString());
-
-        return true;
-    }
-
-    void AAction::setActionId(const ActionId& actionId)
-    {
-        if (mActionId != actionId)
-        {
-            mActionId = actionId;
-            emit actionIdChanged();
-        }
-    }
-
-    void AAction::setCommandId(const ActionId& commandId)
-    {
-        if (mCommandId != commandId)
-        {
-            mCommandId = commandId;
-            emit actionIdChanged();
-        }
-    }
-
-    void AAction::setEnableExpression(const aproch::AAbstractKeyExpression& expr)
-    {
-        // TODO
-        //if (mEnableExpression != expr)
-        //{
-        //    mEnableExpression = expr;
-        //    emit enableExpressionChanged();
-        //}
+        mActionId = actionId;
+        emit actionIdChanged();
     }
 }
+
+void AAction::setCommandId(const ActionId &commandId)
+{
+    if (mCommandId != commandId)
+    {
+        mCommandId = commandId;
+        emit actionIdChanged();
+    }
+}
+
+void AAction::setEnableExpression(const AAbstractKeyExpression &expr)
+{
+    // TODO
+    // if (mEnableExpression != expr)
+    //{
+    //    mEnableExpression = expr;
+    //    emit enableExpressionChanged();
+    //}
+}
+
+APROCH_NAMESPACE_END

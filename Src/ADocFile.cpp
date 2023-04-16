@@ -29,109 +29,108 @@
 #include "stdafx.h"
 #include "ADocFile.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+ADocFile::ADocFile(QObject *parent)
+    : QObject(parent), mHandleType(UsedRelease)
 {
-    ADocFile::ADocFile(QObject* parent)
-        : QObject(parent)
-        , mHandleType(UsedRelease)
+}
+
+ADocFile::ADocFile(const QString &filePath, ADocFile::EHandleFileType handleType, QObject *parent)
+    : QObject(parent), mHandleType(handleType)
+{
+    setFilePath(filePath);
+}
+
+ADocFile::~ADocFile()
+{
+    closeFile();
+}
+
+bool ADocFile::save(const QByteArray &data)
+{
+    closeFile();
+    mFile.remove();
+    if (mFile.open(QIODevice::WriteOnly))
     {
-    }
-
-    ADocFile::ADocFile(const QString& filePath, ADocFile::EHandleFileType handleType, QObject* parent)
-        : QObject(parent)
-        , mHandleType(handleType)
-    {
-        setFilePath(filePath);
-    }
-
-    ADocFile::~ADocFile()
-    {
-        closeFile();
-    }
-
-    bool ADocFile::save(const QByteArray& data)
-    {
-        closeFile();
-        mFile.remove();
-        if (mFile.open(QIODevice::WriteOnly))
-        {
-            const qint64 writtenData = mFile.write(data);
-            if (mHandleType == UsedRelease)
-                mFile.close();
-
-            if (writtenData >= 0)
-            {
-                emit saved();
-                return true;
-            }
-        }
-        else
-        {
-            qDebug() << "File open failed.";
-        }
-
-        return false;
-    }
-
-    QByteArray ADocFile::load()
-    {
-        if (!mFile.isOpen())
-            mFile.open(QIODevice::ReadOnly | QIODevice::Text);
-
-        const QByteArray data = mFile.readAll();
+        const qint64 writtenData = mFile.write(data);
         if (mHandleType == UsedRelease)
             mFile.close();
 
-        emit loaded();
-        return data;
-    }
-
-    void ADocFile::setHandleFileType(EHandleFileType type)
-    {
-        mHandleType = type;
-        if (mHandleType == UsedRelease)
+        if (writtenData >= 0)
         {
-            closeFile();
-        }
-        else
-        {
-            mFile.open(QIODevice::ReadOnly);
+            emit saved();
+            return true;
         }
     }
-
-    void ADocFile::setFilePath(const QString& filePath)
+    else
     {
-        if (QFile(filePath).fileName() == mFile.fileName())
-            return;
+        qDebug() << "File open failed.";
+    }
 
-        // 关闭之前的文件
+    return false;
+}
+
+QByteArray ADocFile::load()
+{
+    if (!mFile.isOpen())
+        mFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    const QByteArray data = mFile.readAll();
+    if (mHandleType == UsedRelease)
+        mFile.close();
+
+    emit loaded();
+    return data;
+}
+
+void ADocFile::setHandleFileType(EHandleFileType type)
+{
+    mHandleType = type;
+    if (mHandleType == UsedRelease)
+    {
         closeFile();
-
-        mFile.setFileName(filePath);
-        if (mFile.exists() && mHandleType == Occupy)
-        {
-            mFile.open(QIODevice::ReadWrite);
-        }
     }
-
-    QString ADocFile::getFilePath() const
+    else
     {
-        return mFile.fileName();
-    }
-
-    bool ADocFile::operator==(const ADocFile& rhs) const
-    {
-        return rhs.mFile.fileName() == mFile.fileName();
-    }
-
-    bool ADocFile::operator==(const QString& filePath) const
-    {
-        return QFile(filePath).fileName() == mFile.fileName();
-    }
-
-    void ADocFile::closeFile()
-    {
-        if (mFile.isOpen())
-            mFile.close();
+        mFile.open(QIODevice::ReadOnly);
     }
 }
+
+void ADocFile::setFilePath(const QString &filePath)
+{
+    if (QFile(filePath).fileName() == mFile.fileName())
+        return;
+
+    // 关闭之前的文件
+    closeFile();
+
+    mFile.setFileName(filePath);
+    if (mFile.exists() && mHandleType == Occupy)
+    {
+        mFile.open(QIODevice::ReadWrite);
+    }
+}
+
+QString ADocFile::getFilePath() const
+{
+    return mFile.fileName();
+}
+
+bool ADocFile::operator==(const ADocFile &rhs) const
+{
+    return rhs.mFile.fileName() == mFile.fileName();
+}
+
+bool ADocFile::operator==(const QString &filePath) const
+{
+    return QFile(filePath).fileName() == mFile.fileName();
+}
+
+void ADocFile::closeFile()
+{
+    if (mFile.isOpen())
+        mFile.close();
+}
+
+APROCH_NAMESPACE_END

@@ -29,53 +29,54 @@
 #include "stdafx.h"
 #include "ADoubleValidator.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+ADoubleValidator::ADoubleValidator(QObject *parent)
+    : QDoubleValidator(parent)
 {
-    ADoubleValidator::ADoubleValidator(QObject* parent)
-        : QDoubleValidator(parent)
-    {
-        setNotation(QDoubleValidator::StandardNotation);
-    }
+    setNotation(QDoubleValidator::StandardNotation);
+}
 
-    ADoubleValidator::ADoubleValidator(double bottom, double top, int decimals, QObject* parent)
-        : QDoubleValidator(bottom, top, decimals, parent)
-    {
-        setNotation(QDoubleValidator::StandardNotation);
-    }
+ADoubleValidator::ADoubleValidator(double bottom, double top, int decimals, QObject *parent)
+    : QDoubleValidator(bottom, top, decimals, parent)
+{
+    setNotation(QDoubleValidator::StandardNotation);
+}
 
-    QValidator::State ADoubleValidator::validate(QString& str, int& i) const
-    {
-        if (str.isEmpty())
-            return QValidator::Intermediate;
+QValidator::State ADoubleValidator::validate(QString &str, int &i) const
+{
+    if (str.isEmpty())
+        return QValidator::Intermediate;
 
-        bool cOK = false;
-        const double val = str.toDouble(&cOK);
+    bool cOK = false;
+    const double val = str.toDouble(&cOK);
 
-        if (!cOK)
-            return QValidator::Invalid;
-
-        const int dotPos = str.indexOf(".");
-        if (dotPos > 0)
-        {
-            if (str.right(str.length() - dotPos - 1).length() > decimals())
-                return QValidator::Invalid;
-        }
-
-        if (val <= top() && val >= bottom())
-            return QValidator::Acceptable;
-
+    if (!cOK)
         return QValidator::Invalid;
+
+    const int dotPos = str.indexOf(".");
+    if (dotPos > 0)
+    {
+        if (str.right(str.length() - dotPos - 1).length() > decimals())
+            return QValidator::Invalid;
     }
 
-    void ADoubleValidator::fixup(QString& s) const
+    if (val <= top() && val >= bottom())
+        return QValidator::Acceptable;
+
+    return QValidator::Invalid;
+}
+
+void ADoubleValidator::fixup(QString &s) const
+{
+    if (s.toDouble() < bottom())
     {
-        if (s.toDouble() < bottom())
-        {
-            s = QString::number(bottom(), 'g', decimals());
-        }
-        else if (s.toDouble() > top())
-        {
-            s = QString::number(top(), 'g', decimals());
-        }
+        s = QString::number(bottom(), 'g', decimals());
+    }
+    else if (s.toDouble() > top())
+    {
+        s = QString::number(top(), 'g', decimals());
     }
 }
+
+APROCH_NAMESPACE_END

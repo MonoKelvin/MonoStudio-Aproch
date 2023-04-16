@@ -31,100 +31,101 @@
 #pragma push_macro("CreateDirectory")
 #undef CreateDirectory
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 文件目录相关工具类
+ */
+class APROCH_API AFileToolkit
 {
+public:
     /**
-     * 文件目录相关工具类
+     * @brief 获取软件可执行文件目录
+     * @return QString 软件可执行文件目录
      */
-    class APROCH_API AFileToolkit
-    {
-    public:
-        /**
-         * @brief 获取软件可执行文件目录
-         * @return QString 软件可执行文件目录
-         */
-        static QString GetAppDirectory();
+    static QString GetAppDirectory();
 
-        /**
-         * @brief 创建文件夹
-         * @param path 文件夹（路径）全称
-         * @param recursion 是否使用递归创建路径
-         *  - false: 必须保证上一级路径存在；
-         *  - true: 创建路径中所有不存在的路径文件夹。
-         * @return bool 文件夹（路径）创建成功返回true，否则返回false。
-         * @see CreateFile
-         */
-        static bool CreateDir(const QString &path, bool recursion = true);
+    /**
+     * @brief 创建文件夹
+     * @param path 文件夹（路径）全称
+     * @param recursion 是否使用递归创建路径
+     *  - false: 必须保证上一级路径存在；
+     *  - true: 创建路径中所有不存在的路径文件夹。
+     * @return bool 文件夹（路径）创建成功返回true，否则返回false。
+     * @see CreateFile
+     */
+    static bool CreateDir(const QString &path, bool recursion = true);
 
-        /**
-         * @brief 创建文件
-         * @param fileName 文件名全称，包含路径和后缀名
-         * @param recursion 是否使用递归创建文件。
-         *  - false: 必须保证文件所在的文件夹存在；
-         *  - true: 会创建路径中所有不存在的路径文件夹。
-         * @return bool 文件创建成功返回true，否则返回false。
-         * @see CreateDiretory
-         */
-        static bool CreateNewFile(const QString &fileName, bool recursion = true);
+    /**
+     * @brief 创建文件
+     * @param fileName 文件名全称，包含路径和后缀名
+     * @param recursion 是否使用递归创建文件。
+     *  - false: 必须保证文件所在的文件夹存在；
+     *  - true: 会创建路径中所有不存在的路径文件夹。
+     * @return bool 文件创建成功返回true，否则返回false。
+     * @see CreateDiretory
+     */
+    static bool CreateNewFile(const QString &fileName, bool recursion = true);
 
-        /**
-         * @brief 复制一个文件
-         * @param sourceFile 源文件名全称，包括路径名称
-         * @param newFile 新文件名全称，文件不存在时会递归创建文件路径
-         * @param isOverWrite 是否覆盖已经存在的文件
-         * @return 复制成功返回true，否则返回false
-         */
-        static bool CopyAFile(const QString &sourceFile, const QString &newFile, bool isOverWrite = true);
+    /**
+     * @brief 复制一个文件
+     * @param sourceFile 源文件名全称，包括路径名称
+     * @param newFile 新文件名全称，文件不存在时会递归创建文件路径
+     * @param isOverWrite 是否覆盖已经存在的文件
+     * @return 复制成功返回true，否则返回false
+     */
+    static bool CopyAFile(const QString &sourceFile, const QString &newFile, bool isOverWrite = true);
 
-        /**
-         * @brief 复制目录到指定目录
-         * @param fromDir 原目录
-         * @param toDir 新目录
-         * @param isOverWrite 如果存在重复的文件，是否覆盖这些文件
-         * @return 复制成功返回true，否则返回false。如果有的文件无法复制则会跳过这些文件
-         */
-        static bool CopyDirectory(const QString &fromDir, const QString &toDir, bool isOverWrite = true);
+    /**
+     * @brief 复制目录到指定目录
+     * @param fromDir 原目录
+     * @param toDir 新目录
+     * @param isOverWrite 如果存在重复的文件，是否覆盖这些文件
+     * @return 复制成功返回true，否则返回false。如果有的文件无法复制则会跳过这些文件
+     */
+    static bool CopyDirectory(const QString &fromDir, const QString &toDir, bool isOverWrite = true);
 
-        /**
-         * @brief 移动目录到指定目录
-         * @param fromDir 原目录
-         * @param toDir 新目录
-         * @param isOverWrite 如果存在重复的文件，是否覆盖这些文件
-         * @return 移动成功返回true，否则返回false。如果有的文件无法移动则会跳过这些文件
-         */
-        static bool MoveDirectory(const QString &fromDir, const QString &toDir, bool isOverWrite = true);
+    /**
+     * @brief 移动目录到指定目录
+     * @param fromDir 原目录
+     * @param toDir 新目录
+     * @param isOverWrite 如果存在重复的文件，是否覆盖这些文件
+     * @return 移动成功返回true，否则返回false。如果有的文件无法移动则会跳过这些文件
+     */
+    static bool MoveDirectory(const QString &fromDir, const QString &toDir, bool isOverWrite = true);
 
-        /**
-         * @brief 删除文件或这目录
-         * @param path 文件或者目录路径
-         * @return 是否删除成功
-         */
-        static bool RemoveFileOrDirectory(const QString &path);
+    /**
+     * @brief 删除文件或这目录
+     * @param path 文件或者目录路径
+     * @return 是否删除成功
+     */
+    static bool RemoveFileOrDirectory(const QString &path);
 
-        /**
-         * @brief 检测字符串是否含有文件非法字符
-         * @param str 用于检测的字符串
-         * @param checkEmpty 是否对字符串做空检查
-         *  - true: 字符串为空则直接返回false，不再检查非法字符
-         *  - false: 只检查是是否包含非法字符，如果str为空则会返回true
-         * @return 如果存在：\ / \ " * ? < > | 这9个非法字符则返回true，否则返回false
-         */
-        static bool HasIllegalChar(const QString &str, bool checkEmpty = true);
+    /**
+     * @brief 检测字符串是否含有文件非法字符
+     * @param str 用于检测的字符串
+     * @param checkEmpty 是否对字符串做空检查
+     *  - true: 字符串为空则直接返回false，不再检查非法字符
+     *  - false: 只检查是是否包含非法字符，如果str为空则会返回true
+     * @return 如果存在：\ / \ " * ? < > | 这9个非法字符则返回true，否则返回false
+     */
+    static bool HasIllegalChar(const QString &str, bool checkEmpty = true);
 
-        /**
-         * @brief 指定路径的文件存在
-         * @param filePath 文件路径全程，包括后缀名
-         * @return bool 文件是否存在
-         */
-        static bool IsFileExists(const QString &filePath);
+    /**
+     * @brief 指定路径的文件存在
+     * @param filePath 文件路径全程，包括后缀名
+     * @return bool 文件是否存在
+     */
+    static bool IsFileExists(const QString &filePath);
 
-        /**
-         * @brief 是否指定路径存在
-         * @param path 路径名
-         * @return bool 路径是否存在
-         */
-        static bool IsPathExists(const QString &path);
-    };
-}
+    /**
+     * @brief 是否指定路径存在
+     * @param path 路径名
+     * @return bool 路径是否存在
+     */
+    static bool IsPathExists(const QString &path);
+};
+
+APROCH_NAMESPACE_END
 
 #pragma pop_macro("CreateDirectory")

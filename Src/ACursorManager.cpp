@@ -31,88 +31,89 @@
 
 #include <QApplication>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+APROCH_INIT_SINGLETON(ACursorManager);
+
+ACursorManager::ACursorManager()
+    : mDefaultCursor(Qt::ArrowCursor)
 {
-    APROCH_INIT_SINGLETON(ACursorManager);
+}
 
-    ACursorManager::ACursorManager()
-        : mDefaultCursor(Qt::ArrowCursor)
-    {
-    }
+void ACursorManager::setDefault(const QCursor &cursor)
+{
+    mDefaultCursor = cursor;
+}
 
-    void ACursorManager::setDefault(const QCursor& cursor)
-    {
-        mDefaultCursor = cursor;
-    }
+QCursor ACursorManager::getDefault(void) const
+{
+    return mDefaultCursor;
+}
 
-    QCursor ACursorManager::getDefault(void) const
-    {
+void ACursorManager::setCurrent(const QCursor &cursor, bool isNoPushIfSameShape)
+{
+    if (isNoPushIfSameShape && !mCursorStack.empty() && mCursorStack.top().shape() == cursor.shape())
+        return;
+    mCursorStack.push(cursor);
+}
+
+QCursor ACursorManager::getCurrent(void) const
+{
+    if (mCursorStack.empty())
         return mDefaultCursor;
-    }
 
-    void ACursorManager::setCurrent(const QCursor& cursor, bool isNoPushIfSameShape)
+    return mCursorStack.top();
+}
+
+QCursor ACursorManager::pop()
+{
+    if (mCursorStack.empty())
+        return mDefaultCursor;
+    return mCursorStack.pop();
+}
+
+QCursor ACursorManager::getLast(void) const
+{
+    if (mCursorStack.size() < 2)
+        return mDefaultCursor;
+
+    return mCursorStack.at(mCursorStack.size() - 2);
+}
+
+void ACursorManager::SetGlobalCursor(const QCursor &cursor)
+{
+    QApplication::setOverrideCursor(cursor);
+}
+
+void ACursorManager::RestoreGlobalCursor()
+{
+    QApplication::restoreOverrideCursor();
+}
+
+void ACursorManager::DynamicCursor(bool condition, const QCursor &cursor)
+{
+    static bool isModified = false;
+    if (condition)
     {
-        if (isNoPushIfSameShape && !mCursorStack.empty() && mCursorStack.top().shape() == cursor.shape())
-            return;
-        mCursorStack.push(cursor);
-    }
-
-    QCursor ACursorManager::getCurrent(void) const
-    {
-        if (mCursorStack.empty())
-            return mDefaultCursor;
-
-        return mCursorStack.top();
-    }
-
-    QCursor ACursorManager::pop()
-    {
-        if (mCursorStack.empty())
-            return mDefaultCursor;
-        return mCursorStack.pop();
-    }
-
-    QCursor ACursorManager::getLast(void) const
-    {
-        if (mCursorStack.size() < 2)
-            return mDefaultCursor;
-
-        return mCursorStack.at(mCursorStack.size() - 2);
-    }
-
-    void ACursorManager::SetGlobalCursor(const QCursor& cursor)
-    {
-        QApplication::setOverrideCursor(cursor);
-    }
-
-    void ACursorManager::RestoreGlobalCursor()
-    {
-        QApplication::restoreOverrideCursor();
-    }
-
-    void ACursorManager::DynamicCursor(bool condition, const QCursor& cursor)
-    {
-        static bool isModified = false;
-        if (condition)
+        if (!isModified)
         {
-            if (!isModified)
-            {
-                aproch::ACursorManager::SetGlobalCursor(cursor);
-                isModified = true;
-#ifdef _DEBUG
-                static int s = 1;
-                qDebug() << "setOverrideCursor: " << s++;
-#endif
-            }
-        }
-        else if (isModified)
-        {
-            aproch::ACursorManager::RestoreGlobalCursor();
-            isModified = false;
+            ACursorManager::SetGlobalCursor(cursor);
+            isModified = true;
 #ifdef _DEBUG
             static int s = 1;
-            qDebug() << "restoreOverrideCursor: " << s++;
+            qDebug() << "setOverrideCursor: " << s++;
 #endif
         }
     }
+    else if (isModified)
+    {
+        ACursorManager::RestoreGlobalCursor();
+        isModified = false;
+#ifdef _DEBUG
+        static int s = 1;
+        qDebug() << "restoreOverrideCursor: " << s++;
+#endif
+    }
 }
+
+APROCH_NAMESPACE_END

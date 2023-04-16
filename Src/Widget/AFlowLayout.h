@@ -31,51 +31,52 @@
 #include <QLayout>
 #include <QStyle>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+/**
+ * 流式布局
+ */
+class APROCH_API AFlowLayout : public QLayout
 {
-    /**
-     * 流式布局
-     */
-    class APROCH_API AFlowLayout : public QLayout
-    {
-    public:
-        explicit AFlowLayout(QWidget *parent);
-        ~AFlowLayout();
+public:
+    explicit AFlowLayout(QWidget *parent);
+    ~AFlowLayout();
 
-        void addItem(QLayoutItem *item) override;
+    void addItem(QLayoutItem *item) override;
 
-        int horizontalSpacing() const;
-        int verticalSpacing() const;
+    int horizontalSpacing() const;
+    int verticalSpacing() const;
 
-        void setHorizontalSpacing(int value);
-        void setVerticalSpacing(int value);
+    void setHorizontalSpacing(int value);
+    void setVerticalSpacing(int value);
 
-        Qt::Orientations expandingDirections() const override;
+    Qt::Orientations expandingDirections() const override;
 
-        bool hasHeightForWidth() const override;
-        int heightForWidth(int width) const override;
+    bool hasHeightForWidth() const override;
+    int heightForWidth(int width) const override;
 
-        int count() const override;
-        QLayoutItem *itemAt(int index) const override;
+    int count() const override;
+    QLayoutItem *itemAt(int index) const override;
 
-        QSize minimumSize() const override;
-        void setGeometry(const QRect &rect) override;
-        QSize sizeHint() const override;
+    QSize minimumSize() const override;
+    void setGeometry(const QRect &rect) override;
+    QSize sizeHint() const override;
 
-        QLayoutItem *takeAt(int index) override;
+    QLayoutItem *takeAt(int index) override;
 
-    private:
-        int doLayout(const QRect &rect, bool testOnly) const;
-        int smartSpacing(QStyle::PixelMetric pm) const;
+private:
+    int doLayout(const QRect &rect, bool testOnly) const;
+    int smartSpacing(QStyle::PixelMetric pm) const;
 
-    private:
-        /** item列表 */
-        QList<QLayoutItem *> mItemList;
+private:
+    /** item列表 */
+    QList<QLayoutItem *> mItemList;
 
-        /** 水平间隔 */
-        int mHorizontalSpacing;
+    /** 水平间隔 */
+    int mHorizontalSpacing;
 
-        /** 垂直间隔 */
-        int mVerticalSpacing;
-    };
-}
+    /** 垂直间隔 */
+    int mVerticalSpacing;
+};
+
+APROCH_NAMESPACE_END

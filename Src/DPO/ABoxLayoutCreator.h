@@ -29,16 +29,17 @@
 #pragma once
 #include "AAbstractObjectCreator.h"
 
-namespace aproch
-{
-    /**
-     * @brief 方框布局创建器
-     */
-    class APROCH_API ABoxLayoutCreator : public AAbstractObjectCreator
-    {
-    public:
-        ABoxLayoutCreator();
+APROCH_NAMESPACE_BEGIN
 
-        virtual QObject *createObject(const QString &name, aproch::IDPOData &data, QObject *parent = nullptr);
-    };
-}
+/**
+ * @brief 方框布局创建器
+ */
+class APROCH_API ABoxLayoutCreator : public AAbstractObjectCreator
+{
+public:
+    ABoxLayoutCreator();
+
+    virtual QObject *createObject(const QString &name, IDPOData &data, QObject *parent = nullptr);
+};
+
+APROCH_NAMESPACE_END

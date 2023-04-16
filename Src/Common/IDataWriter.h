@@ -28,21 +28,22 @@
  *****************************************************************************/
 #pragma once
 
-namespace aproch
-{
-    /**
-     * @brief 接口 - 数据存储器
-     */
-    class IDataWriter
-    {
-    public:
-        virtual ~IDataWriter() = default;
+APROCH_NAMESPACE_BEGIN
 
-        /**
-         * @brief 写数据
-         * @param name 数据名称
-         * @param data 数据
-         */
-        virtual void write(const QString& name, const QVariant& data) = 0;
-    };
-}
+/**
+ * @brief 接口 - 数据存储器
+ */
+class IDataWriter
+{
+public:
+    virtual ~IDataWriter() = default;
+
+    /**
+     * @brief 写数据
+     * @param name 数据名称
+     * @param data 数据
+     */
+    virtual void write(const QString &name, const QVariant &data) = 0;
+};
+
+APROCH_NAMESPACE_END

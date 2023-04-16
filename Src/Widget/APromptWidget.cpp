@@ -32,117 +32,117 @@
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+APromptWidget::APromptWidget(const QString &content, QWidget *parent, APromptWidget::EPromptType type, int duration)
+    : QWidget(parent), mDuration(duration)
 {
-    APromptWidget::APromptWidget(const QString& content, QWidget* parent, APromptWidget::EPromptType type, int duration)
-        : QWidget(parent)
-        , mDuration(duration)
-    {
-        Q_ASSERT(parent);
+    Q_ASSERT(parent);
 
-        buildUI(content);
-        setProperty("promptType", type);
-        show();
-    }
-
-    void APromptWidget::paintEvent(QPaintEvent*)
-    {
-        APROCH_USE_STYLE_SHEET();
-    }
-
-    void APromptWidget::showEvent(QShowEvent*)
-    {
-        QString text = mContentLabel->text();
-        const QSize textSize = adjustText(parentWidget()->width() * 0.8f, mContentLabel->font(), text);
-        const int fontHeight = GetFontPixelHeight(mContentLabel->font()) / 2;
-
-        mContentLabel->setText(text);
-        resize(textSize.width() + 2 * fontHeight, textSize.height() + 2 * fontHeight);
-        layout()->setContentsMargins(fontHeight, fontHeight, fontHeight, fontHeight);
-
-        const QSize pwSize = parentWidget()->size();
-        const int xOffset = (pwSize.width() - this->width()) / 2;
-        QRect oriRect = QRect(xOffset, pwSize.height() + 10, this->width(), this->height());
-
-        QPropertyAnimation* showAni = new QPropertyAnimation(this, QByteArrayLiteral("geometry"), this);
-        showAni->setDuration(300);
-        showAni->setStartValue(oriRect);
-
-        const int yOffset = this->height() + 40;
-        oriRect.setTop(oriRect.top() - yOffset);
-        oriRect.setBottom(oriRect.bottom() - yOffset);
-        showAni->setEndValue(oriRect);
-        showAni->setEasingCurve(QEasingCurve::OutBack);
-
-        QPropertyAnimation* quitAni = new QPropertyAnimation(this, QByteArrayLiteral("geometry"), this);
-        quitAni->setDuration(300);
-        quitAni->setStartValue(showAni->endValue());
-        quitAni->setEndValue(showAni->startValue());
-        quitAni->setEasingCurve(QEasingCurve::InBack);
-
-        QSequentialAnimationGroup* seqAnimation = new QSequentialAnimationGroup(this);
-
-        seqAnimation->addAnimation(showAni);
-        seqAnimation->addPause(mDuration);
-        seqAnimation->addAnimation(quitAni);
-        seqAnimation->setLoopCount(1);
-
-        seqAnimation->start();
-
-        connect(seqAnimation, &QSequentialAnimationGroup::finished, this, &APromptWidget::deleteLater);
-    }
-
-    QSize APromptWidget::adjustText(int maxWidth, const QFont& font, QString& text)
-    {
-        QString strText = text;
-
-        QFontMetrics fm(font);
-        int width = fm.width(strText);
-        int height = fm.height();
-
-        int leadingHeight = fm.leading();
-        int lineSpacingHeight = fm.lineSpacing();
-
-        QString strFeed = "";
-        int newLine = 0;
-
-        int newLineWidthCount = 0;
-        if (!strText.isEmpty())
-        {
-            QString curChar;
-            for (int i = 0; i < strText.length(); i++)
-            {
-                curChar = strText[i];
-                if (curChar == "\n")
-                {
-                    newLine++;
-                }
-
-                newLineWidthCount = newLineWidthCount + fm.width(curChar);
-                if (newLineWidthCount > maxWidth)
-                {
-                    newLineWidthCount = 0;
-                    strFeed = strFeed + "\n";
-                    newLine++;
-                }
-                strFeed = strFeed + curChar;
-            }
-        }
-        text = strFeed;
-
-        return QSize(qMin(width, maxWidth), (height + leadingHeight) * (newLine + 1));
-    }
-
-    void APromptWidget::buildUI(const QString& prompt)
-    {
-        mContentLabel = new QLabel(prompt, this);
-        QHBoxLayout* hbLayout = new QHBoxLayout(this);
-        hbLayout->setSpacing(0);
-        hbLayout->setMargin(0);
-
-        mContentLabel->setAlignment(Qt::AlignVCenter);
-        mContentLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-        hbLayout->addWidget(mContentLabel, Qt::AlignCenter);
-    }
+    buildUI(content);
+    setProperty("promptType", type);
+    show();
 }
+
+void APromptWidget::paintEvent(QPaintEvent *)
+{
+    APROCH_USE_STYLE_SHEET();
+}
+
+void APromptWidget::showEvent(QShowEvent *)
+{
+    QString text = mContentLabel->text();
+    const QSize textSize = adjustText(parentWidget()->width() * 0.8f, mContentLabel->font(), text);
+    const int fontHeight = GetFontPixelHeight(mContentLabel->font()) / 2;
+
+    mContentLabel->setText(text);
+    resize(textSize.width() + 2 * fontHeight, textSize.height() + 2 * fontHeight);
+    layout()->setContentsMargins(fontHeight, fontHeight, fontHeight, fontHeight);
+
+    const QSize pwSize = parentWidget()->size();
+    const int xOffset = (pwSize.width() - this->width()) / 2;
+    QRect oriRect = QRect(xOffset, pwSize.height() + 10, this->width(), this->height());
+
+    QPropertyAnimation *showAni = new QPropertyAnimation(this, QByteArrayLiteral("geometry"), this);
+    showAni->setDuration(300);
+    showAni->setStartValue(oriRect);
+
+    const int yOffset = this->height() + 40;
+    oriRect.setTop(oriRect.top() - yOffset);
+    oriRect.setBottom(oriRect.bottom() - yOffset);
+    showAni->setEndValue(oriRect);
+    showAni->setEasingCurve(QEasingCurve::OutBack);
+
+    QPropertyAnimation *quitAni = new QPropertyAnimation(this, QByteArrayLiteral("geometry"), this);
+    quitAni->setDuration(300);
+    quitAni->setStartValue(showAni->endValue());
+    quitAni->setEndValue(showAni->startValue());
+    quitAni->setEasingCurve(QEasingCurve::InBack);
+
+    QSequentialAnimationGroup *seqAnimation = new QSequentialAnimationGroup(this);
+
+    seqAnimation->addAnimation(showAni);
+    seqAnimation->addPause(mDuration);
+    seqAnimation->addAnimation(quitAni);
+    seqAnimation->setLoopCount(1);
+
+    seqAnimation->start();
+
+    connect(seqAnimation, &QSequentialAnimationGroup::finished, this, &APromptWidget::deleteLater);
+}
+
+QSize APromptWidget::adjustText(int maxWidth, const QFont &font, QString &text)
+{
+    QString strText = text;
+
+    QFontMetrics fm(font);
+    int width = fm.width(strText);
+    int height = fm.height();
+
+    int leadingHeight = fm.leading();
+    int lineSpacingHeight = fm.lineSpacing();
+
+    QString strFeed = "";
+    int newLine = 0;
+
+    int newLineWidthCount = 0;
+    if (!strText.isEmpty())
+    {
+        QString curChar;
+        for (int i = 0; i < strText.length(); i++)
+        {
+            curChar = strText[i];
+            if (curChar == "\n")
+            {
+                newLine++;
+            }
+
+            newLineWidthCount = newLineWidthCount + fm.width(curChar);
+            if (newLineWidthCount > maxWidth)
+            {
+                newLineWidthCount = 0;
+                strFeed = strFeed + "\n";
+                newLine++;
+            }
+            strFeed = strFeed + curChar;
+        }
+    }
+    text = strFeed;
+
+    return QSize(qMin(width, maxWidth), (height + leadingHeight) * (newLine + 1));
+}
+
+void APromptWidget::buildUI(const QString &prompt)
+{
+    mContentLabel = new QLabel(prompt, this);
+    QHBoxLayout *hbLayout = new QHBoxLayout(this);
+    hbLayout->setSpacing(0);
+    hbLayout->setMargin(0);
+
+    mContentLabel->setAlignment(Qt::AlignVCenter);
+    mContentLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    hbLayout->addWidget(mContentLabel, Qt::AlignCenter);
+}
+
+APROCH_NAMESPACE_END

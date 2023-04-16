@@ -29,10 +29,11 @@
 #include "stdafx.h"
 #include "AWheelColorPickerWidget.h"
 
-namespace aproch
+APROCH_NAMESPACE_BEGIN
+
+AWheelColorPickerWidget::AWheelColorPickerWidget(const QColor &color, QWidget *parent)
+    : AWindow(parent)
 {
-    AWheelColorPickerWidget::AWheelColorPickerWidget(const QColor& color, QWidget* parent)
-        : AWindow(parent)
-    {
-    }
 }
+
+APROCH_NAMESPACE_END
