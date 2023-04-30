@@ -142,13 +142,12 @@
     <ClCompile Include="Common\AMathToolkit.cpp" />
     <ClCompile Include="Common\AStringToolkit.cpp" />
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
+    <ClCompile Include="Data\AAbstractEditorFactory.cpp" />
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Data\ADataContainer.cpp" />
-    <ClCompile Include="Data\ADataType.cpp" />
-    <ClCompile Include="DPO\AAbstractObjectCreator.cpp" />
-    <ClCompile Include="DPO\ABoxLayoutCreator.cpp" />
-    <ClCompile Include="DPO\ADPWService.cpp" />
-    <ClCompile Include="DPO\AEditCreator.cpp" />
+    <ClCompile Include="Data\ADataManager.cpp" />
+    <ClCompile Include="Data\ADataToolkit.cpp" />
+    <ClCompile Include="Data\AEditorFactory.cpp" />
     <ClCompile Include="FUI\Element\FUIElement.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -184,7 +183,10 @@
     <ClInclude Include="Common\AGraphicsToolkit.h" />
     <ClInclude Include="Common\ITextTranslatable.h" />
     <QtMoc Include="Data\ADataContainer.h" />
-    <ClInclude Include="Data\ADataType.h" />
+    <QtMoc Include="Data\ADataManager.h" />
+    <QtMoc Include="Data\AAbstractEditorFactory.h" />
+    <ClInclude Include="Data\ADataToolkit.h" />
+    <QtMoc Include="Data\AEditorFactory.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
     <QtMoc Include="WinUI\Private\AWinUIStyle.h" />
     <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h" />
@@ -226,12 +228,6 @@
     <ClInclude Include="Common\IStringSerializable.h" />
     <QtMoc Include="Data\AAbstractDataManager.h" />
     <ClInclude Include="Data\AData.h" />
-    <ClInclude Include="DPO\AAbstractObjectCreator.h" />
-    <ClInclude Include="DPO\ABoxLayoutCreator.h" />
-    <ClInclude Include="DPO\ADPWService.h" />
-    <ClInclude Include="DPO\AEditCreator.h" />
-    <ClInclude Include="DPO\IDPOService.h" />
-    <ClInclude Include="DPO\Inc_DPO.h" />
     <ClInclude Include="FUIElement.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Widget\ABorderlessWidget.h" />

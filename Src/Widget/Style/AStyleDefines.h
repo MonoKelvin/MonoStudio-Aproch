@@ -29,6 +29,8 @@
 #pragma once
 #include "AprochGlobal.h"
 
+class QLabel;
+
 APROCH_NAMESPACE_BEGIN
 
 // ------------------------------

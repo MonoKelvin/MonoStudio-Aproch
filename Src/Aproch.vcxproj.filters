@@ -33,9 +33,6 @@
     <Filter Include="Application\Action">
       <UniqueIdentifier>{29c1ff07-2c30-49c1-b451-e3ac91d868de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DPO">
-      <UniqueIdentifier>{7d5ebe2c-edc0-46b1-8284-475a11713110}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\Service">
       <UniqueIdentifier>{11c55700-bc8b-453e-8ac4-40edbcb54ecf}</UniqueIdentifier>
     </Filter>
@@ -136,24 +133,6 @@
     </ClInclude>
     <ClInclude Include="Widget\Style\AWindowsStyleManager.h">
       <Filter>Widget\Style</Filter>
-    </ClInclude>
-    <ClInclude Include="DPO\AAbstractObjectCreator.h">
-      <Filter>DPO</Filter>
-    </ClInclude>
-    <ClInclude Include="DPO\ABoxLayoutCreator.h">
-      <Filter>DPO</Filter>
-    </ClInclude>
-    <ClInclude Include="DPO\ADPWService.h">
-      <Filter>DPO</Filter>
-    </ClInclude>
-    <ClInclude Include="DPO\AEditCreator.h">
-      <Filter>DPO</Filter>
-    </ClInclude>
-    <ClInclude Include="DPO\Inc_DPO.h">
-      <Filter>DPO</Filter>
-    </ClInclude>
-    <ClInclude Include="DPO\IDPOService.h">
-      <Filter>DPO</Filter>
     </ClInclude>
     <ClInclude Include="APluginManager.h">
       <Filter>Application</Filter>
@@ -257,11 +236,11 @@
     <ClInclude Include="WinUI\Style\AWinUIStyleObjects.h">
       <Filter>WinUI\Style</Filter>
     </ClInclude>
-    <ClInclude Include="Data\ADataType.h">
-      <Filter>Data</Filter>
-    </ClInclude>
     <ClInclude Include="Common\ITextTranslatable.h">
       <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ADataToolkit.h">
+      <Filter>Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -364,18 +343,6 @@
     <ClCompile Include="AActionManager.cpp">
       <Filter>Application\Action</Filter>
     </ClCompile>
-    <ClCompile Include="DPO\AAbstractObjectCreator.cpp">
-      <Filter>DPO</Filter>
-    </ClCompile>
-    <ClCompile Include="DPO\ABoxLayoutCreator.cpp">
-      <Filter>DPO</Filter>
-    </ClCompile>
-    <ClCompile Include="DPO\ADPWService.cpp">
-      <Filter>DPO</Filter>
-    </ClCompile>
-    <ClCompile Include="DPO\AEditCreator.cpp">
-      <Filter>DPO</Filter>
-    </ClCompile>
     <ClCompile Include="APluginManager.cpp">
       <Filter>Application</Filter>
     </ClCompile>
@@ -445,10 +412,19 @@
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
-    <ClCompile Include="Data\ADataType.cpp">
+    <ClCompile Include="Data\ADataContainer.cpp">
       <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="Data\ADataContainer.cpp">
+    <ClCompile Include="Data\ADataManager.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ADataToolkit.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\AAbstractEditorFactory.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\AEditorFactory.cpp">
       <Filter>Data</Filter>
     </ClCompile>
   </ItemGroup>
@@ -532,6 +508,15 @@
       <Filter>Common\Validator</Filter>
     </QtMoc>
     <QtMoc Include="Data\ADataContainer.h">
+      <Filter>Data</Filter>
+    </QtMoc>
+    <QtMoc Include="Data\ADataManager.h">
+      <Filter>Data</Filter>
+    </QtMoc>
+    <QtMoc Include="Data\AAbstractEditorFactory.h">
+      <Filter>Data</Filter>
+    </QtMoc>
+    <QtMoc Include="Data\AEditorFactory.h">
       <Filter>Data</Filter>
     </QtMoc>
   </ItemGroup>

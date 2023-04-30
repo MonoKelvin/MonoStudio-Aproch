@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    ADataUtils.cpp
- * @date    2022-7-23
+ * @file    ADataToolkit.cpp
+ * @date    2023-04-22 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,22 +27,22 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #include "stdafx.h"
-#include "ADPWUtils.h"
+#include "ADataToolkit.h"
 
 #include <QCoreApplication>
 
 APROCH_NAMESPACE_BEGIN
 
-QString ADPWUtils::ColorText(const QColor &c)
+QString ADataToolkit::ColorText(const QColor &c)
 {
-    return QCoreApplication::translate("QtPropertyBrowserUtils", "RGBA(%1, %2, %3, %4)")
+    return QCoreApplication::translate("Aproch", "RGBA(%1, %2, %3, %4)")
         .arg(c.red())
         .arg(c.green())
         .arg(c.blue())
         .arg(c.alpha());
 }
 
-QPixmap ADPWUtils::DrawBrushToPixmap(const QBrush &b, const QSize &size)
+QPixmap ADataToolkit::DrawBrushToPixmap(const QBrush &b, const QSize &size)
 {
     QImage img(size, QImage::Format_ARGB32_Premultiplied);
     img.fill(0);
@@ -50,7 +50,9 @@ QPixmap ADPWUtils::DrawBrushToPixmap(const QBrush &b, const QSize &size)
     QPainter painter(&img);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
     painter.fillRect(0, 0, img.width(), img.height(), b);
+
     QColor color = b.color();
+    
     if (color.alpha() != 255)
     {
         QBrush opaqueBrush = b;
@@ -58,29 +60,33 @@ QPixmap ADPWUtils::DrawBrushToPixmap(const QBrush &b, const QSize &size)
         opaqueBrush.setColor(color);
         painter.fillRect(img.width() / 4, img.height() / 4, img.width() / 2, img.height() / 2, opaqueBrush);
     }
+
     painter.end();
 
     return QPixmap::fromImage(img);
 }
 
-QString ADPWUtils::FontText(const QFont &f)
+QString ADataToolkit::FontText(const QFont &f)
 {
-    return QCoreApplication::translate("ADPWUtils", "[%1, %2px]").arg(f.family()).arg(f.pixelSize());
+    return QCoreApplication::translate("Aproch", "[%1, %2px]").arg(f.family()).arg(f.pixelSize());
 }
 
-QPixmap ADPWUtils::DrawFontToPixmap(const QFont &font, const QSize &size, int ptSize)
+QPixmap ADataToolkit::DrawFontToPixmap(const QFont &font, const QSize &size, int ptSize, const QString& text)
 {
     QFont f = font;
     QImage img(size, QImage::Format_ARGB32_Premultiplied);
     img.fill(0);
+
     QPainter p(&img);
     p.setRenderHint(QPainter::TextAntialiasing, true);
     p.setRenderHint(QPainter::Antialiasing, true);
     f.setPointSize(ptSize);
     p.setFont(f);
+
     QTextOption t;
     t.setAlignment(Qt::AlignCenter);
-    p.drawText(QRect(QPoint(0, 0), size), QString(QLatin1Char('A')), t);
+    p.drawText(QRect(QPoint(0, 0), size), text, t);
+
     return QPixmap::fromImage(img);
 }
 

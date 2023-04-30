@@ -31,3 +31,7 @@
 #include "AData.h"
 #include "ADataContainer.h"
 #include "AAbstractDataManager.h"
+#include "ADataManager.h"
+#include "ADataToolkit.h"
+#include "AAbstractEditorFactory.h"
+#include "AEditorFactory.h"

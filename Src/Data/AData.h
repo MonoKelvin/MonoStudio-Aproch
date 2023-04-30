@@ -57,7 +57,6 @@ public:
 
     const QVariant& getValue() noexcept;
     QVariant getValue() const noexcept;
-    void setValue(const QVariant& data);
     EMetaType getType() const noexcept;
 
     QString getName() const;
@@ -78,6 +77,7 @@ public:
     /** @brief 数据的文本形式 */
     QString toText() const;
 
+    ADataSet getParentDataSet() const;
     QList<AData*> getSubDataSet() const;
     void addSubData(AData* dt);
 
@@ -92,8 +92,11 @@ protected:
     void dataChanged();
 
 private:
+    void setValue(const QVariant& data);
+
+private:
     /** @brief 父对象数据集 */
-    QSet<AData*> m_parentItems;
+    ADataSet m_parentItems;
 
     /** @brief 子对象数据集 */
     QList<AData*> m_subItems;

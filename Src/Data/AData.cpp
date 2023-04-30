@@ -37,8 +37,8 @@ AData::AData(AAbstractDataManager* manager)
     , m_enabled(true)
     , m_manager(manager)
 {
-    //m_value = QVariant(QVariant::Type(type));
     Q_ASSERT_X(manager, Q_FUNC_INFO, "the manager is nullptr");
+    m_value = QVariant(QVariant::Type(manager->getType()));
 }
 
 AData::AData(const AData& rhs, const FCopyOptions& op)
@@ -54,16 +54,21 @@ AData::AData(const AData& rhs, const FCopyOptions& op)
 
 AData::~AData()
 {
-    for (AData* data : m_parentItems)
-        emit data->m_manager->dataRemoved(this, data);
+    emit m_manager->getDataContainer()->dataDestroyed(this);
 
-    emit m_manager->destroyData(this);
+    for (AData* data : m_parentItems)
+        emit data->m_manager->getDataContainer()->dataRemoved(this, data);
 
     for (AData* data : m_subItems)
         data->m_parentItems.remove(this);
 
     for (AData* data : m_parentItems)
         data->m_subItems.removeAll(this);
+}
+
+ADataSet AData::getParentDataSet() const
+{
+    return m_parentItems;
 }
 
 QList<AData*> AData::getSubDataSet() const
@@ -222,7 +227,7 @@ void AData::insertSubData(AData* data, AData* afterData)
     m_subItems.insert(newPos, data);
     data->m_parentItems.insert(this);
 
-    emit m_manager->dataInserted(data, this, properAfterData);
+    emit m_manager->getDataContainer()->dataInserted(data, this, properAfterData);
 }
 
 void AData::insertSubData(AData* dt, int index)
@@ -243,7 +248,7 @@ void AData::removeSubData(AData* data)
     if (!data)
         return;
 
-    emit m_manager->dataRemoved(data, this);
+    emit m_manager->getDataContainer()->dataRemoved(data, this);
 
     QList<AData*> pendingList = getSubDataSet();
     int pos = 0;
@@ -262,7 +267,7 @@ void AData::removeSubData(AData* data)
 
 void AData::dataChanged()
 {
-    emit m_manager->dataChanged(this);
+    emit m_manager->getDataContainer()->dataChanged(this);
 }
 
 bool AData::isValid() const

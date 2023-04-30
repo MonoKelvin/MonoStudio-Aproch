@@ -16,14 +16,14 @@ public:
     explicit ADataContainer(QObject* parent = nullptr);
     ~ADataContainer();
 
-    void addManager(AAbstractDataManager* manager);
+    /** @brief 添加数据管理器 */
+    bool addManager(AAbstractDataManager* manager, EMetaType type);
 
     template<class T>
-    AAbstractDataManager* getManager(EMetaType type) const
+    T* getManager(EMetaType type) const
     {
-        /*const char* clsName = T::staticMetaObject.className();
-        return getManager(type, clsName);*/
-        return nullptr;
+        const char* clsName = T::staticMetaObject.className();
+        return qobject_cast<T*>(getManager(type, clsName));
     }
     AAbstractDataManager* getManager(EMetaType type, const char* className) const;
 
@@ -35,18 +35,25 @@ public:
     ADataSet* getDataSet(AAbstractDataManager* manager, bool isCreateIfNull = true);
     ADataSet getAllData() const;
 
-    /** @brief 添加数据 */
-    bool addData(AAbstractDataManager* manager, AData* dt, const QVariant& defaultVal);
-
     /** @brief 克隆数据，同时克隆所有子数据 */
     AData* cloneData(AData* srcData);
 
-    /** @brief 删除数据集中的数据。数据集对象本身不会析构，而是删除数据集中的数据 */
-    void deleteData(ADataSet* dataset);
+    /** @brief 删除数据集中的数据 */
+    void deleteData(ADataSet& dataset);
+
+Q_SIGNALS:
+    void dataInserted(AData* data, AData* parent, AData* after);
+    void dataChanged(AData* data);
+    void dataRemoved(AData* data, AData* parent);
+    void dataDestroyed(AData* data);
 
 public Q_SLOTS:
     void resetValue(AData* dt);
     void deleteData(AData*& dt);
+
+private:
+    /** @brief 添加数据 */
+    bool addData(AAbstractDataManager* manager, AData* dt, const QVariant& defaultVal);
 
 private:
     Q_DISABLE_COPY(ADataContainer);

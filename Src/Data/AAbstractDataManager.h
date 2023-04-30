@@ -48,8 +48,11 @@ private:
     Q_DECLARE_PRIVATE(AAbstractDataManager);
 
 public:
-    explicit AAbstractDataManager(ADataContainer* parent);
+    explicit AAbstractDataManager(ADataContainer* parent, EMetaType type);
     ~AAbstractDataManager();
+
+    /** @brief 所管理的元数据类型 */
+    EMetaType getType() const;
 
     /**
      * @brief 复制数据
@@ -62,20 +65,23 @@ public:
     /** @brief 将数据转换为文本 */
     virtual QString toText(const AData* dt) const = 0;
 
-    /** @brief 所管理的元数据类型 */
-    virtual EMetaType type() const = 0;
-
     /** @brief 获取默认数据 */
     virtual QVariant getDefaultValue(AData* dt) const;
 
-    /** @brief 设置默认数据 */
-    bool setDefaultValue(AData* dt, const QVariant& defaultVal) const;
+    /** @brief 重置为默认数据 */
+    void resetValue(AData* dt);
+
+    /** @brief 设置数据 */
+    virtual bool setValue(AData* dt, const QVariant& val);
 
     /** @brief 获取数据集 */
     ADataSet* getDataSet() const;
 
     /** @brief 获取数据集 */
     const ADataSet& getDataSet();
+
+    /** @brief 获取数据集，如果不存在则创建 */
+    ADataSet* getOrCreateDataSet();
 
     /** @brief 获取管理器所在数据容器 */
     ADataContainer* getDataContainer() const;
@@ -98,18 +104,9 @@ public:
      */
     AData* addData(const QString& name, const QVariant& defaultValue);
 
-Q_SIGNALS:
-    void dataInserted(AData* data, AData* parent, AData* after);
-    void dataChanged(AData* data);
-    void dataRemoved(AData* data, AData* parent);
-    void dataDestroyed(AData* data);
-
 protected:
     /** @brief 当初始化创建数据时调用，目的是让数据管理器知道数据已创建 */
-    virtual void initializeData(AData* data) = 0;
-
-    /** @brief 在销毁指定数据之前调用此函数。目的是让数据管理器知道正在销毁数据，以便删除数据的其他属性。 */
-    virtual void uninitializeData(AData* data) = 0;
+    virtual void initializeData(AData* data);
 
     /**
      * @brief 创建数据。注意创建的数据类型如果不是所管理的数据类型，则无法添加成功.
@@ -118,13 +115,10 @@ protected:
      */
     virtual AData* createData();
 
-private:
-    /**
-     * @brief 销毁数据，删除内存
-     * @param data 数据
-     */
-    void destroyData(AData* data);
+    /** @brief 设置所管理的元数据类型 */
+    void setType(EMetaType type);
 
+private:
     /** @brief 初始化数据 */
     void init(ADataSet*);
 };

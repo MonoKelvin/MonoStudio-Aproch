@@ -33,9 +33,10 @@ public:
     };
 
     bool hasDataManager(AAbstractDataManager* manager, bool& hasPtr) const;
-    void addDataManager(AAbstractDataManager* manager);
+    void addDataManager(AAbstractDataManager* manager, EMetaType type);
     void deleteData(AData* dt);
     void addData(AAbstractDataManager* manager, AData* dt, const QVariant& defaultVal);
+    bool setDefaultValue(AData* dt, const QVariant& defaultVal);
 
 #ifdef A_DATALIST_USE_LINKLIST
     QLinkedList<AData*> dataList;
@@ -69,10 +70,11 @@ bool ADataContainerPrivate::hasDataManager(AAbstractDataManager* manager, bool& 
     return false;
 }
 
-void ADataContainerPrivate::addDataManager(AAbstractDataManager* manager)
+void ADataContainerPrivate::addDataManager(AAbstractDataManager* manager, EMetaType type)
 {
     Q_Q(ADataContainer);
 
+    manager->setType(type);
     manager->setParent(q);
 
     ADataSet* dataset = new ADataSet();
@@ -82,6 +84,8 @@ void ADataContainerPrivate::addDataManager(AAbstractDataManager* manager)
 
 void ADataContainerPrivate::deleteData(AData* dt)
 {
+    Q_Q(ADataContainer);
+
 #ifdef A_DATALIST_USE_LINKLIST
     dataList.removeOne(dt);
 #else
@@ -90,6 +94,8 @@ void ADataContainerPrivate::deleteData(AData* dt)
     valuesMap.remove(dt);
     for (auto iter = managerDataSetMap.begin(); iter != managerDataSetMap.end(); ++iter)
         iter.value()->remove(dt);
+
+    emit q->dataDestroyed(dt);
 
     delete dt;
     dt = nullptr;
@@ -100,6 +106,22 @@ void ADataContainerPrivate::addData(AAbstractDataManager* manager, AData* dt, co
     dataList.push_back(dt);
     valuesMap[dt].defaultVal = defaultVal;
     managerDataSetMap[manager]->insert(dt);
+
+    manager->initializeData(dt);
+}
+
+bool ADataContainerPrivate::setDefaultValue(AData* dt, const QVariant& defaultVal)
+{
+    Q_Q(ADataContainer);
+
+    if (valuesMap[dt].defaultVal == defaultVal)
+        return false;
+
+    valuesMap[dt].defaultVal = defaultVal;
+
+    emit q->dataChanged(dt);
+
+    return true;
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -113,15 +135,18 @@ ADataContainer::~ADataContainer()
 {
 }
 
-void ADataContainer::addManager(AAbstractDataManager* manager)
+bool ADataContainer::addManager(AAbstractDataManager* manager, EMetaType type)
 {
     if (nullptr == manager)
-        return;
-
-    if (!QMetaType(manager->type()).isValid())
     {
-        qWarning("Invalid data type: %d", manager->type());
-        return;
+        Q_ASSERT_X(false, Q_FUNC_INFO, "the data manager is null");
+        return false;
+    }
+
+    if (!QMetaType(type).isValid())
+    {
+        qWarning("Invalid data type: %d", type);
+        return false;
     }
 
     Q_D(ADataContainer);
@@ -133,15 +158,17 @@ void ADataContainer::addManager(AAbstractDataManager* manager)
             continue;
 
         if (hasPtr)
-            return;
+            return true;
 
         const char* clsName = manager->metaObject()->className();
-        const char* typeName = QMetaType::typeName(manager->type());
-        qWarning("The same EDataType(typename=%s, classname=%s) of data manager exists.", typeName, clsName);
-        return;
+        const char* typeName = QMetaType::typeName(type);
+        qWarning("The same DataType(typename=%s, classname=%s) of data manager exists.", typeName, clsName);
+        return false;
     }
 
-    d->addDataManager(manager);
+    d->addDataManager(manager, type);
+    
+    return true;
 }
 
 AAbstractDataManager* ADataContainer::getManager(EMetaType type, const char* className) const
@@ -150,7 +177,7 @@ AAbstractDataManager* ADataContainer::getManager(EMetaType type, const char* cla
 
     for (auto iter = d->managerDataSetMap.constBegin(); iter != d->managerDataSetMap.constEnd(); ++iter)
     {
-        if (iter.key()->type() != type)
+        if (iter.key()->getType() != type)
             continue;
 
         const char* mgrClsName = iter.key()->metaObject()->className();
@@ -177,10 +204,12 @@ bool ADataContainer::setDefaultValue(AData* dt, const QVariant& defaultVal)
         return false;
 
     // data type is incompatible
-    if (dt->getType() != defaultVal.type() || !defaultVal.isValid())
+    if (!defaultVal.isValid() || !defaultVal.canConvert(dt->getType()))
         return false;
-    
-    d->valuesMap[dt].defaultVal = defaultVal;
+
+    if (!d->setDefaultValue(dt, defaultVal))
+        return false;
+
     return true;
 }
 
@@ -189,7 +218,15 @@ void ADataContainer::resetValue(AData* dt)
     if (nullptr == dt)
         return;
 
-    dt->setValue(getDefaultValue(dt));
+    Q_D(const ADataContainer);
+    for (auto iter = d->managerDataSetMap.begin(); iter != d->managerDataSetMap.end(); ++iter)
+    {
+        if (iter.value()->contains(dt))
+        {
+            iter.key()->setValue(dt, getDefaultValue(dt));
+            break;
+        }
+    }
 }
 
 void ADataContainer::resetValues(const ADataSet& dataSet)
@@ -204,7 +241,7 @@ ADataSet* ADataContainer::getDataSet(AAbstractDataManager* manager, bool isCreat
     if (!d->managerDataSetMap.contains(manager))
     {
         if (isCreateIfNull)
-            addManager(manager);
+            addManager(manager, manager->getType());
         else
             return nullptr;
     }
@@ -239,6 +276,7 @@ bool ADataContainer::addData(AAbstractDataManager* manager, AData* dt, const QVa
         return false;
 
     d->addData(manager, dt, defaultVal);
+
     return true;
 }
 
@@ -248,17 +286,29 @@ AData* ADataContainer::cloneData(AData* srcData)
     return nullptr;
 }
 
-void ADataContainer::deleteData(ADataSet* dataset)
+void ADataContainer::deleteData(ADataSet& dataset)
 {
     Q_D(ADataContainer);
+    ADataSet tempDataset;
+
     for (ADataSet* ds : d->managerDataSetMap)
     {
-        if (ds == dataset)
+        for (auto iter = dataset.begin(); iter != dataset.end(); )
         {
-            qDeleteAll(*ds);
-            ds->clear();
+            if (ds->remove(*iter))
+            {
+                tempDataset.insert(*iter);
+                iter = dataset.erase(iter);
+            }
+            else
+            {
+                ++iter;
+            }
         }
     }
+
+    for (AData* dt : tempDataset)
+        d->deleteData(dt);
 }
 
 void ADataContainer::deleteData(AData*& dt)

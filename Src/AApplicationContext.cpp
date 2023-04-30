@@ -58,11 +58,6 @@ void AApplicationContext::run(QWidget *mainWidget)
     registerService<AAppConfigService>(AServiceName_AppConfig);
     registerService<ASqlDataBase>(AServiceName_DataBase);
 
-    // 注册默认的对象创建器
-    auto pDPWService = qSharedPointerCast<ADPWService>(registerService<ADPWService>(AServiceName_DPW));
-    pDPWService->registerObjectCreator(QSharedPointer<IObjectCreator>(new ABoxLayoutCreator()));
-    pDPWService->registerObjectCreator(QSharedPointer<IObjectCreator>(new AEditCreator()));
-
     // 注册默认图标字体
     const AIconFont fontAwesome(AStr(":/font/Fonts/fontawesome-webfont.ttf"));
     AIconFont::AddIconFont(fontAwesome);

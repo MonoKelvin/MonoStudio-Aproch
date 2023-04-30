@@ -1,7 +1,5 @@
 #include "WinUIWindow.h"
-#include "WinUI/include.inc"
-
-#include <QPushButton>
+#include "AprochAPI.h"
 
 WinUIWindow::WinUIWindow(QWidget *parent)
     : QWidget(parent)
@@ -21,6 +19,21 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     ATextBox* textBox2 = new ATextBox(this);
     textBox2->setStyleSheet(AStr("border-radius: 7px; border-bottom:4px solid red outset;"));
     layout()->addWidget(textBox2);
+
+    // test data
+    ADataContainer* dc = new ADataContainer(this);
+    AIntegerDataManager* intDM = new AIntegerDataManager(dc);
+    ASizeDataManager* sizeDM = new ASizeDataManager(dc);
+
+    AData* dt = intDM->addData(tr("test1"));
+
+    ASpinBoxFactory* sbf = new ASpinBoxFactory(this);
+    sbf->addDataManager(intDM);
+
+    QWidget* spinBox001 = sbf->createEditor(dt, this);
+    layout()->addWidget(spinBox001);
+    QWidget* spinBox002 = sbf->createEditor(dt, this);
+    layout()->addWidget(spinBox002);
 }
 
 WinUIWindow::~WinUIWindow()

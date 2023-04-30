@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    ABoxLayoutCreator.h
- * @date    2022-07-07
+ * @file    ADataToolkit.h
+ * @date    2023-04-22 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,19 +27,47 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-#include "AAbstractObjectCreator.h"
 
 APROCH_NAMESPACE_BEGIN
 
 /**
- * @brief ���򲼾ִ�����
+ * @brief 数据工具类
  */
-class APROCH_API ABoxLayoutCreator : public AAbstractObjectCreator
+class APROCH_API ADataToolkit
 {
 public:
-    ABoxLayoutCreator();
+    /**
+     * @brief 颜色转字符串
+     * @param c 颜色
+     * @return 颜色字符串，带有RGBA信息
+     */
+    static QString ColorText(const QColor &c);
 
-    virtual QObject *createObject(const QString &name, IDPOData &data, QObject *parent = nullptr);
+    /**
+     * @brief 将笔刷颜色绘制到图片中
+     * @param b 笔刷
+     * @param size 图片大小
+     * @return 图片
+     */
+    static QPixmap DrawBrushToPixmap(const QBrush &b, const QSize &size = QSize(16, 16));
+
+    /**
+     * @brief 字体转字符串
+     * @param f 字体
+     * @return 字体字符串，带有大小信息
+     */
+    static QString FontText(const QFont &f);
+
+    /**
+     * @brief 将字体绘制到图片上
+     * @param font 字体
+     * @param size 图片大小
+     * @param ptSize 字体大小
+     * @param text 文本
+     * @return 图片
+     */
+    static QPixmap DrawFontToPixmap(const QFont &font, const QSize& size = QSize(16, 16), 
+                                    int ptSize = 13, const QString& text = QString(QLatin1Char('A')));
 };
 
 APROCH_NAMESPACE_END
