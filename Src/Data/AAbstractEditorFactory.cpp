@@ -33,55 +33,43 @@
 
 APROCH_NAMESPACE_BEGIN
 
-class AAbstractEditorFactoryBasePrivate : public QObjectPrivate
+class AAbstractEditorFactoryPrivate : public QObjectPrivate
 {
-	Q_DECLARE_PUBLIC(AAbstractEditorFactoryBase);
+    Q_DECLARE_PUBLIC(AAbstractEditorFactory);
 public:
-	AAbstractEditorFactoryBasePrivate(ADataContainer* _dc)
-		: QObjectPrivate()
-		, dc(_dc)
-	{
-	}
+    AAbstractEditorFactoryPrivate(ADataWidgetBinding* _dwb)
+        : QObjectPrivate()
+        , dwb(_dwb)
+    {
+    }
 
-	ADataContainer* dc = nullptr;
+    ADataWidgetBinding* dwb = nullptr;
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-AAbstractEditorFactoryBase::AAbstractEditorFactoryBase(ADataContainer* dc)
-	: QObject(*(new AAbstractEditorFactoryBasePrivate(dc)), dc)
+AAbstractEditorFactory::AAbstractEditorFactory(ADataWidgetBinding* dwb, QObject* parent)
+    : QObject(*(new AAbstractEditorFactoryPrivate(dwb)), parent)
 {
-	Q_ASSERT_X(dc, Q_FUNC_INFO, "data container is nullptr");
+    Q_ASSERT_X(dwb, Q_FUNC_INFO, "the ADataWidgetBinding object is nullptr");
 }
 
-AAbstractEditorFactoryBase::~AAbstractEditorFactoryBase()
+AAbstractEditorFactory::~AAbstractEditorFactory()
 {
 
 }
 
-QWidget* AAbstractEditorFactoryBase::createEditor(AData* data, QWidget* parent, const SBindParameter& param)
+QWidget* AAbstractEditorFactory::createEditor(AData* data, QWidget* parent, const QString& bindPropName, EDataBindType type)
 {
-	Q_D(const AAbstractEditorFactoryBase);
+    Q_D(const AAbstractEditorFactory);
 
-    QWidget* widget = createEditorImpl(data, parent);
+    QWidget* widget = createEditorImpl(data, parent, bindPropName, type);
     if (!widget)
         return nullptr;
 
-	bind(data, widget, param);
-    connect(widget, &QWidget::destroyed, this, &AAbstractEditorFactoryBase::editorDestroyed);
+    d->dwb->bind(ADWBindParameter(data, widget, bindPropName, type));
 
     return widget;
-}
-
-ADataContainer* AAbstractEditorFactoryBase::getDataContainer() const
-{
-	Q_D(const AAbstractEditorFactoryBase);
-	return d->dc;
-}
-
-void AAbstractEditorFactoryBase::editorDestroyed(QObject* obj)
-{
-	onEditorDestroyed(obj);
 }
 
 APROCH_NAMESPACE_END

@@ -27,6 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "ADataWidgetBindMethod.h"
 
 APROCH_NAMESPACE_BEGIN
 
@@ -43,7 +44,7 @@ public:
     template<class WidgetType>
     static bool addBindMethod(ADataWidgetBindMethod* bindMethod)
     {
-        const char* widgetTypeName = QWidget::staticMetaObject.className();
+        const char* widgetTypeName = WidgetType::staticMetaObject.className();
         return addBindMethod(bindMethod, widgetTypeName);
     }
 
@@ -51,7 +52,7 @@ public:
     template<class WidgetType>
     static void removeBindMethod()
     {
-        const char* widgetTypeName = QWidget::staticMetaObject.className();
+        const char* widgetTypeName = WidgetType::staticMetaObject.className();
         removeBindMethod(widgetTypeName);
     }
     static void removeBindMethod(ADataWidgetBindMethod* bindMethod);
@@ -60,20 +61,16 @@ public:
     template<class WidgetType>
     static ADataWidgetBindMethod* getBindMethod()
     {
-        const char* widgetTypeName = QWidget::staticMetaObject.className();
+        const char* widgetTypeName = WidgetType::staticMetaObject.className();
         return getBindMethod(widgetTypeName);
     }
     static ADataWidgetBindMethod* getBindMethod(const char* widgetTypeName);
 
-    /** @brief 绑定。如果指定的数据、控件和属性名称都存在绑定，但是绑定类型不一致，则更新绑定类型 */
-    virtual bool bind(AData* data, QWidget* widget, const SBindParameter& parameter);
+    /** @brief 自动根据控件类型添加绑定 */
+    virtual bool bind(const ADWBindParameter& parameter);
 
-    /** @brief 解绑。 */
-    virtual bool unbind(AData* data, QWidget* widget, const char* propName);
-
-Q_SIGNALS:
-    void bindDone(AData* data, QWidget* widget, SBindParameter* parameter);
-    void unbindDone(AData* data, QWidget* widget, SBindParameter* parameter);
+    /** @brief 自动根据控件类型进行解绑 */
+    virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString());
 
 private:
     static bool addBindMethod(ADataWidgetBindMethod* bindMethod, const char* widgetTypeName);

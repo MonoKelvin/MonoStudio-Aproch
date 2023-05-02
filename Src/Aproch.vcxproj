@@ -202,7 +202,7 @@
     <QtMoc Include="Data\AEditorFactory.h" />
     <QtMoc Include="Data\ADataWidgetBindMethod.h" />
     <QtMoc Include="Data\ADataWidgetBinding.h" />
-    <ClInclude Include="Data\ADWBindMethods.h" />
+    <QtMoc Include="Data\ADWBindMethods.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
     <QtMoc Include="WinUI\Private\AWinUIStyle.h" />
     <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h" />

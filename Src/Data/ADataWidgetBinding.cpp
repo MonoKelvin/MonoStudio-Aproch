@@ -10,7 +10,6 @@ class ADWBMethodMap
 public:
     ~ADWBMethodMap()
     {
-        qDeleteAll(MethodMap);
     }
 
     QMap<QString, ADataWidgetBindMethod*> MethodMap;
@@ -18,21 +17,12 @@ public:
 
 Q_GLOBAL_STATIC(ADWBMethodMap, globalBindMethodMap);
 
+// ----------------------------------------------------------------------------------------------------
 
 class ADataWidgetBindingPrivate : public QObjectPrivate
 {
 public:
     Q_DECLARE_PUBLIC(ADataWidgetBinding);
-
-    struct BindData
-    {
-        AData* data = nullptr;
-        QWidget* widget = nullptr;
-        const char* propertyName = nullptr;
-        EDataBindType type = EDataBindType::None;
-    };
-
-    QList<BindData> bindCollection;
 };
 
 // ----------------------------------------------------------------------------------------------------
@@ -66,6 +56,10 @@ bool ADataWidgetBinding::addBindMethod(ADataWidgetBindMethod* bindMethod, const 
     const QString type = QString::fromLocal8Bit(widgetTypeName);
 
     globalBindMethodMap->MethodMap[type] = bindMethod;
+
+    connect(bindMethod, &ADataWidgetBindMethod::destroyed, [widgetTypeName]() {
+        globalBindMethodMap->MethodMap.remove(QString(widgetTypeName));
+    });
 
     return true;
 }
@@ -105,42 +99,41 @@ void ADataWidgetBinding::removeBindMethod(ADataWidgetBindMethod* bindMethod)
 ADataWidgetBindMethod* ADataWidgetBinding::getBindMethod(const char* widgetTypeName)
 {
     if (!widgetTypeName)
-        return;
+        return nullptr;
 
     const QString type = QString::fromLocal8Bit(widgetTypeName);
     return globalBindMethodMap->MethodMap.value(type);
 }
 
-bool ADataWidgetBinding::bind(AData* data, QWidget* widget, const SBindParameter& parameter)
+bool ADataWidgetBinding::bind(const ADWBindParameter& parameter)
 {
-    if (!data || !widget || parameter.type == EDataBindType::None)
+    EDataBindType type = parameter.getBindType();
+    if (!parameter.isValid() || type == EDataBindType::None)
         return false;
 
-    const char* widgetTypeName = widget->metaObject()->className();
+    const char* widgetTypeName = parameter.getWidget()->metaObject()->className();
     ADataWidgetBindMethod* method = getBindMethod(widgetTypeName);
     if (!method)
         return false;
 
-    method->bind(data, widget, parameter);
-
     // 确保只绑定一次
-    if (parameter.type == EDataBindType::FirstTime ||
-        parameter.type == EDataBindType::FirstTimeRevise)
+    if (type == EDataBindType::FirstTime || 
+        type == EDataBindType::FirstTimeRevise)
     {
-        if (parameter.type == EDataBindType::FirstTime)
-            method->onValueChanged(data, widget, QVariant());
+        if (type == EDataBindType::FirstTime)
+            method->onValueChanged(parameter.getData(), parameter.getWidget(), parameter.getBindProperty(), QVariant());
         else
-            method->onWidgetValueChanged(data, widget);
-
-        method->unbind(data, widget, parameter.propertyName);
+            method->onWidgetValueChanged(parameter.getData(), parameter.getWidget(), parameter.getBindProperty());
+        return true;
     }
 
-    emit bindDone(data, widget, const_cast<SBindParameter*>(&parameter));
+    bool ok = method->addBind(parameter);
+    method->unbind(parameter.getData(), parameter.getWidget(), parameter.getBindProperty());
 
-    return false;
+    return ok;
 }
 
-bool ADataWidgetBinding::unbind(AData* data, QWidget* widget, const char* propName)
+bool ADataWidgetBinding::unbind(AData* data, QWidget* widget, const QString& propName)
 {
     if (!data || !widget)
         return false;
@@ -150,13 +143,7 @@ bool ADataWidgetBinding::unbind(AData* data, QWidget* widget, const char* propNa
     if (!method)
         return false;
 
-    method->unbind(data, widget, propName);
-
-    SBindParameter parameter;
-    parameter.propertyName = propName;
-    emit unbindDone(data, widget, &parameter);
-
-    return false;
+    return method->unbind(data, widget, propName);
 }
 
 APROCH_NAMESPACE_END

@@ -4,20 +4,17 @@ APROCH_NAMESPACE_BEGIN
 
 class APROCH_API ADWBM_SpinBox : public ADataWidgetBindMethod
 {
+    Q_OBJECT
 public:
-    virtual ~ADWBM_SpinBox();
+    ADWBM_SpinBox(QObject* parent = nullptr);
 
-    /** @brief 绑定 */
-    virtual bool bind(AData* data, QWidget* widget, const SBindParameter& parameter) override;
+    virtual bool bind(const ADWBindParameter& param) override;
+    virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) override;
+    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) override;
+    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
 
-    /** @brief 解绑 */
-    virtual bool unbind(AData* data, QWidget* widget, const char* propName) override;
-
-    /** @brief 数据修改更新控件的方法 */
-    virtual void onValueChanged(const AData* data, QWidget* widget, const QVariant& old) override;
-
-    /** @brief 控件修改更新数据的方法 */
-    virtual void onWidgetValueChanged(AData* data, const QWidget* widget) override;
+protected Q_SLOTS:
+    void spinboxValueChanged(int);
 };
 
 APROCH_NAMESPACE_END

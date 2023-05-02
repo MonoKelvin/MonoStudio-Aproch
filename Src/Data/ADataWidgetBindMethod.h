@@ -30,39 +30,44 @@
 
 APROCH_NAMESPACE_BEGIN
 
-/** @brief 数据绑定类型 */
-enum class EDataBindType
-{
-    /** @brief 不进行绑定 */
-    None,
-
-    /** @brief 单向绑定 */
-    OneWay,
-    
-    /** @brief 单向绑定的反向情况 */
-    OneWayRevise,
-
-    /** @brief 双向绑定 */
-    TwoWay,
-
-    /** @brief 仅在初始时绑定一次 */
-    FirstTime,
-
-    /** @brief 仅在初始时绑定一次，并且是反向绑定 */
-    FirstTimeRevise,
-};
+class ADWBindParameterPrivate;
 
 /**
- * 绑定参数
+ * 数据-控件绑定参数.
  */
-struct SBindParameter
+class APROCH_API ADWBindParameter
 {
-    /** @brief 要绑定的数据名称，如果未指定，则可根据控件特性自动设置主要属性的绑定 */
-    const char* propertyName = nullptr;
+public:
+    ADWBindParameter();
+    ADWBindParameter(AData* data, QWidget* widget, const QString& propName = QString(), EDataBindType type = EDataBindType::TwoWay);
+    ADWBindParameter(const ADWBindParameter& other);
+    ~ADWBindParameter();
 
-    /** @brief 绑定类型 */
-    EDataBindType type = EDataBindType::TwoWay;
+    AData* getData() const;
+    void setData(AData* data);
+
+    QWidget* getWidget() const;
+    void setWidget(QWidget* widget);
+
+    QString getBindProperty() const;
+    void setBindProperty(const QString& name);
+
+    EDataBindType getBindType() const;
+    void setBindType(EDataBindType type);
+
+    /** @brief 是否有效。数据源和控件对象都不为空 */
+    bool isValid() const;
+
+    /** @brief 比较参数是否相等。判断时比较数据、控件和属性，不包括类型 */
+    bool operator==(const ADWBindParameter& other) const;
+    bool operator!=(const ADWBindParameter& other) const;
+    ADWBindParameter& operator=(const ADWBindParameter& other);
+
+private:
+    QScopedPointer<ADWBindParameterPrivate> d;
 };
+Q_DECLARE_METATYPE(ADWBindParameter);
+using ADWBindParameterList = QList<ADWBindParameter>;
 
 class ADataWidgetBindMethodPrivate;
 
@@ -74,35 +79,40 @@ class APROCH_API ADataWidgetBindMethod : public QObject
     Q_OBJECT
 public:
     ADataWidgetBindMethod(QObject* parent = nullptr);
+    ~ADataWidgetBindMethod();
 
-    /** @brief 添加绑定 */
-    void addBind(AData* data, QWidget* widget);
+    /** @brief 添加绑定。如果绑定对象都一样，绑定类型不一样，则不重复添加，只更新绑定类型 */
+    bool addBind(const ADWBindParameter& param);
 
-    /** @brief 获取数据所绑定的所有控件 */
-    QWidgetList getBindWidgets(AData* data);
+    /** @brief 移除绑定 */
+    bool removeBind(AData* data, QWidget* widget, const QString& propName = QString());
 
-    /** @brief 获取控件所绑定的数据 */
-    QMap<QString, AData*> getBindData(QWidget* widget);
-
+protected:
     /** @brief 绑定 */
-    virtual bool bind(AData* data, QWidget* widget, const SBindParameter& parameter) = 0;
+    virtual bool bind(const ADWBindParameter& param) = 0;
 
     /** @brief 解绑 */
-    virtual bool unbind(AData* data, QWidget* widget, const char* propName) = 0;
+    virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) = 0;
 
     /** @brief 数据修改更新控件的方法 */
-    virtual void onValueChanged(const AData* data, QWidget* widget, const QVariant& old) = 0;
+    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) = 0;
 
     /** @brief 控件修改更新数据的方法 */
-    virtual void onWidgetValueChanged(AData* data, const QWidget* widget) = 0;
+    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) = 0;
 
-    static ADataContainer* dataContainer(AData* data);
+    /** @brief 获取数据所在的数据容器 */
+    static ADataContainer* getDataContainer(AData* data);
 
 protected Q_SLOTS:
-    void valueChanged(AData* data, const QVariant& old);
-    void widgetValueChanged(const QVariant& val);
+    void valueChanged(AData* data, const QVariant& old = QVariant());
+    void widgetValueChanged(const QVariant& val, const QString& propertyName = QString());
+    void widgetDestroyed(QObject* obj);
+
+private Q_SLOTS:
+    void onDestroyed(QObject* obj);
 
 private:
+    friend class ADataWidgetBinding;
     Q_DISABLE_COPY_MOVE(ADataWidgetBindMethod);
     Q_DECLARE_PRIVATE(ADataWidgetBindMethod);
 };

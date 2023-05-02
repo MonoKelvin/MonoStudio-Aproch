@@ -33,16 +33,12 @@
 
 APROCH_NAMESPACE_BEGIN
 
-ASpinBoxFactory::ASpinBoxFactory(ADataContainer* dc)
-    : AAbstractEditorFactory<QSpinBox>(dc)
+ASpinBoxFactory::ASpinBoxFactory(ADataWidgetBinding* dwb, QObject* parent)
+    : AAbstractEditorFactory(dwb, parent)
 {
 }
 
-ASpinBoxFactory::~ASpinBoxFactory()
-{
-}
-
-QWidget* ASpinBoxFactory::createEditorImpl(AData* data, QWidget* parent)
+QWidget* ASpinBoxFactory::createEditorImpl(AData* data, QWidget* parent, const QString& bindPropName, EDataBindType type)
 {
     if (!data)
     {
@@ -50,7 +46,7 @@ QWidget* ASpinBoxFactory::createEditorImpl(AData* data, QWidget* parent)
         return nullptr;
     }
 
-    QSpinBox* editor = m_editorSet.newEditor(data, parent);
+    QSpinBox* editor = new QSpinBox(parent);
     editor->setValue(data->getValue().toInt());
     editor->setRange((std::numeric_limits<int>::min)(), (std::numeric_limits<int>::max)());
     //editor->setKeyboardTracking(false);

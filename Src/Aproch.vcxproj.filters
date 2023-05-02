@@ -242,9 +242,6 @@
     <ClInclude Include="Data\ADataToolkit.h">
       <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="Data\ADWBindMethods.h">
-      <Filter>Data</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -535,6 +532,9 @@
       <Filter>Data</Filter>
     </QtMoc>
     <QtMoc Include="Data\ADataWidgetBindMethod.h">
+      <Filter>Data</Filter>
+    </QtMoc>
+    <QtMoc Include="Data\ADWBindMethods.h">
       <Filter>Data</Filter>
     </QtMoc>
   </ItemGroup>

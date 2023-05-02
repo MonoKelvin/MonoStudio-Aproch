@@ -40,18 +40,14 @@ APROCH_NAMESPACE_BEGIN
 /**
  * @brief 整数输入编辑器创建工厂
  */
-class APROCH_API ASpinBoxFactory : public AAbstractEditorFactory<QSpinBox>
+class APROCH_API ASpinBoxFactory : public AAbstractEditorFactory
 {
     Q_OBJECT
 public:
-    ASpinBoxFactory(ADataContainer* dc);
-    ~ASpinBoxFactory();
+    ASpinBoxFactory(ADataWidgetBinding* dwb, QObject* parent = nullptr);
 
 protected:
-    virtual QWidget* createEditorImpl(AData* data, QWidget* parent) override;
-
-private:
-    Q_DISABLE_COPY_MOVE(ASpinBoxFactory)
+    virtual QWidget* createEditorImpl(AData* data, QWidget* parent, const QString& bindPropName, EDataBindType type) override;
 };
 
 APROCH_NAMESPACE_END

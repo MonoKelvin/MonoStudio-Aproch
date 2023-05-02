@@ -343,6 +343,28 @@ APROCH_API QPointF qBound(QPointF minVal, QPointF val, QPointF maxVal);
 
 APROCH_NAMESPACE_BEGIN
 
+/** @brief 数据绑定类型 */
+enum class EDataBindType
+{
+    /** @brief 不进行绑定 */
+    None,
+
+    /** @brief 单向绑定 */
+    OneWay,
+
+    /** @brief 单向绑定的反向情况 */
+    OneWayRevise,
+
+    /** @brief 双向绑定 */
+    TwoWay,
+
+    /** @brief 仅在初始时绑定一次 */
+    FirstTime,
+
+    /** @brief 仅在初始时绑定一次，并且是反向绑定 */
+    FirstTimeRevise,
+};
+
 /**
  * @brief 根据类型名称该类型的默认值。数字类型返回都是0，布尔类型返回false，字符（串）类型返回为空字符（串），容器类型返回返回空容器
  * @param typeName 名称，不区分大小写

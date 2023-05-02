@@ -3,34 +3,37 @@
 
 APROCH_NAMESPACE_BEGIN
 
-// ----------------------------------------------------------------------------------------------------
-
-ADWBM_SpinBox::~ADWBM_SpinBox()
+ADWBM_SpinBox::ADWBM_SpinBox(QObject* parent)
+    : ADataWidgetBindMethod(parent)
 {
 }
 
-bool ADWBM_SpinBox::bind(AData* data, QWidget* widget, const SBindParameter& parameter)
+bool ADWBM_SpinBox::bind(const ADWBindParameter& param)
 {
-    ADataContainer* dc = dataContainer(data);
-    QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget);
-    if (spinBox && dc)
+    QSpinBox* spinBox = qobject_cast<QSpinBox*>(param.getWidget());
+    if (spinBox)
     {
-        QObject::connect(dc, &ADataContainer::valueChanged,
-                         this, &ADataWidgetBindMethodBase::slotValueChanged);
-        QObject::connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), 
-                         this, &ADataWidgetBindMethodBase::slotWidgetValueChanged);
+        return QObject::connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+                                this, &ADWBM_SpinBox::spinboxValueChanged);
     }
+
+    return false;
 }
 
-bool ADWBM_SpinBox::unbind(AData* data, QWidget* widget, const char* propName)
+bool ADWBM_SpinBox::unbind(AData* data, QWidget* widget, const QString& propName)
 {
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget);
     if (spinBox)
-        QObject::disconnect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), 
-                            this, &ADataWidgetBindMethodBase::slotWidgetValueChanged);
+    {
+        QObject::disconnect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+                            this, &ADWBM_SpinBox::spinboxValueChanged);
+        return true;
+    }
+
+    return false;
 }
 
-void ADWBM_SpinBox::onValueChanged(const AData* data, QWidget* widget, const QVariant& old)
+void ADWBM_SpinBox::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
 {
     if (!data)
         return;
@@ -42,16 +45,21 @@ void ADWBM_SpinBox::onValueChanged(const AData* data, QWidget* widget, const QVa
     }
 }
 
-void ADWBM_SpinBox::onWidgetValueChanged(AData* data, const QWidget* widget)
+void ADWBM_SpinBox::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
 {
     if (!data)
         return;
 
-    QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget);
+    QSpinBox* spinBox = qobject_cast<QSpinBox*>(const_cast<QWidget*>(widget));
     if (spinBox && data->getDataManager())
     {
         data->getDataManager()->setValue(data, spinBox->value());
     }
+}
+
+void ADWBM_SpinBox::spinboxValueChanged(int val)
+{
+    widgetValueChanged(val);
 }
 
 APROCH_NAMESPACE_END
