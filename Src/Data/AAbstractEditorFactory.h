@@ -28,124 +28,162 @@
  *****************************************************************************/
 #pragma once
 
-#include <QSet>
+#include <QMap>
+#include <QList>
 
 APROCH_NAMESPACE_BEGIN
 
+class AAbstractEditorFactoryBasePrivate;
+
 /**
- * @brief ÓÃÓÚ´´½¨Êı¾İ±à¼­¿Ø¼şµÄ³éÏó¹¤³§»ùÀà
+ * @brief ç”¨äºåˆ›å»ºæ•°æ®ç¼–è¾‘æ§ä»¶çš„æŠ½è±¡å·¥å‚åŸºç±»
  */
-class AAbstractEditorFactoryBase : public QObject
+class APROCH_API AAbstractEditorFactoryBase : public QObject, public ADataWidgetBindMethod
 {
     Q_OBJECT
 public:
-    /** @brief ´´½¨°ó¶¨¸ø¶¨Êı¾İµÄ¿Ø¼ş */
-    virtual QWidget *createEditor(AData *data, QWidget *parent) = 0;
+    explicit AAbstractEditorFactoryBase(ADataContainer* dc);
+    ~AAbstractEditorFactoryBase();
+
+    /** @brief åˆ›å»ºç»‘å®šç»™å®šæ•°æ®çš„æ§ä»¶ */
+    virtual QWidget *createEditor(AData *data, QWidget *parent, const SBindParameter& param = SBindParameter());
+
+    /** @brief è·å–æ•°æ®å®¹å™¨ */
+    ADataContainer* getDataContainer() const;
 
 protected:
-    explicit AAbstractEditorFactoryBase(QObject *parent = 0)
-        : QObject(parent)
-    {
-    }
+    virtual QWidget* createEditorImpl(AData* data, QWidget* parent) = 0;
+    virtual void onEditorDestroyed(QObject* obj) = 0;
 
-    /** @brief ¶Ï¿ªºÍ´´½¨µÄ¿Ø¼ş¹ØÁªµÄĞÅºÅ */
-    virtual void breakConnection(AAbstractDataManager *manager) = 0;
+private Q_SLOTS:
+    void editorDestroyed(QObject* obj);
 
-protected Q_SLOTS:
-    virtual void managerDestroyed(QObject *manager) = 0;
+private:
+    Q_DISABLE_COPY_MOVE(AAbstractEditorFactoryBase);
+    Q_DECLARE_PRIVATE(AAbstractEditorFactoryBase);
 };
 
 /**
- * @brief ÓÃÓÚ´´½¨Êı¾İ±à¼­¿Ø¼şµÄ³éÏó¹¤³§Àà
+ * @brief ç”¨äºåˆ›å»ºæ•°æ®ç¼–è¾‘æ§ä»¶çš„æŠ½è±¡å·¥å‚ç±»
  */
-template <class DataManager>
+template <class Editor>
 class AAbstractEditorFactory : public AAbstractEditorFactoryBase
 {
 public:
-    explicit AAbstractEditorFactory(QObject *parent)
-        : AAbstractEditorFactoryBase(parent)
+    explicit AAbstractEditorFactory(ADataContainer *dc)
+        : AAbstractEditorFactoryBase(dc)
     {
     }
 
-    QWidget *createEditor(AData *data, QWidget *parent)
+    typedef QList<Editor*> EditorList;
+    typedef QMap<AData*, EditorList> DataToEditorListMap;
+    typedef QMap<Editor*, AData*> EditorToDataMap;
+
+    class EditorFactoryHelper
     {
-        for (DataManager *manager : qAsConst(m_managers))
+    public:
+        Editor* newEditor(AData* data, QWidget* parent)
         {
-            if (manager == data->dataManager())
+            Editor* editor = new Editor(parent);
+            typename DataToEditorListMap::iterator it = m_createdEditors.find(data);
+            if (it == m_createdEditors.end())
+                it = m_createdEditors.insert(data, EditorList());
+            it.value().append(editor);
+            m_editorToData.insert(editor, data);
+            return editor;
+        }
+
+        void initializeEditor(AData* data, Editor* editor)
+        {
+            typename DataToEditorListMap::iterator it = m_createdEditors.find(data);
+            if (it == m_createdEditors.end())
+                it = m_createdEditors.insert(data, EditorList());
+            it.value().append(editor);
+            m_editorToData.insert(editor, data);
+        }
+
+        void onEditorDestroyed(QObject* object)
+        {
+            const typename EditorToDataMap::iterator ecend = m_editorToData.end();
+            for (typename EditorToDataMap::iterator itEditor = m_editorToData.begin(); itEditor != ecend; ++itEditor)
             {
-                return createEditorImpl(manager, data, parent);
+                if (itEditor.key() == object)
+                {
+                    Editor* editor = itEditor.key();
+                    AData* data = itEditor.value();
+                    const typename DataToEditorListMap::iterator pit = m_createdEditors.find(data);
+                    if (pit != m_createdEditors.end())
+                    {
+                        pit.value().removeAll(editor);
+                        if (pit.value().empty())
+                            m_createdEditors.erase(pit);
+                    }
+                    m_editorToData.erase(itEditor);
+                    return;
+                }
             }
         }
-        return nullptr;
-    }
 
-    void addDataManager(DataManager *manager)
-    {
-        if (m_managers.contains(manager))
-            return;
-        m_managers.insert(manager);
-        connectDataManager(manager);
-        connect(manager, SIGNAL(destroyed(QObject *)), this, SLOT(managerDestroyed(QObject *)));
-    }
+        DataToEditorListMap m_createdEditors;
+        EditorToDataMap m_editorToData;
+    };
 
-    void removeDataManager(DataManager *manager)
+    /** @brief è·å–æ•°æ®-æ§ä»¶çš„ç»‘å®šæ–¹æ³• */
+    ADataWidgetBindMethod* getBindMethod() const
     {
-        if (!m_managers.contains(manager))
-            return;
-        disconnect(manager, SIGNAL(destroyed(QObject *)), this, SLOT(managerDestroyed(QObject *)));
-        disconnectDataManager(manager);
-        m_managers.remove(manager);
-    }
-
-    QSet<DataManager *> dataManagers() const
-    {
-        return m_managers;
-    }
-
-    DataManager *dataManager(AData *data) const
-    {
-        AAbstractDataManager *manager = data->dataManager();
-        for (DataManager *m : qAsConst(m_managers))
-        {
-            if (m == manager)
-            {
-                return m;
-            }
-        }
-        return nullptr;
+        return ADataWidgetBinding::getBindMethod<Editor>();
     }
 
 protected:
-    virtual void connectDataManager(DataManager *manager) = 0;
-    virtual QWidget *createEditorImpl(DataManager *manager, AData *data, QWidget *parent) = 0;
-    virtual void disconnectDataManager(DataManager *manager) = 0;
-    void managerDestroyed(QObject *manager)
+    virtual void onEditorDestroyed(QObject* obj) override
     {
-        for (DataManager *m : qAsConst(m_managers))
+        m_editorSet.onEditorDestroyed(obj);
+    }
+
+protected:
+    virtual void valueChanged(AData* data, const QVariant& old)
+    {
+        ADataWidgetBindMethod* method = getBindMethod();
+        if (!method)
+            return;
+
+        const auto it = m_editorSet.m_createdEditors.constFind(data);
+        if (it == m_editorSet.m_createdEditors.cend())
+            return;
+
+        for (Editor* editor : it.value())
         {
-            if (m == manager)
+            method->onValueChanged(qAsConst<AData*>(data), editor, old);
+        }
+    }
+
+    virtual void editorValueChanged(const QVariant& val)
+    {
+        ADataWidgetBindMethod* method = getBindMethod();
+        if (!method)
+            return;
+
+        QObject* obj = sender();
+        auto ecend = m_editorSet.m_editorToData.constEnd();
+        for (auto itEditor = m_editorSet.m_editorToData.constBegin(); itEditor != ecend; ++itEditor)
+        {
+            if (itEditor.key() == obj)
             {
-                m_managers.remove(m);
+                AData* data = itEditor.value();
+                if (!data)
+                    return;
+
+                method->onWidgetValueChanged(data, qAsConst<QWidget*>(itEditor.key()));
                 return;
             }
         }
     }
 
-private:
-    void breakConnection(AAbstractDataManager *manager)
-    {
-        for (DataManager *m : qAsConst(m_managers))
-        {
-            if (m == manager)
-            {
-                removeDataManager(m);
-                return;
-            }
-        }
-    }
+protected:
+    EditorFactoryHelper m_editorSet;
 
 private:
-    QSet<DataManager *> m_managers;
+    Q_DISABLE_COPY_MOVE(AAbstractEditorFactory);
 };
 
 APROCH_NAMESPACE_END

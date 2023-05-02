@@ -28,3 +28,60 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AAbstractEditorFactory.h"
+
+#include <private/qobject_p.h>
+
+APROCH_NAMESPACE_BEGIN
+
+class AAbstractEditorFactoryBasePrivate : public QObjectPrivate
+{
+	Q_DECLARE_PUBLIC(AAbstractEditorFactoryBase);
+public:
+	AAbstractEditorFactoryBasePrivate(ADataContainer* _dc)
+		: QObjectPrivate()
+		, dc(_dc)
+	{
+	}
+
+	ADataContainer* dc = nullptr;
+};
+
+// ----------------------------------------------------------------------------------------------------
+
+AAbstractEditorFactoryBase::AAbstractEditorFactoryBase(ADataContainer* dc)
+	: QObject(*(new AAbstractEditorFactoryBasePrivate(dc)), dc)
+{
+	Q_ASSERT_X(dc, Q_FUNC_INFO, "data container is nullptr");
+}
+
+AAbstractEditorFactoryBase::~AAbstractEditorFactoryBase()
+{
+
+}
+
+QWidget* AAbstractEditorFactoryBase::createEditor(AData* data, QWidget* parent, const SBindParameter& param)
+{
+	Q_D(const AAbstractEditorFactoryBase);
+
+    QWidget* widget = createEditorImpl(data, parent);
+    if (!widget)
+        return nullptr;
+
+	bind(data, widget, param);
+    connect(widget, &QWidget::destroyed, this, &AAbstractEditorFactoryBase::editorDestroyed);
+
+    return widget;
+}
+
+ADataContainer* AAbstractEditorFactoryBase::getDataContainer() const
+{
+	Q_D(const AAbstractEditorFactoryBase);
+	return d->dc;
+}
+
+void AAbstractEditorFactoryBase::editorDestroyed(QObject* obj)
+{
+	onEditorDestroyed(obj);
+}
+
+APROCH_NAMESPACE_END

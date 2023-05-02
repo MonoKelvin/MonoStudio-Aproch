@@ -242,6 +242,9 @@
     <ClInclude Include="Data\ADataToolkit.h">
       <Filter>Data</Filter>
     </ClInclude>
+    <ClInclude Include="Data\ADWBindMethods.h">
+      <Filter>Data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -427,6 +430,15 @@
     <ClCompile Include="Data\AEditorFactory.cpp">
       <Filter>Data</Filter>
     </ClCompile>
+    <ClCompile Include="Data\ADataWidgetBinding.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ADWBindMethods.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ADataWidgetBindMethod.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -517,6 +529,12 @@
       <Filter>Data</Filter>
     </QtMoc>
     <QtMoc Include="Data\AEditorFactory.h">
+      <Filter>Data</Filter>
+    </QtMoc>
+    <QtMoc Include="Data\ADataWidgetBinding.h">
+      <Filter>Data</Filter>
+    </QtMoc>
+    <QtMoc Include="Data\ADataWidgetBindMethod.h">
       <Filter>Data</Filter>
     </QtMoc>
   </ItemGroup>

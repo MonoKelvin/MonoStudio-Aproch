@@ -21,8 +21,6 @@ public:
     }
     ~ADataContainerPrivate()
     {
-        qDeleteAll(dataList);
-        qDeleteAll(managerDataSetMap);
     }
 
     struct DataValues
@@ -32,6 +30,7 @@ public:
         // others
     };
 
+    void destroyed();
     bool hasDataManager(AAbstractDataManager* manager, bool& hasPtr) const;
     void addDataManager(AAbstractDataManager* manager, EMetaType type);
     void deleteData(AData* dt);
@@ -46,6 +45,12 @@ public:
     QHash<AData*, DataValues> valuesMap;
     QMap<AAbstractDataManager*, ADataSet*> managerDataSetMap;
 };
+
+void ADataContainerPrivate::destroyed()
+{
+    qDeleteAll(dataList);
+    qDeleteAll(managerDataSetMap);
+}
 
 bool ADataContainerPrivate::hasDataManager(AAbstractDataManager* manager, bool& hasPtr) const
 {
@@ -117,9 +122,10 @@ bool ADataContainerPrivate::setDefaultValue(AData* dt, const QVariant& defaultVa
     if (valuesMap[dt].defaultVal == defaultVal)
         return false;
 
+    QVariant old = valuesMap[dt].defaultVal;
     valuesMap[dt].defaultVal = defaultVal;
 
-    emit q->dataChanged(dt);
+    emit q->defaultValueChanged(dt, old);
 
     return true;
 }
@@ -133,6 +139,9 @@ ADataContainer::ADataContainer(QObject* parent)
 
 ADataContainer::~ADataContainer()
 {
+    Q_D(ADataContainer);
+
+    d->destroyed();
 }
 
 bool ADataContainer::addManager(AAbstractDataManager* manager, EMetaType type)
@@ -171,7 +180,7 @@ bool ADataContainer::addManager(AAbstractDataManager* manager, EMetaType type)
     return true;
 }
 
-AAbstractDataManager* ADataContainer::getManager(EMetaType type, const char* className) const
+AAbstractDataManager* ADataContainer::getManager(EMetaType type) const
 {
     Q_D(const ADataContainer);
 
@@ -180,9 +189,7 @@ AAbstractDataManager* ADataContainer::getManager(EMetaType type, const char* cla
         if (iter.key()->getType() != type)
             continue;
 
-        const char* mgrClsName = iter.key()->metaObject()->className();
-        if (strcmp(mgrClsName, className) == 0)
-            return iter.key();
+        return iter.key();
     }
 
     return nullptr;
@@ -280,6 +287,15 @@ bool ADataContainer::addData(AAbstractDataManager* manager, AData* dt, const QVa
     return true;
 }
 
+AData* ADataContainer::addData(EMetaType type, const QString& name)
+{
+    AAbstractDataManager* dm = getManager(type);
+    if (!dm)
+        return nullptr;
+
+    return dm->addData(name);
+}
+
 AData* ADataContainer::cloneData(AData* srcData)
 {
     // todo
@@ -291,18 +307,25 @@ void ADataContainer::deleteData(ADataSet& dataset)
     Q_D(ADataContainer);
     ADataSet tempDataset;
 
-    for (ADataSet* ds : d->managerDataSetMap)
+    if (d->managerDataSetMap.values().contains(&dataset))
     {
-        for (auto iter = dataset.begin(); iter != dataset.end(); )
+        tempDataset.swap(dataset);
+    }
+    else
+    {
+        for (ADataSet* ds : d->managerDataSetMap)
         {
-            if (ds->remove(*iter))
+            for (auto iter = dataset.begin(); iter != dataset.end(); )
             {
-                tempDataset.insert(*iter);
-                iter = dataset.erase(iter);
-            }
-            else
-            {
-                ++iter;
+                if (ds->remove(*iter))
+                {
+                    tempDataset.insert(*iter);
+                    iter = dataset.erase(iter);
+                }
+                else
+                {
+                    ++iter;
+                }
             }
         }
     }

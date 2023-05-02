@@ -54,10 +54,13 @@ AData::AData(const AData& rhs, const FCopyOptions& op)
 
 AData::~AData()
 {
-    emit m_manager->getDataContainer()->dataDestroyed(this);
+    if (m_manager->getDataContainer())
+    {
+        emit m_manager->getDataContainer()->dataDestroyed(this);
 
-    for (AData* data : m_parentItems)
-        emit data->m_manager->getDataContainer()->dataRemoved(this, data);
+        for (AData* data : m_parentItems)
+            emit data->m_manager->getDataContainer()->dataRemoved(this, data);
+    }
 
     for (AData* data : m_subItems)
         data->m_parentItems.remove(this);
@@ -76,7 +79,7 @@ QList<AData*> AData::getSubDataSet() const
     return m_subItems;
 }
 
-AAbstractDataManager* AData::dataManager() const
+AAbstractDataManager* AData::getDataManager() const
 {
     return m_manager;
 }
@@ -104,8 +107,10 @@ void AData::setValue(const QVariant& data)
     if (data == m_value)
         return;
 
+    QVariant old = m_value;
     m_value = data;
-    dataChanged();
+
+    emit m_manager->getDataContainer()->valueChanged(this, old);
 }
 
 EMetaType AData::getType() const noexcept

@@ -61,7 +61,8 @@ void AAbstractDataManager::clear()
 {
     Q_D(AAbstractDataManager);
 
-    getDataContainer()->deleteData(*d->dataSet);
+    if (nullptr != getDataContainer())
+        getDataContainer()->deleteData(*d->dataSet);
 }
 
 AData* AAbstractDataManager::cloneData(AData* srcData)
@@ -131,9 +132,7 @@ ADataSet* AAbstractDataManager::getOrCreateDataSet()
 
 ADataContainer* AAbstractDataManager::getDataContainer() const
 {
-    ADataContainer* containter = qobject_cast<ADataContainer*>(parent());
-    Q_ASSERT_X(nullptr != containter, Q_FUNC_INFO, "The DataManager does not specify a DataContainer as a parent");
-    return containter;
+    return qobject_cast<ADataContainer*>(parent());
 }
 
 bool AAbstractDataManager::isValid() const

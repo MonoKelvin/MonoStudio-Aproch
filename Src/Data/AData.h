@@ -50,7 +50,7 @@ public:
      * @brief 获取创建该数据的数据管理器
      * @return 数据管理器
      */
-    AAbstractDataManager* dataManager() const;
+    AAbstractDataManager* getDataManager() const;
 
     /** @brief 克隆数据，并将数据加入到当前数据所在的数据管理器中 */
     virtual APrototype* clone(const FCopyOptions& op = DeepCopy) const override;

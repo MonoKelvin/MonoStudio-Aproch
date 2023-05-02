@@ -147,6 +147,19 @@
     <ClCompile Include="Data\ADataContainer.cpp" />
     <ClCompile Include="Data\ADataManager.cpp" />
     <ClCompile Include="Data\ADataToolkit.cpp" />
+    <ClCompile Include="Data\ADataWidgetBinding.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
+    <ClCompile Include="Data\ADataWidgetBindMethod.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
+    <ClCompile Include="Data\ADWBindMethods.cpp" />
     <ClCompile Include="Data\AEditorFactory.cpp" />
     <ClCompile Include="FUI\Element\FUIElement.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -187,6 +200,9 @@
     <QtMoc Include="Data\AAbstractEditorFactory.h" />
     <ClInclude Include="Data\ADataToolkit.h" />
     <QtMoc Include="Data\AEditorFactory.h" />
+    <QtMoc Include="Data\ADataWidgetBindMethod.h" />
+    <QtMoc Include="Data\ADataWidgetBinding.h" />
+    <ClInclude Include="Data\ADWBindMethods.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
     <QtMoc Include="WinUI\Private\AWinUIStyle.h" />
     <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h" />

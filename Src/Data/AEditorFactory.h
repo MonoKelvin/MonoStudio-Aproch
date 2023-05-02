@@ -37,85 +37,18 @@
 
 APROCH_NAMESPACE_BEGIN
 
-template <class Editor>
-class EditorFactoryHelper
-{
-public:
-    typedef QList<Editor*> EditorList;
-    typedef QMap<AData*, EditorList> DataToEditorListMap;
-    typedef QMap<Editor*, AData*> EditorToDataMap;
-
-    Editor* createEditorImpl(AData* data, QWidget* parent);
-    void initializeEditor(AData* data, Editor* e);
-    void slotEditorDestroyed(QObject* object);
-
-    DataToEditorListMap m_createdEditors;
-    EditorToDataMap m_editorToData;
-};
-
-template <class Editor>
-Editor* EditorFactoryHelper<Editor>::createEditorImpl(AData* data, QWidget* parent)
-{
-    Editor* editor = new Editor(parent);
-    initializeEditor(data, editor);
-    return editor;
-}
-
-template <class Editor>
-void EditorFactoryHelper<Editor>::initializeEditor(AData* data, Editor* editor)
-{
-    typename DataToEditorListMap::iterator it = m_createdEditors.find(data);
-    if (it == m_createdEditors.end())
-        it = m_createdEditors.insert(data, EditorList());
-    it.value().append(editor);
-    m_editorToData.insert(editor, data);
-}
-
-template <class Editor>
-void EditorFactoryHelper<Editor>::slotEditorDestroyed(QObject* object)
-{
-    const typename EditorToDataMap::iterator ecend = m_editorToData.end();
-    for (typename EditorToDataMap::iterator itEditor = m_editorToData.begin(); itEditor != ecend; ++itEditor)
-    {
-        if (itEditor.key() == object)
-        {
-            Editor* editor = itEditor.key();
-            AData* data = itEditor.value();
-            const typename DataToEditorListMap::iterator pit = m_createdEditors.find(data);
-            if (pit != m_createdEditors.end())
-            {
-                pit.value().removeAll(editor);
-                if (pit.value().empty())
-                    m_createdEditors.erase(pit);
-            }
-            m_editorToData.erase(itEditor);
-            return;
-        }
-    }
-}
-
 /**
  * @brief 整数输入编辑器创建工厂
  */
-class APROCH_API ASpinBoxFactory : public AAbstractEditorFactory<AIntegerDataManager>
+class APROCH_API ASpinBoxFactory : public AAbstractEditorFactory<QSpinBox>
 {
     Q_OBJECT
 public:
-    ASpinBoxFactory(QObject* parent = nullptr);
+    ASpinBoxFactory(ADataContainer* dc);
     ~ASpinBoxFactory();
 
 protected:
-    void connectDataManager(AIntegerDataManager* manager) override;
-    QWidget* createEditorImpl(AIntegerDataManager* manager, AData* data, QWidget* parent) override;
-    void disconnectDataManager(AIntegerDataManager* manager) override;
-
-private Q_SLOTS:
-    void slotDataChanged(AData* data, int value);
-    void slotSetValue(int value);
-    void slotEditorDestroyed(QObject* obj);
-
-private:
-    EditorFactoryHelper<QSpinBox> m_helper;
+    virtual QWidget* createEditorImpl(AData* data, QWidget* parent) override;
 
 private:
     Q_DISABLE_COPY_MOVE(ASpinBoxFactory)

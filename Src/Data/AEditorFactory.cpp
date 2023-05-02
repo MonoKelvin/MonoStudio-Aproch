@@ -29,76 +29,33 @@
 #include "stdafx.h"
 #include "AEditorFactory.h"
 
+#include <limits>
+
 APROCH_NAMESPACE_BEGIN
 
-void ASpinBoxFactory::slotDataChanged(AData* data, int value)
-{
-    const auto it = m_helper.m_createdEditors.constFind(data);
-    if (it == m_helper.m_createdEditors.cend())
-        return;
-    for (QSpinBox* editor : it.value())
-    {
-        if (editor->value() != value)
-        {
-            editor->blockSignals(true);
-            editor->setValue(value);
-            editor->blockSignals(false);
-        }
-    }
-}
-
-void ASpinBoxFactory::slotSetValue(int value)
-{
-    QObject* object = sender();
-    const QMap<QSpinBox*, AData*>::ConstIterator ecend = m_helper.m_editorToData.constEnd();
-    for (QMap<QSpinBox*, AData*>::ConstIterator itEditor = m_helper.m_editorToData.constBegin(); itEditor != ecend; ++itEditor)
-    {
-        if (itEditor.key() == object)
-        {
-            AData* data = itEditor.value();
-            AIntegerDataManager* manager = dataManager(data);
-            if (!manager)
-                return;
-            manager->setValue(data, value);
-            return;
-        }
-    }
-}
-
-ASpinBoxFactory::ASpinBoxFactory(QObject* parent)
-    : AAbstractEditorFactory<AIntegerDataManager>(parent)
+ASpinBoxFactory::ASpinBoxFactory(ADataContainer* dc)
+    : AAbstractEditorFactory<QSpinBox>(dc)
 {
 }
 
 ASpinBoxFactory::~ASpinBoxFactory()
 {
-    qDeleteAll(m_helper.m_editorToData.keys());
 }
 
-void ASpinBoxFactory::connectDataManager(AIntegerDataManager* manager)
+QWidget* ASpinBoxFactory::createEditorImpl(AData* data, QWidget* parent)
 {
-    connect(manager, SIGNAL(valueChanged(AData*, int)), this, SLOT(slotDataChanged(AData*, int)));
-}
+    if (!data)
+    {
+        Q_ASSERT(false);
+        return nullptr;
+    }
 
-QWidget* ASpinBoxFactory::createEditorImpl(AIntegerDataManager* manager, AData* data, QWidget* parent)
-{
-    QSpinBox* editor = m_helper.createEditorImpl(data, parent);
+    QSpinBox* editor = m_editorSet.newEditor(data, parent);
     editor->setValue(data->getValue().toInt());
-    editor->setKeyboardTracking(false);
-
-    connect(editor, SIGNAL(valueChanged(int)), this, SLOT(slotSetValue(int)));
-    connect(editor, SIGNAL(destroyed(QObject*)), this, SLOT(slotEditorDestroyed(QObject*)));
+    editor->setRange((std::numeric_limits<int>::min)(), (std::numeric_limits<int>::max)());
+    //editor->setKeyboardTracking(false);
+    
     return editor;
-}
-
-void ASpinBoxFactory::disconnectDataManager(AIntegerDataManager* manager)
-{
-    disconnect(manager, SIGNAL(valueChanged(AData*, int)), this, SLOT(slotDataChanged(AData*, int)));
-}
-
-void ASpinBoxFactory::slotEditorDestroyed(QObject* obj)
-{
-    m_helper.slotEditorDestroyed(obj);
 }
 
 APROCH_NAMESPACE_END
