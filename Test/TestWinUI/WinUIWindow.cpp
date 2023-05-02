@@ -32,6 +32,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
     // data
     AData* dt = intDM->addData(tr("test1"));
+    dt->getDataManager()->setValue(dt, 10);
 
     // factory
     ASpinBoxFactory* sbf = new ASpinBoxFactory(dwb, this);
@@ -40,11 +41,15 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     layout()->addWidget(spinBox001);
     QWidget* spinBox002 = sbf->createEditor(dt, this);
     layout()->addWidget(spinBox002);
-
-    //dwb->unbind(dt, spinBox002);
-
     QWidget* spinBox003 = sbf->createEditor(dt, this);
     layout()->addWidget(spinBox003);
+    QWidget* spinBox004 = sbf->createEditor(dt, this);
+    layout()->addWidget(spinBox004);
+
+    dwb->bind(ADWBindParameter(dt, spinBox001, QString(), EDataBindType::OneWay));
+    dwb->bind(ADWBindParameter(dt, spinBox002, QString(), EDataBindType::TwoWay));
+    dwb->bind(ADWBindParameter(dt, spinBox003, QString(), EDataBindType::OneWayRevise));
+    //dwb->bind(ADWBindParameter(dt, spinBox004, QString(), EDataBindType::FirstTime));
 }
 
 WinUIWindow::~WinUIWindow()

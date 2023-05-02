@@ -1,6 +1,6 @@
-﻿/****************************************************************************
- * @file    IDataBindable.h
- * @date    2023-05-01 
+/****************************************************************************
+ * @file    ADataWidgetBindMethod.h
+ * @date    2023-05-02 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -103,13 +103,14 @@ protected:
     /** @brief 获取数据所在的数据容器 */
     static ADataContainer* getDataContainer(AData* data);
 
+public Q_SLOTS:
+    /** @brief 解绑所有 */
+    void unbindAll();
+
 protected Q_SLOTS:
     void valueChanged(AData* data, const QVariant& old = QVariant());
     void widgetValueChanged(const QVariant& val, const QString& propertyName = QString());
     void widgetDestroyed(QObject* obj);
-
-private Q_SLOTS:
-    void onDestroyed(QObject* obj);
 
 private:
     friend class ADataWidgetBinding;

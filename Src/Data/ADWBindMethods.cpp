@@ -8,13 +8,24 @@ ADWBM_SpinBox::ADWBM_SpinBox(QObject* parent)
 {
 }
 
+ADWBM_SpinBox::~ADWBM_SpinBox()
+{
+    unbindAll();
+}
+
 bool ADWBM_SpinBox::bind(const ADWBindParameter& param)
 {
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(param.getWidget());
     if (spinBox)
     {
-        return QObject::connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-                                this, &ADWBM_SpinBox::spinboxValueChanged);
+        const EDataBindType type = param.getBindType();
+        if (type == EDataBindType::TwoWay || type == EDataBindType::OneWayRevise)
+        {
+            return QObject::connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+                                    this, &ADWBM_SpinBox::spinboxValueChanged);
+        }
+
+        return true;
     }
 
     return false;
