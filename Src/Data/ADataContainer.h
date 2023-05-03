@@ -26,6 +26,9 @@ public:
     }
     AAbstractDataManager* getManager(EMetaType type) const;
 
+    /** @brief 设置数据的值 */
+    bool setValue(AData* data, const QVariant& val);
+
     QVariant getDefaultValue(AData* dt) const;
     bool setDefaultValue(AData* dt, const QVariant& defaultVal);
     void resetValues(const ADataSet& dataSet);

@@ -31,23 +31,6 @@
 
 APROCH_NAMESPACE_BEGIN
 
-AIntegerDataManager::AIntegerDataManager(ADataContainer* parent)
-    : AAbstractDataManager(parent, EMetaType::Int)
-{
-}
-
-AIntegerDataManager::~AIntegerDataManager()
-{
-}
-
-QString AIntegerDataManager::toText(const AData* dt) const
-{
-    if (!dt)
-        return QString();
-
-    return QString::number(dt->getValue().toInt());
-}
-
 // ----------------------------------------------------------------------------------------------------
 
 ASizeDataManager::ASizeDataManager(ADataContainer* parent)

@@ -54,4 +54,25 @@ QWidget* ASpinBoxFactory::createEditorImpl(AData* data, QWidget* parent, const Q
     return editor;
 }
 
+// ----------------------------------------------------------------------------------------------------
+
+ALineEditFactory::ALineEditFactory(ADataWidgetBinding* dwb, QObject* parent)
+    : AAbstractEditorFactory(dwb, parent)
+{
+}
+
+QWidget* ALineEditFactory::createEditorImpl(AData* data, QWidget* parent, const QString& bindPropName, EDataBindType type)
+{
+    if (!data)
+    {
+        Q_ASSERT(false);
+        return nullptr;
+    }
+
+    QLineEdit* editor = new QLineEdit(parent);
+    editor->setText(data->getValue().toString());
+
+    return editor;
+}
+
 APROCH_NAMESPACE_END

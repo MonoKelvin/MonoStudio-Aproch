@@ -140,14 +140,21 @@ bool ADataWidgetBinding::bind(const ADWBindParameter& parameter)
     if (!method)
         return false;
 
-    if (type == EDataBindType::FirstTime ||
-        type == EDataBindType::FirstTimeRevise)
+    if (type == EDataBindType::OneWay ||
+        type == EDataBindType::TwoWay ||
+        type == EDataBindType::FirstTime)
     {
+        method->onValueChanged(parameter.getData(), parameter.getWidget(), parameter.getBindProperty(), QVariant());
         if (type == EDataBindType::FirstTime)
-            method->onValueChanged(parameter.getData(), parameter.getWidget(), parameter.getBindProperty(), QVariant());
-        else
-            method->onWidgetValueChanged(parameter.getData(), parameter.getWidget(), parameter.getBindProperty());
-        return true;
+            return true;
+    }
+    else if (type == EDataBindType::OneWayRevise ||
+             type == EDataBindType::TwoWay ||
+             type == EDataBindType::FirstTimeRevise)
+    {
+        method->onWidgetValueChanged(parameter.getData(), parameter.getWidget(), parameter.getBindProperty());
+        if (type == EDataBindType::FirstTimeRevise)
+            return true;
     }
 
     bool ok = method->addBind(parameter);

@@ -197,6 +197,9 @@ ADataWidgetBindMethod::~ADataWidgetBindMethod()
 
 bool ADataWidgetBindMethod::addBind(const ADWBindParameter& param)
 {
+    if (!param.isValid() || param.getBindType() == EDataBindType::None)
+        return false;
+
     Q_D(ADataWidgetBindMethod);
 
     bool hasBind = false;
@@ -205,33 +208,35 @@ bool ADataWidgetBindMethod::addBind(const ADWBindParameter& param)
     {
         if (ps == param)
         {
-            if (ps.getBindType() == type)
+            if (ps.getBindType() == type || 
+                (type == EDataBindType::FirstTime || type == EDataBindType::FirstTimeRevise))
                 return false;
 
+            ps.setBindType(type);
             hasBind = true;
             break;
         }
     }
 
-    if (hasBind)
-    {
-        removeBind(param.getData(), param.getWidget(), param.getBindProperty());
-        d->params.removeOne(param);
-    }
-
     ADataContainer* dc = getDataContainer(param.getData());
-    if (dc && (type == EDataBindType::OneWay || type == EDataBindType::TwoWay))
+    if (dc)
     {
-        connect(dc, &ADataContainer::valueChanged, this, &ADataWidgetBindMethod::valueChanged);
+        connect(dc, &ADataContainer::valueChanged, 
+                this, &ADataWidgetBindMethod::valueChanged, 
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
     }
 
-    connect(param.getWidget(), &QWidget::destroyed, this, &ADataWidgetBindMethod::widgetDestroyed);
+    connect(param.getWidget(), &QWidget::destroyed, 
+            this, &ADataWidgetBindMethod::widgetDestroyed,
+            Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
 
-    // 实现绑定
+    // 先解绑，再绑定
+    unbind(param.getData(), param.getWidget(), param.getBindProperty());
     if (!bind(param))
         return false;
 
-    d->params.push_back(param);
+    if (!hasBind)
+        d->params.push_back(param);
 
     return true;
 }
@@ -252,7 +257,6 @@ bool ADataWidgetBindMethod::removeBind(AData* data, QWidget* widget, const QStri
             if (dc)
             {
                 disconnect(dc, &ADataContainer::valueChanged, this, &ADataWidgetBindMethod::valueChanged);
-                //disconnect(widget, &QWidget::destroyed, this, &ADataWidgetBindMethod::widgetDestroyed);
             }
 
             // 实现解绑
@@ -282,7 +286,12 @@ void ADataWidgetBindMethod::valueChanged(AData* data, const QVariant& old)
     ADWBindParameterList widgets = d->findByData(data);
     for (const ADWBindParameter& param : widgets)
     {
-        onValueChanged(qAsConst<AData*>(data), param.getWidget(), param.getBindProperty(), old);
+        const EDataBindType type = param.getBindType();
+
+        if (type == EDataBindType::TwoWay || type == EDataBindType::OneWay)
+        {
+            onValueChanged(qAsConst<AData*>(data), param.getWidget(), param.getBindProperty(), old);
+        }
     }
 }
 
@@ -295,7 +304,10 @@ void ADataWidgetBindMethod::widgetValueChanged(const QVariant& val, const QStrin
 
     for (const ADWBindParameter& param : params)
     {
-        if (param.getBindProperty() == propertyName)
+        const EDataBindType type = param.getBindType();
+
+        if (param.getBindProperty() == propertyName && 
+            (type == EDataBindType::TwoWay || type == EDataBindType::OneWayRevise))
         {
             onWidgetValueChanged(param.getData(), widget, propertyName);
             return;

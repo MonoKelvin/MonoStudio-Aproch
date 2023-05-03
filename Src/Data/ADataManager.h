@@ -29,17 +29,38 @@
 #pragma once
 #include "AAbstractDataManager.h"
 
+#include <QString>
+
 APROCH_NAMESPACE_BEGIN
 
-class APROCH_API AIntegerDataManager : public AAbstractDataManager
-{
-    Q_OBJECT
-public:
-    AIntegerDataManager(ADataContainer* parent);
-    ~AIntegerDataManager();
+#define A_DECLARE_SIMPLE_DATAMANAGER(_ClassName_, _ValueType_, _MetaType_) \
+class APROCH_API _ClassName_ : public AAbstractDataManager \
+{ \
+    Q_OBJECT \
+public: \
+    _ClassName_(ADataContainer* parent) : AAbstractDataManager(parent, _MetaType_) { } \
+    virtual QString toText(const AData* dt) const override \
+    { \
+        if (!dt) \
+            return QString(); \
+        return AStr("%1").arg(dt->getValue().value<_ValueType_>()); \
+    } \
+}
 
-    virtual QString toText(const AData* dt) const override;
-};
+A_DECLARE_SIMPLE_DATAMANAGER(ABoolDataManager, bool, EMetaType::Bool);
+A_DECLARE_SIMPLE_DATAMANAGER(ACharDataManager, char, EMetaType::Char);
+A_DECLARE_SIMPLE_DATAMANAGER(AUCharDataManager, uchar, EMetaType::UChar);
+A_DECLARE_SIMPLE_DATAMANAGER(AShortDataManager, short, EMetaType::Short);
+A_DECLARE_SIMPLE_DATAMANAGER(AUShortDataManager, ushort, EMetaType::UShort);
+A_DECLARE_SIMPLE_DATAMANAGER(AIntegerDataManager, int, EMetaType::Int);
+A_DECLARE_SIMPLE_DATAMANAGER(AUIntegerDataManager, uint, EMetaType::UInt);
+A_DECLARE_SIMPLE_DATAMANAGER(ALongDataManager, long, EMetaType::Long);
+A_DECLARE_SIMPLE_DATAMANAGER(AULongDataManager, ulong, EMetaType::ULong);
+A_DECLARE_SIMPLE_DATAMANAGER(ALongLongDataManager, qlonglong, EMetaType::LongLong);
+A_DECLARE_SIMPLE_DATAMANAGER(AULongLongDataManager, qulonglong, EMetaType::ULongLong);
+A_DECLARE_SIMPLE_DATAMANAGER(AFloatDataManager, float, EMetaType::Float);
+A_DECLARE_SIMPLE_DATAMANAGER(ADoubleDataManager, double, EMetaType::Double);
+A_DECLARE_SIMPLE_DATAMANAGER(AStringDataManager, QString, EMetaType::QString);
 
 class APROCH_API ASizeDataManager : public AAbstractDataManager
 {

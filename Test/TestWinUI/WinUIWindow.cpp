@@ -22,34 +22,41 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
     // data binding
     ADataWidgetBinding* dwb = new ADataWidgetBinding(this);
-    ADWBM_SpinBox* spinBoxBinding = new ADWBM_SpinBox(dwb);
+    ASpinbBoxBindMethod* spinBoxBinding = new ASpinbBoxBindMethod(dwb);
+    ALineEditBindMethod* lineEditBinding = new ALineEditBindMethod(dwb);
     ADataWidgetBinding::addBindMethod<QSpinBox>(spinBoxBinding);
+    ADataWidgetBinding::addBindMethod<QLineEdit>(lineEditBinding);
 
     // data manager
     ADataContainer* dc = new ADataContainer(this);
     AIntegerDataManager* intDM = new AIntegerDataManager(dc);
+    AStringDataManager* stringDM = new AStringDataManager(dc);
     ASizeDataManager* sizeDM = new ASizeDataManager(dc);
-
-    // data
-    AData* dt = intDM->addData(tr("test1"));
-    dt->getDataManager()->setValue(dt, 10);
 
     // factory
     ASpinBoxFactory* sbf = new ASpinBoxFactory(dwb, this);
+    ALineEditFactory* lef = new ALineEditFactory(dwb, this);
+
+    // data
+    AData* dt = intDM->addData(tr("test1"));
+    dc->setValue(dt, 10);
 
     QWidget* spinBox001 = sbf->createEditor(dt, this);
     layout()->addWidget(spinBox001);
     QWidget* spinBox002 = sbf->createEditor(dt, this);
     layout()->addWidget(spinBox002);
-    QWidget* spinBox003 = sbf->createEditor(dt, this);
+    QWidget* spinBox003 = sbf->createEditor(dt, this, QString(), EDataBindType::OneWay);
     layout()->addWidget(spinBox003);
-    QWidget* spinBox004 = sbf->createEditor(dt, this);
+    QWidget* spinBox004 = sbf->createEditor(dt, this, QString(), EDataBindType::FirstTime);
     layout()->addWidget(spinBox004);
 
-    dwb->bind(ADWBindParameter(dt, spinBox001, QString(), EDataBindType::OneWay));
-    dwb->bind(ADWBindParameter(dt, spinBox002, QString(), EDataBindType::TwoWay));
-    dwb->bind(ADWBindParameter(dt, spinBox003, QString(), EDataBindType::OneWayRevise));
-    //dwb->bind(ADWBindParameter(dt, spinBox004, QString(), EDataBindType::FirstTime));
+    AData* strData = stringDM->addData(tr("string"));
+    dc->setValue(strData, QString("aproch"));
+
+    QWidget* lineedit001 = lef->createEditor(strData, this);
+    layout()->addWidget(lineedit001);
+    QWidget* lineedit002 = lef->createEditor(strData, this);
+    layout()->addWidget(lineedit002);
 }
 
 WinUIWindow::~WinUIWindow()

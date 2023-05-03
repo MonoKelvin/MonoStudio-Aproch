@@ -50,4 +50,16 @@ protected:
     virtual QWidget* createEditorImpl(AData* data, QWidget* parent, const QString& bindPropName, EDataBindType type) override;
 };
 
+// ----------------------------------------------------------------------------------------------------
+
+class APROCH_API ALineEditFactory : public AAbstractEditorFactory
+{
+    Q_OBJECT
+public:
+    ALineEditFactory(ADataWidgetBinding* dwb, QObject* parent = nullptr);
+
+protected:
+    virtual QWidget* createEditorImpl(AData* data, QWidget* parent, const QString& bindPropName, EDataBindType type) override;
+};
+
 APROCH_NAMESPACE_END

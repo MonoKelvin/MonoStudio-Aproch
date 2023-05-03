@@ -195,6 +195,14 @@ AAbstractDataManager* ADataContainer::getManager(EMetaType type) const
     return nullptr;
 }
 
+bool ADataContainer::setValue(AData* data, const QVariant& val)
+{
+    if (!data || !data->getDataManager())
+        return false;
+
+    return data->getDataManager()->setValue(data, val);
+}
+
 QVariant ADataContainer::getDefaultValue(AData* dt) const
 {
     Q_D(const ADataContainer);
