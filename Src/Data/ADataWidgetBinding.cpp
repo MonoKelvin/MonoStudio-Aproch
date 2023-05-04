@@ -38,9 +38,23 @@ class ADWBMethodMap
 public:
     ~ADWBMethodMap()
     {
+        for (auto iter = MethodMap.begin(); iter != MethodMap.end();)
+        {
+            if (iter.value())
+            {
+                delete iter.value();
+                iter = MethodMap.erase(iter);
+            }
+            else
+            {
+                ++iter;
+            }
+        }
+
+        MethodMap.clear();
     }
 
-    QMap<QString, ADataWidgetBindMethod*> MethodMap;
+    QMap<QString, ADataWidgetBindMethodPtr> MethodMap;
 };
 
 Q_GLOBAL_STATIC(ADWBMethodMap, globalBindMethodMap);
@@ -64,12 +78,12 @@ ADataWidgetBinding::~ADataWidgetBinding()
 {
 }
 
-bool ADataWidgetBinding::addBindMethod(ADataWidgetBindMethod* bindMethod, const char* widgetTypeName)
+bool ADataWidgetBinding::addBindMethod(ADataWidgetBindMethodPtr bindMethod, const char* widgetTypeName)
 {
     if (!bindMethod || !widgetTypeName)
         return false;
 
-    ADataWidgetBindMethod* method = getBindMethod(widgetTypeName);
+    ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
     if (method == bindMethod)
         return false;
 
@@ -90,7 +104,7 @@ bool ADataWidgetBinding::addBindMethod(ADataWidgetBindMethod* bindMethod, const 
 
 bool ADataWidgetBinding::removeBindMethod(const char* widgetTypeName)
 {
-    ADataWidgetBindMethod* method = getBindMethod(widgetTypeName);
+    ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
     if (method == nullptr)
         return false;
 
@@ -101,7 +115,7 @@ bool ADataWidgetBinding::removeBindMethod(const char* widgetTypeName)
     return c > 0;
 }
 
-void ADataWidgetBinding::removeBindMethod(ADataWidgetBindMethod* bindMethod)
+void ADataWidgetBinding::removeBindMethod(ADataWidgetBindMethodPtr bindMethod)
 {
     if (!bindMethod)
         return;
@@ -120,7 +134,7 @@ void ADataWidgetBinding::removeBindMethod(ADataWidgetBindMethod* bindMethod)
 
 }
 
-ADataWidgetBindMethod* ADataWidgetBinding::getBindMethod(const char* widgetTypeName)
+ADataWidgetBindMethodPtr ADataWidgetBinding::getBindMethod(const char* widgetTypeName)
 {
     if (!widgetTypeName)
         return nullptr;
@@ -136,7 +150,7 @@ bool ADataWidgetBinding::bind(const ADWBindParameter& parameter)
         return false;
 
     const char* widgetTypeName = parameter.getWidget()->metaObject()->className();
-    ADataWidgetBindMethod* method = getBindMethod(widgetTypeName);
+    ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
     if (!method)
         return false;
 
@@ -168,7 +182,7 @@ bool ADataWidgetBinding::unbind(AData* data, QWidget* widget, const QString& pro
         return false;
 
     const char* widgetTypeName = widget->metaObject()->className();
-    ADataWidgetBindMethod* method = getBindMethod(widgetTypeName);
+    ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
     if (!method)
         return false;
 

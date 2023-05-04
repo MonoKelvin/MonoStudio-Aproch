@@ -421,12 +421,6 @@
     <ClCompile Include="Data\ADataToolkit.cpp">
       <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="Data\AAbstractEditorFactory.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
-    <ClCompile Include="Data\AEditorFactory.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
     <ClCompile Include="Data\ADataWidgetBinding.cpp">
       <Filter>Data</Filter>
     </ClCompile>
@@ -520,12 +514,6 @@
       <Filter>Data</Filter>
     </QtMoc>
     <QtMoc Include="Data\ADataManager.h">
-      <Filter>Data</Filter>
-    </QtMoc>
-    <QtMoc Include="Data\AAbstractEditorFactory.h">
-      <Filter>Data</Filter>
-    </QtMoc>
-    <QtMoc Include="Data\AEditorFactory.h">
       <Filter>Data</Filter>
     </QtMoc>
     <QtMoc Include="Data\ADataWidgetBinding.h">

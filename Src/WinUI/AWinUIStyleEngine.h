@@ -33,10 +33,10 @@
 APROCH_NAMESPACE_BEGIN
 
 class AWinUIStyleEnginePrivate;
-class APROCH_API AWinUIStyleEngine : public QStylePlugin
+class APROCH_API AWinUIStyleEngine : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "AWinUIStyle.json")
+    //Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "AWinUIStyle.json")
 public:
     explicit AWinUIStyleEngine(QObject* parent = nullptr);
 
@@ -48,7 +48,7 @@ public:
         Custom,
     };
 
-    QStyle* create(const QString& key) override;
+    QStyle* create(const QString& key) /*override*/;
     static AWinUIStyleEngine* instance();
 
     /** @brief 初始化WinUI样式主题 */

@@ -142,7 +142,6 @@
     <ClCompile Include="Common\AMathToolkit.cpp" />
     <ClCompile Include="Common\AStringToolkit.cpp" />
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
-    <ClCompile Include="Data\AAbstractEditorFactory.cpp" />
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Data\ADataContainer.cpp" />
     <ClCompile Include="Data\ADataManager.cpp" />
@@ -160,7 +159,6 @@
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
     <ClCompile Include="Data\ADWBindMethods.cpp" />
-    <ClCompile Include="Data\AEditorFactory.cpp" />
     <ClCompile Include="FUI\Element\FUIElement.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -197,9 +195,7 @@
     <ClInclude Include="Common\ITextTranslatable.h" />
     <QtMoc Include="Data\ADataContainer.h" />
     <QtMoc Include="Data\ADataManager.h" />
-    <QtMoc Include="Data\AAbstractEditorFactory.h" />
     <ClInclude Include="Data\ADataToolkit.h" />
-    <QtMoc Include="Data\AEditorFactory.h" />
     <QtMoc Include="Data\ADataWidgetBindMethod.h" />
     <QtMoc Include="Data\ADataWidgetBinding.h" />
     <QtMoc Include="Data\ADWBindMethods.h" />

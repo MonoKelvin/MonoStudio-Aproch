@@ -47,9 +47,9 @@ public:
 };
 
 AWinUIStyleEngine::AWinUIStyleEngine(QObject* parent)
-    : QStylePlugin(parent)
+    : QObject(*(new AWinUIStyleEnginePrivate), parent)
 {
-    d_ptr.reset(new AWinUIStyleEnginePrivate);
+    //d_ptr.reset(new AWinUIStyleEnginePrivate);
 }
 
 void AWinUIStyleEngine::initStyleTheme(const QString& styleFile)

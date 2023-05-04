@@ -3,44 +3,44 @@
 
 APROCH_NAMESPACE_BEGIN
 
-ASpinbBoxBindMethod::ASpinbBoxBindMethod(QObject* parent)
+ASpinBoxBindMethod::ASpinBoxBindMethod(QObject* parent)
     : ADataWidgetBindMethod(parent)
 {
 }
 
-ASpinbBoxBindMethod::~ASpinbBoxBindMethod()
+ASpinBoxBindMethod::~ASpinBoxBindMethod()
 {
     // 必须在所有子类中调用解绑方法
     unbindAll();
 }
 
-bool ASpinbBoxBindMethod::bind(const ADWBindParameter& param)
+bool ASpinBoxBindMethod::bind(const ADWBindParameter& param)
 {
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(param.getWidget());
     if (spinBox)
     {
         QObject::connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-                         this, &ASpinbBoxBindMethod::spinboxValueChanged);
+                         this, &ASpinBoxBindMethod::spinboxValueChanged);
         return true;
     }
 
     return false;
 }
 
-bool ASpinbBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& propName)
+bool ASpinBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& propName)
 {
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget);
     if (spinBox)
     {
         QObject::disconnect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-                            this, &ASpinbBoxBindMethod::spinboxValueChanged);
+                            this, &ASpinBoxBindMethod::spinboxValueChanged);
         return true;
     }
 
     return false;
 }
 
-void ASpinbBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
+void ASpinBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
 {
     if (!data)
         return;
@@ -52,7 +52,7 @@ void ASpinbBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, con
     }
 }
 
-void ASpinbBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
+void ASpinBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
 {
     if (!data)
         return;
@@ -64,7 +64,75 @@ void ASpinbBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widge
     }
 }
 
-void ASpinbBoxBindMethod::spinboxValueChanged(int val)
+void ASpinBoxBindMethod::spinboxValueChanged(int val)
+{
+    widgetValueChanged(val);
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+ADoubleSpinBoxBindMethod::ADoubleSpinBoxBindMethod(QObject* parent)
+    : ADataWidgetBindMethod(parent)
+{
+}
+
+ADoubleSpinBoxBindMethod::~ADoubleSpinBoxBindMethod()
+{
+    // 必须在所有子类中调用解绑方法
+    unbindAll();
+}
+
+bool ADoubleSpinBoxBindMethod::bind(const ADWBindParameter& param)
+{
+    QDoubleSpinBox* editor = qobject_cast<QDoubleSpinBox*>(param.getWidget());
+    if (editor)
+    {
+        QObject::connect(editor, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+                         this, &ADoubleSpinBoxBindMethod::spinboxValueChanged);
+        return true;
+    }
+
+    return false;
+}
+
+bool ADoubleSpinBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& propName)
+{
+    QDoubleSpinBox* editor = qobject_cast<QDoubleSpinBox*>(widget);
+    if (editor)
+    {
+        QObject::disconnect(editor, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+                            this, &ADoubleSpinBoxBindMethod::spinboxValueChanged);
+        return true;
+    }
+
+    return false;
+}
+
+void ADoubleSpinBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
+{
+    if (!data)
+        return;
+
+    QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(widget);
+    if (spinBox)
+    {
+        spinBox->setValue(data->getValue().toDouble());
+    }
+}
+
+void ADoubleSpinBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
+{
+    if (!data)
+        return;
+
+    QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(const_cast<QWidget*>(widget));
+    if (spinBox && data->getDataManager())
+    {
+        data->getDataManager()->setValue(data, spinBox->value());
+    }
+}
+
+void ADoubleSpinBoxBindMethod::spinboxValueChanged(double val)
 {
     widgetValueChanged(val);
 }
@@ -136,5 +204,9 @@ void ALineEditBindMethod::lineEditValueChanged(const QString& val)
 {
     widgetValueChanged(val);
 }
+
+A_DECLARE_DATAWIDGET_BINDMETHOD(QSpinBox, ASpinBoxBindMethod);
+A_DECLARE_DATAWIDGET_BINDMETHOD(QDoubleSpinBox, ADoubleSpinBoxBindMethod);
+A_DECLARE_DATAWIDGET_BINDMETHOD(QLineEdit, ALineEditBindMethod);
 
 APROCH_NAMESPACE_END

@@ -30,6 +30,16 @@
 
 APROCH_NAMESPACE_BEGIN
 
+#define A_DECLARE_DATAWIDGET_BINDMETHOD(WidgetType, DWBindMethod)                                   \
+    class A##WidgetType##_##DWBindMethod##_InitClass                                                \
+    {                                                                                               \
+    public:                                                                                         \
+        A##WidgetType##_##DWBindMethod##_InitClass()                                                \
+        {                                                                                           \
+            APROCH_NAMESPACE::ADataWidgetBinding::addBindMethod<WidgetType>(new DWBindMethod);      \
+        }                                                                                           \
+    }a##WidgetType##_##DWBindMethod##_Instance
+
 class ADWBindParameterPrivate;
 
 /**
@@ -117,6 +127,6 @@ private:
     Q_DISABLE_COPY_MOVE(ADataWidgetBindMethod);
     Q_DECLARE_PRIVATE(ADataWidgetBindMethod);
 };
-
+typedef QPointer<ADataWidgetBindMethod> ADataWidgetBindMethodPtr;
 
 APROCH_NAMESPACE_END
