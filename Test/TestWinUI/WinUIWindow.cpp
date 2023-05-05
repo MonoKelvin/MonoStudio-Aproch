@@ -2,6 +2,8 @@
 #include "AprochAPI.h"
 
 #include <QSpinBox>
+#include <QCheckBox>
+#include <QRadioButton>
 
 WinUIWindow::WinUIWindow(QWidget *parent)
     : QWidget(parent)
@@ -27,14 +29,15 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
     // data manager
     ADataContainer* dc = new ADataContainer(this);
+    ABoolDataManager* boolDM = new ABoolDataManager(dc);
     AIntegerDataManager* intDM = new AIntegerDataManager(dc);
     ADoubleDataManager* dblDM = new ADoubleDataManager(dc);
     AStringDataManager* stringDM = new AStringDataManager(dc);
     ASizeDataManager* sizeDM = new ASizeDataManager(dc);
 
     // int
-    AData* dt = intDM->addData(tr("int"));
-    dc->setValue(dt, 10);
+    AData* intData = intDM->addData(tr("int"));
+    dc->setValue(intData, 10);
 
     QWidget* spinBox001 = new QSpinBox(this);
     layout()->addWidget(spinBox001);
@@ -45,10 +48,10 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     QWidget* spinBox004 = new QSpinBox(this);
     layout()->addWidget(spinBox004);
 
-    dwb->bind(ADWBindParameter(dt, spinBox001, QString(), EDataBindType::OneWay));
-    dwb->bind(ADWBindParameter(dt, spinBox002, QString(), EDataBindType::TwoWay));
-    dwb->bind(ADWBindParameter(dt, spinBox003, QString(), EDataBindType::OneWayRevise));
-    dwb->bind(ADWBindParameter(dt, spinBox004, QString(), EDataBindType::FirstTime));
+    dwb->bind(ADWBindParameter(intData, spinBox001, QString(), EDataBindType::OneWay));
+    dwb->bind(ADWBindParameter(intData, spinBox002, QString(), EDataBindType::TwoWay));
+    dwb->bind(ADWBindParameter(intData, spinBox003, QString(), EDataBindType::OneWayRevise));
+    dwb->bind(ADWBindParameter(intData, spinBox004, QString(), EDataBindType::FirstTime));
 
     // string
     AData* strData = stringDM->addData(tr("string"));
@@ -73,6 +76,31 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
     dwb->bind(ADWBindParameter(dblData, dsb001, QString(), EDataBindType::OneWay));
     dwb->bind(ADWBindParameter(dblData, dsb002, QString(), EDataBindType::TwoWay));
+
+    // bool
+    AData* boolData = boolDM->addData(tr("bool"));
+    dc->setValue(boolData, false);
+
+    QWidget* checkBox001 = new QCheckBox(this);
+    QWidget* checkBox002 = new QCheckBox(this);
+    layout()->addWidget(checkBox001);
+    layout()->addWidget(checkBox002);
+
+    dwb->bind(ADWBindParameter(boolData, checkBox001, QString(), EDataBindType::OneWay));
+    dwb->bind(ADWBindParameter(boolData, checkBox002, QString(), EDataBindType::TwoWay));
+
+    // radio
+    QRadioButton* radioBtn001 = new QRadioButton(this);
+    QRadioButton* radioBtn002 = new QRadioButton(this);
+    radioBtn001->setAutoExclusive(false);
+    radioBtn002->setAutoExclusive(false);
+    layout()->addWidget(radioBtn001);
+    layout()->addWidget(radioBtn002);
+
+    dwb->bind(ADWBindParameter(boolData, radioBtn001, QString(), EDataBindType::OneWay));
+    dwb->bind(ADWBindParameter(boolData, radioBtn002, QString(), EDataBindType::TwoWay));
+
+    // stringlist
 }
 
 WinUIWindow::~WinUIWindow()
