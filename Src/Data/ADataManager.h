@@ -67,12 +67,43 @@ class APROCH_API ASizeDataManager : public AAbstractDataManager
     Q_OBJECT
 public:
     ASizeDataManager(ADataContainer* parent);
-    ~ASizeDataManager();
 
     virtual QString toText(const AData* dt) const override;
 
+    /** @brief 从宽数据获取对应的尺寸数据 */
+    AData* getDataFromWidth(AData* dt) const;
+
+    /** @brief 从高数据获取对应的尺寸数据 */
+    AData* getDataFromHeight(AData* dt) const;
+
+    /** @brief 从尺寸数据获取宽度数据 */
+    AData* getWidth(AData* dt) const;
+
+    /** @brief 从尺寸数据获取高度数据 */
+    AData* getHeight(AData* dt) const;
+
 protected:
     virtual void initializeData(AData* data) override;
+
+private Q_SLOTS:
+    void onValueChanged(AData*, const QVariant&);
+    void onDataDestroyed(AData*);
+
+private:
+    QMap<AData*, AData*> m_dataToW;
+    QMap<AData*, AData*> m_dataToH;
+};
+
+class APROCH_API AStringListDataManager : public AAbstractDataManager
+{
+    Q_OBJECT
+public:
+    AStringListDataManager(ADataContainer* parent)
+        : AAbstractDataManager(parent, EMetaType::QStringList)
+    {
+    }
+
+    virtual QString toText(const AData* dt) const override;
 };
 
 APROCH_NAMESPACE_END

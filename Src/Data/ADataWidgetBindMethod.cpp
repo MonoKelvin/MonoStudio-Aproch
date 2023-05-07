@@ -141,7 +141,25 @@ class ADataWidgetBindMethodPrivate : public QObjectPrivate
 public:
     Q_DECLARE_PUBLIC(ADataWidgetBindMethod);
 
-    ADWBindParameterList findByData(AData* data)
+    bool hasBind(AData* data, QWidget* widget, const QString& propName = QString(), bool isContainsEmpty = true) const
+    {
+        if (propName.isEmpty() && !isContainsEmpty)
+        {
+            for (const ADWBindParameter& param : params)
+                if (param.getData() == data && param.getWidget() == widget)
+                    return true;
+        }
+        else
+        {
+            for (const ADWBindParameter& param : params)
+                if (param.getData() == data && param.getWidget() == widget && param.getBindProperty() == propName)
+                    return true;
+        }
+
+        return false;
+    }
+
+    ADWBindParameterList findByData(AData* data) const
     {
         ADWBindParameterList result;
         for (const ADWBindParameter& param : params)
@@ -152,7 +170,7 @@ public:
         return result;
     }
 
-    ADWBindParameterList findByWidget(QWidget* widget, const char* propName = nullptr)
+    ADWBindParameterList findByWidget(QWidget* widget, const QString& propName = QString()) const
     {
         ADWBindParameterList result;
 
@@ -270,6 +288,29 @@ bool ADataWidgetBindMethod::removeBind(AData* data, QWidget* widget, const QStri
     }
 
     return false;
+}
+
+bool ADataWidgetBindMethod::checkBind(const ADWBindParameter& param) const
+{
+    return true;
+}
+
+bool ADataWidgetBindMethod::hasBind(AData* data, QWidget* widget, const QString& propName, bool isContainsEmpty) const
+{
+    Q_D(const ADataWidgetBindMethod);
+    return d->hasBind(data, widget, propName, isContainsEmpty);
+}
+
+ADWBindParameterList ADataWidgetBindMethod::getBindByData(AData* data) const
+{
+    Q_D(const ADataWidgetBindMethod);
+    return d->findByData(data);
+}
+
+ADWBindParameterList ADataWidgetBindMethod::getByWidget(QWidget* widget, const QString& propName) const
+{
+    Q_D(const ADataWidgetBindMethod);
+    return d->findByWidget(widget, propName);
 }
 
 ADataContainer* ADataWidgetBindMethod::getDataContainer(AData* data)

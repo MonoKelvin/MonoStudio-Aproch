@@ -154,6 +154,9 @@ bool ADataWidgetBinding::bind(const ADWBindParameter& parameter)
     if (!method)
         return false;
 
+    if (!method->checkBind(parameter))
+        return false;
+
     if (type == EDataBindType::OneWay ||
         type == EDataBindType::TwoWay ||
         type == EDataBindType::FirstTime)

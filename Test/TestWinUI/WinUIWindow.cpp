@@ -1,9 +1,12 @@
 #include "WinUIWindow.h"
 #include "AprochAPI.h"
 
+#include <QRandomGenerator>
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QRadioButton>
+#include <QPushButton>
+#include <QComboBox>
 
 WinUIWindow::WinUIWindow(QWidget *parent)
     : QWidget(parent)
@@ -28,15 +31,10 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     ADataWidgetBinding* dwb = new ADataWidgetBinding(this);
 
     // data manager
-    ADataContainer* dc = new ADataContainer(this);
-    ABoolDataManager* boolDM = new ABoolDataManager(dc);
-    AIntegerDataManager* intDM = new AIntegerDataManager(dc);
-    ADoubleDataManager* dblDM = new ADoubleDataManager(dc);
-    AStringDataManager* stringDM = new AStringDataManager(dc);
-    ASizeDataManager* sizeDM = new ASizeDataManager(dc);
+    ADataContainer* dc = new ADataContainer(true, this);
 
     // int
-    AData* intData = intDM->addData(tr("int"));
+    AData* intData = dc->addData(EMetaType::Int, tr("int"));
     dc->setValue(intData, 10);
 
     QWidget* spinBox001 = new QSpinBox(this);
@@ -54,7 +52,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     dwb->bind(ADWBindParameter(intData, spinBox004, QString(), EDataBindType::FirstTime));
 
     // string
-    AData* strData = stringDM->addData(tr("string"));
+    AData* strData = dc->addData(EMetaType::QString, tr("string"));
     dc->setValue(strData, QString("aproch"));
 
     QWidget* lineedit001 = new QLineEdit(this);
@@ -66,7 +64,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     dwb->bind(ADWBindParameter(strData, lineedit002, QString(), EDataBindType::TwoWay));
 
     // double
-    AData* dblData = dblDM->addData(tr("double"));
+    AData* dblData = dc->addData(EMetaType::Double, tr("double"));
     dc->setValue(dblData, 3.14);
 
     QWidget* dsb001 = new QDoubleSpinBox(this);
@@ -78,7 +76,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     dwb->bind(ADWBindParameter(dblData, dsb002, QString(), EDataBindType::TwoWay));
 
     // bool
-    AData* boolData = boolDM->addData(tr("bool"));
+    AData* boolData = dc->addData(EMetaType::Bool, tr("bool"));
     dc->setValue(boolData, false);
 
     QWidget* checkBox001 = new QCheckBox(this);
@@ -100,7 +98,81 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     dwb->bind(ADWBindParameter(boolData, radioBtn001, QString(), EDataBindType::OneWay));
     dwb->bind(ADWBindParameter(boolData, radioBtn002, QString(), EDataBindType::TwoWay));
 
+    // size
+    {
+        ASizeDataManager* sizeDM = dc->getDataManager<ASizeDataManager>(EMetaType::QSize);
+        AData* sizeData = dc->addData(EMetaType::QSize, tr("size"));
+        dc->setValue(sizeData, QSize(1366, 768));
+
+        QLabel* sizeLable = new QLabel(this);
+        connect(dc, &ADataContainer::valueChanged, [=](AData* data, const QVariant& v)
+        {
+            if (data == sizeData)
+                sizeLable->setText(data->getDataManager()->toText(data) + 
+                                   AStr(" old:(%1, %2)").arg(v.toSize().width()).arg(v.toSize().height()));
+        });
+        QPushButton* changeSizeBtn = new QPushButton(tr("ChangeSize"), this);
+        connect(changeSizeBtn, &QPushButton::clicked, [=](bool) {
+            dc->setValue(sizeData, QSize(QRandomGenerator::global()->bounded(100),
+            QRandomGenerator::global()->bounded(100)));
+        });
+
+        QWidget* sizeSpinBoxW = new QSpinBox(this);
+        QWidget* sizeSpinBoxH = new QSpinBox(this);
+
+        QBoxLayout* sizeLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+        sizeLayout->addWidget(sizeLable);
+        sizeLayout->addWidget(changeSizeBtn);
+        sizeLayout->addWidget(sizeSpinBoxW);
+        sizeLayout->addWidget(sizeSpinBoxH);
+        layout()->addItem(sizeLayout);
+
+        dwb->bind(ADWBindParameter(sizeDM->getWidth(sizeData), sizeSpinBoxW, QString(), EDataBindType::TwoWay));
+        dwb->bind(ADWBindParameter(sizeDM->getHeight(sizeData), sizeSpinBoxH, QString(), EDataBindType::TwoWay));
+    }
+
     // stringlist
+    {
+        AData* currentIndexData = dc->addData(EMetaType::Int, tr("currentIndex"));
+
+        AData* strlistData = dc->addData(EMetaType::QStringList, tr("stringlist"));
+        dc->setValue(strlistData, QStringList({"Apple", "Orange", "Banana", "Grape", "Watermelon"}));
+
+        QPushButton* changeItemsBtn = new QPushButton(tr("ChangeItems"), this);
+        connect(changeItemsBtn, &QPushButton::clicked, [=](bool) {
+            QStringList strlist = strlistData->getValue().toStringList();
+            if (strlist.empty())
+                strlist.push_back("Apple");
+            else if (strlist.size() >= 10)
+                strlist.pop_back();
+            else
+            {
+                if (QRandomGenerator::global()->generate() % 2)
+                    strlist.push_back(AStr("New Item %1").arg(QRandomGenerator::global()->generate()));
+                else
+                    strlist.pop_back();
+            }
+            dc->setValue(strlistData, strlist);
+        });
+
+        QWidget* combox001 = new QComboBox(this);
+        QWidget* combox002 = new QComboBox(this);
+
+        QBoxLayout* sizeLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+        sizeLayout->addWidget(changeItemsBtn);
+        sizeLayout->addWidget(combox001);
+        sizeLayout->addWidget(combox002);
+        layout()->addItem(sizeLayout);
+
+        dwb->bind(ADWBindParameter(strlistData, combox001, AComboBoxBindMethod::Items, EDataBindType::TwoWay));
+        dwb->bind(ADWBindParameter(strlistData, combox002, AComboBoxBindMethod::Items, EDataBindType::TwoWay));
+
+        dwb->bind(ADWBindParameter(currentIndexData, combox001, AComboBoxBindMethod::CurrentIndex));
+        dwb->bind(ADWBindParameter(currentIndexData, combox002, AComboBoxBindMethod::CurrentIndex));
+    
+        //dwb->bind(ADWBindParameter(strData, combox001, AComboBoxBindMethod::CurrentText));
+        //dwb->bind(ADWBindParameter(strData, combox002, AComboBoxBindMethod::CurrentText));
+    }
 }
 
 WinUIWindow::~WinUIWindow()

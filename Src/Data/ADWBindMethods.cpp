@@ -357,6 +357,10 @@ void ARadioButtonBindMethod::radioButtonValueChanged(bool val)
 
 // ----------------------------------------------------------------------------------------------------
 
+const QString AComboBoxBindMethod::Items = AStr("items");
+const QString AComboBoxBindMethod::CurrentIndex = AStr("currentIndex");
+const QString AComboBoxBindMethod::CurrentText = AStr("currentText");
+
 AComboBoxBindMethod::AComboBoxBindMethod(QObject* parent)
     : ADataWidgetBindMethod(parent)
 {
@@ -368,18 +372,51 @@ AComboBoxBindMethod::~AComboBoxBindMethod()
     unbindAll();
 }
 
+bool AComboBoxBindMethod::checkBind(const ADWBindParameter& param) const
+{
+    const QString propName = param.getBindProperty();
+    if (propName == CurrentText)
+    {
+        ADWBindParameterList paramList = getByWidget(param.getWidget());
+        for (const ADWBindParameter& param : paramList)
+        {
+            if (param.getBindProperty() == CurrentIndex)
+            {
+                Q_ASSERT_X(false, Q_FUNC_INFO, "data-widget binding conflict, "
+                           "cannot bind peroperty names 'currentIndex' and 'currentText' simultaneously");
+                return false;
+            }
+        }
+    }
+    else if (propName == CurrentIndex)
+    {
+        ADWBindParameterList paramList = getByWidget(param.getWidget());
+        for (const ADWBindParameter& param : paramList)
+        {
+            if (param.getBindProperty() == CurrentText)
+            {
+                Q_ASSERT_X(false, Q_FUNC_INFO, "data-widget binding conflict, "
+                           "cannot bind peroperty names 'currentIndex' and 'currentText' simultaneously");
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 bool AComboBoxBindMethod::bind(const ADWBindParameter& param)
 {
     QComboBox* editor = qobject_cast<QComboBox*>(param.getWidget());
     if (editor)
     {
         const QString propName = param.getBindProperty();
-        if (propName == AStr("currentText") || propName.isEmpty())
+        if (propName == CurrentText)
         {
             QObject::connect(editor, &QComboBox::currentTextChanged,
                              this, QOverload<const QString&>::of(&AComboBoxBindMethod::comboBoxValueChanged));
         }
-        else if (propName == AStr("currentIndex"))
+        else if (propName == CurrentIndex)
         {
             QObject::connect(editor, QOverload<int>::of(&QComboBox::currentIndexChanged),
                              this, QOverload<int>::of(&AComboBoxBindMethod::comboBoxValueChanged));
@@ -396,15 +433,15 @@ bool AComboBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& pr
     QComboBox* editor = qobject_cast<QComboBox*>(widget);
     if (editor)
     {
-        if (propName == AStr("currentText") || propName.isEmpty())
+        if (propName == CurrentText)
         {
-            QObject::connect(editor, &QComboBox::currentTextChanged,
-                             this, QOverload<const QString&>::of(&AComboBoxBindMethod::comboBoxValueChanged));
+            QObject::disconnect(editor, &QComboBox::currentTextChanged,
+                                this, QOverload<const QString&>::of(&AComboBoxBindMethod::comboBoxValueChanged));
         }
-        else if (propName == AStr("currentIndex"))
+        else if (propName == CurrentIndex)
         {
-            QObject::connect(editor, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                             this, QOverload<int>::of(&AComboBoxBindMethod::comboBoxValueChanged));
+            QObject::disconnect(editor, QOverload<int>::of(&QComboBox::currentIndexChanged),
+                                this, QOverload<int>::of(&AComboBoxBindMethod::comboBoxValueChanged));
         }
 
         return true;
@@ -421,16 +458,21 @@ void AComboBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, con
     QComboBox* editor = qobject_cast<QComboBox*>(widget);
     if (editor)
     {
-        if (propertyName == AStr("currentText") || propertyName.isEmpty())
+        if (propertyName == Items)
         {
-            if (data->getDataManager())
-                editor->setCurrentText(data->getDataManager()->toText(data));
-            else
-                editor->setCurrentText(data->getValue().toString());
+            editor->clear();
+            editor->insertItems(0, data->getValue().toStringList());
         }
-        else if (propertyName == AStr("currentIndex"))
+        else if (propertyName == CurrentIndex)
         {
             editor->setCurrentIndex(data->getValue().toInt());
+        }
+        else if (propertyName == CurrentText)
+        {
+            if (data->getType() == EMetaType::QString)
+                editor->setCurrentText(data->getValue().toString());
+            else if (data->getDataManager())
+                editor->setCurrentText(data->getDataManager()->toText(data));
         }
     }
 }
@@ -443,25 +485,25 @@ void AComboBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widge
     QComboBox* editor = qobject_cast<QComboBox*>(const_cast<QWidget*>(widget));
     if (editor && data->getDataManager())
     {
-        if (propertyName == AStr("currentText") || propertyName.isEmpty())
-        {
-            data->getDataManager()->setValue(data, editor->currentText());
-        }
-        else if (propertyName == AStr("currentIndex"))
+        if (propertyName == CurrentIndex)
         {
             data->getDataManager()->setValue(data, editor->currentIndex());
+        }
+        else if (propertyName == CurrentText)
+        {
+            data->getDataManager()->setValue(data, editor->currentText());
         }
     }
 }
 
 void AComboBoxBindMethod::comboBoxValueChanged(const QString& val)
 {
-    widgetValueChanged(val);
+    widgetValueChanged(val, CurrentText);
 }
 
 void AComboBoxBindMethod::comboBoxValueChanged(int val)
 {
-    widgetValueChanged(val);
+    widgetValueChanged(val, CurrentIndex);
 }
 
 A_DECLARE_DATAWIDGET_BINDMETHOD(QSpinBox, ASpinBoxBindMethod);

@@ -97,6 +97,23 @@ public:
     /** @brief 移除绑定 */
     bool removeBind(AData* data, QWidget* widget, const QString& propName = QString());
 
+    /** @brief 检查参数是否可以进行绑定 */
+    virtual bool checkBind(const ADWBindParameter& param) const;
+
+    /**
+     * @brief 数据和控件之间是否存在绑定。
+     * isConsiderEmptyProp: 是否考虑空属性。
+     *      true: propName为空时只查找数据-控件之间为空属性的绑定，
+     *      false: 查找数据-控件之间任意的属性绑定
+     */
+    bool hasBind(AData* data, QWidget* widget, const QString& propName = QString(), bool isConsiderEmptyProp = true) const;
+
+    /** @brief 获取和指定数据存在绑定的参数列表 */
+    ADWBindParameterList getBindByData(AData* data) const;
+
+    /** @brief 获取和指定控件存在绑定的参数列表。未指定属性名称时，返回查找到的所有参数 */
+    ADWBindParameterList getByWidget(QWidget* widget, const QString& propName = QString()) const;
+
 protected:
     /** @brief 绑定 */
     virtual bool bind(const ADWBindParameter& param) = 0;

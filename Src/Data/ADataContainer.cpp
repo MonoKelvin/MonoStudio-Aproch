@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ADataContainer.h"
+#include "ADataManager.h"
 
 #include <private/qobject_p.h>
 
@@ -132,9 +133,28 @@ bool ADataContainerPrivate::setDefaultValue(AData* dt, const QVariant& defaultVa
 
 // ----------------------------------------------------------------------------------------------------
 
-ADataContainer::ADataContainer(QObject* parent)
+ADataContainer::ADataContainer(bool isAddAllDataManagers, QObject* parent)
     : QObject(*(new ADataContainerPrivate()), parent)
 {
+    if (isAddAllDataManagers)
+    {
+        ABoolDataManager* BoolDM = new ABoolDataManager(this);
+        ACharDataManager* CharDM = new ACharDataManager(this);
+        AUCharDataManager* UCharDM = new AUCharDataManager(this);
+        AShortDataManager* ShortDM = new AShortDataManager(this);
+        AUShortDataManager* UShortDM = new AUShortDataManager(this);
+        AIntegerDataManager* IntegerDM = new AIntegerDataManager(this);
+        AUIntegerDataManager* UIntegerDM = new AUIntegerDataManager(this);
+        ALongDataManager* LongDM = new ALongDataManager(this);
+        AULongDataManager* ULongDM = new AULongDataManager(this);
+        ALongLongDataManager* LongLongDM = new ALongLongDataManager(this);
+        AULongLongDataManager* ULongLongDM = new AULongLongDataManager(this);
+        AFloatDataManager* FloatDM = new AFloatDataManager(this);
+        ADoubleDataManager* DoubleDM = new ADoubleDataManager(this);
+        AStringDataManager* StringDM = new AStringDataManager(this);
+        ASizeDataManager* SizeDM = new ASizeDataManager(this);
+        AStringListDataManager* StringListDM = new AStringListDataManager(this);
+    }
 }
 
 ADataContainer::~ADataContainer()
@@ -144,7 +164,7 @@ ADataContainer::~ADataContainer()
     d->destroyed();
 }
 
-bool ADataContainer::addManager(AAbstractDataManager* manager, EMetaType type)
+bool ADataContainer::addDataManager(AAbstractDataManager* manager, EMetaType type)
 {
     if (nullptr == manager)
     {
@@ -180,7 +200,7 @@ bool ADataContainer::addManager(AAbstractDataManager* manager, EMetaType type)
     return true;
 }
 
-AAbstractDataManager* ADataContainer::getManager(EMetaType type) const
+AAbstractDataManager* ADataContainer::getDataManager(EMetaType type) const
 {
     Q_D(const ADataContainer);
 
@@ -256,7 +276,7 @@ ADataSet* ADataContainer::getDataSet(AAbstractDataManager* manager, bool isCreat
     if (!d->managerDataSetMap.contains(manager))
     {
         if (isCreateIfNull)
-            addManager(manager, manager->getType());
+            addDataManager(manager, manager->getType());
         else
             return nullptr;
     }
@@ -297,7 +317,7 @@ bool ADataContainer::addData(AAbstractDataManager* manager, AData* dt, const QVa
 
 AData* ADataContainer::addData(EMetaType type, const QString& name)
 {
-    AAbstractDataManager* dm = getManager(type);
+    AAbstractDataManager* dm = getDataManager(type);
     if (!dm)
         return nullptr;
 
@@ -342,7 +362,7 @@ void ADataContainer::deleteData(ADataSet& dataset)
         d->deleteData(dt);
 }
 
-void ADataContainer::deleteData(AData*& dt)
+void ADataContainer::deleteData(AData* dt)
 {
     if (nullptr == dt)
         return;

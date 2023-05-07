@@ -21,7 +21,7 @@ AAbstractDataManager::AAbstractDataManager(ADataContainer* parent, EMetaType typ
     : QObject(*(new AAbstractDataManagerPrivate()), parent)
 {
     Q_ASSERT_X(nullptr != parent, Q_FUNC_INFO, "parent ADataContainer is null");
-    parent->addManager(this, type);
+    parent->addDataManager(this, type);
 }
 
 AAbstractDataManager::~AAbstractDataManager()

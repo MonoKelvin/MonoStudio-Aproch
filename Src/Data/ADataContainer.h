@@ -13,18 +13,18 @@ class APROCH_API ADataContainer : public QObject
     Q_OBJECT
     friend class AAbstractDataManager;
 public:
-    explicit ADataContainer(QObject* parent = nullptr);
+    explicit ADataContainer(bool isAddAllDataManagers = true, QObject* parent = nullptr);
     ~ADataContainer();
 
     /** @brief 添加数据管理器 */
-    bool addManager(AAbstractDataManager* manager, EMetaType type);
+    bool addDataManager(AAbstractDataManager* manager, EMetaType type);
 
     template<class T>
-    Q_ALWAYS_INLINE T* getManager(EMetaType type) const
+    Q_ALWAYS_INLINE T* getDataManager(EMetaType type) const
     {
-        return qobject_cast<T*>(getManager(type));
+        return qobject_cast<T*>(getDataManager(type));
     }
-    AAbstractDataManager* getManager(EMetaType type) const;
+    AAbstractDataManager* getDataManager(EMetaType type) const;
 
     /** @brief 设置数据的值 */
     bool setValue(AData* data, const QVariant& val);
@@ -56,7 +56,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void resetValue(AData* dt);
-    void deleteData(AData*& dt);
+    void deleteData(AData* dt);
 
 private:
     /** @brief 添加已有的数据 */

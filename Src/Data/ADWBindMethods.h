@@ -89,6 +89,12 @@ public:
     AComboBoxBindMethod(QObject* parent = nullptr);
     ~AComboBoxBindMethod();
 
+    /** @brief Supported property names */
+    static const QString Items;             // "items"
+    static const QString CurrentIndex;      // "currentIndex"
+    static const QString CurrentText;       // "currentText"
+
+    virtual bool checkBind(const ADWBindParameter& param) const;
     virtual bool bind(const ADWBindParameter& param) override;
     virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) override;
     virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) override;

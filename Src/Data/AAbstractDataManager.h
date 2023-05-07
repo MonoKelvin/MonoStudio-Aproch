@@ -48,7 +48,7 @@ private:
     Q_DECLARE_PRIVATE(AAbstractDataManager);
 
 public:
-    explicit AAbstractDataManager(ADataContainer* parent, EMetaType type);
+    AAbstractDataManager(ADataContainer* parent, EMetaType type);
     ~AAbstractDataManager();
 
     /** @brief 所管理的元数据类型 */
@@ -115,12 +115,12 @@ protected:
      */
     virtual AData* createData();
 
-    /** @brief 设置所管理的元数据类型 */
-    void setType(EMetaType type);
-
 private:
     /** @brief 初始化数据 */
     void init(ADataSet*);
+
+    /** @brief 设置所管理的元数据类型 */
+    void setType(EMetaType type);
 };
 
 #ifndef QT_NO_DEBUG_STREAM

@@ -36,10 +36,8 @@ APROCH_NAMESPACE_BEGIN
 ASizeDataManager::ASizeDataManager(ADataContainer* parent)
     : AAbstractDataManager(parent, EMetaType::QSize)
 {
-}
-
-ASizeDataManager::~ASizeDataManager()
-{
+    connect(parent, &ADataContainer::valueChanged, this, &ASizeDataManager::onValueChanged);
+    connect(parent, &ADataContainer::dataDestroyed, this, &ASizeDataManager::onDataDestroyed);
 }
 
 QString ASizeDataManager::toText(const AData* dt) const
@@ -52,9 +50,41 @@ QString ASizeDataManager::toText(const AData* dt) const
     return AStr("(%1, %2)").arg(size.width()).arg(size.height());
 }
 
+AData* ASizeDataManager::getDataFromWidth(AData* dt) const
+{
+    for (auto iter = m_dataToW.cbegin(); iter != m_dataToW.cend(); ++iter)
+    {
+        if (dt == iter.value())
+            return iter.key();
+    }
+
+    return nullptr;
+}
+
+AData* ASizeDataManager::getDataFromHeight(AData* dt) const
+{
+    for (auto iter = m_dataToH.cbegin(); iter != m_dataToH.cend(); ++iter)
+    {
+        if (dt == iter.value())
+            return iter.key();
+    }
+
+    return nullptr;
+}
+
+AData* ASizeDataManager::getWidth(AData* dt) const
+{
+    return m_dataToW.value(dt, nullptr);
+}
+
+AData* ASizeDataManager::getHeight(AData* dt) const
+{
+    return m_dataToH.value(dt, nullptr);
+}
+
 void ASizeDataManager::initializeData(AData* data)
 {
-    AIntegerDataManager* intDataMgr = getDataContainer()->getManager<AIntegerDataManager>(EMetaType::Int);
+    AIntegerDataManager* intDataMgr = getDataContainer()->getDataManager<AIntegerDataManager>(EMetaType::Int);
     if (!intDataMgr)
     {
         Q_ASSERT_X(false, Q_FUNC_INFO, "no data manager of integer type");
@@ -68,6 +98,66 @@ void ASizeDataManager::initializeData(AData* data)
     AData* hData = intDataMgr->addData(tr("Height"));
     Q_ASSERT(nullptr != hData);
     data->addSubData(hData);
+
+    m_dataToW[data] = wData;
+    m_dataToH[data] = hData;
+}
+
+void ASizeDataManager::onValueChanged(AData* data, const QVariant& oldVal)
+{
+    if (AData* sizeData = getDataFromWidth(data))
+    {
+        QSize newSize = sizeData->getValue().toSize();
+        newSize.setWidth(data->getValue().toInt());
+        setValue(sizeData, newSize);
+    }
+    else if (AData* sizeData = getDataFromHeight(data))
+    {
+        QSize newSize = sizeData->getValue().toSize();
+        newSize.setHeight(data->getValue().toInt());
+        setValue(sizeData, newSize);
+    }
+    else 
+    {
+        AData* width = getWidth(data);
+        if (width && width->getDataManager())
+            width->getDataManager()->setValue(width, data->getValue().toSize().width());
+
+        AData* height = getHeight(data);
+        if (height && height->getDataManager())
+            height->getDataManager()->setValue(height, data->getValue().toSize().height());
+    }
+}
+
+void ASizeDataManager::onDataDestroyed(AData* data)
+{
+    if (AData* sizeData = getDataFromWidth(data))
+    {
+        m_dataToW.remove(sizeData);
+    }
+    else if (AData* sizeData = getDataFromHeight(data))
+    {
+        m_dataToH.remove(sizeData);
+    }
+    else
+    {
+        getDataContainer()->deleteData(m_dataToW.value(data, nullptr));
+        m_dataToW.remove(data);
+        
+        getDataContainer()->deleteData(m_dataToH.value(data, nullptr));
+        m_dataToH.remove(data);
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+QString AStringListDataManager::toText(const AData* dt) const
+{
+    QStringList stringList = dt->getValue().toStringList();
+    if (stringList.isEmpty())
+        return QString();
+
+    return AStr("(") + stringList.join(QLatin1String(", ")) + AStr(")");
 }
 
 APROCH_NAMESPACE_END
