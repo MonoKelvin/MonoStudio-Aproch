@@ -41,26 +41,23 @@
 /** @brief 继承自原型对象<APrototype>的子类需要添加该宏以创建克隆原型，不可克隆的原型不需要添加 */
 #define APROCH_PROTOTYPE(_ClassName_)                                                                        \
 public:                                                                                                      \
-    virtual APrototype *clone(const FCopyOptions &op = A_DEFAULT_COPY_OPTION) const override \
+    virtual APrototype *clone(const FCopyOptions &op = A_DEFAULT_COPY_OPTION) const override                 \
     {                                                                                                        \
         return new _ClassName_(*this, op);                                                                   \
     }                                                                                                        \
-                                                                                                             \
 private:                                                                                                     \
-    friend APrototype;                                                                                       \
-    friend APrototypeDisclonable;                                                                            \
-    Q_DISABLE_MOVE(_ClassName_)
+    Q_DISABLE_MOVE(_ClassName_)                                                                              \
+    friend APrototype
 
 /** @brief 继承自原型对象<APrototype>的子类需要添加该宏以创建私有克隆原型，不可克隆的原型不需要添加 */
 #define APROCH_PROTOTYPE_PRIVATE(_ClassName_)                                                                \
 private:                                                                                                     \
-    virtual APrototype *clone(const FCopyOptions &op = A_DEFAULT_COPY_OPTION) const override \
+    virtual APrototype *clone(const FCopyOptions &op = A_DEFAULT_COPY_OPTION) const override                 \
     {                                                                                                        \
         return new _ClassName_(*this, op);                                                                   \
     }                                                                                                        \
-    friend APrototype;                                                                                       \
-    friend APrototypeDisclonable;                                                                            \
-    Q_DISABLE_MOVE(_ClassName_)
+    Q_DISABLE_MOVE(_ClassName_)                                                                              \
+    friend APrototype
 
 APROCH_NAMESPACE_BEGIN
 

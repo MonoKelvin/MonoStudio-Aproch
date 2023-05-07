@@ -35,6 +35,8 @@
  *****************************************************************************/
 #pragma once
 
+#define APROCH_NAMESPACE
+
 #include "AprochGlobal.h"
 
 // service

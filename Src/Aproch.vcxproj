@@ -97,7 +97,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>APROCH_LIB;APROCH_NAMESPACE;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>APROCH_LIB;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -117,7 +117,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <UsePrecompiledHeader>Use</UsePrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>APROCH_LIB;APROCH_NAMESPACE;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>APROCH_LIB;APROCH_WINUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>

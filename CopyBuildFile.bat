@@ -25,7 +25,7 @@ if not exist %output_pdb_dir% (
 )
 
 rem include files
-start %src_dir%..\CopyFilesToDirectory.exe %src_dir% %output_inc_dir% -s:.h -e:%src_dir%..\BuildExcludeFileList
+start %src_dir%..\CopyFilesToDirectory.exe %src_dir% %output_inc_dir% -s:.h;.inc -e:%src_dir%..\BuildExcludeFileList
 
 rem dll file
 xcopy /s /y /d /i "%output_dir%\*.dll" "%output_bin_dir%"
@@ -38,8 +38,8 @@ xcopy /s /y /d /i "%output_dir%\pdb\*.pdb" "%output_pdb_dir%"
 
 rem test
 if exist "%build_dir%\Bin\Aprochd.dll" (
-xcopy /s /y /d "%output_bin_dir%\Aprochd.dll" "%build_dir%\Test\TestWinUI"
+xcopy /s /y /d "%output_bin_dir%\Aprochd.dll" "%build_dir%\Test\TestWinUI\"
 )
 if exist "%build_dir%\Bin\Aproch.dll" (
-xcopy /s /y /d "%output_bin_dir%\Aproch.dll" "%build_dir%\Test\TestWinUI"
+xcopy /s /y /d "%output_bin_dir%\Aproch.dll" "%build_dir%\Test\TestWinUI\"
 )
