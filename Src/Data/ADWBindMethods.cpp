@@ -63,7 +63,7 @@ void ASpinBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(const_cast<QWidget*>(widget));
     if (spinBox && data->getDataManager())
     {
-        data->getDataManager()->setValue(data, spinBox->value());
+        data->setValue(spinBox->value());
     }
 }
 
@@ -187,10 +187,7 @@ void ALineEditBindMethod::onValueChanged(const AData* data, QWidget* widget, con
     QLineEdit* editor = qobject_cast<QLineEdit*>(widget);
     if (editor)
     {
-        if (data->getDataManager())
-            editor->setText(data->getDataManager()->toText(data));
-        else
-            editor->setText(data->getValue().toString());
+        editor->setText(data->toText());
     }
 }
 
@@ -202,7 +199,7 @@ void ALineEditBindMethod::onWidgetValueChanged(AData* data, const QWidget* widge
     QLineEdit* editor = qobject_cast<QLineEdit*>(const_cast<QWidget*>(widget));
     if (editor && data->getDataManager())
     {
-        data->getDataManager()->setValue(data, editor->text());
+        data->setValue(editor->text());
     }
 }
 
@@ -258,7 +255,7 @@ void ACheckBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, con
     QCheckBox* editor = qobject_cast<QCheckBox*>(widget);
     if (editor)
     {
-        const int type = data->getValue().type();
+        const int type = data->getType();
         if (type == EMetaType::Int)
             editor->setCheckState(Qt::CheckState(data->getValue().toInt()));
         else
@@ -274,11 +271,11 @@ void ACheckBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widge
     QCheckBox* editor = qobject_cast<QCheckBox*>(const_cast<QWidget*>(widget));
     if (editor && data->getDataManager())
     {
-        const int type = data->getDataManager()->getType();
+        const int type = data->getType();
         if (type == EMetaType::Int)
-            data->getDataManager()->setValue(data, int(editor->checkState()));
+            data->setValue(int(editor->checkState()));
         else 
-            data->getDataManager()->setValue(data, editor->isChecked());
+            data->setValue(editor->isChecked());
     }
 }
 
@@ -346,7 +343,7 @@ void ARadioButtonBindMethod::onWidgetValueChanged(AData* data, const QWidget* wi
     QRadioButton* editor = qobject_cast<QRadioButton*>(const_cast<QWidget*>(widget));
     if (editor && data->getDataManager())
     {
-        data->getDataManager()->setValue(data, editor->isChecked());
+        data->setValue(editor->isChecked());
     }
 }
 
@@ -483,15 +480,15 @@ void AComboBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widge
         return;
 
     QComboBox* editor = qobject_cast<QComboBox*>(const_cast<QWidget*>(widget));
-    if (editor && data->getDataManager())
+    if (editor)
     {
         if (propertyName == CurrentIndex)
         {
-            data->getDataManager()->setValue(data, editor->currentIndex());
+            data->setValue(editor->currentIndex());
         }
         else if (propertyName == CurrentText)
         {
-            data->getDataManager()->setValue(data, editor->currentText());
+            data->setValue(editor->currentText());
         }
     }
 }

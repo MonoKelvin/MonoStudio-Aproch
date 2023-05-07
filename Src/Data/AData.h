@@ -57,6 +57,9 @@ public:
 
     const QVariant& getValue() noexcept;
     QVariant getValue() const noexcept;
+    bool setValue(const QVariant& val);
+    bool resetValue();
+
     EMetaType getType() const noexcept;
 
     QString getName() const;
@@ -92,7 +95,7 @@ protected:
     void dataChanged();
 
 private:
-    void setValue(const QVariant& data);
+    void setValueInternal(const QVariant& data);
 
 private:
     /** @brief 父对象数据集 */

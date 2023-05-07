@@ -102,7 +102,23 @@ QVariant AData::getValue() const noexcept
     return m_value;
 }
 
-void AData::setValue(const QVariant& data)
+bool AData::setValue(const QVariant& val)
+{
+    if (!m_manager)
+        return false;
+
+    return m_manager->setValue(this, val);
+}
+
+bool AData::resetValue()
+{
+    if (!m_manager)
+        return false;
+
+    m_manager->resetValue(this);
+}
+
+void AData::setValueInternal(const QVariant& data)
 {
     if (data == m_value)
         return;

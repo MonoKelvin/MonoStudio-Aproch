@@ -85,7 +85,7 @@ bool AAbstractDataManager::setValue(AData* dt, const QVariant& val)
         return false;
     }
 
-    dt->setValue(val);
+    dt->setValueInternal(val);
 
     return true;
 }
