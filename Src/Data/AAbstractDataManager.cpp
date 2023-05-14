@@ -1,3 +1,31 @@
+/****************************************************************************
+ * @file    AAbstractDataManager.cpp
+ * @date    2023-05-14 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 #include "stdafx.h"
 #include "AAbstractDataManager.h"
 #include "ADataContainer.h"
@@ -17,11 +45,13 @@ public:
 
 // ----------------------------------------------------------------------------------------------------
 
-AAbstractDataManager::AAbstractDataManager(ADataContainer* parent, EMetaType type)
+AAbstractDataManager::AAbstractDataManager(EMetaType type, ADataContainer* parent)
     : QObject(*(new AAbstractDataManagerPrivate()), parent)
 {
-    Q_ASSERT_X(nullptr != parent, Q_FUNC_INFO, "parent ADataContainer is null");
-    parent->addDataManager(this, type);
+    setType(type);
+
+    if (nullptr != parent)
+        parent->addDataManager(this, type);
 }
 
 AAbstractDataManager::~AAbstractDataManager()
@@ -53,8 +83,6 @@ void AAbstractDataManager::init(ADataSet* dataset)
     }
 
     d->dataSet = dataset;
-
-    //Q_ASSERT_X(nullptr != d->dataSet, Q_FUNC_INFO, "dataSet is null");
 }
 
 void AAbstractDataManager::clear()
@@ -67,6 +95,8 @@ void AAbstractDataManager::clear()
 
 AData* AAbstractDataManager::cloneData(AData* srcData)
 {
+    Q_ASSERT(getDataContainer());
+
     Q_D(AAbstractDataManager);
     if (!d->dataSet->contains(srcData))
         return nullptr;
@@ -92,6 +122,8 @@ bool AAbstractDataManager::setValue(AData* dt, const QVariant& val)
 
 QVariant AAbstractDataManager::getDefaultValue(AData* dt) const
 {
+    Q_ASSERT(getDataContainer());
+
     static QVariant defValue = QVariant::Type(getType());
     if (nullptr == dt || !dt->isValid())
         return defValue;
@@ -101,6 +133,8 @@ QVariant AAbstractDataManager::getDefaultValue(AData* dt) const
 
 void AAbstractDataManager::resetValue(AData* dt)
 {
+    Q_ASSERT(getDataContainer());
+
     getDataContainer()->resetValue(dt);
 }
 
@@ -119,6 +153,8 @@ const ADataSet& AAbstractDataManager::getDataSet()
 
 ADataSet* AAbstractDataManager::getOrCreateDataSet()
 {
+    Q_ASSERT(getDataContainer());
+
     Q_D(AAbstractDataManager);
 
     if (nullptr == d->dataSet)
@@ -148,6 +184,8 @@ AData* AAbstractDataManager::addData(const QString& name)
 
 AData* AAbstractDataManager::addData(const QString& name, const QVariant& defaultValue)
 {
+    Q_ASSERT(getDataContainer());
+
     Q_D(AAbstractDataManager);
 
     AData* data = createData();
@@ -177,7 +215,11 @@ AData* AAbstractDataManager::addData(const QString& name, const QVariant& defaul
     return data;
 }
 
-void AAbstractDataManager::initializeData(AData* data)
+void AAbstractDataManager::initialize(ADataContainer*)
+{
+}
+
+void AAbstractDataManager::initializeData(AData*)
 {
 }
 

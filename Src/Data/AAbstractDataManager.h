@@ -48,7 +48,7 @@ private:
     Q_DECLARE_PRIVATE(AAbstractDataManager);
 
 public:
-    AAbstractDataManager(ADataContainer* parent, EMetaType type);
+    AAbstractDataManager(EMetaType type, ADataContainer* parent = nullptr);
     ~AAbstractDataManager();
 
     /** @brief 所管理的元数据类型 */
@@ -63,7 +63,7 @@ public:
     virtual AData* cloneData(AData* srcData);
 
     /** @brief 将数据转换为文本 */
-    virtual QString toText(const AData* dt) const = 0;
+    virtual QString toString(const AData* dt) const = 0;
 
     /** @brief 获取默认数据 */
     virtual QVariant getDefaultValue(AData* dt) const;
@@ -105,6 +105,9 @@ public:
     AData* addData(const QString& name, const QVariant& defaultValue);
 
 protected:
+    /** @brief 当重新设置数据容器时的初始化 */
+    virtual void initialize(ADataContainer* dc);
+
     /** @brief 当初始化创建数据时调用，目的是让数据管理器知道数据已创建 */
     virtual void initializeData(AData* data);
 

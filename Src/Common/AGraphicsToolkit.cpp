@@ -30,6 +30,7 @@
 #include "AGraphicsToolkit.h"
 
 #include <QPainterPath>
+#include <QCoreApplication>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -172,6 +173,63 @@ SCornerF AGraphicsToolkit::effectiveBorderRadius(const QRectF& rect, const SCorn
     }
 
     return effectiveBR;
+}
+
+QString AGraphicsToolkit::color2Text(const QColor& c)
+{
+    return QCoreApplication::translate("Aproch", "RGBA(%1, %2, %3, %4)")
+        .arg(c.red())
+        .arg(c.green())
+        .arg(c.blue())
+        .arg(c.alpha());
+}
+
+QString AGraphicsToolkit::font2Text(const QFont& f)
+{
+    return QCoreApplication::translate("Aproch", "[%1, %2px]").arg(f.family()).arg(f.pixelSize());
+}
+
+QPixmap AGraphicsToolkit::drawBrushToPixmap(const QBrush& b, const QSize& size)
+{
+    QImage img(size, QImage::Format_ARGB32_Premultiplied);
+    img.fill(0);
+
+    QPainter painter(&img);
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
+    painter.fillRect(0, 0, img.width(), img.height(), b);
+
+    QColor color = b.color();
+
+    if (color.alpha() != 255)
+    {
+        QBrush opaqueBrush = b;
+        color.setAlpha(255);
+        opaqueBrush.setColor(color);
+        painter.fillRect(img.width() / 4, img.height() / 4, img.width() / 2, img.height() / 2, opaqueBrush);
+    }
+
+    painter.end();
+
+    return QPixmap::fromImage(img);
+}
+
+QPixmap AGraphicsToolkit::drawFontToPixmap(const QFont& font, const QSize& size, int ptSize, const QString& text)
+{
+    QFont f = font;
+    QImage img(size, QImage::Format_ARGB32_Premultiplied);
+    img.fill(0);
+
+    QPainter p(&img);
+    p.setRenderHint(QPainter::TextAntialiasing, true);
+    p.setRenderHint(QPainter::Antialiasing, true);
+    f.setPointSize(ptSize);
+    p.setFont(f);
+
+    QTextOption t;
+    t.setAlignment(Qt::AlignCenter);
+    p.drawText(QRect(QPoint(0, 0), size), text, t);
+
+    return QPixmap::fromImage(img);
 }
 
 APROCH_NAMESPACE_END

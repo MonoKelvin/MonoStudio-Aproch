@@ -74,7 +74,17 @@ ADataSet AData::getParentDataSet() const
     return m_parentItems;
 }
 
+const ADataSet& AData::getParentDataSetRef() const
+{
+    return m_parentItems;
+}
+
 QList<AData*> AData::getSubDataSet() const
+{
+    return m_subItems;
+}
+
+const QList<AData*>& AData::getSubDataSetRef() const
 {
     return m_subItems;
 }
@@ -126,6 +136,8 @@ void AData::setValueInternal(const QVariant& data)
     QVariant old = m_value;
     m_value = data;
 
+    dataChanged();
+
     emit m_manager->getDataContainer()->valueChanged(this, old);
 }
 
@@ -154,9 +166,9 @@ bool AData::isEnabled() const
     return m_enabled;
 }
 
-QString AData::toText() const
+QString AData::toString() const
 {
-    return m_manager->toText(this);
+    return m_manager->toString(this);
 }
 
 void AData::setToolTip(const QString& text)

@@ -34,21 +34,38 @@ APROCH_NAMESPACE_BEGIN
 class APROCH_API AGraphicsToolkit
 {
 public:
+    /** @brief 颜色转字符串 */
+    static QString color2Text(const QColor& c);
+
+    /** @brief 字体转字符串 */
+    static QString font2Text(const QFont& f);
+
+    /** @brief 图片圆角 */
     static QPixmap fillet(const QPixmap& pixmap,
                           const SCornerF& borderRadius,
                           const QRectF& region = QRectF(0, 0, -1, -1),
                           QPainter* painter = nullptr,
                           const QColor& fill = Qt::transparent);
 
+    /** @brief 图片圆角 */
     static QImage fillet(const QImage& image,
                          const SCornerF& borderRadius,
                          const QRectF& region = QRectF(0, 0, -1, -1),
                          QPainter* painter = nullptr,
                          const QColor& fill = Qt::transparent);
 
+    /** @brief 获取有效的圆角半径 */
+    static SCornerF effectiveBorderRadius(const QRectF& rect, const SCornerF& borderRadius);
+
+    /** @brief 绘制圆角矩形 */
     static void drawRoundedRect(QPainterPath& path, const QRectF& rect, const SCornerF& borderRadius);
 
-    static SCornerF effectiveBorderRadius(const QRectF& rect, const SCornerF& borderRadius);
+    /** @brief 将笔刷颜色绘制到图片中 */
+    static QPixmap drawBrushToPixmap(const QBrush& b, const QSize& size = QSize(16, 16));
+
+    /** @brief 将字体绘制到图片上 */
+    static QPixmap drawFontToPixmap(const QFont& font, const QSize& size = QSize(16, 16),
+                                    int ptSize = 13, const QString& text = QString(QLatin1Char('A')));
 };
 
 APROCH_NAMESPACE_END

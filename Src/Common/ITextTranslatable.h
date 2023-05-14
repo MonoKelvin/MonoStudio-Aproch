@@ -38,7 +38,7 @@ class ITextTranslatable
 public:
     virtual ~ITextTranslatable() = default;
 
-    virtual QString toText() const = 0;
+    virtual QString toString() const = 0;
 };
 
 APROCH_NAMESPACE_END

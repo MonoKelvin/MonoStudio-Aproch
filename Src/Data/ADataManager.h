@@ -38,8 +38,8 @@ class APROCH_API _ClassName_ : public AAbstractDataManager \
 { \
     Q_OBJECT \
 public: \
-    _ClassName_(ADataContainer* parent) : AAbstractDataManager(parent, _MetaType_) { } \
-    virtual QString toText(const AData* dt) const override \
+    _ClassName_(ADataContainer* parent = nullptr) : AAbstractDataManager(_MetaType_, parent) { } \
+    virtual QString toString(const AData* dt) const override \
     { \
         if (!dt) \
             return QString(); \
@@ -66,9 +66,9 @@ class APROCH_API ASizeDataManager : public AAbstractDataManager
 {
     Q_OBJECT
 public:
-    ASizeDataManager(ADataContainer* parent);
+    ASizeDataManager(ADataContainer* parent = nullptr);
 
-    virtual QString toText(const AData* dt) const override;
+    virtual QString toString(const AData* dt) const override;
 
     /** @brief 从宽数据获取对应的尺寸数据 */
     AData* getDataFromWidth(AData* dt) const;
@@ -83,13 +83,14 @@ public:
     AData* getHeight(AData* dt) const;
 
 protected:
+    virtual void initialize(ADataContainer* dc) override;
     virtual void initializeData(AData* data) override;
 
-private Q_SLOTS:
-    void onValueChanged(AData*, const QVariant&);
-    void onDataDestroyed(AData*);
+protected Q_SLOTS:
+    virtual void onValueChanged(AData*, const QVariant&);
+    virtual void onDataDestroyed(AData*);
 
-private:
+protected:
     QMap<AData*, AData*> m_dataToW;
     QMap<AData*, AData*> m_dataToH;
 };
@@ -98,12 +99,12 @@ class APROCH_API AStringListDataManager : public AAbstractDataManager
 {
     Q_OBJECT
 public:
-    AStringListDataManager(ADataContainer* parent)
-        : AAbstractDataManager(parent, EMetaType::QStringList)
+    AStringListDataManager(ADataContainer* parent = nullptr)
+        : AAbstractDataManager(EMetaType::QStringList, parent)
     {
     }
 
-    virtual QString toText(const AData* dt) const override;
+    virtual QString toString(const AData* dt) const override;
 };
 
 APROCH_NAMESPACE_END

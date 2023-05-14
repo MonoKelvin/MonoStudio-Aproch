@@ -145,7 +145,6 @@
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Data\ADataContainer.cpp" />
     <ClCompile Include="Data\ADataManager.cpp" />
-    <ClCompile Include="Data\ADataToolkit.cpp" />
     <ClCompile Include="Data\ADataWidgetBinding.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
@@ -195,7 +194,6 @@
     <ClInclude Include="Common\ITextTranslatable.h" />
     <QtMoc Include="Data\ADataContainer.h" />
     <QtMoc Include="Data\ADataManager.h" />
-    <ClInclude Include="Data\ADataToolkit.h" />
     <QtMoc Include="Data\ADataWidgetBindMethod.h" />
     <QtMoc Include="Data\ADataWidgetBinding.h" />
     <QtMoc Include="Data\ADWBindMethods.h" />

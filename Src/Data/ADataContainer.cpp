@@ -1,3 +1,31 @@
+/****************************************************************************
+ * @file    ADataContainer.cpp
+ * @date    2023-05-14 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 #include "stdafx.h"
 #include "ADataContainer.h"
 #include "ADataManager.h"
@@ -11,6 +39,55 @@
 #endif // A_DATALIST_USE_LINKLIST
 
 APROCH_NAMESPACE_BEGIN
+
+namespace
+{
+    static void visitDataPath(AData* cur, ADataPath& path, ADataPathList& pathList)
+    {
+        if (!cur)
+            return;
+
+        path.insert(0, cur);
+
+        const ADataSet& parentSet = cur->getParentDataSetRef();
+        if (parentSet.isEmpty())
+        {
+            pathList.push_back(path);
+            return;
+        }
+
+        for (const auto& nextPar : parentSet)
+        {
+            ADataPath newPath = path;
+            visitDataPath(nextPar, newPath, pathList);
+        }
+    }
+
+    static void visitDataPath(AData* cur, const AData* root, ADataPath& path, ADataPathList& pathList, const bool isFindAll)
+    {
+        if (!cur || (!isFindAll && !pathList.isEmpty()))
+            return;
+
+        path.insert(0, cur);
+
+        if (cur == root)
+        {
+            pathList.push_back(path);
+            return;
+        }
+
+        const ADataSet& parentSet = cur->getParentDataSetRef();
+        for (const auto& nextPar : parentSet)
+        {
+            ADataPath newPath = path;
+            visitDataPath(nextPar, root, newPath, pathList, isFindAll);
+
+            if (!isFindAll && !pathList.isEmpty())
+                return;
+        }
+    }
+
+}
 
 class ADataContainerPrivate : QObjectPrivate
 {
@@ -80,12 +157,13 @@ void ADataContainerPrivate::addDataManager(AAbstractDataManager* manager, EMetaT
 {
     Q_Q(ADataContainer);
 
-    manager->setType(type);
-    manager->setParent(q);
-
     ADataSet* dataset = new ADataSet();
     managerDataSetMap[manager] = dataset;
+
+    manager->setType(type);
+    manager->setParent(q);
     manager->init(dataset);
+    manager->initialize(q);
 }
 
 void ADataContainerPrivate::deleteData(AData* dt)
@@ -133,28 +211,16 @@ bool ADataContainerPrivate::setDefaultValue(AData* dt, const QVariant& defaultVa
 
 // ----------------------------------------------------------------------------------------------------
 
-ADataContainer::ADataContainer(bool isAddAllDataManagers, QObject* parent)
+ADataContainer::ADataContainer(QObject* parent)
     : QObject(*(new ADataContainerPrivate()), parent)
 {
-    if (isAddAllDataManagers)
-    {
-        ABoolDataManager* BoolDM = new ABoolDataManager(this);
-        ACharDataManager* CharDM = new ACharDataManager(this);
-        AUCharDataManager* UCharDM = new AUCharDataManager(this);
-        AShortDataManager* ShortDM = new AShortDataManager(this);
-        AUShortDataManager* UShortDM = new AUShortDataManager(this);
-        AIntegerDataManager* IntegerDM = new AIntegerDataManager(this);
-        AUIntegerDataManager* UIntegerDM = new AUIntegerDataManager(this);
-        ALongDataManager* LongDM = new ALongDataManager(this);
-        AULongDataManager* ULongDM = new AULongDataManager(this);
-        ALongLongDataManager* LongLongDM = new ALongLongDataManager(this);
-        AULongLongDataManager* ULongLongDM = new AULongLongDataManager(this);
-        AFloatDataManager* FloatDM = new AFloatDataManager(this);
-        ADoubleDataManager* DoubleDM = new ADoubleDataManager(this);
-        AStringDataManager* StringDM = new AStringDataManager(this);
-        ASizeDataManager* SizeDM = new ASizeDataManager(this);
-        AStringListDataManager* StringListDM = new AStringListDataManager(this);
-    }
+}
+
+ADataContainer::ADataContainer(const QList<AAbstractDataManager*>& dataMgrList, QObject* parent)
+    : QObject(*(new ADataContainerPrivate()), parent)
+{
+    for (AAbstractDataManager* dm : dataMgrList)
+        addDataManager(dm);
 }
 
 ADataContainer::~ADataContainer()
@@ -164,14 +230,16 @@ ADataContainer::~ADataContainer()
     d->destroyed();
 }
 
-bool ADataContainer::addDataManager(AAbstractDataManager* manager, EMetaType type)
+bool ADataContainer::addDataManager(AAbstractDataManager* manager)
 {
     if (nullptr == manager)
-    {
-        Q_ASSERT_X(false, Q_FUNC_INFO, "the data manager is null");
         return false;
-    }
 
+    return addDataManager(manager, manager->getType());
+}
+
+bool ADataContainer::addDataManager(AAbstractDataManager* manager, EMetaType type)
+{
     if (!QMetaType(type).isValid())
     {
         qWarning("Invalid data type: %d", type);
@@ -370,5 +438,42 @@ void ADataContainer::deleteData(AData* dt)
     Q_D(ADataContainer);
     d->deleteData(dt);
 }
+
+ADataPathList ADataContainer::getDataPath(AData* data, AData* root, bool isFindAll)
+{
+    ADataPathList result;
+    
+    if (!data)
+        return result;
+
+    ADataPath tmpSet;
+    if (root == nullptr)
+    {
+        if (isFindAll)
+        {
+            visitDataPath(data, tmpSet, result);
+            return result;
+        }
+
+        AData* curPar = data;
+        while(curPar)
+        {
+            if (tmpSet.contains(curPar))
+                break;
+
+            tmpSet.insert(0, curPar);
+            curPar = *data->getParentDataSetRef().begin();
+        }
+
+        result.push_back(tmpSet);
+    }
+    else
+    {
+        visitDataPath(data, root, tmpSet, result, isFindAll);
+    }
+
+    return result;
+}
+
 
 APROCH_NAMESPACE_END

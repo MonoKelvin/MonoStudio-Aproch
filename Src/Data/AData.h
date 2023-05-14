@@ -78,10 +78,12 @@ public:
     virtual bool isValid() const override;
 
     /** @brief 数据的文本形式 */
-    QString toText() const;
+    QString toString() const;
 
     ADataSet getParentDataSet() const;
+    const ADataSet& getParentDataSetRef() const;
     QList<AData*> getSubDataSet() const;
+    const QList<AData*>& getSubDataSetRef() const;
     void addSubData(AData* dt);
 
     /** @brief 插入子数据，afterDt为空则在子列表首部插入 */
@@ -92,6 +94,8 @@ public:
 protected:
     AData(AAbstractDataManager* manager);
     explicit AData(const AData& rhs, const FCopyOptions& op = A_DEFAULT_COPY_OPTION);
+
+    /** @brief 数据修改 */
     void dataChanged();
 
 private:

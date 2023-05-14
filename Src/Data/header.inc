@@ -32,7 +32,6 @@
 #include "ADataContainer.h"
 #include "AAbstractDataManager.h"
 #include "ADataManager.h"
-#include "ADataToolkit.h"
 #include "ADataWidgetBinding.h"
 #include "ADataWidgetBindMethod.h"
 #include "ADWBindMethods.h"

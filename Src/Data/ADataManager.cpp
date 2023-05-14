@@ -34,13 +34,12 @@ APROCH_NAMESPACE_BEGIN
 // ----------------------------------------------------------------------------------------------------
 
 ASizeDataManager::ASizeDataManager(ADataContainer* parent)
-    : AAbstractDataManager(parent, EMetaType::QSize)
+    : AAbstractDataManager(EMetaType::QSize, parent)
 {
-    connect(parent, &ADataContainer::valueChanged, this, &ASizeDataManager::onValueChanged);
-    connect(parent, &ADataContainer::dataDestroyed, this, &ASizeDataManager::onDataDestroyed);
+    initialize(parent);
 }
 
-QString ASizeDataManager::toText(const AData* dt) const
+QString ASizeDataManager::toString(const AData* dt) const
 {
     if (!dt)
         return QString();
@@ -80,6 +79,19 @@ AData* ASizeDataManager::getWidth(AData* dt) const
 AData* ASizeDataManager::getHeight(AData* dt) const
 {
     return m_dataToH.value(dt, nullptr);
+}
+
+void ASizeDataManager::initialize(ADataContainer* dc)
+{
+    ADataContainer* old = getDataContainer();
+    if (old)
+    {
+        disconnect(old, &ADataContainer::valueChanged, this, &ASizeDataManager::onValueChanged);
+        disconnect(old, &ADataContainer::dataDestroyed, this, &ASizeDataManager::onDataDestroyed);
+    }
+
+    connect(dc, &ADataContainer::valueChanged, this, &ASizeDataManager::onValueChanged);
+    connect(dc, &ADataContainer::dataDestroyed, this, &ASizeDataManager::onDataDestroyed);
 }
 
 void ASizeDataManager::initializeData(AData* data)
@@ -151,7 +163,7 @@ void ASizeDataManager::onDataDestroyed(AData* data)
 
 // ----------------------------------------------------------------------------------------------------
 
-QString AStringListDataManager::toText(const AData* dt) const
+QString AStringListDataManager::toString(const AData* dt) const
 {
     QStringList stringList = dt->getValue().toStringList();
     if (stringList.isEmpty())

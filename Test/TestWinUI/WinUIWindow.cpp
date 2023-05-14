@@ -27,11 +27,48 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     textBox2->setStyleSheet(AStr("border-radius: 7px; border-bottom:4px solid red outset;"));
     layout()->addWidget(textBox2);
 
+    QList<AAbstractDataManager*> dataMgrList;
+    {
+        ABoolDataManager* BoolDM = new ABoolDataManager;
+        ACharDataManager* CharDM = new ACharDataManager;
+        AUCharDataManager* UCharDM = new AUCharDataManager;
+        AShortDataManager* ShortDM = new AShortDataManager;
+        AUShortDataManager* UShortDM = new AUShortDataManager;
+        AIntegerDataManager* IntegerDM = new AIntegerDataManager;
+        AUIntegerDataManager* UIntegerDM = new AUIntegerDataManager;
+        ALongDataManager* LongDM = new ALongDataManager;
+        AULongDataManager* ULongDM = new AULongDataManager;
+        ALongLongDataManager* LongLongDM = new ALongLongDataManager;
+        AULongLongDataManager* ULongLongDM = new AULongLongDataManager;
+        AFloatDataManager* FloatDM = new AFloatDataManager;
+        ADoubleDataManager* DoubleDM = new ADoubleDataManager;
+        AStringDataManager* StringDM = new AStringDataManager;
+        ASizeDataManager* SizeDM = new ASizeDataManager;
+        AStringListDataManager* StringListDM = new AStringListDataManager;
+
+        dataMgrList.push_back(BoolDM);
+        dataMgrList.push_back(CharDM);
+        dataMgrList.push_back(UCharDM);
+        dataMgrList.push_back(ShortDM);
+        dataMgrList.push_back(UShortDM);
+        dataMgrList.push_back(IntegerDM);
+        dataMgrList.push_back(UIntegerDM);
+        dataMgrList.push_back(LongDM);
+        dataMgrList.push_back(ULongDM);
+        dataMgrList.push_back(LongLongDM);
+        dataMgrList.push_back(ULongLongDM);
+        dataMgrList.push_back(FloatDM);
+        dataMgrList.push_back(DoubleDM);
+        dataMgrList.push_back(StringDM);
+        dataMgrList.push_back(SizeDM);
+        dataMgrList.push_back(StringListDM);
+    }
+
     // data binding
     ADataWidgetBinding* dwb = new ADataWidgetBinding(this);
 
     // data manager
-    ADataContainer* dc = new ADataContainer(true, this);
+    ADataContainer* dc = new ADataContainer(dataMgrList, this);
 
     // int
     AData* intData = dc->addData(EMetaType::Int, tr("int"));
@@ -102,20 +139,20 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     {
         ASizeDataManager* sizeDM = dc->getDataManager<ASizeDataManager>(EMetaType::QSize);
         AData* sizeData = dc->addData(EMetaType::QSize, tr("size"));
-        dc->setValue(sizeData, QSize(1366, 768));
 
         QLabel* sizeLable = new QLabel(this);
         connect(dc, &ADataContainer::valueChanged, [=](AData* data, const QVariant& v)
         {
             if (data == sizeData)
-                sizeLable->setText(data->getDataManager()->toText(data) + 
-                                   AStr(" old:(%1, %2)").arg(v.toSize().width()).arg(v.toSize().height()));
+                sizeLable->setText(data->toString() + AStr(" old:(%1, %2)").arg(v.toSize().width()).arg(v.toSize().height()));
         });
         QPushButton* changeSizeBtn = new QPushButton(tr("ChangeSize"), this);
         connect(changeSizeBtn, &QPushButton::clicked, [=](bool) {
             dc->setValue(sizeData, QSize(QRandomGenerator::global()->bounded(100),
             QRandomGenerator::global()->bounded(100)));
         });
+
+        dc->setValue(sizeData, QSize(1366, 768));
 
         QWidget* sizeSpinBoxW = new QSpinBox(this);
         QWidget* sizeSpinBoxH = new QSpinBox(this);
