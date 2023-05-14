@@ -68,6 +68,7 @@
 #include "Common/ADoubleValidator.h"
 #include "Common/ADataConverter.h"
 #include "Common/ACategory.h"
+#include "Common/AReflection.h"
 
 // application
 #include "AAction.h"

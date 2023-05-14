@@ -239,6 +239,9 @@
     <ClInclude Include="Common\ITextTranslatable.h">
       <Filter>Common\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="Common\AReflection.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -423,6 +426,9 @@
     </ClCompile>
     <ClCompile Include="Data\ADataWidgetBindMethod.cpp">
       <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AReflection.cpp">
+      <Filter>Common\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
