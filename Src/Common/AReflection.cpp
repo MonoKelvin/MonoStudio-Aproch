@@ -8,6 +8,11 @@ AObjectReflection::Constructor AObjectReflection::Null = [](QObject*) -> QObject
 
 // ----------------------------------------------------------------------------------------------------
 
+void* AReflection::newInstance(const QString& name)
+{
+    return constructor(name)();
+}
+
 bool AReflection::registerConstructor(const QString& name, Constructor constructor)
 {
     if (name.isEmpty() || constructor == AReflection::Null)
@@ -26,6 +31,11 @@ bool AReflection::registerConstructor(const QString& name, Constructor construct
 void AReflection::unregister(const QString& name)
 {
     constructors().remove(name);
+}
+
+bool AReflection::hasConstructor(const QString& name)
+{
+    return constructors().contains(name);
 }
 
 const AReflection::Constructor& AReflection::constructor(const QString& name)
@@ -70,6 +80,11 @@ bool AObjectReflection::registerConstructor(const QString& className, Constructo
 void AObjectReflection::unregister(const QString& className)
 {
     constructors().remove(className);
+}
+
+bool AObjectReflection::hasConstructor(const QString& className)
+{
+    return constructors().contains(className);
 }
 
 const AObjectReflection::Constructor& AObjectReflection::constructor(const QString& className)
