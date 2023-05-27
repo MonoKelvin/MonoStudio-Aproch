@@ -132,6 +132,7 @@
     <ClCompile Include="AAction.cpp" />
     <ClCompile Include="AActionManager.cpp" />
     <ClCompile Include="Common\ACategory.cpp" />
+    <ClCompile Include="Common\AContextContainter.cpp" />
     <ClCompile Include="Common\ADataConverter.cpp" />
     <ClCompile Include="Common\ADoubleValidator.cpp" />
     <ClCompile Include="Common\AException.cpp" />
@@ -191,8 +192,10 @@
     <ClCompile Include="WinUI\Controls\ATextBox.cpp" />
     <QtMoc Include="WinUI\Controls\ATextBlock.h" />
     <QtMoc Include="WinUI\Controls\ATextBox.h" />
+    <ClInclude Include="Common\AContextContainter.h" />
     <ClInclude Include="Common\AGraphicsToolkit.h" />
     <ClInclude Include="Common\AReflection.h" />
+    <ClInclude Include="Common\IContextObject.h" />
     <ClInclude Include="Common\ITextTranslatable.h" />
     <QtMoc Include="Data\ADataContainer.h" />
     <QtMoc Include="Data\ADataManager.h" />

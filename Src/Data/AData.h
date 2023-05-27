@@ -65,14 +65,8 @@ public:
     QString getName() const;
     void setName(const QString& text);
 
-    QString getToolTip() const;
-    void setToolTip(const QString& text);
-
     QString getDescription() const;
     void setDescription(const QString& text);
-
-    bool isEnabled() const;
-    virtual void setEnabled(bool enable);
 
     /** @brief 数据是否有效 */
     virtual bool isValid() const override;
@@ -117,14 +111,8 @@ private:
     /** @brief 数据名称 */
     QString m_name;
 
-    /** @brief 数据提示内容 */
-    QString m_toolTip;
-
     /** @brief 数据描述内容 */
     QString m_description;
-
-    /** @brief 数据是否可用 */
-    bool m_enabled;
 };
 
 APROCH_NAMESPACE_END

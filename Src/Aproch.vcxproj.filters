@@ -242,6 +242,12 @@
     <ClInclude Include="Common\AReflection.h">
       <Filter>Common\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Common\IContextObject.h">
+      <Filter>Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AContextContainter.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -428,6 +434,9 @@
       <Filter>Data</Filter>
     </ClCompile>
     <ClCompile Include="Common\AReflection.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AContextContainter.cpp">
       <Filter>Common\Utils</Filter>
     </ClCompile>
   </ItemGroup>

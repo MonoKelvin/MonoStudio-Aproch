@@ -34,7 +34,6 @@ APROCH_NAMESPACE_BEGIN
 
 AData::AData(AAbstractDataManager* manager)
     : APrototype()
-    , m_enabled(true)
     , m_manager(manager)
 {
     Q_ASSERT_X(manager, Q_FUNC_INFO, "the manager is nullptr");
@@ -45,9 +44,7 @@ AData::AData(const AData& rhs, const FCopyOptions& op)
     : APrototype(rhs, op)
     , m_manager(rhs.m_manager)
     , m_name(rhs.m_name)
-    , m_toolTip(rhs.m_toolTip)
     , m_description(rhs.m_description)
-    , m_enabled(rhs.m_enabled)
 {
     // 这里不处理父子级关系，而是由数据管理器构建
 }
@@ -146,11 +143,6 @@ EMetaType AData::getType() const noexcept
     return EMetaType(m_value.type());
 }
 
-QString AData::getToolTip() const
-{
-    return m_toolTip;
-}
-
 QString AData::getDescription() const
 {
     return m_description;
@@ -161,23 +153,9 @@ QString AData::getName() const
     return m_name;
 }
 
-bool AData::isEnabled() const
-{
-    return m_enabled;
-}
-
 QString AData::toString() const
 {
     return m_manager->toString(this);
-}
-
-void AData::setToolTip(const QString& text)
-{
-    if (m_toolTip == text)
-        return;
-
-    m_toolTip = text;
-    dataChanged();
 }
 
 void AData::setDescription(const QString& text)
@@ -195,15 +173,6 @@ void AData::setName(const QString& text)
         return;
 
     m_name = text;
-    dataChanged();
-}
-
-void AData::setEnabled(bool enable)
-{
-    if (m_enabled == enable)
-        return;
-
-    m_enabled = enable;
     dataChanged();
 }
 

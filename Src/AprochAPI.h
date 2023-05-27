@@ -57,6 +57,8 @@
 #include "Common/IDataConverter.h"
 #include "Common/ITextTranslatable.h"
 #include "Common/IPlugin.h"
+#include "Common/IContextObject.h"
+
 #include "Common/AException.h"
 #include "Common/APrototype.h"
 #include "Common/AMathToolkit.h"
@@ -69,6 +71,7 @@
 #include "Common/ADataConverter.h"
 #include "Common/ACategory.h"
 #include "Common/AReflection.h"
+#include "Common/AContextContainter.h"
 
 // application
 #include "AAction.h"
