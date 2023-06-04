@@ -32,161 +32,152 @@
 
 APROCH_NAMESPACE_BEGIN
 
-AData::AData(AAbstractDataManager* manager)
-    : APrototype()
-    , m_manager(manager)
+class ADataPrivate
 {
-    Q_ASSERT_X(manager, Q_FUNC_INFO, "the manager is nullptr");
-    m_value = QVariant(QVariant::Type(manager->getType()));
-}
+public:
+    ADataPrivate(AAbstractDataManager* manager) 
+        : m_enabled(true)
+        , m_modified(false)
+        , m_manager(manager)
+    {
+        Q_ASSERT_X(manager, Q_FUNC_INFO, "the data manager is null");
+    }
 
-AData::AData(const AData& rhs, const FCopyOptions& op)
-    : APrototype(rhs, op)
-    , m_manager(rhs.m_manager)
-    , m_name(rhs.m_name)
-    , m_description(rhs.m_description)
+    QSet<AData*> m_parentItems;
+    QList<AData*> m_subItems;
+
+    QString m_toolTip;
+    QString m_description;
+    QString m_name;
+    bool m_enabled = true;
+    bool m_modified = false;
+
+    AAbstractDataManager* const m_manager;
+};
+
+AData::AData(AAbstractDataManager* manager)
+    : d_ptr(new ADataPrivate(manager))
 {
-    // 这里不处理父子级关系，而是由数据管理器构建
 }
 
 AData::~AData()
 {
-    if (m_manager->getDataContainer())
-    {
-        emit m_manager->getDataContainer()->dataDestroyed(this);
+    for (AData* data : qAsConst(d_ptr->m_parentItems))
+        emit data->d_ptr->m_manager->dataRemoved(this, data);
 
-        for (AData* data : m_parentItems)
-            emit data->m_manager->getDataContainer()->dataRemoved(this, data);
-    }
+    emit d_ptr->m_manager->_destroyData(this);
 
-    for (AData* data : m_subItems)
-        data->m_parentItems.remove(this);
+    for (AData* data : qAsConst(d_ptr->m_subItems))
+        data->d_ptr->m_parentItems.remove(this);
 
-    for (AData* data : m_parentItems)
-        data->m_subItems.removeAll(this);
+    for (AData* data : qAsConst(d_ptr->m_parentItems))
+        data->d_ptr->m_subItems.removeAll(this);
 }
 
-ADataSet AData::getParentDataSet() const
+QList<AData*> AData::subDataList() const
 {
-    return m_parentItems;
-}
-
-const ADataSet& AData::getParentDataSetRef() const
-{
-    return m_parentItems;
-}
-
-QList<AData*> AData::getSubDataSet() const
-{
-    return m_subItems;
-}
-
-const QList<AData*>& AData::getSubDataSetRef() const
-{
-    return m_subItems;
+    return d_ptr->m_subItems;
 }
 
 AAbstractDataManager* AData::getDataManager() const
 {
-    return m_manager;
+    return d_ptr->m_manager;
 }
 
-APrototype* AData::clone(const FCopyOptions& op) const
+QString AData::getToolTip() const
 {
-    if (!m_manager)
-        return nullptr;
-
-    return m_manager->cloneData((AData*)(this));
-}
-
-const QVariant& AData::getValue() noexcept
-{
-    return m_value;
-}
-
-QVariant AData::getValue() const noexcept
-{
-    return m_value;
-}
-
-bool AData::setValue(const QVariant& val)
-{
-    if (!m_manager)
-        return false;
-
-    return m_manager->setValue(this, val);
-}
-
-bool AData::resetValue()
-{
-    if (!m_manager)
-        return false;
-
-    m_manager->resetValue(this);
-}
-
-void AData::setValueInternal(const QVariant& data)
-{
-    if (data == m_value)
-        return;
-
-    QVariant old = m_value;
-    m_value = data;
-
-    dataChanged();
-
-    emit m_manager->getDataContainer()->valueChanged(this, old);
-}
-
-EMetaType AData::getType() const noexcept
-{
-    return EMetaType(m_value.type());
+    return d_ptr->m_toolTip;
 }
 
 QString AData::getDescription() const
 {
-    return m_description;
+    return d_ptr->m_description;
 }
 
 QString AData::getName() const
 {
-    return m_name;
+    return d_ptr->m_name;
+}
+
+bool AData::isEnabled() const
+{
+    return d_ptr->m_enabled;
+}
+
+bool AData::isModified() const
+{
+    return d_ptr->m_modified;
+}
+
+bool AData::hasValue() const
+{
+    return d_ptr->m_manager->hasValue(this);
+}
+
+QIcon AData::valueIcon() const
+{
+    return d_ptr->m_manager->valueIcon(this);
 }
 
 QString AData::toString() const
 {
-    return m_manager->toString(this);
+    return d_ptr->m_manager->toString(this);
+}
+
+void AData::setToolTip(const QString& text)
+{
+    if (d_ptr->m_toolTip == text)
+        return;
+
+    d_ptr->m_toolTip = text;
+    dataChanged();
 }
 
 void AData::setDescription(const QString& text)
 {
-    if (m_description == text)
+    if (d_ptr->m_description == text)
         return;
 
-    m_description = text;
+    d_ptr->m_description = text;
     dataChanged();
 }
 
 void AData::setName(const QString& text)
 {
-    if (m_name == text)
+    if (d_ptr->m_name == text)
         return;
 
-    m_name = text;
+    d_ptr->m_name = text;
+    dataChanged();
+}
+
+void AData::setEnabled(bool enable)
+{
+    if (d_ptr->m_enabled == enable)
+        return;
+
+    d_ptr->m_enabled = enable;
+    dataChanged();
+}
+
+void AData::setModified(bool modified)
+{
+    if (d_ptr->m_modified == modified)
+        return;
+
+    d_ptr->m_modified = modified;
     dataChanged();
 }
 
 void AData::addSubData(AData* data)
 {
-    AData* after = nullptr;
-
-    if (m_subItems.count() > 0)
-        after = m_subItems.last();
-
+    AData* after = 0;
+    if (d_ptr->m_subItems.count() > 0)
+        after = d_ptr->m_subItems.last();
     insertSubData(data, after);
 }
 
-void AData::insertSubData(AData* data, AData* afterData)
+void AData::insertSubData(AData* data, AData* afterProperty)
 {
     if (!data)
         return;
@@ -195,7 +186,7 @@ void AData::insertSubData(AData* data, AData* afterData)
         return;
 
     // traverse all children of item. if this item is a child of item then cannot add.
-    QList<AData*> pendingList = data->getSubDataSet();
+    QList<AData*> pendingList = data->subDataList();
     QMap<AData*, bool> visited;
     while (!pendingList.isEmpty())
     {
@@ -206,43 +197,30 @@ void AData::insertSubData(AData* data, AData* afterData)
         if (visited.contains(i))
             continue;
         visited[i] = true;
-        pendingList += i->getSubDataSet();
+        pendingList += i->subDataList();
     }
 
-    pendingList = getSubDataSet();
+    pendingList = subDataList();
     int pos = 0;
     int newPos = 0;
-    AData* properAfterData = 0;
+    AData* properAfterProperty = 0;
     while (pos < pendingList.count())
     {
         AData* i = pendingList.at(pos);
         if (i == data)
             return; // if item is already inserted in this item then cannot add.
-        if (i == afterData)
+        if (i == afterProperty)
         {
             newPos = pos + 1;
-            properAfterData = afterData;
+            properAfterProperty = afterProperty;
         }
         pos++;
     }
 
-    m_subItems.insert(newPos, data);
-    data->m_parentItems.insert(this);
+    d_ptr->m_subItems.insert(newPos, data);
+    data->d_ptr->m_parentItems.insert(this);
 
-    emit m_manager->getDataContainer()->dataInserted(data, this, properAfterData);
-}
-
-void AData::insertSubData(AData* dt, int index)
-{
-    if (index > m_subItems.size())
-        return;
-
-    if (index > 0)
-        insertSubData(dt, m_subItems.at(index - 1));
-    else if (index == 0)
-        insertSubData(dt, nullptr);
-    else
-        insertSubData(dt, m_subItems.back());
+    emit d_ptr->m_manager->dataInserted(data, this, properAfterProperty);
 }
 
 void AData::removeSubData(AData* data)
@@ -250,16 +228,16 @@ void AData::removeSubData(AData* data)
     if (!data)
         return;
 
-    emit m_manager->getDataContainer()->dataRemoved(data, this);
+    emit d_ptr->m_manager->dataRemoved(data, this);
 
-    QList<AData*> pendingList = getSubDataSet();
+    QList<AData*> pendingList = subDataList();
     int pos = 0;
     while (pos < pendingList.count())
     {
         if (pendingList.at(pos) == data)
         {
-            m_subItems.removeAt(pos);
-            data->m_parentItems.remove(this);
+            d_ptr->m_subItems.removeAt(pos);
+            data->d_ptr->m_parentItems.remove(this);
 
             return;
         }
@@ -269,12 +247,7 @@ void AData::removeSubData(AData* data)
 
 void AData::dataChanged()
 {
-    emit m_manager->getDataContainer()->dataChanged(this);
-}
-
-bool AData::isValid() const
-{
-    return m_manager && m_value.isValid();
+    emit d_ptr->m_manager->dataChanged(this);
 }
 
 APROCH_NAMESPACE_END

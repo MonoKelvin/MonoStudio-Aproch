@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    AData.h
- * @date    2022-7-16
+ * @file    ACursorDatabase.h
+ * @date    2023-06-03
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -30,49 +30,46 @@
 
 APROCH_NAMESPACE_BEGIN
 
-class AAbstractDataManager;
-class ADataPrivate;
+class ACursorDatabasePrivate;
 
 /**
- * @brief 支持控件、对象属性绑定的数据
- * @note 数据由 AAbstractDataManager 的子类对象创建，管理器可以创建给定类型的数据，
- *       其子数据生命周期由创建它的管理器管理，不是其父对象的数据管理
+ * @brief 鼠标指针形状数据库
  */
-class APROCH_API AData
+class APROCH_API ACursorDatabase
 {
 public:
-    virtual ~AData();
+    ACursorDatabase();
+    ~ACursorDatabase();
 
-    QList<AData*> subDataList() const;
+    /** @brief 清除所有鼠标指针 */
+    void clear();
 
-    AAbstractDataManager* getDataManager() const;
+    /** @brief 获取所有鼠标指针名称 */
+    QStringList getCursorShapeNames() const;
 
-    QString getToolTip() const;
-    QString getDescription() const;
-    QString getName() const;
-    bool isEnabled() const;
-    bool isModified() const;
+    /** @brief 获取鼠标指针图标表，模板参数一为索引 */
+    QMap<int, QIcon> getCursorShapeIcons() const;
 
-    bool hasValue() const;
-    QIcon valueIcon() const;
-    QString toString() const;
+    /** @brief 给定鼠标指针获取其名称 */
+    QString getCursorShapeName(const QCursor& cursor) const;
 
-    void setToolTip(const QString& text);
-    void setDescription(const QString& text);
-    void setName(const QString& text);
-    void setEnabled(bool enable);
-    void setModified(bool modified);
+    /** @brief 给定鼠标指针获取其图标 */
+    QIcon getCursorShapeIcon(const QCursor& cursor) const;
 
-    void addSubData(AData* data);
-    void insertSubData(AData* data, AData* afterData);
-    void removeSubData(AData* data);
+    /** @brief 给定鼠标指针获取其索引 */
+    int getCursorIndex(const QCursor& cursor) const;
 
-protected:
-    explicit AData(AAbstractDataManager* manager);
-    void dataChanged();
+#ifndef QT_NO_CURSOR
+    /** @brief 给定鼠标指针枚举类型获取对应鼠标指针数据 */
+    QCursor getCursor(int value) const;
+#endif
+
+    /** @brief 添加鼠标指针，已有的数据将覆盖 */
+    void appendCursor(Qt::CursorShape shape, const QString& name, const QIcon& icon);
 
 private:
-    friend class AAbstractDataManager;
-    QScopedPointer<ADataPrivate> d_ptr;
+    Q_DISABLE_COPY(ACursorDatabase);
+    QScopedPointer<ACursorDatabasePrivate> d_ptr;
 };
+
 APROCH_NAMESPACE_END

@@ -1,6 +1,6 @@
 /****************************************************************************
  * @file    ADWBindMethods.cpp
- * @date    2023-05-14 
+ * @date    2023-05-14
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -28,6 +28,7 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "ADWBindMethods.h"
+#include "ADataManager.h"
 
 #include <QCheckBox>
 #include <QRadioButton>
@@ -47,11 +48,18 @@ ASpinBoxBindMethod::~ASpinBoxBindMethod()
 
 bool ASpinBoxBindMethod::bind(const ADWBindParameter& param)
 {
+    AIntDataManager* mgr = dynamic_cast<AIntDataManager*>(param.getData()->getDataManager());
+    if (!mgr)
+        return false;
+
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(param.getWidget());
     if (spinBox)
     {
-        QObject::connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-                         this, &ASpinBoxBindMethod::spinboxValueChanged);
+        connect(mgr, &AIntDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+        // todo: 添加range、singleStep信号槽连接
+        connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &ADataWidgetBindMethod::widgetChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
         return true;
     }
 
@@ -60,44 +68,47 @@ bool ASpinBoxBindMethod::bind(const ADWBindParameter& param)
 
 bool ASpinBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& propName)
 {
+    AIntDataManager* mgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+    if (!mgr)
+        return false;
+
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget);
     if (spinBox)
     {
-        QObject::disconnect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-                            this, &ASpinBoxBindMethod::spinboxValueChanged);
+        disconnect(mgr, &AIntDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
+        disconnect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &ASpinBoxBindMethod::widgetChanged);
         return true;
     }
 
     return false;
 }
 
-void ASpinBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
+void ASpinBoxBindMethod::onDataChanged(const AData* data, QWidget* widget, const QString& propertyName)
 {
-    if (!data)
+    AIntDataManager* mgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+    if (!mgr)
         return;
 
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(widget);
     if (spinBox)
     {
-        spinBox->setValue(data->getValue().toInt());
+        spinBox->setRange(mgr->minimum(data), mgr->maximum(data));
+        spinBox->setSingleStep(mgr->singleStep(data));
+        spinBox->setValue(mgr->value(data));
     }
 }
 
-void ASpinBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
+void ASpinBoxBindMethod::onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName)
 {
-    if (!data)
+    AIntDataManager* mgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+    if (!mgr)
         return;
 
     QSpinBox* spinBox = qobject_cast<QSpinBox*>(const_cast<QWidget*>(widget));
-    if (spinBox && data->getDataManager())
+    if (spinBox)
     {
-        data->setValue(spinBox->value());
+        mgr->setValue(data, spinBox->value());
     }
-}
-
-void ASpinBoxBindMethod::spinboxValueChanged(int val)
-{
-    widgetValueChanged(val);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -115,11 +126,18 @@ ADoubleSpinBoxBindMethod::~ADoubleSpinBoxBindMethod()
 
 bool ADoubleSpinBoxBindMethod::bind(const ADWBindParameter& param)
 {
+    ADoubleDataManager* mgr = dynamic_cast<ADoubleDataManager*>(param.getData()->getDataManager());
+    if (!mgr)
+        return false;
+
     QDoubleSpinBox* editor = qobject_cast<QDoubleSpinBox*>(param.getWidget());
     if (editor)
     {
-        QObject::connect(editor, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-                         this, &ADoubleSpinBoxBindMethod::spinboxValueChanged);
+        connect(mgr, &ADoubleDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+        // todo: 添加range、singleStep信号槽连接
+        connect(editor, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &ADataWidgetBindMethod::widgetChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
         return true;
     }
 
@@ -128,44 +146,47 @@ bool ADoubleSpinBoxBindMethod::bind(const ADWBindParameter& param)
 
 bool ADoubleSpinBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& propName)
 {
+    ADoubleDataManager* mgr = dynamic_cast<ADoubleDataManager*>(data->getDataManager());
+    if (!mgr)
+        return false;
+
     QDoubleSpinBox* editor = qobject_cast<QDoubleSpinBox*>(widget);
     if (editor)
     {
-        QObject::disconnect(editor, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-                            this, &ADoubleSpinBoxBindMethod::spinboxValueChanged);
+        disconnect(mgr, &ADoubleDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
+        disconnect(editor, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &ADataWidgetBindMethod::widgetChanged);
         return true;
     }
 
     return false;
 }
 
-void ADoubleSpinBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
+void ADoubleSpinBoxBindMethod::onDataChanged(const AData* data, QWidget* widget, const QString& propertyName)
 {
-    if (!data)
+    ADoubleDataManager* mgr = dynamic_cast<ADoubleDataManager*>(data->getDataManager());
+    if (!mgr)
         return;
 
     QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(widget);
     if (spinBox)
     {
-        spinBox->setValue(data->getValue().toDouble());
+        spinBox->setRange(mgr->minimum(data), mgr->maximum(data));
+        spinBox->setSingleStep(mgr->singleStep(data));
+        spinBox->setValue(mgr->value(data));
     }
 }
 
-void ADoubleSpinBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
+void ADoubleSpinBoxBindMethod::onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName)
 {
-    if (!data)
+    ADoubleDataManager* mgr = dynamic_cast<ADoubleDataManager*>(data->getDataManager());
+    if (!mgr)
         return;
 
     QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(const_cast<QWidget*>(widget));
-    if (spinBox && data->getDataManager())
+    if (spinBox)
     {
-        data->getDataManager()->setValue(data, spinBox->value());
+        mgr->setValue(data, spinBox->value());
     }
-}
-
-void ADoubleSpinBoxBindMethod::spinboxValueChanged(double val)
-{
-    widgetValueChanged(val);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -183,11 +204,17 @@ ALineEditBindMethod::~ALineEditBindMethod()
 
 bool ALineEditBindMethod::bind(const ADWBindParameter& param)
 {
+    AStringDataManager* mgr = dynamic_cast<AStringDataManager*>(param.getData()->getDataManager());
+    if (!mgr)
+        return false;
+
     QLineEdit* editor = qobject_cast<QLineEdit*>(param.getWidget());
     if (editor)
     {
-        QObject::connect(editor, &QLineEdit::textChanged,
-                         this, &ALineEditBindMethod::lineEditValueChanged);
+        connect(mgr, &AStringDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+        connect(editor, &QLineEdit::textChanged, this, &ADataWidgetBindMethod::widgetChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
         return true;
     }
 
@@ -196,44 +223,54 @@ bool ALineEditBindMethod::bind(const ADWBindParameter& param)
 
 bool ALineEditBindMethod::unbind(AData* data, QWidget* widget, const QString& propName)
 {
+    AStringDataManager* mgr = dynamic_cast<AStringDataManager*>(data->getDataManager());
+    if (!mgr)
+        return false;
+
     QLineEdit* editor = qobject_cast<QLineEdit*>(widget);
     if (editor)
     {
-        QObject::disconnect(editor, &QLineEdit::textChanged,
-                            this, &ALineEditBindMethod::lineEditValueChanged);
+        disconnect(mgr, &AStringDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
+        disconnect(editor, &QLineEdit::textChanged, this, &ADataWidgetBindMethod::widgetChanged);
         return true;
     }
 
     return false;
 }
 
-void ALineEditBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
+void ALineEditBindMethod::onDataChanged(const AData* data, QWidget* widget, const QString& propertyName)
 {
-    if (!data)
+    AStringDataManager* mgr = dynamic_cast<AStringDataManager*>(data->getDataManager());
+    if (!mgr)
         return;
 
     QLineEdit* editor = qobject_cast<QLineEdit*>(widget);
     if (editor)
     {
-        editor->setText(data->toString());
+        const QRegExp regExp = mgr->regExp(data);
+        const QValidator* oldValidator = editor->validator();
+        QValidator* newValidator = nullptr;
+        if (regExp.isValid())
+            newValidator = new QRegExpValidator(regExp, editor);
+        editor->setValidator(newValidator);
+        if (oldValidator)
+            delete oldValidator;
+
+        editor->setText(mgr->value(data));
     }
 }
 
-void ALineEditBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
+void ALineEditBindMethod::onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName)
 {
-    if (!data)
+    AStringDataManager* mgr = dynamic_cast<AStringDataManager*>(data->getDataManager());
+    if (!mgr)
         return;
 
     QLineEdit* editor = qobject_cast<QLineEdit*>(const_cast<QWidget*>(widget));
-    if (editor && data->getDataManager())
+    if (editor)
     {
-        data->setValue(editor->text());
+        mgr->setValue(data, editor->text());
     }
-}
-
-void ALineEditBindMethod::lineEditValueChanged(const QString& val)
-{
-    widgetValueChanged(val);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -254,8 +291,24 @@ bool ACheckBoxBindMethod::bind(const ADWBindParameter& param)
     QCheckBox* editor = qobject_cast<QCheckBox*>(param.getWidget());
     if (editor)
     {
-        QObject::connect(editor, &QCheckBox::stateChanged,
-                         this, &ACheckBoxBindMethod::checkBoxValueChanged);
+        ABoolDataManager* mgr = dynamic_cast<ABoolDataManager*>(param.getData()->getDataManager());
+        if (mgr)
+        {
+            connect(mgr, &ABoolDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                    Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+        }
+        else
+        {
+            AIntDataManager* intMgr = dynamic_cast<AIntDataManager*>(param.getData()->getDataManager());
+            if (intMgr)
+                connect(intMgr, &AIntDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                        Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+            else
+                return false;
+        }
+
+        connect(editor, &QCheckBox::stateChanged, this, &ACheckBoxBindMethod::widgetChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
         return true;
     }
 
@@ -267,49 +320,61 @@ bool ACheckBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& pr
     QCheckBox* editor = qobject_cast<QCheckBox*>(widget);
     if (editor)
     {
-        QObject::disconnect(editor, &QCheckBox::stateChanged,
-                            this, &ACheckBoxBindMethod::checkBoxValueChanged);
+        ABoolDataManager* mgr = dynamic_cast<ABoolDataManager*>(data->getDataManager());
+        if (mgr)
+        {
+            disconnect(mgr, &ABoolDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
+        }
+        else
+        {
+            AIntDataManager* intMgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+            if (intMgr)
+                disconnect(intMgr, &AIntDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
+        }
+
+        disconnect(editor, &QCheckBox::stateChanged, this, &ACheckBoxBindMethod::widgetChanged);
         return true;
     }
 
     return false;
 }
 
-void ACheckBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
+void ACheckBoxBindMethod::onDataChanged(const AData* data, QWidget* widget, const QString& propertyName)
 {
-    if (!data)
-        return;
-
     QCheckBox* editor = qobject_cast<QCheckBox*>(widget);
     if (editor)
     {
-        const int type = data->getType();
-        if (type == EMetaType::Int)
-            editor->setCheckState(Qt::CheckState(data->getValue().toInt()));
+        ABoolDataManager* mgr = dynamic_cast<ABoolDataManager*>(data->getDataManager());
+        if (mgr)
+        {
+            editor->setChecked(mgr->value(data));
+        }
         else
-            editor->setChecked(data->getValue().toBool());
+        {
+            AIntDataManager* intMgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+            if (intMgr)
+                editor->setCheckState(Qt::CheckState(intMgr->value(data)));
+        }
     }
 }
 
-void ACheckBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
+void ACheckBoxBindMethod::onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName)
 {
-    if (!data)
-        return;
-
     QCheckBox* editor = qobject_cast<QCheckBox*>(const_cast<QWidget*>(widget));
-    if (editor && data->getDataManager())
+    if (editor)
     {
-        const int type = data->getType();
-        if (type == EMetaType::Int)
-            data->setValue(int(editor->checkState()));
-        else 
-            data->setValue(editor->isChecked());
+        ABoolDataManager* mgr = dynamic_cast<ABoolDataManager*>(data->getDataManager());
+        if (mgr)
+        {
+            mgr->setValue(data, editor->isChecked());
+        }
+        else
+        {
+            AIntDataManager* intMgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+            if (intMgr)
+                intMgr->setValue(data, int(editor->checkState()));
+        }
     }
-}
-
-void ACheckBoxBindMethod::checkBoxValueChanged(int val)
-{
-    widgetValueChanged(val);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -327,11 +392,17 @@ ARadioButtonBindMethod::~ARadioButtonBindMethod()
 
 bool ARadioButtonBindMethod::bind(const ADWBindParameter& param)
 {
+    ABoolDataManager* mgr = dynamic_cast<ABoolDataManager*>(param.getData()->getDataManager());
+    if (!mgr)
+        return false;
+
     QRadioButton* editor = qobject_cast<QRadioButton*>(param.getWidget());
     if (editor)
     {
-        QObject::connect(editor, &QRadioButton::clicked,
-                         this, &ARadioButtonBindMethod::radioButtonValueChanged);
+        connect(mgr, &ABoolDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+        connect(editor, &QRadioButton::clicked, this, &ARadioButtonBindMethod::widgetChanged,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
         return true;
     }
 
@@ -340,44 +411,45 @@ bool ARadioButtonBindMethod::bind(const ADWBindParameter& param)
 
 bool ARadioButtonBindMethod::unbind(AData* data, QWidget* widget, const QString& propName)
 {
+    ABoolDataManager* mgr = dynamic_cast<ABoolDataManager*>(data->getDataManager());
+    if (!mgr)
+        return false;
+
     QRadioButton* editor = qobject_cast<QRadioButton*>(widget);
     if (editor)
     {
-        QObject::disconnect(editor, &QRadioButton::clicked,
-                            this, &ARadioButtonBindMethod::radioButtonValueChanged);
+        disconnect(mgr, &ABoolDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
+        disconnect(editor, &QRadioButton::clicked, this, &ARadioButtonBindMethod::widgetChanged);
         return true;
     }
 
     return false;
 }
 
-void ARadioButtonBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
+void ARadioButtonBindMethod::onDataChanged(const AData* data, QWidget* widget, const QString& propertyName)
 {
-    if (!data)
+    ABoolDataManager* mgr = dynamic_cast<ABoolDataManager*>(data->getDataManager());
+    if (!mgr)
         return;
 
     QRadioButton* editor = qobject_cast<QRadioButton*>(widget);
     if (editor)
     {
-        editor->setChecked(data->getValue().toBool());
+        editor->setChecked(mgr->value(data));
     }
 }
 
-void ARadioButtonBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
+void ARadioButtonBindMethod::onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName)
 {
-    if (!data)
+    ABoolDataManager* mgr = dynamic_cast<ABoolDataManager*>(data->getDataManager());
+    if (!mgr)
         return;
 
     QRadioButton* editor = qobject_cast<QRadioButton*>(const_cast<QWidget*>(widget));
-    if (editor && data->getDataManager())
+    if (editor)
     {
-        data->setValue(editor->isChecked());
+        mgr->setValue(data, editor->isChecked());
     }
-}
-
-void ARadioButtonBindMethod::radioButtonValueChanged(bool val)
-{
-    widgetValueChanged(val);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -402,7 +474,7 @@ bool AComboBoxBindMethod::checkBind(const ADWBindParameter& param) const
     const QString propName = param.getBindProperty();
     if (propName == CurrentText)
     {
-        ADWBindParameterList paramList = getByWidget(param.getWidget());
+        ADWBindParameterList paramList = getParameters(param.getWidget());
         for (const ADWBindParameter& param : paramList)
         {
             if (param.getBindProperty() == CurrentIndex)
@@ -415,7 +487,7 @@ bool AComboBoxBindMethod::checkBind(const ADWBindParameter& param) const
     }
     else if (propName == CurrentIndex)
     {
-        ADWBindParameterList paramList = getByWidget(param.getWidget());
+        ADWBindParameterList paramList = getParameters(param.getWidget());
         for (const ADWBindParameter& param : paramList)
         {
             if (param.getBindProperty() == CurrentText)
@@ -438,13 +510,34 @@ bool AComboBoxBindMethod::bind(const ADWBindParameter& param)
         const QString propName = param.getBindProperty();
         if (propName == CurrentText)
         {
-            QObject::connect(editor, &QComboBox::currentTextChanged,
-                             this, QOverload<const QString&>::of(&AComboBoxBindMethod::comboBoxValueChanged));
+            AStringDataManager* mgr = dynamic_cast<AStringDataManager*>(param.getData()->getDataManager());
+            if (!mgr)
+                return false;
+
+            connect(mgr, &AStringDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                    Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+            connect(editor, &QComboBox::currentTextChanged, this, &AComboBoxBindMethod::comboBoxCurrentTextChanged,
+                    Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
         }
         else if (propName == CurrentIndex)
         {
-            QObject::connect(editor, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                             this, QOverload<int>::of(&AComboBoxBindMethod::comboBoxValueChanged));
+            AIntDataManager* mgr = dynamic_cast<AIntDataManager*>(param.getData()->getDataManager());
+            if (!mgr)
+                return false;
+
+            connect(mgr, &AIntDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                    Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+            connect(editor, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &AComboBoxBindMethod::comboBoxCurrentIndexChanged,
+                    Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+        }
+        else
+        {
+            AStringListDataManager* mgr = dynamic_cast<AStringListDataManager*>(param.getData()->getDataManager());
+            if (!mgr)
+                return false;
+
+            connect(mgr, &AStringListDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged,
+                    Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
         }
 
         return true;
@@ -460,13 +553,29 @@ bool AComboBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& pr
     {
         if (propName == CurrentText)
         {
-            QObject::disconnect(editor, &QComboBox::currentTextChanged,
-                                this, QOverload<const QString&>::of(&AComboBoxBindMethod::comboBoxValueChanged));
+            AStringDataManager* mgr = dynamic_cast<AStringDataManager*>(data->getDataManager());
+            if (!mgr)
+                return false;
+
+            disconnect(mgr, &AStringDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
+            disconnect(editor, &QComboBox::currentTextChanged, this, &AComboBoxBindMethod::comboBoxCurrentTextChanged);
         }
         else if (propName == CurrentIndex)
         {
-            QObject::disconnect(editor, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                                this, QOverload<int>::of(&AComboBoxBindMethod::comboBoxValueChanged));
+            AIntDataManager* mgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+            if (!mgr)
+                return false;
+
+            disconnect(mgr, &AIntDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
+            disconnect(editor, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &AComboBoxBindMethod::comboBoxCurrentIndexChanged);
+        }
+        else
+        {
+            AStringListDataManager* mgr = dynamic_cast<AStringListDataManager*>(data->getDataManager());
+            if (!mgr)
+                return false;
+
+            disconnect(mgr, &AStringListDataManager::valueChanged, this, &ADataWidgetBindMethod::dataChanged);
         }
 
         return true;
@@ -475,60 +584,82 @@ bool AComboBoxBindMethod::unbind(AData* data, QWidget* widget, const QString& pr
     return false;
 }
 
-void AComboBoxBindMethod::onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old)
+void AComboBoxBindMethod::onDataChanged(const AData* data, QWidget* widget, const QString& propertyName)
 {
-    if (!data)
-        return;
-
     QComboBox* editor = qobject_cast<QComboBox*>(widget);
     if (editor)
     {
-        if (propertyName == Items)
+        if (propertyName == CurrentText)
         {
-            editor->clear();
-            editor->insertItems(0, data->getValue().toStringList());
+            AStringDataManager* mgr = dynamic_cast<AStringDataManager*>(data->getDataManager());
+            if (!mgr)
+                return;
+
+            editor->setCurrentText(mgr->value(data));
         }
         else if (propertyName == CurrentIndex)
         {
-            editor->setCurrentIndex(data->getValue().toInt());
+            AIntDataManager* mgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+            if (!mgr)
+                return;
+
+            editor->setCurrentIndex(mgr->value(data));
         }
-        else if (propertyName == CurrentText)
+        else
         {
-            if (data->getType() == EMetaType::QString)
-                editor->setCurrentText(data->getValue().toString());
-            else if (data->getDataManager())
-                editor->setCurrentText(data->getDataManager()->toString(data));
+            AStringListDataManager* mgr = dynamic_cast<AStringListDataManager*>(data->getDataManager());
+            if (!mgr)
+                return;
+
+            editor->clear();
+            editor->insertItems(0, mgr->value(data));
         }
     }
 }
 
-void AComboBoxBindMethod::onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName)
+void AComboBoxBindMethod::onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName)
 {
-    if (!data)
-        return;
-
     QComboBox* editor = qobject_cast<QComboBox*>(const_cast<QWidget*>(widget));
     if (editor)
     {
-        if (propertyName == CurrentIndex)
+        if (propertyName == CurrentText)
         {
-            data->setValue(editor->currentIndex());
+            AStringDataManager* mgr = dynamic_cast<AStringDataManager*>(data->getDataManager());
+            if (!mgr)
+                return;
+
+            mgr->setValue(data, editor->currentText());
         }
-        else if (propertyName == CurrentText)
+        else if (propertyName == CurrentIndex)
         {
-            data->setValue(editor->currentText());
+            AIntDataManager* mgr = dynamic_cast<AIntDataManager*>(data->getDataManager());
+            if (!mgr)
+                return;
+
+            mgr->setValue(data, editor->currentIndex());
+        }
+        else
+        {
+            AStringListDataManager* mgr = dynamic_cast<AStringListDataManager*>(data->getDataManager());
+            if (!mgr)
+                return;
+
+            QStringList val;
+            for (int i = 0; i < editor->count(); ++i)
+                val.push_back(editor->itemText(i));
+            mgr->setValue(data, val);
         }
     }
 }
 
-void AComboBoxBindMethod::comboBoxValueChanged(const QString& val)
+void AComboBoxBindMethod::comboBoxCurrentTextChanged(const QString& val)
 {
-    widgetValueChanged(val, CurrentText);
+    widgetPropertyChanged(val, CurrentText);
 }
 
-void AComboBoxBindMethod::comboBoxValueChanged(int val)
+void AComboBoxBindMethod::comboBoxCurrentIndexChanged(int val)
 {
-    widgetValueChanged(val, CurrentIndex);
+    widgetPropertyChanged(val, CurrentIndex);
 }
 
 A_DECLARE_DATAWIDGET_BINDMETHOD(QSpinBox, ASpinBoxBindMethod);

@@ -161,9 +161,6 @@
     <ClInclude Include="FUIElement.h">
       <Filter>FUI\Element</Filter>
     </ClInclude>
-    <ClInclude Include="Data\AData.h">
-      <Filter>Data</Filter>
-    </ClInclude>
     <ClInclude Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p_p.h">
       <Filter>WinUI\Private\qwindowsstyle</Filter>
     </ClInclude>
@@ -247,6 +244,15 @@
     </ClInclude>
     <ClInclude Include="Common\AContextContainter.h">
       <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\AData.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ACursorDatabase.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ATimeToolkit.h">
+      <Filter>Common\Toolkit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -358,12 +364,6 @@
     <ClCompile Include="FUI\Element\FUIElement.cpp">
       <Filter>FUI\Element</Filter>
     </ClCompile>
-    <ClCompile Include="Data\AAbstractDataManager.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
-    <ClCompile Include="Data\AData.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
     <ClCompile Include="WinUI\Controls\ATextBlock.cpp">
       <Filter>WinUI\Controls</Filter>
     </ClCompile>
@@ -418,26 +418,29 @@
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
-    <ClCompile Include="Data\ADataContainer.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
-    <ClCompile Include="Data\ADataManager.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
-    <ClCompile Include="Data\ADataWidgetBinding.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
-    <ClCompile Include="Data\ADWBindMethods.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
-    <ClCompile Include="Data\ADataWidgetBindMethod.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
     <ClCompile Include="Common\AReflection.cpp">
       <Filter>Common\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Common\AContextContainter.cpp">
       <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\AAbstractDataManager.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\AData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ACursorDatabase.cpp">
+      <Filter>Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ATimeToolkit.cpp">
+      <Filter>Common\Toolkit</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ADataWidgetBindMethod.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ADWBindMethods.cpp">
+      <Filter>Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -492,9 +495,6 @@
     <QtMoc Include="AActionManager.h">
       <Filter>Application\Action</Filter>
     </QtMoc>
-    <QtMoc Include="Data\AAbstractDataManager.h">
-      <Filter>Data</Filter>
-    </QtMoc>
     <QtMoc Include="WinUI\Controls\ATextBlock.h">
       <Filter>WinUI\Controls</Filter>
     </QtMoc>
@@ -519,13 +519,13 @@
     <QtMoc Include="Common\ADoubleValidator.h">
       <Filter>Common\Validator</Filter>
     </QtMoc>
-    <QtMoc Include="Data\ADataContainer.h">
+    <QtMoc Include="Data\AAbstractDataManager.h">
       <Filter>Data</Filter>
     </QtMoc>
     <QtMoc Include="Data\ADataManager.h">
       <Filter>Data</Filter>
     </QtMoc>
-    <QtMoc Include="Data\ADataWidgetBinding.h">
+    <QtMoc Include="Data\ADataManager.cpp">
       <Filter>Data</Filter>
     </QtMoc>
     <QtMoc Include="Data\ADataWidgetBindMethod.h">
@@ -541,11 +541,11 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\header.inc">
-      <Filter>Data</Filter>
-    </None>
     <None Include="WinUI\include.inc">
       <Filter>WinUI</Filter>
+    </None>
+    <None Include="Data\header.inc">
+      <Filter>Data</Filter>
     </None>
   </ItemGroup>
 </Project>

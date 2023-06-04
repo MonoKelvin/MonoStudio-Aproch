@@ -31,103 +31,68 @@
 
 APROCH_NAMESPACE_BEGIN
 
-class ADataContainer;
 class AAbstractDataManagerPrivate;
 
 /**
- * @brief 抽象数据管理器。
+ * @brief 抽象数据管理器
  */
 class APROCH_API AAbstractDataManager : public QObject
 {
     Q_OBJECT
-private:
-    friend class AData;
-    friend class ADataContainer;
-    friend class ADataContainerPrivate;
-    Q_DISABLE_COPY_MOVE(AAbstractDataManager);
-    Q_DECLARE_PRIVATE(AAbstractDataManager);
-
 public:
-    AAbstractDataManager(EMetaType type, ADataContainer* parent = nullptr);
+    explicit AAbstractDataManager(QObject* parent = nullptr);
     ~AAbstractDataManager();
 
-    /** @brief 所管理的元数据类型 */
-    EMetaType getType() const;
+    /** @brief 获取所有数据的列表 */
+    QSet<AData*> getDataList() const;
 
-    /**
-     * @brief 复制数据
-     * @note 复制的数据没有指定父级对象；复制时不拷贝子集；复制后的对象没有进行数据绑定
-     * @param srcData 源数据
-     * @return 新数据
-     */
-    virtual AData* cloneData(AData* srcData);
+    /** @brief 清空管理的数据 */
+    void clear() const;
 
-    /** @brief 将数据转换为文本 */
-    virtual QString toString(const AData* dt) const = 0;
-
-    /** @brief 获取默认数据 */
-    virtual QVariant getDefaultValue(AData* dt) const;
-
-    /** @brief 重置为默认数据 */
-    void resetValue(AData* dt);
-
-    /** @brief 设置数据 */
-    virtual bool setValue(AData* dt, const QVariant& val);
-
-    /** @brief 获取数据集 */
-    ADataSet* getDataSet() const;
-
-    /** @brief 获取数据集 */
-    const ADataSet& getDataSet();
-
-    /** @brief 获取数据集，如果不存在则创建 */
-    ADataSet* getOrCreateDataSet();
-
-    /** @brief 获取管理器所在数据容器 */
-    ADataContainer* getDataContainer() const;
-
-    /** @brief 是否有效 */
-    bool isValid() const;
-
-    /** @brief 删除所有创建的数据（释放内存） */
-    void clear();
-
-    /** @brief 从给定名称添加数据 */
+    /** @brief 添加数据 */
     AData* addData(const QString& name = QString());
 
-    /**
-     * @brief 从给定名称添加数据。
-     * @param name 名称
-     * @param defaultValue 默认值，数据类型必须和所管理的数据类型一致
-     * @return 数据
-     * @see type()
-     */
-    AData* addData(const QString& name, const QVariant& defaultValue);
+Q_SIGNALS:
+    /** @brief 信号：当添加子数据时。after为空时插入到parent第一个子节点前 */
+    void dataInserted(AData* data, AData* parent, AData* after);
+
+    /** @brief 信号：数据修改 */
+    void dataChanged(AData* data);
+
+    /** @brief 信号：数据从父级移除 */
+    void dataRemoved(AData* data, AData* parent);
+
+    /** @brief 信号：数据被析构前 */
+    void dataDestroyed(AData* data);
 
 protected:
-    /** @brief 当重新设置数据容器时的初始化 */
-    virtual void initialize(ADataContainer* dc);
+    /** @brief 获取指定数据是否被管理，或是否存在真实数据 */
+    virtual bool hasValue(const AData* data) const;
 
-    /** @brief 当初始化创建数据时调用，目的是让数据管理器知道数据已创建 */
-    virtual void initializeData(AData* data);
+    /** @brief 获取指定数据对应的图标 */
+    virtual QIcon valueIcon(const AData* data) const;
 
-    /**
-     * @brief 创建数据。注意创建的数据类型如果不是所管理的数据类型，则无法添加成功.
-     * @return 新数据
-     * @see type(), addData()
-     */
+    /** @brief 获取数据的文本形式 */
+    virtual QString toString(const AData* data) const;
+
+    /** @brief 创建数据对象 */
     virtual AData* createData();
 
+    /** @brief 当数据创建后并加入到管理器中后的立即初始化动作，@see createData,addData */
+    virtual void initializeData(AData* data) = 0;
+
+    /** @brief 析构数据前并不再被该管理器管理时的动作，@see dataDestroyed */
+    virtual void uninitializeData(AData* data);
+
 private:
-    /** @brief 初始化数据 */
-    void init(ADataSet*);
+    /** @brief 释放数据内存 */
+    void _destroyData(AData* data);
 
-    /** @brief 设置所管理的元数据类型 */
-    void setType(EMetaType type);
+private:
+    friend class AData;
+    QScopedPointer<AAbstractDataManagerPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(AAbstractDataManager);
+    Q_DISABLE_COPY_MOVE(AAbstractDataManager);
 };
-
-#ifndef QT_NO_DEBUG_STREAM
-APROCH_API QDebug operator<<(QDebug dbg, const AAbstractDataManager&);
-#endif
 
 APROCH_NAMESPACE_END

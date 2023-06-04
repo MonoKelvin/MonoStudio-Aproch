@@ -37,11 +37,13 @@ public:
     ASpinBoxBindMethod(QObject* parent = nullptr);
     ~ASpinBoxBindMethod();
 
-protected:
     virtual bool bind(const ADWBindParameter& param) override;
     virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) override;
-    virtual void onDataChanged(const AData* data, QWidget* widget, const QString& propertyName) override;
-    virtual void onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) override;
+    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+
+protected Q_SLOTS:
+    void spinboxValueChanged(int);
 };
 
 class APROCH_API ADoubleSpinBoxBindMethod : public ADataWidgetBindMethod
@@ -53,8 +55,11 @@ public:
 
     virtual bool bind(const ADWBindParameter& param) override;
     virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) override;
-    virtual void onDataChanged(const AData* data, QWidget* widget, const QString& propertyName) override;
-    virtual void onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) override;
+    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+
+protected Q_SLOTS:
+    void spinboxValueChanged(double);
 };
 
 class APROCH_API ALineEditBindMethod : public ADataWidgetBindMethod
@@ -66,8 +71,11 @@ public:
 
     virtual bool bind(const ADWBindParameter& param) override;
     virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) override;
-    virtual void onDataChanged(const AData* data, QWidget* widget, const QString& propertyName) override;
-    virtual void onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) override;
+    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+
+protected Q_SLOTS:
+    void lineEditValueChanged(const QString&);
 };
 
 class APROCH_API ACheckBoxBindMethod : public ADataWidgetBindMethod
@@ -79,8 +87,11 @@ public:
 
     virtual bool bind(const ADWBindParameter& param) override;
     virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) override;
-    virtual void onDataChanged(const AData* data, QWidget* widget, const QString& propertyName) override;
-    virtual void onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) override;
+    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+
+protected Q_SLOTS:
+    void checkBoxValueChanged(int);
 };
 
 class APROCH_API ARadioButtonBindMethod : public ADataWidgetBindMethod
@@ -92,8 +103,11 @@ public:
 
     virtual bool bind(const ADWBindParameter& param) override;
     virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) override;
-    virtual void onDataChanged(const AData* data, QWidget* widget, const QString& propertyName) override;
-    virtual void onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) override;
+    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+
+protected Q_SLOTS:
+    void radioButtonValueChanged(bool);
 };
 
 class APROCH_API AComboBoxBindMethod : public ADataWidgetBindMethod
@@ -111,12 +125,12 @@ public:
     virtual bool checkBind(const ADWBindParameter& param) const;
     virtual bool bind(const ADWBindParameter& param) override;
     virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) override;
-    virtual void onDataChanged(const AData* data, QWidget* widget, const QString& propertyName) override;
-    virtual void onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
+    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) override;
+    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) override;
 
 protected Q_SLOTS:
-    void comboBoxCurrentTextChanged(const QString&);
-    void comboBoxCurrentIndexChanged(int);
+    void comboBoxValueChanged(const QString&);
+    void comboBoxValueChanged(int);
 };
 
 

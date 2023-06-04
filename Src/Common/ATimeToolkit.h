@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    AData.h
- * @date    2022-7-16
+ * @file    ATimeToolkit.h
+ * @date    2023-06-03 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -30,49 +30,20 @@
 
 APROCH_NAMESPACE_BEGIN
 
-class AAbstractDataManager;
-class ADataPrivate;
-
 /**
- * @brief 支持控件、对象属性绑定的数据
- * @note 数据由 AAbstractDataManager 的子类对象创建，管理器可以创建给定类型的数据，
- *       其子数据生命周期由创建它的管理器管理，不是其父对象的数据管理
+ * @brief 字符串工具
  */
-class APROCH_API AData
+class APROCH_API ATimeToolkit
 {
 public:
-    virtual ~AData();
+    /** @brief 获取日期转换为字符文本的默认格式 */
+    static QString defaultDateFormat();
 
-    QList<AData*> subDataList() const;
+    /** @brief 获取时间转换为字符文本的默认格式 */
+    static QString defaultTimeFormat();
 
-    AAbstractDataManager* getDataManager() const;
-
-    QString getToolTip() const;
-    QString getDescription() const;
-    QString getName() const;
-    bool isEnabled() const;
-    bool isModified() const;
-
-    bool hasValue() const;
-    QIcon valueIcon() const;
-    QString toString() const;
-
-    void setToolTip(const QString& text);
-    void setDescription(const QString& text);
-    void setName(const QString& text);
-    void setEnabled(bool enable);
-    void setModified(bool modified);
-
-    void addSubData(AData* data);
-    void insertSubData(AData* data, AData* afterData);
-    void removeSubData(AData* data);
-
-protected:
-    explicit AData(AAbstractDataManager* manager);
-    void dataChanged();
-
-private:
-    friend class AAbstractDataManager;
-    QScopedPointer<ADataPrivate> d_ptr;
+    /** @brief 获取日期+时间转换为字符文本的默认格式 */
+    static QString defaultDateTimeFormat();
 };
+
 APROCH_NAMESPACE_END

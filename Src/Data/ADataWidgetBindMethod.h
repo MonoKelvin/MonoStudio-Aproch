@@ -1,6 +1,6 @@
 /****************************************************************************
  * @file    ADataWidgetBindMethod.h
- * @date    2023-05-02 
+ * @date    2023-05-02
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -30,56 +30,133 @@
 
 APROCH_NAMESPACE_BEGIN
 
-#define A_DECLARE_DATAWIDGET_BINDMETHOD(WidgetType, DWBindMethod)                                   \
-    class A##WidgetType##_##DWBindMethod##_InitClass                                                \
-    {                                                                                               \
-    public:                                                                                         \
-        A##WidgetType##_##DWBindMethod##_InitClass()                                                \
-        {                                                                                           \
-            APROCH_NAMESPACE::ADataWidgetBinding::addBindMethod<WidgetType>(new DWBindMethod);      \
-        }                                                                                           \
+#define A_DECLARE_DATAWIDGET_BINDMETHOD(WidgetType, DWBindMethod)                                       \
+    class A##WidgetType##_##DWBindMethod##_InitClass                                                    \
+    {                                                                                                   \
+    public:                                                                                             \
+        A##WidgetType##_##DWBindMethod##_InitClass()                                                    \
+        {                                                                                               \
+            APROCH_PRE_NAMESPACE(ADataWidgetBindMethod)::addBindMethod<WidgetType>(new DWBindMethod);   \
+        }                                                                                               \
     }a##WidgetType##_##DWBindMethod##_Instance
-
-class ADWBindParameterPrivate;
 
 /**
  * 数据-控件绑定参数.
  */
-class APROCH_API ADWBindParameter
+class ADWBindParameter
 {
 public:
-    ADWBindParameter();
-    ADWBindParameter(AData* data, QWidget* widget, const QString& propName = QString(), EDataBindType type = EDataBindType::TwoWay);
-    ADWBindParameter(const ADWBindParameter& other);
-    ~ADWBindParameter();
+    ADWBindParameter()
+        : ADWBindParameter(nullptr, nullptr, QString(), EDataBindType::None)
+    {
+    }
 
-    AData* getData() const;
-    void setData(AData* data);
+    ADWBindParameter(AData* data, QWidget* widget, const QString& propName = QString(), EDataBindType type = EDataBindType::TwoWay)
+        : m_data(data), m_widget(widget), m_propName(propName), m_type(type)
+    {
+    }
 
-    QWidget* getWidget() const;
-    void setWidget(QWidget* widget);
+    ADWBindParameter(const ADWBindParameter& other)
+        : ADWBindParameter(other.m_data, other.m_widget, other.m_propName, other.m_type)
+    {
+    }
 
-    QString getBindProperty() const;
-    void setBindProperty(const QString& name);
+    ~ADWBindParameter()
+    {
+    }
 
-    EDataBindType getBindType() const;
-    void setBindType(EDataBindType type);
+    Q_ALWAYS_INLINE AData* getData() const noexcept
+    {
+        return m_data;
+    }
+
+    Q_ALWAYS_INLINE void setData(AData* data) noexcept
+    {
+        m_data = data;
+    }
+
+    Q_ALWAYS_INLINE QWidget* getWidget() const noexcept
+    {
+        return m_widget;
+    }
+
+    Q_ALWAYS_INLINE void setWidget(QWidget* widget) noexcept
+    {
+        m_widget = widget;
+    }
+
+    Q_ALWAYS_INLINE QString getBindProperty() const noexcept
+    {
+        return m_propName;
+    }
+
+    Q_ALWAYS_INLINE void setBindProperty(const QString& name) noexcept
+    {
+        m_propName = name;
+    }
+
+    Q_ALWAYS_INLINE EDataBindType getBindType() const noexcept
+    {
+        return m_type;
+    }
+
+    Q_ALWAYS_INLINE void setBindType(EDataBindType type) noexcept
+    {
+        m_type = type;
+    }
 
     /** @brief 是否有效。数据源和控件对象都不为空 */
-    bool isValid() const;
+    Q_ALWAYS_INLINE bool isValid() const noexcept
+    {
+        return m_data && m_widget;
+    }
+
+    /** @brief 是否和另一个绑定数据完全相等 */
+    Q_ALWAYS_INLINE bool isEqual(const ADWBindParameter& other) const
+    {
+        return (m_data == other.m_data) && (m_widget == other.m_widget) &&
+            (m_propName == other.m_propName) && (m_type == other.m_type);
+    }
 
     /** @brief 比较参数是否相等。判断时比较数据、控件和属性，不包括类型 */
-    bool operator==(const ADWBindParameter& other) const;
-    bool operator!=(const ADWBindParameter& other) const;
-    ADWBindParameter& operator=(const ADWBindParameter& other);
+    Q_ALWAYS_INLINE bool operator==(const ADWBindParameter& other) const
+    {
+        return (m_data == other.m_data) && (m_widget == other.m_widget) && (m_propName == other.m_propName);
+    }
+
+    Q_ALWAYS_INLINE bool operator!=(const ADWBindParameter& other) const
+    {
+        return !(operator==(other));
+    }
+
+    Q_ALWAYS_INLINE ADWBindParameter& operator=(const ADWBindParameter& other)
+    {
+        m_data = other.m_data;
+        m_widget = other.m_widget;
+        m_propName = other.m_propName;
+        m_type = other.m_type;
+        return *this;
+    }
 
 private:
-    QScopedPointer<ADWBindParameterPrivate> d;
+    /** @brief 数据 */
+    AData* m_data = nullptr;
+
+    /** @brief 控件 */
+    QWidget* m_widget = nullptr;
+
+    /** @brief 控件属性 */
+    QString m_propName;
+
+    /** @brief 绑定类型 */
+    EDataBindType m_type = EDataBindType::None;
 };
 Q_DECLARE_METATYPE(ADWBindParameter);
 using ADWBindParameterList = QList<ADWBindParameter>;
 
+class ADataWidgetBindMethod;
 class ADataWidgetBindMethodPrivate;
+typedef QPointer<ADataWidgetBindMethod> ADataWidgetBindMethodPtr;
 
 /**
  * 数据和控件的绑定方法
@@ -91,12 +168,39 @@ public:
     ADataWidgetBindMethod(QObject* parent = nullptr);
     ~ADataWidgetBindMethod();
 
-    /** @brief 添加绑定。如果绑定对象都一样，绑定类型不一样，则不重复添加，只更新绑定类型 */
-    bool addBind(const ADWBindParameter& param);
+    /** @brief 添加数据-控件的绑定方法 */
+    template<class WidgetType>
+    static bool addBindMethod(ADataWidgetBindMethodPtr bindMethod)
+    {
+        const char* widgetTypeName = WidgetType::staticMetaObject.className();
+        return addBindMethod(bindMethod, widgetTypeName);
+    }
 
-    /** @brief 移除绑定 */
-    bool removeBind(AData* data, QWidget* widget, const QString& propName = QString());
+    /** @brief 移除数据-控件的绑定方法 */
+    template<class WidgetType>
+    static void removeBindMethod()
+    {
+        const char* widgetTypeName = WidgetType::staticMetaObject.className();
+        removeBindMethod(widgetTypeName);
+    }
+    static void removeBindMethod(ADataWidgetBindMethodPtr bindMethod);
 
+    /** @brief 获取数据-控件的绑定方法 */
+    template<class WidgetType>
+    static ADataWidgetBindMethodPtr getBindMethod()
+    {
+        const char* widgetTypeName = WidgetType::staticMetaObject.className();
+        return getBindMethod(widgetTypeName);
+    }
+    static ADataWidgetBindMethodPtr getBindMethod(const char* widgetTypeName);
+    
+    /** @brief 自动根据控件类型添加绑定 */
+    static bool addBind(const ADWBindParameter& parameter);
+
+    /** @brief 自动根据控件类型进行解绑 */
+    static bool removeBind(AData* data, QWidget* widget, const QString& propName = QString());
+
+public:
     /** @brief 检查参数是否可以进行绑定 */
     virtual bool checkBind(const ADWBindParameter& param) const;
 
@@ -109,10 +213,10 @@ public:
     bool hasBind(AData* data, QWidget* widget, const QString& propName = QString(), bool isConsiderEmptyProp = true) const;
 
     /** @brief 获取和指定数据存在绑定的参数列表 */
-    ADWBindParameterList getBindByData(AData* data) const;
+    ADWBindParameterList getParameters(AData* data) const;
 
     /** @brief 获取和指定控件存在绑定的参数列表。未指定属性名称时，返回查找到的所有参数 */
-    ADWBindParameterList getByWidget(QWidget* widget, const QString& propName = QString()) const;
+    ADWBindParameterList getParameters(QWidget* widget, const QString& propName = QString()) const;
 
 protected:
     /** @brief 绑定 */
@@ -122,28 +226,35 @@ protected:
     virtual bool unbind(AData* data, QWidget* widget, const QString& propName = QString()) = 0;
 
     /** @brief 数据修改更新控件的方法 */
-    virtual void onValueChanged(const AData* data, QWidget* widget, const QString& propertyName, const QVariant& old) = 0;
+    virtual void onDataChanged(const AData* data, QWidget* widget, const QString& propertyName) = 0;
 
     /** @brief 控件修改更新数据的方法 */
-    virtual void onWidgetValueChanged(AData* data, const QWidget* widget, const QString& propertyName) = 0;
-
-    /** @brief 获取数据所在的数据容器 */
-    static ADataContainer* getDataContainer(AData* data);
+    virtual void onWidgetChanged(AData* data, const QWidget* widget, const QString& propertyName) = 0;
 
 public Q_SLOTS:
     /** @brief 解绑所有 */
     void unbindAll();
 
-protected Q_SLOTS:
-    void valueChanged(AData* data, const QVariant& old = QVariant());
-    void widgetValueChanged(const QVariant& val, const QString& propertyName = QString());
+    /** @brief 数据修改 */
+    void dataChanged(AData* data, const QVariant& newVal);
+
+    /** @brief 控件修改 */
+    void widgetChanged(const QVariant& val);
+
+    /** @brief 控件属性修改 */
+    void widgetPropertyChanged(const QVariant& val, const QString& propertyName);
+
+private Q_SLOTS:
     void widgetDestroyed(QObject* obj);
+
+private:
+    static bool addBindMethod(ADataWidgetBindMethodPtr bindMethod, const char* widgetTypeName);
+    static bool removeBindMethod(const char* widgetTypeName);
 
 private:
     friend class ADataWidgetBinding;
     Q_DISABLE_COPY_MOVE(ADataWidgetBindMethod);
     Q_DECLARE_PRIVATE(ADataWidgetBindMethod);
 };
-typedef QPointer<ADataWidgetBindMethod> ADataWidgetBindMethodPtr;
 
 APROCH_NAMESPACE_END

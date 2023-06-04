@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    AData.h
- * @date    2022-7-16
+ * @file    ATimeToolkit.cpp
+ * @date    2023-06-03 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -26,53 +26,34 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
-#pragma once
+#include "stdafx.h"
+#include "ATimeToolkit.h"
 
 APROCH_NAMESPACE_BEGIN
 
-class AAbstractDataManager;
-class ADataPrivate;
-
-/**
- * @brief 支持控件、对象属性绑定的数据
- * @note 数据由 AAbstractDataManager 的子类对象创建，管理器可以创建给定类型的数据，
- *       其子数据生命周期由创建它的管理器管理，不是其父对象的数据管理
- */
-class APROCH_API AData
+QString ATimeToolkit::defaultDateFormat()
 {
-public:
-    virtual ~AData();
+    QLocale loc;
+    QString format = loc.dateFormat(QLocale::ShortFormat);
+    // Change dd.MM.yy, MM/dd/yy to 4 digit years
+    if (format.count(QLatin1Char('y')) == 2)
+        format.insert(format.indexOf(QLatin1Char('y')), QLatin1String("yy"));
+    return format;
+}
 
-    QList<AData*> subDataList() const;
+QString ATimeToolkit::defaultTimeFormat()
+{
+    QLocale loc;
+    // ShortFormat is missing seconds on UNIX.
+    return loc.timeFormat(QLocale::LongFormat);
+}
 
-    AAbstractDataManager* getDataManager() const;
+QString ATimeToolkit::defaultDateTimeFormat()
+{
+    QString format = defaultDateFormat();
+    format += QLatin1Char(' ');
+    format += defaultTimeFormat();
+    return format;
+}
 
-    QString getToolTip() const;
-    QString getDescription() const;
-    QString getName() const;
-    bool isEnabled() const;
-    bool isModified() const;
-
-    bool hasValue() const;
-    QIcon valueIcon() const;
-    QString toString() const;
-
-    void setToolTip(const QString& text);
-    void setDescription(const QString& text);
-    void setName(const QString& text);
-    void setEnabled(bool enable);
-    void setModified(bool modified);
-
-    void addSubData(AData* data);
-    void insertSubData(AData* data, AData* afterData);
-    void removeSubData(AData* data);
-
-protected:
-    explicit AData(AAbstractDataManager* manager);
-    void dataChanged();
-
-private:
-    friend class AAbstractDataManager;
-    QScopedPointer<ADataPrivate> d_ptr;
-};
 APROCH_NAMESPACE_END

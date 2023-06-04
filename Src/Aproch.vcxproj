@@ -53,6 +53,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)ThirdParty;$(OutDir)moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
       <Command>"$(SolutionDir)CopyBuildFile.bat" $(SolutionDir)Src\ $(SolutionDir)Build\$(Platform)-$(Configuration)\ $(OutDir)</Command>
@@ -67,6 +68,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)ThirdParty;$(OutDir)moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
       <Command>"$(SolutionDir)CopyBuildFile.bat" $(SolutionDir)Src\ $(SolutionDir)Build\$(Platform)-$(Configuration)\ $(OutDir)</Command>
@@ -133,6 +135,7 @@
     <ClCompile Include="AActionManager.cpp" />
     <ClCompile Include="Common\ACategory.cpp" />
     <ClCompile Include="Common\AContextContainter.cpp" />
+    <ClCompile Include="Common\ACursorDatabase.cpp" />
     <ClCompile Include="Common\ADataConverter.cpp" />
     <ClCompile Include="Common\ADoubleValidator.cpp" />
     <ClCompile Include="Common\AException.cpp" />
@@ -143,22 +146,16 @@
     <ClCompile Include="Common\AMathToolkit.cpp" />
     <ClCompile Include="Common\AReflection.cpp" />
     <ClCompile Include="Common\AStringToolkit.cpp" />
+    <ClCompile Include="Common\ATimeToolkit.cpp" />
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
-    <ClCompile Include="Data\ADataContainer.cpp" />
-    <ClCompile Include="Data\ADataManager.cpp" />
-    <ClCompile Include="Data\ADataWidgetBinding.cpp">
+    <QtMoc Include="Data\ADataManager.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
-    </ClCompile>
-    <ClCompile Include="Data\ADataWidgetBindMethod.cpp">
-      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
-      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
-      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
-      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
-    </ClCompile>
+    </QtMoc>
+    <ClCompile Include="Data\ADataWidgetBindMethod.cpp" />
     <ClCompile Include="Data\ADWBindMethods.cpp" />
     <ClCompile Include="FUI\Element\FUIElement.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -193,14 +190,16 @@
     <QtMoc Include="WinUI\Controls\ATextBlock.h" />
     <QtMoc Include="WinUI\Controls\ATextBox.h" />
     <ClInclude Include="Common\AContextContainter.h" />
+    <ClInclude Include="Common\ACursorDatabase.h" />
     <ClInclude Include="Common\AGraphicsToolkit.h" />
     <ClInclude Include="Common\AReflection.h" />
+    <ClInclude Include="Common\ATimeToolkit.h" />
     <ClInclude Include="Common\IContextObject.h" />
     <ClInclude Include="Common\ITextTranslatable.h" />
-    <QtMoc Include="Data\ADataContainer.h" />
+    <QtMoc Include="Data\AAbstractDataManager.h" />
+    <ClInclude Include="Data\AData.h" />
     <QtMoc Include="Data\ADataManager.h" />
     <QtMoc Include="Data\ADataWidgetBindMethod.h" />
-    <QtMoc Include="Data\ADataWidgetBinding.h" />
     <QtMoc Include="Data\ADWBindMethods.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
     <QtMoc Include="WinUI\Private\AWinUIStyle.h" />
@@ -241,8 +240,6 @@
     <ClInclude Include="Common\IPlugin.h" />
     <ClInclude Include="Common\IService.h" />
     <ClInclude Include="Common\IStringSerializable.h" />
-    <QtMoc Include="Data\AAbstractDataManager.h" />
-    <ClInclude Include="Data\AData.h" />
     <ClInclude Include="FUIElement.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Widget\ABorderlessWidget.h" />

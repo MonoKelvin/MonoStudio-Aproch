@@ -64,6 +64,8 @@
 #include "Common/AMathToolkit.h"
 #include "Common/AFileToolkit.h"
 #include "Common/AStringToolkit.h"
+#include "Common/ATimeToolkit.h"
+#include "Common/AGraphicsToolkit.h"
 #include "Common/AIdentity.h"
 #include "Common/ANumberValidator.h"
 #include "Common/AIconFont.h"
@@ -72,6 +74,7 @@
 #include "Common/ACategory.h"
 #include "Common/AReflection.h"
 #include "Common/AContextContainter.h"
+#include "Common/ACursorDatabase.h"
 
 // application
 #include "AAction.h"

@@ -33,31 +33,108 @@
 
 APROCH_NAMESPACE_BEGIN
 
-class ADWBMethodMap
+// ----------------------------------------------------------------------------------------------------
+
+class ADWBindParameterPrivate
 {
 public:
-    ~ADWBMethodMap()
+    ADWBindParameterPrivate(AData* data, QWidget* widget, const QString& propName, EDataBindType type)
+        : data(data), widget(widget), propName(propName), type(type)
     {
-        for (auto iter = MethodMap.begin(); iter != MethodMap.end();)
-        {
-            if (iter.value())
-            {
-                delete iter.value();
-                iter = MethodMap.erase(iter);
-            }
-            else
-            {
-                ++iter;
-            }
-        }
-
-        MethodMap.clear();
     }
 
-    QMap<QString, ADataWidgetBindMethodPtr> MethodMap;
+    AData* data = nullptr;
+    QWidget* widget = nullptr;
+    QString propName;
+    EDataBindType type = EDataBindType::None;
 };
 
-Q_GLOBAL_STATIC(ADWBMethodMap, globalBindMethodMap);
+// ----------------------------------------------------------------------------------------------------
+
+ADWBindParameter::ADWBindParameter()
+    : ADWBindParameter(nullptr, nullptr, nullptr, EDataBindType::None)
+{
+}
+
+ADWBindParameter::ADWBindParameter(AData* data, QWidget* widget, const QString& propName, EDataBindType type)
+    : d(new ADWBindParameterPrivate(data, widget, propName, type))
+{
+}
+
+ADWBindParameter::ADWBindParameter(const ADWBindParameter& other)
+    : ADWBindParameter(other.d->data, other.d->widget, other.d->propName, other.d->type)
+{
+}
+
+ADWBindParameter::~ADWBindParameter()
+{
+}
+
+AData* ADWBindParameter::getData() const
+{
+    return d->data;
+}
+
+void ADWBindParameter::setData(AData* data)
+{
+    d->data = data;
+}
+
+QWidget* ADWBindParameter::getWidget() const
+{
+    return d->widget;
+}
+
+void ADWBindParameter::setWidget(QWidget* widget)
+{
+    d->widget = widget;
+}
+
+QString ADWBindParameter::getBindProperty() const
+{
+    return d->propName;
+}
+
+void ADWBindParameter::setBindProperty(const QString& name)
+{
+    d->propName = name;
+}
+
+EDataBindType ADWBindParameter::getBindType() const
+{
+    return d->type;
+}
+
+void ADWBindParameter::setBindType(EDataBindType type)
+{
+    d->type = type;
+}
+
+bool ADWBindParameter::isValid() const
+{
+    return d->data && d->widget;
+}
+
+bool ADWBindParameter::operator==(const ADWBindParameter& other) const
+{
+    return (d->data == other.d->data) && (d->widget == other.d->widget) && (d->propName == other.d->propName);
+}
+
+bool ADWBindParameter::operator!=(const ADWBindParameter& other) const
+{
+    return !(operator==(other));
+}
+
+ADWBindParameter& ADWBindParameter::operator=(const ADWBindParameter& other)
+{
+    d->data = other.d->data;
+    d->widget = other.d->widget;
+    d->propName = other.d->propName;
+    d->type = other.d->type;
+    return *this;
+}
+
+// ----------------------------------------------------------------------------------------------------
 
 class ADataWidgetBindMethodPrivate : public QObjectPrivate
 {
@@ -136,104 +213,16 @@ ADataWidgetBindMethod::~ADataWidgetBindMethod()
 {
 }
 
-bool ADataWidgetBindMethod::addBindMethod(ADataWidgetBindMethodPtr bindMethod, const char* widgetTypeName)
-{
-    if (!bindMethod || !widgetTypeName)
-        return false;
-
-    ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
-    if (method == bindMethod)
-        return false;
-
-    if (method)
-    {
-        qWarning(AStr("the ADataWidgetBindMethod of type %1 already exists "
-                 "and will be overwritten with a new one").arg(widgetTypeName).toLocal8Bit());
-
-        method->deleteLater();
-    }
-
-    const QString type = QString::fromLocal8Bit(widgetTypeName);
-
-    globalBindMethodMap->MethodMap[type] = bindMethod;
-
-    return true;
-}
-
-bool ADataWidgetBindMethod::removeBindMethod(const char* widgetTypeName)
-{
-    ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
-    if (method == nullptr)
-        return false;
-
-    method->deleteLater();
-
-    const QString type = QString::fromLocal8Bit(widgetTypeName);
-    const int c = globalBindMethodMap->MethodMap.remove(type);
-    return c > 0;
-}
-
-void ADataWidgetBindMethod::removeBindMethod(ADataWidgetBindMethodPtr bindMethod)
-{
-    if (!bindMethod)
-        return;
-
-    for (auto iter = globalBindMethodMap->MethodMap.begin();
-         iter != globalBindMethodMap->MethodMap.end();
-         ++iter)
-    {
-        if (iter.value() == bindMethod)
-        {
-            bindMethod->deleteLater();
-            globalBindMethodMap->MethodMap.erase(iter);
-            return;
-        }
-    }
-
-}
-
-ADataWidgetBindMethodPtr ADataWidgetBindMethod::getBindMethod(const char* widgetTypeName)
-{
-    if (!widgetTypeName)
-        return nullptr;
-
-    const QString type = QString::fromLocal8Bit(widgetTypeName);
-    return globalBindMethodMap->MethodMap.value(type);
-}
-
 bool ADataWidgetBindMethod::addBind(const ADWBindParameter& param)
 {
     if (!param.isValid() || param.getBindType() == EDataBindType::None)
         return false;
 
-    const char* widgetTypeName = param.getWidget()->metaObject()->className();
-    ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
-    if (!method)
-        return false;
-
-    if (!method->checkBind(param))
-        return false;
-
-    EDataBindType type = param.getBindType();
-    if (type == EDataBindType::OneWay ||
-        type == EDataBindType::TwoWay ||
-        type == EDataBindType::FirstTime)
-    {
-        method->onDataChanged(param.getData(), param.getWidget(), param.getBindProperty());
-        if (type == EDataBindType::FirstTime)
-            return true;
-    }
-    else if (type == EDataBindType::OneWayRevise ||
-             type == EDataBindType::TwoWay ||
-             type == EDataBindType::FirstTimeRevise)
-    {
-        method->onWidgetChanged(param.getData(), param.getWidget(), param.getBindProperty());
-        if (type == EDataBindType::FirstTimeRevise)
-            return true;
-    }
+    Q_D(ADataWidgetBindMethod);
 
     bool hasBind = false;
-    for (ADWBindParameter& ps : method->d_func()->params)
+    const EDataBindType type = param.getBindType();
+    for (ADWBindParameter& ps : d->params)
     {
         if (ps == param)
         {
@@ -247,43 +236,52 @@ bool ADataWidgetBindMethod::addBind(const ADWBindParameter& param)
         }
     }
 
+    ADataContainer* dc = getDataContainer(param.getData());
+    if (dc)
+    {
+        connect(dc, &ADataContainer::valueChanged, 
+                this, &ADataWidgetBindMethod::valueChanged, 
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
+    }
+
     connect(param.getWidget(), &QWidget::destroyed, 
-            method, &ADataWidgetBindMethod::widgetDestroyed,
+            this, &ADataWidgetBindMethod::widgetDestroyed,
             Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
 
     // 先解绑，再绑定
-    method->unbind(param.getData(), param.getWidget(), param.getBindProperty());
-    if (!method->bind(param))
+    unbind(param.getData(), param.getWidget(), param.getBindProperty());
+    if (!bind(param))
         return false;
 
     if (!hasBind)
-        method->d_func()->params.push_back(param);
+        d->params.push_back(param);
 
     return true;
 }
 
 bool ADataWidgetBindMethod::removeBind(AData* data, QWidget* widget, const QString& propName)
 {
-    const char* widgetTypeName = widget->metaObject()->className();
-    ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
-    if (!method)
-        return false;
+    Q_D(ADataWidgetBindMethod);
 
     ADWBindParameter tmpParam(data, widget, propName);
     if (!tmpParam.isValid())
         return false;
 
-    ADWBindParameterList& params = method->d_func()->params;
-
-    for (int i = 0; i < params.size(); ++i)
+    for (int i = 0; i < d->params.size(); ++i)
     {
-        if (params.at(i) == tmpParam)
+        if (d->params.at(i) == tmpParam)
         {
+            ADataContainer* dc = getDataContainer(data);
+            if (dc)
+            {
+                disconnect(dc, &ADataContainer::valueChanged, this, &ADataWidgetBindMethod::valueChanged);
+            }
+
             // 实现解绑
-            if (!method->unbind(data, widget, propName))
+            if (!unbind(data, widget, propName))
                 return false;
 
-            params.removeAt(i);
+            d->params.removeAt(i);
 
             return true;
         }
@@ -303,21 +301,27 @@ bool ADataWidgetBindMethod::hasBind(AData* data, QWidget* widget, const QString&
     return d->hasBind(data, widget, propName, isContainsEmpty);
 }
 
-ADWBindParameterList ADataWidgetBindMethod::getParameters(AData* data) const
+ADWBindParameterList ADataWidgetBindMethod::getBindByData(AData* data) const
 {
     Q_D(const ADataWidgetBindMethod);
     return d->findByData(data);
 }
 
-ADWBindParameterList ADataWidgetBindMethod::getParameters(QWidget* widget, const QString& propName) const
+ADWBindParameterList ADataWidgetBindMethod::getByWidget(QWidget* widget, const QString& propName) const
 {
     Q_D(const ADataWidgetBindMethod);
     return d->findByWidget(widget, propName);
 }
 
-void ADataWidgetBindMethod::dataChanged(AData* data, const QVariant& newVal)
+ADataContainer* ADataWidgetBindMethod::getDataContainer(AData* data)
 {
-    Q_UNUSED(newVal);
+    if (data && data->getDataManager())
+        return data->getDataManager()->getDataContainer();
+    return nullptr;
+}
+
+void ADataWidgetBindMethod::valueChanged(AData* data, const QVariant& old)
+{
     Q_D(ADataWidgetBindMethod);
 
     ADWBindParameterList widgets = d->findByData(data);
@@ -327,17 +331,12 @@ void ADataWidgetBindMethod::dataChanged(AData* data, const QVariant& newVal)
 
         if (type == EDataBindType::TwoWay || type == EDataBindType::OneWay)
         {
-            onDataChanged(qAsConst<AData*>(data), param.getWidget(), param.getBindProperty());
+            onValueChanged(qAsConst<AData*>(data), param.getWidget(), param.getBindProperty(), old);
         }
     }
 }
 
-void ADataWidgetBindMethod::widgetChanged(const QVariant& val)
-{
-    widgetPropertyChanged(val, QString());
-}
-
-void ADataWidgetBindMethod::widgetPropertyChanged(const QVariant& val, const QString& propertyName)
+void ADataWidgetBindMethod::widgetValueChanged(const QVariant& val, const QString& propertyName)
 {
     Q_D(ADataWidgetBindMethod);
 
@@ -348,10 +347,10 @@ void ADataWidgetBindMethod::widgetPropertyChanged(const QVariant& val, const QSt
     {
         const EDataBindType type = param.getBindType();
 
-        if (param.getBindProperty() == propertyName &&
+        if (param.getBindProperty() == propertyName && 
             (type == EDataBindType::TwoWay || type == EDataBindType::OneWayRevise))
         {
-            onWidgetChanged(param.getData(), widget, propertyName);
+            onWidgetValueChanged(param.getData(), widget, propertyName);
             return;
         }
     }

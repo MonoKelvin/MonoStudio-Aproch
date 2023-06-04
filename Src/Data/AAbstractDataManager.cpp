@@ -1,6 +1,6 @@
 /****************************************************************************
  * @file    AAbstractDataManager.cpp
- * @date    2023-05-14 
+ * @date    2023-05-14
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -28,30 +28,20 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AAbstractDataManager.h"
-#include "ADataContainer.h"
-
-#include <private/qobject_p.h>
-#include <QIcon>
 
 APROCH_NAMESPACE_BEGIN
 
-class AAbstractDataManagerPrivate : public QObjectPrivate
+class AAbstractDataManagerPrivate
 {
-    Q_DECLARE_PUBLIC(AAbstractDataManager)
 public:
-    ADataSet* dataSet = nullptr;
-    EMetaType type = EMetaType::UnknownType;
+    QSet<AData*> m_dataList;
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-AAbstractDataManager::AAbstractDataManager(EMetaType type, ADataContainer* parent)
-    : QObject(*(new AAbstractDataManagerPrivate()), parent)
+AAbstractDataManager::AAbstractDataManager(QObject* parent)
+    : QObject(parent), d_ptr(new AAbstractDataManagerPrivate)
 {
-    setType(type);
-
-    if (nullptr != parent)
-        parent->addDataManager(this, type);
 }
 
 AAbstractDataManager::~AAbstractDataManager()
@@ -59,168 +49,46 @@ AAbstractDataManager::~AAbstractDataManager()
     clear();
 }
 
-EMetaType AAbstractDataManager::getType() const
+void AAbstractDataManager::clear() const
 {
-    Q_D(const AAbstractDataManager);
-    return d->type;
+    while (!d_ptr->m_dataList.isEmpty())
+        delete* d_ptr->m_dataList.cbegin();
 }
 
-void AAbstractDataManager::setType(EMetaType type)
+QSet<AData*> AAbstractDataManager::getDataList() const
 {
-    Q_D(AAbstractDataManager);
-    d->type = type;
+    return d_ptr->m_dataList;
 }
 
-void AAbstractDataManager::init(ADataSet* dataset)
+bool AAbstractDataManager::hasValue(const AData* data) const
 {
-    Q_D(AAbstractDataManager);
-
-    ADataContainer* container = getDataContainer();
-    if (!container)
-    {
-        Q_ASSERT(false);
-        return;
-    }
-
-    d->dataSet = dataset;
-}
-
-void AAbstractDataManager::clear()
-{
-    Q_D(AAbstractDataManager);
-
-    if (nullptr != getDataContainer())
-        getDataContainer()->deleteData(*d->dataSet);
-}
-
-AData* AAbstractDataManager::cloneData(AData* srcData)
-{
-    Q_ASSERT(getDataContainer());
-
-    Q_D(AAbstractDataManager);
-    if (!d->dataSet->contains(srcData))
-        return nullptr;
-
-    AData* newData = new AData(*srcData, ECopyOption::DeepCopy);
-    getDataContainer()->addData(this, newData, getDefaultValue(srcData));
-
-    return newData;
-}
-
-bool AAbstractDataManager::setValue(AData* dt, const QVariant& val)
-{
-    if (!val.canConvert(getType()))
-    {
-        Q_ASSERT_X(false, Q_FUNC_INFO, "Incompatible data type");
-        return false;
-    }
-
-    dt->setValueInternal(val);
-
+    Q_UNUSED(data);
     return true;
 }
 
-QVariant AAbstractDataManager::getDefaultValue(AData* dt) const
+QIcon AAbstractDataManager::valueIcon(const AData* data) const
 {
-    Q_ASSERT(getDataContainer());
-
-    static QVariant defValue = QVariant::Type(getType());
-    if (nullptr == dt || !dt->isValid())
-        return defValue;
-
-    return getDataContainer()->getDefaultValue(dt);
+    Q_UNUSED(data);
+    return QIcon();
 }
 
-void AAbstractDataManager::resetValue(AData* dt)
+QString AAbstractDataManager::toString(const AData* data) const
 {
-    Q_ASSERT(getDataContainer());
-
-    getDataContainer()->resetValue(dt);
-}
-
-ADataSet* AAbstractDataManager::getDataSet() const
-{
-    Q_D(const AAbstractDataManager);
-    return d->dataSet;
-}
-
-const ADataSet& AAbstractDataManager::getDataSet()
-{
-    Q_D(const AAbstractDataManager);
-    Q_ASSERT(nullptr != d->dataSet);
-    return *d->dataSet;
-}
-
-ADataSet* AAbstractDataManager::getOrCreateDataSet()
-{
-    Q_ASSERT(getDataContainer());
-
-    Q_D(AAbstractDataManager);
-
-    if (nullptr == d->dataSet)
-    {
-        d->dataSet = getDataContainer()->getDataSet(this);
-        Q_ASSERT(nullptr != d->dataSet);
-    }
-
-    return d->dataSet;
-}
-
-ADataContainer* AAbstractDataManager::getDataContainer() const
-{
-    return qobject_cast<ADataContainer*>(parent());
-}
-
-bool AAbstractDataManager::isValid() const
-{
-    Q_D(const AAbstractDataManager);
-    return d->dataSet && QMetaType(getType()).isValid();
+    Q_UNUSED(data);
+    return QString();
 }
 
 AData* AAbstractDataManager::addData(const QString& name)
 {
-    return addData(name, getDefaultValue(nullptr));
-}
-
-AData* AAbstractDataManager::addData(const QString& name, const QVariant& defaultValue)
-{
-    Q_ASSERT(getDataContainer());
-
-    Q_D(AAbstractDataManager);
-
     AData* data = createData();
-    if (nullptr != data)
+    if (data)
     {
-        if (data->getType() != getType())
-        {
-            blockSignals(true);
-            delete data;
-            blockSignals(false);
-
-            return nullptr;
-        }
-
         data->setName(name);
-
-        if (!getDataContainer()->addData(this, data, defaultValue))
-        {
-            blockSignals(true);
-            delete data;
-            blockSignals(false);
-
-            return nullptr;
-        }
+        d_ptr->m_dataList.insert(data);
+        initializeData(data);
     }
 
     return data;
-}
-
-void AAbstractDataManager::initialize(ADataContainer*)
-{
-}
-
-void AAbstractDataManager::initializeData(AData*)
-{
 }
 
 AData* AAbstractDataManager::createData()
@@ -228,19 +96,19 @@ AData* AAbstractDataManager::createData()
     return new AData(this);
 }
 
-APROCH_API QDebug operator<<(QDebug dbg, const AAbstractDataManager& dataMgr)
+void AAbstractDataManager::uninitializeData(AData* data)
 {
-    const char* clsName = dataMgr.metaObject()->className();
+    Q_UNUSED(data);
+}
 
-    if (!dataMgr.isValid())
-        dbg << clsName << "(Invalid)";
-    else
+void AAbstractDataManager::_destroyData(AData* data)
+{
+    if (d_ptr->m_dataList.contains(data))
     {
-        const char* typeName = QMetaType::typeName(dataMgr.getType());
-        dbg << QString("%1(id=%2, typename=%3)").arg(clsName).arg(dataMgr.getType()).arg(dataMgr.getType());
+        emit dataDestroyed(data);
+        uninitializeData(data);
+        d_ptr->m_dataList.remove(data);
     }
-
-    return dbg;
 }
 
 APROCH_NAMESPACE_END
