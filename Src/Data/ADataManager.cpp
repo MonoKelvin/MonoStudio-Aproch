@@ -175,21 +175,22 @@ static Value getMaximum(const QMap<const AData*, PrivateData>& dataMap,
     return getData<Value>(dataMap, &PrivateData::maxVal, data, defaultValue);
 }
 
-template <class ValueChangeParameter, class Value, class DataManager>
+template <class Value, class DataManager>
 static void setSimpleValue(QMap<const AData*, Value>& dataMap,
                            DataManager* manager,
                            void (DataManager::* dataChangedSignal)(AData*),
-                           void (DataManager::* valueChangedSignal)(AData*, ValueChangeParameter),
-                           AData* data, const Value& val)
+                           void (DataManager::* valueChangedSignal)(AData*, const QVariant&),
+                           AData* data, const QVariant& val)
 {
     const auto it = dataMap.find(data);
     if (it == dataMap.end())
         return;
 
-    if (it.value() == val)
+    Value metaVal = val.value<Value>();
+    if (it.value() == metaVal)
         return;
 
-    it.value() = val;
+    it.value() = metaVal;
 
     emit(manager->*dataChangedSignal)(data);
     emit(manager->*valueChangedSignal)(data, val);
@@ -198,8 +199,8 @@ static void setSimpleValue(QMap<const AData*, Value>& dataMap,
 template <class ValueChangeParameter, class DataManagerPrivate, class DataManager, class Value>
 static void setValueInRange(DataManager* manager, DataManagerPrivate* managerPrivate,
                             void (DataManager::* dataChangedSignal)(AData*),
-                            void (DataManager::* valueChangedSignal)(AData*, ValueChangeParameter),
-                            AData* data, const Value& val,
+                            void (DataManager::* valueChangedSignal)(AData*, const QVariant&),
+                            AData* data, const QVariant& val,
                             void (DataManagerPrivate::* setSubDataValue)(AData*, ValueChangeParameter))
 {
     const auto it = managerPrivate->m_values.find(data);
@@ -226,11 +227,13 @@ static void setValueInRange(DataManager* manager, DataManagerPrivate* managerPri
 }
 
 template <class ValueChangeParameter, class DataManagerPrivate, class DataManager, class Value>
-static void setBorderValues(DataManager* manager, DataManagerPrivate* managerPrivate,
+static void setBorderValues(DataManager* manager,
+                            DataManagerPrivate* managerPrivate,
                             void (DataManager::* dataChangedSignal)(AData*),
-                            void (DataManager::* valueChangedSignal)(AData*, ValueChangeParameter),
-                            void (DataManager::* rangeChangedSignal)(AData*, ValueChangeParameter, ValueChangeParameter),
-                            AData* data, const Value& minVal, const Value& maxVal,
+                            void (DataManager::* attrChangedSignal)(AData*, const QString&, ValueChangeParameter),
+                            AData* data, 
+                            const Value& minVal, 
+                            const Value& maxVal,
                             void (DataManagerPrivate::* setSubDataRange)(AData*, ValueChangeParameter, ValueChangeParameter, ValueChangeParameter))
 {
     const auto it = managerPrivate->m_values.find(data);
@@ -251,8 +254,6 @@ static void setBorderValues(DataManager* manager, DataManagerPrivate* managerPri
     metaData.setMinimumValue(fromVal);
     metaData.setMaximumValue(toVal);
 
-    emit(manager->*rangeChangedSignal)(data, metaData.minVal, metaData.maxVal);
-
     if (setSubDataRange)
         (managerPrivate->*setSubDataRange)(data, metaData.minVal, metaData.maxVal, metaData.val);
 
@@ -260,17 +261,19 @@ static void setBorderValues(DataManager* manager, DataManagerPrivate* managerPri
         return;
 
     emit(manager->*dataChangedSignal)(data);
-    emit(manager->*valueChangedSignal)(data, metaData.val);
+    emit(manager->*attrChangedSignal)(data, metaData.val);
 }
 
 template <class ValueChangeParameter, class DataManagerPrivate, class DataManager, class Value, class PrivateData>
-static void setBorderValue(DataManager* manager, DataManagerPrivate* managerPrivate,
+static void setBorderValue(DataManager* manager, 
+                           DataManagerPrivate* managerPrivate,
                            void (DataManager::* dataChangedSignal)(AData*),
-                           void (DataManager::* valueChangedSignal)(AData*, ValueChangeParameter),
-                           void (DataManager::* rangeChangedSignal)(AData*, ValueChangeParameter, ValueChangeParameter),
-                           AData* data, Value(PrivateData::* getRangeVal)() const,
+                           void (DataManager::* attrChangedSignal)(AData*, const QString&, const QVariant&),
+                           AData* data,
+                           Value(PrivateData::* getRangeVal)() const,
                            void (PrivateData::* setRangeVal)(ValueChangeParameter), 
                            const Value& borderVal,
+                           const QString& attribute,
                            void (DataManagerPrivate::* setSubDataRange)(AData*, ValueChangeParameter, ValueChangeParameter, ValueChangeParameter))
 {
     const auto it = managerPrivate->m_values.find(data);
@@ -286,8 +289,6 @@ static void setBorderValue(DataManager* manager, DataManagerPrivate* managerPriv
 
     (metaData.*setRangeVal)(borderVal);
 
-    emit(manager->*rangeChangedSignal)(data, metaData.minVal, metaData.maxVal);
-
     if (setSubDataRange)
         (managerPrivate->*setSubDataRange)(data, metaData.minVal, metaData.maxVal, metaData.val);
 
@@ -295,33 +296,33 @@ static void setBorderValue(DataManager* manager, DataManagerPrivate* managerPriv
         return;
 
     emit(manager->*dataChangedSignal)(data);
-    emit(manager->*valueChangedSignal)(data, metaData.val);
+    emit(manager->*attrChangedSignal)(data, attribute, metaData.val);
 }
 
 template <class ValueChangeParameter, class DataManagerPrivate, class DataManager, class Value, class PrivateData>
 static void setMinimumValue(DataManager* manager, DataManagerPrivate* managerPrivate,
                             void (DataManager::* dataChangedSignal)(AData*),
-                            void (DataManager::* valueChangedSignal)(AData*, ValueChangeParameter),
-                            void (DataManager::* rangeChangedSignal)(AData*, ValueChangeParameter, ValueChangeParameter),
+                            void (DataManager::* valueChangedSignal)(AData*, const QString&, const QVariant&),
                             AData* data, const Value& minVal)
 {
     void (DataManagerPrivate:: * setSubDataRange)(AData*, ValueChangeParameter, ValueChangeParameter, ValueChangeParameter) = 0;
     setBorderValue<ValueChangeParameter, DataManagerPrivate, DataManager, Value, PrivateData>
-        (manager, managerPrivate, dataChangedSignal, valueChangedSignal, rangeChangedSignal, data, 
-         &DataManagerPrivate::Data::minimumValue, &DataManagerPrivate::Data::setMinimumValue, minVal, setSubDataRange);
+        (manager, managerPrivate, dataChangedSignal, valueChangedSignal, data, 
+         &DataManagerPrivate::Data::minimumValue, &DataManagerPrivate::Data::setMinimumValue, 
+         minVal, AAbstractDataManager::minimumAttribute, setSubDataRange);
 }
 
 template <class ValueChangeParameter, class DataManagerPrivate, class DataManager, class Value, class PrivateData>
 static void setMaximumValue(DataManager* manager, DataManagerPrivate* managerPrivate,
                             void (DataManager::* dataChangedSignal)(AData*),
-                            void (DataManager::* valueChangedSignal)(AData*, ValueChangeParameter),
-                            void (DataManager::* rangeChangedSignal)(AData*, ValueChangeParameter, ValueChangeParameter),
+                            void (DataManager::* valueChangedSignal)(AData*, const QString&, const QVariant&),
                             AData* data, const Value& maxVal)
 {
     void (DataManagerPrivate:: * setSubDataRange)(AData*, ValueChangeParameter, ValueChangeParameter, ValueChangeParameter) = 0;
     setBorderValue<ValueChangeParameter, DataManagerPrivate, DataManager, Value, PrivateData>
-        (manager, managerPrivate, dataChangedSignal, valueChangedSignal, rangeChangedSignal, data,
-         &DataManagerPrivate::Data::maximumValue, &DataManagerPrivate::Data::setMaximumValue, maxVal, setSubDataRange);
+        (manager, managerPrivate, dataChangedSignal, valueChangedSignal, data,
+         &DataManagerPrivate::Data::maximumValue, &DataManagerPrivate::Data::setMaximumValue,
+         maxVal, AAbstractDataManager::maximumAttribute, setSubDataRange);
 }
 
 class AMetaEnumWrapper : public QObject
@@ -543,19 +544,37 @@ AFloatDataManager::~AFloatDataManager()
     clear();
 }
 
-float AFloatDataManager::value(const AData* data) const
+int AFloatDataManager::getType() const
 {
-    return getValue<float>(d_ptr->m_values, data, 0.0);
+    return QMetaType::Float;
+}
+
+QVariant AFloatDataManager::getValue(AData* data) const
+{
+    return ::getValue<float>(d_ptr->m_values, data, 0.0f);
+}
+
+QVariant AFloatDataManager::getAttribute(AData* data, const QString& attribute) const
+{
+    if (attribute.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+        return minimum(data);
+    if (attribute.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+        return maximum(data);
+    if (attribute.compare(singleStepAttribute, Qt::CaseInsensitive) == 0)
+        return singleStep(data);
+    if (attribute.compare(decimalsAttribute, Qt::CaseInsensitive) == 0)
+        return decimals(data);
+    return QVariant();
 }
 
 float AFloatDataManager::minimum(const AData* data) const
 {
-    return getMinimum<float>(d_ptr->m_values, data, 0.0);
+    return getMinimum<float>(d_ptr->m_values, data, 0.0f);
 }
 
 float AFloatDataManager::maximum(const AData* data) const
 {
-    return getMaximum<float>(d_ptr->m_values, data, 0.0);
+    return getMaximum<float>(d_ptr->m_values, data, 0.0f);
 }
 
 float AFloatDataManager::singleStep(const AData* data) const
@@ -568,6 +587,61 @@ int AFloatDataManager::decimals(const AData* data) const
     return getData<int>(d_ptr->m_values, &AFloatDataManagerPrivate::Data::decimals, data, 0);
 }
 
+void AFloatDataManager::setAttribute(AData* data, const QString& attribute, const QVariant& value)
+{
+    if (attribute.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setMinimumValue<float, AFloatDataManagerPrivate, AFloatDataManager, float, AFloatDataManagerPrivate::Data>
+            (this, d_ptr.data(), &AFloatDataManager::dataChanged, &AFloatDataManager::attributeChanged, data, value.toFloat());
+    }
+    else if (attribute.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setMaximumValue<float, AFloatDataManagerPrivate, AFloatDataManager, float, AFloatDataManagerPrivate::Data>
+            (this, d_ptr.data(), &AFloatDataManager::dataChanged, &AFloatDataManager::attributeChanged, data, value.toFloat());
+    }
+    else if (attribute.compare(singleStepAttribute, Qt::CaseInsensitive) == 0)
+    {
+        const AFloatDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
+        if (it == d_ptr->m_values.end())
+            return;
+
+        float step = value.toFloat();
+        AFloatDataManagerPrivate::Data metaData = it.value();
+        if (step < 0)
+            step = 0;
+
+        if (metaData.singleStep == step)
+            return;
+
+        metaData.singleStep = step;
+        it.value() = metaData;
+
+        emit attributeChanged(data, singleStepAttribute, metaData.singleStep);
+    }
+    else if (attribute.compare(decimalsAttribute, Qt::CaseInsensitive) == 0)
+    {
+        const AFloatDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
+        if (it == d_ptr->m_values.end())
+            return;
+
+        int prec = value.toInt();
+        AFloatDataManagerPrivate::Data metaData = it.value();
+        if (prec > 13)
+            prec = 13;
+        else if (prec < 0)
+            prec = 0;
+
+        if (metaData.decimals == prec)
+            return;
+
+        metaData.decimals = prec;
+
+        it.value() = metaData;
+
+        emit attributeChanged(data, decimalsAttribute, metaData.decimals);
+    }
+}
+
 QString AFloatDataManager::toString(const AData* data) const
 {
     const AFloatDataManagerPrivate::DataValueMap::const_iterator it = d_ptr->m_values.constFind(data);
@@ -576,83 +650,13 @@ QString AFloatDataManager::toString(const AData* data) const
     return QString::number(it.value().val, 'f', it.value().decimals);
 }
 
-void AFloatDataManager::setValue(AData* data, float val)
+void AFloatDataManager::setValue(AData* data, const QVariant& val)
 {
-    void (AFloatDataManagerPrivate:: * setSubDataValue)(AData*, float) = 0;
+    void (AFloatDataManagerPrivate:: * setSubDataValue)(AData*, float) = nullptr;
     setValueInRange<float, AFloatDataManagerPrivate, AFloatDataManager, float>(this, d_ptr.data(),
                                                                                &AFloatDataManager::dataChanged,
                                                                                &AFloatDataManager::valueChanged,
                                                                                data, val, setSubDataValue);
-}
-
-void AFloatDataManager::setSingleStep(AData* data, float step)
-{
-    const AFloatDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
-    if (it == d_ptr->m_values.end())
-        return;
-
-    AFloatDataManagerPrivate::Data metaData = it.value();
-    if (step < 0)
-        step = 0;
-
-    if (metaData.singleStep == step)
-        return;
-
-    metaData.singleStep = step;
-    it.value() = metaData;
-
-    emit singleStepChanged(data, metaData.singleStep);
-}
-
-void AFloatDataManager::setDecimals(AData* data, int prec)
-{
-    const AFloatDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
-    if (it == d_ptr->m_values.end())
-        return;
-
-    AFloatDataManagerPrivate::Data metaData = it.value();
-
-    if (prec > 13)
-        prec = 13;
-    else if (prec < 0)
-        prec = 0;
-
-    if (metaData.decimals == prec)
-        return;
-
-    metaData.decimals = prec;
-
-    it.value() = metaData;
-
-    emit decimalsChanged(data, metaData.decimals);
-}
-
-void AFloatDataManager::setMinimum(AData* data, float minVal)
-{
-    setMinimumValue<float, AFloatDataManagerPrivate, AFloatDataManager, float, AFloatDataManagerPrivate::Data>(this, d_ptr.data(),
-                                                                                                               &AFloatDataManager::dataChanged,
-                                                                                                               &AFloatDataManager::valueChanged,
-                                                                                                               &AFloatDataManager::rangeChanged,
-                                                                                                               data, minVal);
-}
-
-void AFloatDataManager::setMaximum(AData* data, float maxVal)
-{
-    setMaximumValue<float, AFloatDataManagerPrivate, AFloatDataManager, float, AFloatDataManagerPrivate::Data>(this, d_ptr.data(),
-                                                                                                               &AFloatDataManager::dataChanged,
-                                                                                                               &AFloatDataManager::valueChanged,
-                                                                                                               &AFloatDataManager::rangeChanged,
-                                                                                                               data, maxVal);
-}
-
-void AFloatDataManager::setRange(AData* data, float minVal, float maxVal)
-{
-    void (AFloatDataManagerPrivate:: * setSubDataRange)(AData*, float, float, float) = 0;
-    setBorderValues<float, AFloatDataManagerPrivate, AFloatDataManager, float>(this, d_ptr.data(),
-                                                                               &AFloatDataManager::dataChanged,
-                                                                               &AFloatDataManager::valueChanged,
-                                                                               &AFloatDataManager::rangeChanged,
-                                                                               data, minVal, maxVal, setSubDataRange);
 }
 
 void AFloatDataManager::initializeData(AData* data)
@@ -709,11 +713,6 @@ ADoubleDataManager::~ADoubleDataManager()
     clear();
 }
 
-double ADoubleDataManager::value(const AData* data) const
-{
-    return getValue<double>(d_ptr->m_values, data, 0.0);
-}
-
 double ADoubleDataManager::minimum(const AData* data) const
 {
     return getMinimum<double>(d_ptr->m_values, data, 0.0);
@@ -734,6 +733,83 @@ int ADoubleDataManager::decimals(const AData* data) const
     return getData<int>(d_ptr->m_values, &ADoubleDataManagerPrivate::Data::decimals, data, 0);
 }
 
+int ADoubleDataManager::getType() const
+{
+    return QMetaType::Double;
+}
+
+QVariant ADoubleDataManager::getValue(AData* data) const
+{
+    return ::getValue<double>(d_ptr->m_values, data, 0.0);
+}
+
+QVariant ADoubleDataManager::getAttribute(AData* data, const QString& attribute) const
+{
+    if (attribute.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+        return minimum(data);
+    if (attribute.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+        return maximum(data);
+    if (attribute.compare(singleStepAttribute, Qt::CaseInsensitive) == 0)
+        return singleStep(data);
+    if (attribute.compare(decimalsAttribute, Qt::CaseInsensitive) == 0)
+        return decimals(data);
+    return QVariant();
+}
+
+void ADoubleDataManager::setAttribute(AData* data, const QString& attribute, const QVariant& value)
+{
+    if (attribute.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setMinimumValue<double, ADoubleDataManagerPrivate, ADoubleDataManager, double, ADoubleDataManagerPrivate::Data>
+            (this, d_ptr.data(), &ADoubleDataManager::dataChanged, &ADoubleDataManager::attributeChanged, data, value.toDouble());
+    }
+    else if (attribute.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setMaximumValue<double, ADoubleDataManagerPrivate, ADoubleDataManager, double, ADoubleDataManagerPrivate::Data>
+            (this, d_ptr.data(), &ADoubleDataManager::dataChanged, &ADoubleDataManager::attributeChanged, data, value.toDouble());
+    }
+    else if (attribute.compare(singleStepAttribute, Qt::CaseInsensitive) == 0)
+    {
+        const ADoubleDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
+        if (it == d_ptr->m_values.end())
+            return;
+
+        double step = value.toDouble();
+        ADoubleDataManagerPrivate::Data metaData = it.value();
+        if (step < 0)
+            step = 0;
+
+        if (metaData.singleStep == step)
+            return;
+
+        metaData.singleStep = step;
+        it.value() = metaData;
+
+        emit attributeChanged(data, singleStepAttribute, metaData.singleStep);
+    }
+    else if (attribute.compare(decimalsAttribute, Qt::CaseInsensitive) == 0)
+    {
+        const ADoubleDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
+        if (it == d_ptr->m_values.end())
+            return;
+
+        int prec = value.toInt();
+        ADoubleDataManagerPrivate::Data metaData = it.value();
+        if (prec > 13)
+            prec = 13;
+        else if (prec < 0)
+            prec = 0;
+
+        if (metaData.decimals == prec)
+            return;
+
+        metaData.decimals = prec;
+        it.value() = metaData;
+
+        emit attributeChanged(data, decimalsAttribute, metaData.decimals);
+    }
+}
+
 QString ADoubleDataManager::toString(const AData* data) const
 {
     const ADoubleDataManagerPrivate::DataValueMap::const_iterator it = d_ptr->m_values.constFind(data);
@@ -742,85 +818,13 @@ QString ADoubleDataManager::toString(const AData* data) const
     return QString::number(it.value().val, 'f', it.value().decimals);
 }
 
-void ADoubleDataManager::setValue(AData* data, double val)
+void ADoubleDataManager::setValue(AData* data, const QVariant& val)
 {
     void (ADoubleDataManagerPrivate:: * setSubDataValue)(AData*, double) = 0;
     setValueInRange<double, ADoubleDataManagerPrivate, ADoubleDataManager, double>(this, d_ptr.data(),
                                                                                    &ADoubleDataManager::dataChanged,
                                                                                    &ADoubleDataManager::valueChanged,
                                                                                    data, val, setSubDataValue);
-}
-
-void ADoubleDataManager::setSingleStep(AData* data, double step)
-{
-    const ADoubleDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
-    if (it == d_ptr->m_values.end())
-        return;
-
-    ADoubleDataManagerPrivate::Data metaData = it.value();
-
-    if (step < 0)
-        step = 0;
-
-    if (metaData.singleStep == step)
-        return;
-
-    metaData.singleStep = step;
-
-    it.value() = metaData;
-
-    emit singleStepChanged(data, metaData.singleStep);
-}
-
-void ADoubleDataManager::setDecimals(AData* data, int prec)
-{
-    const ADoubleDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
-    if (it == d_ptr->m_values.end())
-        return;
-
-    ADoubleDataManagerPrivate::Data metaData = it.value();
-
-    if (prec > 13)
-        prec = 13;
-    else if (prec < 0)
-        prec = 0;
-
-    if (metaData.decimals == prec)
-        return;
-
-    metaData.decimals = prec;
-
-    it.value() = metaData;
-
-    emit decimalsChanged(data, metaData.decimals);
-}
-
-void ADoubleDataManager::setMinimum(AData* data, double minVal)
-{
-    setMinimumValue<double, ADoubleDataManagerPrivate, ADoubleDataManager, double, ADoubleDataManagerPrivate::Data>(this, d_ptr.data(),
-                                                                                                                    &ADoubleDataManager::dataChanged,
-                                                                                                                    &ADoubleDataManager::valueChanged,
-                                                                                                                    &ADoubleDataManager::rangeChanged,
-                                                                                                                    data, minVal);
-}
-
-void ADoubleDataManager::setMaximum(AData* data, double maxVal)
-{
-    setMaximumValue<double, ADoubleDataManagerPrivate, ADoubleDataManager, double, ADoubleDataManagerPrivate::Data>(this, d_ptr.data(),
-                                                                                                                    &ADoubleDataManager::dataChanged,
-                                                                                                                    &ADoubleDataManager::valueChanged,
-                                                                                                                    &ADoubleDataManager::rangeChanged,
-                                                                                                                    data, maxVal);
-}
-
-void ADoubleDataManager::setRange(AData* data, double minVal, double maxVal)
-{
-    void (ADoubleDataManagerPrivate:: * setSubDataRange)(AData*, double, double, double) = 0;
-    setBorderValues<double, ADoubleDataManagerPrivate, ADoubleDataManager, double>(this, d_ptr.data(),
-                                                                                   &ADoubleDataManager::dataChanged,
-                                                                                   &ADoubleDataManager::valueChanged,
-                                                                                   &ADoubleDataManager::rangeChanged,
-                                                                                   data, minVal, maxVal, setSubDataRange);
 }
 
 void ADoubleDataManager::initializeData(AData* data)
@@ -861,14 +865,21 @@ AStringDataManager::~AStringDataManager()
     clear();
 }
 
-QString AStringDataManager::value(const AData* data) const
+int AStringDataManager::getType() const
 {
-    return getValue<QString>(d_ptr->m_values, data);
+    return QMetaType::QString;
 }
 
-QRegExp AStringDataManager::regExp(const AData* data) const
+QVariant AStringDataManager::getValue(AData* data) const
 {
-    return getData<QRegExp>(d_ptr->m_values, &AStringDataManagerPrivate::Data::regExp, data, QRegExp());
+    return ::getValue<QString>(d_ptr->m_values, data);
+}
+
+QVariant AStringDataManager::getAttribute(AData* data, const QString& name) const
+{
+    if (name.compare(regExpAttribute, Qt::CaseInsensitive) == 0)
+        return getData<QRegExp>(d_ptr->m_values, &AStringDataManagerPrivate::Data::regExp, data, QRegExp());
+    return QVariant();
 }
 
 QString AStringDataManager::toString(const AData* data) const
@@ -879,14 +890,14 @@ QString AStringDataManager::toString(const AData* data) const
     return it.value().val;
 }
 
-void AStringDataManager::setValue(AData* data, const QString& val)
+void AStringDataManager::setValue(AData* data, const QVariant& value)
 {
     const AStringDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
     if (it == d_ptr->m_values.end())
         return;
 
     AStringDataManagerPrivate::Data metaData = it.value();
-
+    const QString val = value.toString();
     if (metaData.val == val)
         return;
 
@@ -901,22 +912,25 @@ void AStringDataManager::setValue(AData* data, const QString& val)
     emit valueChanged(data, metaData.val);
 }
 
-void AStringDataManager::setRegExp(AData* data, const QRegExp& regExp)
+void AStringDataManager::setAttribute(AData* data, const QString& name, const QVariant& val)
 {
     const AStringDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
     if (it == d_ptr->m_values.end())
         return;
 
     AStringDataManagerPrivate::Data metaData = it.value();
+    if (name.compare(regExpAttribute, Qt::CaseInsensitive) == 0)
+    {
+        const QRegExp regExp = val.toRegExp();
+        if (metaData.regExp == regExp)
+            return;
 
-    if (metaData.regExp == regExp)
-        return;
+        metaData.regExp = regExp;
 
-    metaData.regExp = regExp;
+        it.value() = metaData;
+    }
 
-    it.value() = metaData;
-
-    emit regExpChanged(data, metaData.regExp);
+    emit attributeChanged(data, name, val);
 }
 
 void AStringDataManager::initializeData(AData* data)
@@ -953,9 +967,14 @@ AStringListDataManager::~AStringListDataManager()
     clear();
 }
 
-QStringList AStringListDataManager::value(const AData* data) const
+int AStringListDataManager::getType() const
 {
-    return getValue<QStringList>(d_ptr->m_values, data);
+    return QMetaType::QStringList;
+}
+
+QVariant AStringListDataManager::getValue(AData* data) const
+{
+    return ::getValue<QStringList>(d_ptr->m_values, data);
 }
 
 QString AStringListDataManager::toString(const AData* data) const
@@ -977,14 +996,14 @@ QString AStringListDataManager::toString(const AData* data) const
     return str;
 }
 
-void AStringListDataManager::setValue(AData* data, const QStringList& val)
+void AStringListDataManager::setValue(AData* data, const QVariant& value)
 {
     const AStringListDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
     if (it == d_ptr->m_values.end())
         return;
 
     AStringListDataManagerPrivate::Data metaData = it.value();
-
+    const QStringList val = value.toStringList();
     if (metaData.val == val)
         return;
 
@@ -1007,35 +1026,6 @@ void AStringListDataManager::uninitializeData(AData* data)
 }
 
 // ABoolDataManager
-//     Return an icon containing a check box indicator
-static QIcon drawCheckBox(bool value)
-{
-    QStyleOptionButton opt;
-    opt.state |= value ? QStyle::State_On : QStyle::State_Off;
-    opt.state |= QStyle::State_Enabled;
-    const QStyle* style = QApplication::style();
-    // Figure out size of an indicator and make sure it is not scaled down in a list view item
-    // by making the pixmap as big as a list view icon and centering the indicator in it.
-    // (if it is smaller, it can't be helped)
-    const int indicatorWidth = style->pixelMetric(QStyle::PM_IndicatorWidth, &opt);
-    const int indicatorHeight = style->pixelMetric(QStyle::PM_IndicatorHeight, &opt);
-    const int listViewIconSize = indicatorWidth;
-    const int pixmapWidth = indicatorWidth;
-    const int pixmapHeight = qMax(indicatorHeight, listViewIconSize);
-
-    opt.rect = QRect(0, 0, indicatorWidth, indicatorHeight);
-    QPixmap pixmap = QPixmap(pixmapWidth, pixmapHeight);
-    pixmap.fill(Qt::transparent);
-    {
-        // Center?
-        const int xoff = (pixmapWidth > indicatorWidth) ? (pixmapWidth - indicatorWidth) / 2 : 0;
-        const int yoff = (pixmapHeight > indicatorHeight) ? (pixmapHeight - indicatorHeight) / 2 : 0;
-        QPainter painter(&pixmap);
-        painter.translate(xoff, yoff);
-        style->drawPrimitive(QStyle::PE_IndicatorCheckBox, &opt, &painter);
-    }
-    return QIcon(pixmap);
-}
 
 class ABoolDataManagerPrivate
 {
@@ -1045,12 +1035,9 @@ public:
     ABoolDataManagerPrivate();
 
     QMap<const AData*, bool> m_values;
-    const QIcon m_checkedIcon;
-    const QIcon m_uncheckedIcon;
 };
 
-ABoolDataManagerPrivate::ABoolDataManagerPrivate() : m_checkedIcon(drawCheckBox(true)),
-m_uncheckedIcon(drawCheckBox(false))
+ABoolDataManagerPrivate::ABoolDataManagerPrivate()
 {
 }
 
@@ -1065,7 +1052,12 @@ ABoolDataManager::~ABoolDataManager()
     clear();
 }
 
-bool ABoolDataManager::value(const AData* data) const
+int ABoolDataManager::getType() const
+{
+    return QMetaType::Bool;
+}
+
+QVariant ABoolDataManager::getValue(AData* data) const
 {
     return d_ptr->m_values.value(data, false);
 }
@@ -1081,21 +1073,12 @@ QString ABoolDataManager::toString(const AData* data) const
     return it.value() ? trueText : falseText;
 }
 
-QIcon ABoolDataManager::valueIcon(const AData* data) const
+void ABoolDataManager::setValue(AData* data, const QVariant& val)
 {
-    const QMap<const AData*, bool>::const_iterator it = d_ptr->m_values.constFind(data);
-    if (it == d_ptr->m_values.constEnd())
-        return QIcon();
-
-    return it.value() ? d_ptr->m_checkedIcon : d_ptr->m_uncheckedIcon;
-}
-
-void ABoolDataManager::setValue(AData* data, bool val)
-{
-    setSimpleValue<bool, bool, ABoolDataManager>(d_ptr->m_values, this,
-                                                 &ABoolDataManager::dataChanged,
-                                                 &ABoolDataManager::valueChanged,
-                                                 data, val);
+    setSimpleValue<bool, ABoolDataManager>(d_ptr->m_values, this,
+                                           &ABoolDataManager::dataChanged,
+                                           &ABoolDataManager::valueChanged,
+                                           data, val);
 }
 
 void ABoolDataManager::initializeData(AData* data)
@@ -1161,11 +1144,6 @@ ADateDataManager::~ADateDataManager()
     clear();
 }
 
-QDate ADateDataManager::value(const AData* data) const
-{
-    return getValue<QDate>(d_ptr->m_values, data);
-}
-
 QDate ADateDataManager::minimum(const AData* data) const
 {
     return getMinimum<QDate>(d_ptr->m_values, data);
@@ -1176,6 +1154,25 @@ QDate ADateDataManager::maximum(const AData* data) const
     return getMaximum<QDate>(d_ptr->m_values, data);
 }
 
+int ADateDataManager::getType() const
+{
+    return QMetaType::QDate;
+}
+
+QVariant ADateDataManager::getValue(AData* data) const
+{
+    return ::getValue<QDate>(d_ptr->m_values, data);
+}
+
+QVariant ADateDataManager::getAttribute(AData* data, const QString& attribute) const
+{
+    if (attribute.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+        return minimum(data);
+    if (attribute.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+        return maximum(data);
+    return QVariant();
+}
+
 QString ADateDataManager::toString(const AData* data) const
 {
     const ADateDataManagerPrivate::DataValueMap::const_iterator it = d_ptr->m_values.constFind(data);
@@ -1184,7 +1181,7 @@ QString ADateDataManager::toString(const AData* data) const
     return it.value().val.toString(d_ptr->m_format);
 }
 
-void ADateDataManager::setValue(AData* data, const QDate& val)
+void ADateDataManager::setValue(AData* data, const QVariant& val)
 {
     void (ADateDataManagerPrivate:: * setSubDataValue)(AData*, const QDate&) = 0;
     setValueInRange<const QDate&, ADateDataManagerPrivate, ADateDataManager, const QDate>(this, d_ptr.data(),
@@ -1193,33 +1190,20 @@ void ADateDataManager::setValue(AData* data, const QDate& val)
                                                                                           data, val, setSubDataValue);
 }
 
-void ADateDataManager::setMinimum(AData* data, const QDate& minVal)
+void ADateDataManager::setAttribute(AData* data, const QString& name, const QVariant& val)
 {
-    setMinimumValue<const QDate&, ADateDataManagerPrivate, ADateDataManager, QDate, ADateDataManagerPrivate::Data>(this, d_ptr.data(),
-                                                                                                                   &ADateDataManager::dataChanged,
-                                                                                                                   &ADateDataManager::valueChanged,
-                                                                                                                   &ADateDataManager::rangeChanged,
-                                                                                                                   data, minVal);
-}
+    if (name.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setMinimumValue<const QDate&, ADateDataManagerPrivate, ADateDataManager, QDate, ADateDataManagerPrivate::Data>
+            (this, d_ptr.data(), &ADateDataManager::dataChanged, &ADateDataManager::attributeChanged, data, val.toDate());
 
-void ADateDataManager::setMaximum(AData* data, const QDate& maxVal)
-{
-    setMaximumValue<const QDate&, ADateDataManagerPrivate, ADateDataManager, QDate, ADateDataManagerPrivate::Data>(this, d_ptr.data(),
-                                                                                                                   &ADateDataManager::dataChanged,
-                                                                                                                   &ADateDataManager::valueChanged,
-                                                                                                                   &ADateDataManager::rangeChanged,
-                                                                                                                   data, maxVal);
-}
+    }
+    else if (name.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setMaximumValue<const QDate&, ADateDataManagerPrivate, ADateDataManager, QDate, ADateDataManagerPrivate::Data>
+            (this, d_ptr.data(), &ADateDataManager::dataChanged, &ADateDataManager::attributeChanged, data, val.toDate());
 
-void ADateDataManager::setRange(AData* data, const QDate& minVal, const QDate& maxVal)
-{
-    void (ADateDataManagerPrivate:: * setSubDataRange)(AData*, const QDate&,
-                                                       const QDate&, const QDate&) = 0;
-    setBorderValues<const QDate&, ADateDataManagerPrivate, ADateDataManager, QDate>(this, d_ptr.data(),
-                                                                                    &ADateDataManager::dataChanged,
-                                                                                    &ADateDataManager::valueChanged,
-                                                                                    &ADateDataManager::rangeChanged,
-                                                                                    data, minVal, maxVal, setSubDataRange);
+    }
 }
 
 void ADateDataManager::initializeData(AData* data)
@@ -1243,8 +1227,31 @@ public:
 
     const QString m_format;
 
-    typedef QMap<const AData*, QTime> DataValueMap;
-    DataValueMap m_values;
+    struct Data
+    {
+        QTime val{ QTime::currentTime() };
+        QTime minVal{ QTime(0, 0, 0, 0) };
+        QTime maxVal{ QTime(23, 59, 59, 999) };
+        QTime minimumValue() const
+        {
+            return minVal;
+        }
+        QTime maximumValue() const
+        {
+            return maxVal;
+        }
+        void setMinimumValue(const QTime& newMinVal)
+        {
+            setSimpleMinimumData(this, newMinVal);
+        }
+        void setMaximumValue(const QTime& newMaxVal)
+        {
+            setSimpleMaximumData(this, newMaxVal);
+        }
+    };
+
+    typedef QMap<const AData*, Data> DataValueMap;
+    QMap<const AData*, Data> m_values;
 };
 
 ATimeDataManagerPrivate::ATimeDataManagerPrivate(ATimeDataManager* q) : q_ptr(q),
@@ -1262,9 +1269,33 @@ ATimeDataManager::~ATimeDataManager()
     clear();
 }
 
-QTime ATimeDataManager::value(const AData* data) const
+QTime ATimeDataManager::minimum(const AData* data) const
 {
-    return d_ptr->m_values.value(data, QTime());
+    return getMinimum<QTime>(d_ptr->m_values, data);
+}
+
+QTime ATimeDataManager::maximum(const AData* data) const
+{
+    return getMaximum<QTime>(d_ptr->m_values, data);
+}
+
+int ATimeDataManager::getType() const
+{
+    return QMetaType::QTime;
+}
+
+QVariant ATimeDataManager::getValue(AData* data) const
+{
+    return ::getValue<QTime>(d_ptr->m_values, data);
+}
+
+QVariant ATimeDataManager::getAttribute(AData* data, const QString& attribute) const
+{
+    if (attribute.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+        return minimum(data);
+    if (attribute.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+        return maximum(data);
+    return QVariant();
 }
 
 QString ATimeDataManager::toString(const AData* data) const
@@ -1272,20 +1303,37 @@ QString ATimeDataManager::toString(const AData* data) const
     const ATimeDataManagerPrivate::DataValueMap::const_iterator it = d_ptr->m_values.constFind(data);
     if (it == d_ptr->m_values.constEnd())
         return QString();
-    return it.value().toString(d_ptr->m_format);
+    return it.value().val.toString(d_ptr->m_format);
 }
 
-void ATimeDataManager::setValue(AData* data, const QTime& val)
+void ATimeDataManager::setValue(AData* data, const QVariant& val)
 {
-    setSimpleValue<const QTime&, QTime, ATimeDataManager>(d_ptr->m_values, this,
-                                                          &ATimeDataManager::dataChanged,
-                                                          &ATimeDataManager::valueChanged,
-                                                          data, val);
+    void (ATimeDataManagerPrivate:: * setSubDataValue)(AData*, const QTime&) = 0;
+    setValueInRange<const QTime&, ATimeDataManagerPrivate, ATimeDataManager, const QTime>(this, d_ptr.data(),
+                                                                                          &ATimeDataManager::dataChanged,
+                                                                                          &ATimeDataManager::valueChanged,
+                                                                                          data, val, setSubDataValue);
+}
+
+void ATimeDataManager::setAttribute(AData* data, const QString& name, const QVariant& val)
+{
+    if (name.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setMinimumValue<const QTime&, ATimeDataManagerPrivate, ATimeDataManager, QTime, ATimeDataManagerPrivate::Data>
+            (this, d_ptr.data(), &ATimeDataManager::dataChanged, &ATimeDataManager::attributeChanged, data, val.toTime());
+
+    }
+    else if (name.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setMaximumValue<const QTime&, ATimeDataManagerPrivate, ATimeDataManager, QTime, ATimeDataManagerPrivate::Data>
+            (this, d_ptr.data(), &ATimeDataManager::dataChanged, &ATimeDataManager::attributeChanged, data, val.toTime());
+
+    }
 }
 
 void ATimeDataManager::initializeData(AData* data)
 {
-    d_ptr->m_values[data] = QTime::currentTime();
+    d_ptr->m_values[data] = ATimeDataManagerPrivate::Data();
 }
 
 void ATimeDataManager::uninitializeData(AData* data)
@@ -1323,7 +1371,12 @@ ADateTimeDataManager::~ADateTimeDataManager()
     clear();
 }
 
-QDateTime ADateTimeDataManager::value(const AData* data) const
+int ADateTimeDataManager::getType() const
+{
+    return QMetaType::QDateTime;
+}
+
+QVariant ADateTimeDataManager::getValue(AData* data) const
 {
     return d_ptr->m_values.value(data, QDateTime());
 }
@@ -1336,12 +1389,12 @@ QString ADateTimeDataManager::toString(const AData* data) const
     return it.value().toString(d_ptr->m_format);
 }
 
-void ADateTimeDataManager::setValue(AData* data, const QDateTime& val)
+void ADateTimeDataManager::setValue(AData* data, const QVariant& val)
 {
-    setSimpleValue<const QDateTime&, QDateTime, ADateTimeDataManager>(d_ptr->m_values, this,
-                                                                      &ADateTimeDataManager::dataChanged,
-                                                                      &ADateTimeDataManager::valueChanged,
-                                                                      data, val);
+    setSimpleValue<QDateTime, ADateTimeDataManager>(d_ptr->m_values, this,
+                                                    &ADateTimeDataManager::dataChanged,
+                                                    &ADateTimeDataManager::valueChanged,
+                                                    data, val);
 }
 
 void ADateTimeDataManager::initializeData(AData* data)
@@ -1378,7 +1431,12 @@ AKeySequenceDataManager::~AKeySequenceDataManager()
     clear();
 }
 
-QKeySequence AKeySequenceDataManager::value(const AData* data) const
+int AKeySequenceDataManager::getType() const
+{
+    return QMetaType::QKeySequence;
+}
+
+QVariant AKeySequenceDataManager::getValue(AData* data) const
 {
     return d_ptr->m_values.value(data, QKeySequence());
 }
@@ -1391,12 +1449,12 @@ QString AKeySequenceDataManager::toString(const AData* data) const
     return it.value().toString(QKeySequence::NativeText);
 }
 
-void AKeySequenceDataManager::setValue(AData* data, const QKeySequence& val)
+void AKeySequenceDataManager::setValue(AData* data, const QVariant& val)
 {
-    setSimpleValue<const QKeySequence&, QKeySequence, AKeySequenceDataManager>(d_ptr->m_values, this,
-                                                                               &AKeySequenceDataManager::dataChanged,
-                                                                               &AKeySequenceDataManager::valueChanged,
-                                                                               data, val);
+    setSimpleValue<QKeySequence, AKeySequenceDataManager>(d_ptr->m_values, this,
+                                                          &AKeySequenceDataManager::dataChanged,
+                                                          &AKeySequenceDataManager::valueChanged,
+                                                          data, val);
 }
 
 void AKeySequenceDataManager::initializeData(AData* data)
@@ -1431,7 +1489,12 @@ ACharDataManager::~ACharDataManager()
     clear();
 }
 
-QChar ACharDataManager::value(const AData* data) const
+int ACharDataManager::getType() const
+{
+    return QMetaType::QChar;
+}
+
+QVariant ACharDataManager::getValue(AData* data) const
 {
     return d_ptr->m_values.value(data, QChar());
 }
@@ -1445,12 +1508,12 @@ QString ACharDataManager::toString(const AData* data) const
     return c.isNull() ? QString() : QString(c);
 }
 
-void ACharDataManager::setValue(AData* data, const QChar& val)
+void ACharDataManager::setValue(AData* data, const QVariant& val)
 {
-    setSimpleValue<const QChar&, QChar, ACharDataManager>(d_ptr->m_values, this,
-                                                          &ACharDataManager::dataChanged,
-                                                          &ACharDataManager::valueChanged,
-                                                          data, val);
+    setSimpleValue<QChar, ACharDataManager>(d_ptr->m_values, this,
+                                            &ACharDataManager::dataChanged,
+                                            &ACharDataManager::valueChanged,
+                                            data, val);
 }
 
 void ACharDataManager::initializeData(AData* data)
@@ -1510,7 +1573,12 @@ AEnumDataManager* ALocaleDataManager::subEnumDataManager() const
     return d_ptr->m_enumDataManager;
 }
 
-QLocale ALocaleDataManager::value(const AData* data) const
+int ALocaleDataManager::getType() const
+{
+    return QMetaType::QLocale;
+}
+
+QVariant ALocaleDataManager::getValue(AData* data) const
 {
     return d_ptr->m_values.value(data, QLocale());
 }
@@ -1542,13 +1610,14 @@ QString ALocaleDataManager::toString(const AData* data) const
     return tr("%1, %2").arg(languageName, countryName);
 }
 
-void ALocaleDataManager::setValue(AData* data, const QLocale& val)
+void ALocaleDataManager::setValue(AData* data, const QVariant& l)
 {
     const ALocaleDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
     if (it == d_ptr->m_values.end())
         return;
 
     const QLocale loc = it.value();
+    const QLocale val = l.toLocale();
     if (loc == val)
         return;
 
@@ -1692,7 +1761,12 @@ AIntDataManager* APointDataManager::subIntDataManager() const
     return d_ptr->m_intDataManager;
 }
 
-QPoint APointDataManager::value(const AData* data) const
+int APointDataManager::getType() const
+{
+    return QMetaType::QPoint;
+}
+
+QVariant APointDataManager::getValue(AData* data) const
 {
     return d_ptr->m_values.value(data, QPoint());
 }
@@ -1706,12 +1780,13 @@ QString APointDataManager::toString(const AData* data) const
     return tr("(%1, %2)").arg(QString::number(v.x())).arg(QString::number(v.y()));
 }
 
-void APointDataManager::setValue(AData* data, const QPoint& val)
+void APointDataManager::setValue(AData* data, const QVariant& pnt)
 {
     const APointDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
     if (it == d_ptr->m_values.end())
         return;
 
+    const QPoint val = pnt.toPoint();
     if (it.value() == val)
         return;
 
@@ -1840,14 +1915,26 @@ ADoubleDataManager* APointFDataManager::subDoubleDataManager() const
     return d_ptr->m_doubleDataManager;
 }
 
-QPointF APointFDataManager::value(const AData* data) const
+QVariant APointFDataManager::getValue(AData* data) const
 {
-    return getValue<QPointF>(d_ptr->m_values, data);
+    return ::getValue<QPointF>(d_ptr->m_values, data);
+}
+
+QVariant APointFDataManager::getAttribute(AData* data, const QString& attribute) const
+{
+    if (attribute.compare(decimalsAttribute, Qt::CaseInsensitive) == 0)
+        return decimals(data);
+    return QVariant();
 }
 
 int APointFDataManager::decimals(const AData* data) const
 {
     return getData<int>(d_ptr->m_values, &APointFDataManagerPrivate::Data::decimals, data, 0);
+}
+
+int APointFDataManager::getType() const
+{
+    return QMetaType::QPointF;
 }
 
 QString APointFDataManager::toString(const AData* data) const
@@ -1860,12 +1947,13 @@ QString APointFDataManager::toString(const AData* data) const
     return tr("(%1, %2)").arg(QString::number(v.x(), 'f', dec)).arg(QString::number(v.y(), 'f', dec));
 }
 
-void APointFDataManager::setValue(AData* data, const QPointF& val)
+void APointFDataManager::setValue(AData* data, const QVariant& pntf)
 {
     const APointFDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
     if (it == d_ptr->m_values.end())
         return;
 
+    const QPointF val = pntf.toPointF();
     if (it.value().val == val)
         return;
 
@@ -1877,7 +1965,7 @@ void APointFDataManager::setValue(AData* data, const QPointF& val)
     emit valueChanged(data, val);
 }
 
-void APointFDataManager::setDecimals(AData* data, int prec)
+void APointFDataManager::setAttribute(AData* data, const QString& name, const QVariant& val)
 {
     const APointFDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
     if (it == d_ptr->m_values.end())
@@ -1885,21 +1973,25 @@ void APointFDataManager::setDecimals(AData* data, int prec)
 
     APointFDataManagerPrivate::Data metaData = it.value();
 
-    if (prec > 13)
-        prec = 13;
-    else if (prec < 0)
-        prec = 0;
+    if (name.compare(decimalsAttribute, Qt::CaseInsensitive) == 0)
+    {
+        double prec = val.toDouble();
+        if (prec > 13)
+            prec = 13;
+        else if (prec < 0)
+            prec = 0;
 
-    if (metaData.decimals == prec)
-        return;
+        if (metaData.decimals == prec)
+            return;
 
-    metaData.decimals = prec;
-    d_ptr->m_doubleDataManager->setDecimals(d_ptr->m_dataToX[data], prec);
-    d_ptr->m_doubleDataManager->setDecimals(d_ptr->m_dataToY[data], prec);
+        metaData.decimals = prec;
+        d_ptr->m_doubleDataManager->setAttribute(d_ptr->m_dataToX[data], decimalsAttribute, prec);
+        d_ptr->m_doubleDataManager->setAttribute(d_ptr->m_dataToY[data], decimalsAttribute, prec);
 
-    it.value() = metaData;
+        it.value() = metaData;
 
-    emit decimalsChanged(data, metaData.decimals);
+        emit attributeChanged(data, decimalsAttribute, metaData.decimals);
+    }
 }
 
 void APointFDataManager::initializeData(AData* data)
@@ -1908,7 +2000,7 @@ void APointFDataManager::initializeData(AData* data)
 
     AData* xProp = d_ptr->m_doubleDataManager->addData();
     xProp->setName(tr("X"));
-    d_ptr->m_doubleDataManager->setDecimals(xProp, decimals(data));
+    d_ptr->m_doubleDataManager->setAttribute(xProp, decimalsAttribute, decimals(data));
     d_ptr->m_doubleDataManager->setValue(xProp, 0);
     d_ptr->m_dataToX[data] = xProp;
     d_ptr->m_xToData[xProp] = data;
@@ -1916,7 +2008,7 @@ void APointFDataManager::initializeData(AData* data)
 
     AData* yProp = d_ptr->m_doubleDataManager->addData();
     yProp->setName(tr("Y"));
-    d_ptr->m_doubleDataManager->setDecimals(yProp, decimals(data));
+    d_ptr->m_doubleDataManager->setAttribute(yProp, decimalsAttribute, decimals(data));
     d_ptr->m_doubleDataManager->setValue(yProp, 0);
     d_ptr->m_dataToY[data] = yProp;
     d_ptr->m_yToData[yProp] = data;
@@ -2025,17 +2117,6 @@ void ASizeDataManagerPrivate::setValue(AData* data, const QSize& val)
     m_intDataManager->setValue(m_dataToH.value(data), val.height());
 }
 
-void ASizeDataManagerPrivate::setRange(AData* data,
-                                       const QSize& minVal, const QSize& maxVal, const QSize& val)
-{
-    AData* wData = m_dataToW.value(data);
-    AData* hData = m_dataToH.value(data);
-    m_intDataManager->setRange(wData, minVal.width(), maxVal.width());
-    m_intDataManager->setValue(wData, val.width());
-    m_intDataManager->setRange(hData, minVal.height(), maxVal.height());
-    m_intDataManager->setValue(hData, val.height());
-}
-
 ASizeDataManager::ASizeDataManager(QObject* parent)
     : AAbstractDataManager(parent), d_ptr(new ASizeDataManagerPrivate)
 {
@@ -2058,9 +2139,18 @@ AIntDataManager* ASizeDataManager::subIntDataManager() const
     return d_ptr->m_intDataManager;
 }
 
-QSize ASizeDataManager::value(const AData* data) const
+QVariant ASizeDataManager::getValue(AData* data) const
 {
-    return getValue<QSize>(d_ptr->m_values, data);
+    return ::getValue<QSize>(d_ptr->m_values, data);
+}
+
+QVariant ASizeDataManager::getAttribute(AData* data, const QString& attribute) const
+{
+    if (attribute.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+        return minimum(data);
+    if (attribute.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+        return maximum(data);
+    return QVariant();
 }
 
 QSize ASizeDataManager::minimum(const AData* data) const
@@ -2073,6 +2163,11 @@ QSize ASizeDataManager::maximum(const AData* data) const
     return getMaximum<QSize>(d_ptr->m_values, data);
 }
 
+int ASizeDataManager::getType() const
+{
+    return QMetaType::QSize;
+}
+
 QString ASizeDataManager::toString(const AData* data) const
 {
     const ASizeDataManagerPrivate::DataValueMap::const_iterator it = d_ptr->m_values.constFind(data);
@@ -2082,7 +2177,7 @@ QString ASizeDataManager::toString(const AData* data) const
     return tr("%1 x %2").arg(QString::number(v.width())).arg(QString::number(v.height()));
 }
 
-void ASizeDataManager::setValue(AData* data, const QSize& val)
+void ASizeDataManager::setValue(AData* data, const QVariant& val)
 {
     setValueInRange<const QSize&, ASizeDataManagerPrivate, ASizeDataManager, const QSize>(this, d_ptr.data(),
                                                                                           &ASizeDataManager::dataChanged,
@@ -2090,37 +2185,22 @@ void ASizeDataManager::setValue(AData* data, const QSize& val)
                                                                                           data, val, &ASizeDataManagerPrivate::setValue);
 }
 
-void ASizeDataManager::setMinimum(AData* data, const QSize& minVal)
+void ASizeDataManager::setAttribute(AData* data, const QString& name, const QVariant& val)
 {
-    setBorderValue<const QSize&, ASizeDataManagerPrivate, ASizeDataManager, QSize, ASizeDataManagerPrivate::Data>(this, d_ptr.data(),
-                                                                                                                  &ASizeDataManager::dataChanged,
-                                                                                                                  &ASizeDataManager::valueChanged,
-                                                                                                                  &ASizeDataManager::rangeChanged,
-                                                                                                                  data,
-                                                                                                                  &ASizeDataManagerPrivate::Data::minimumValue,
-                                                                                                                  &ASizeDataManagerPrivate::Data::setMinimumValue,
-                                                                                                                  minVal, &ASizeDataManagerPrivate::setRange);
-}
-
-void ASizeDataManager::setMaximum(AData* data, const QSize& maxVal)
-{
-    setBorderValue<const QSize&, ASizeDataManagerPrivate, ASizeDataManager, QSize, ASizeDataManagerPrivate::Data>(this, d_ptr.data(),
-                                                                                                                  &ASizeDataManager::dataChanged,
-                                                                                                                  &ASizeDataManager::valueChanged,
-                                                                                                                  &ASizeDataManager::rangeChanged,
-                                                                                                                  data,
-                                                                                                                  &ASizeDataManagerPrivate::Data::maximumValue,
-                                                                                                                  &ASizeDataManagerPrivate::Data::setMaximumValue,
-                                                                                                                  maxVal, &ASizeDataManagerPrivate::setRange);
-}
-
-void ASizeDataManager::setRange(AData* data, const QSize& minVal, const QSize& maxVal)
-{
-    setBorderValues<const QSize&, ASizeDataManagerPrivate, ASizeDataManager, QSize>(this, d_ptr.data(),
-                                                                                    &ASizeDataManager::dataChanged,
-                                                                                    &ASizeDataManager::valueChanged,
-                                                                                    &ASizeDataManager::rangeChanged,
-                                                                                    data, minVal, maxVal, &ASizeDataManagerPrivate::setRange);
+    if (name.compare(minimumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setBorderValue<const QSize&, ASizeDataManagerPrivate, ASizeDataManager, QSize, ASizeDataManagerPrivate::Data>
+            (this, d_ptr.data(), &ASizeDataManager::dataChanged, &ASizeDataManager::attributeChanged, data,
+             &ASizeDataManagerPrivate::Data::minimumValue, &ASizeDataManagerPrivate::Data::setMinimumValue,
+             val.toSize(), minimumAttribute, nullptr);
+    }
+    else if (name.compare(maximumAttribute, Qt::CaseInsensitive) == 0)
+    {
+        setBorderValue<const QSize&, ASizeDataManagerPrivate, ASizeDataManager, QSize, ASizeDataManagerPrivate::Data>
+            (this, d_ptr.data(), &ASizeDataManager::dataChanged, &ASizeDataManager::attributeChanged, data,
+             &ASizeDataManagerPrivate::Data::maximumValue, &ASizeDataManagerPrivate::Data::setMaximumValue,
+             val.toSize(), maximumAttribute, nullptr);
+    }
 }
 
 void ASizeDataManager::initializeData(AData* data)
@@ -2130,7 +2210,7 @@ void ASizeDataManager::initializeData(AData* data)
     AData* wProp = d_ptr->m_intDataManager->addData();
     wProp->setName(tr("Width"));
     d_ptr->m_intDataManager->setValue(wProp, 0);
-    d_ptr->m_intDataManager->setMinimum(wProp, 0);
+    d_ptr->m_intDataManager->setAttribute(wProp, minimumAttribute, 0);
     d_ptr->m_dataToW[data] = wProp;
     d_ptr->m_wToData[wProp] = data;
     data->addSubData(wProp);
@@ -2138,7 +2218,7 @@ void ASizeDataManager::initializeData(AData* data)
     AData* hProp = d_ptr->m_intDataManager->addData();
     hProp->setName(tr("Height"));
     d_ptr->m_intDataManager->setValue(hProp, 0);
-    d_ptr->m_intDataManager->setMinimum(hProp, 0);
+    d_ptr->m_intDataManager->setAttribute(hProp, minimumAttribute, 0);
     d_ptr->m_dataToH[data] = hProp;
     d_ptr->m_hToData[hProp] = data;
     data->addSubData(hProp);

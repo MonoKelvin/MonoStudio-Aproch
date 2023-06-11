@@ -31,6 +31,16 @@
 
 APROCH_NAMESPACE_BEGIN
 
+const QString AAbstractDataManager::constraintAttribute(QLatin1String("constraint"));
+const QString AAbstractDataManager::singleStepAttribute(QLatin1String("singleStep"));
+const QString AAbstractDataManager::decimalsAttribute(QLatin1String("decimals"));
+const QString AAbstractDataManager::enumIconsAttribute(QLatin1String("enumIcons"));
+const QString AAbstractDataManager::enumNamesAttribute(QLatin1String("enumNames"));
+const QString AAbstractDataManager::flagNamesAttribute(QLatin1String("flagNames"));
+const QString AAbstractDataManager::maximumAttribute(QLatin1String("maximum"));
+const QString AAbstractDataManager::minimumAttribute(QLatin1String("minimum"));
+const QString AAbstractDataManager::regExpAttribute(QLatin1String("regExp"));
+
 class AAbstractDataManagerPrivate
 {
 public:
@@ -89,6 +99,20 @@ AData* AAbstractDataManager::addData(const QString& name)
     }
 
     return data;
+}
+
+QVariant AAbstractDataManager::getAttribute(AData* data, const QString& attribute) const
+{
+    Q_UNUSED(data);
+    Q_UNUSED(attribute);
+    return QVariant();
+}
+
+void AAbstractDataManager::setAttribute(AData* data, const QString& attribute, const QVariant& value)
+{
+    Q_UNUSED(data);
+    Q_UNUSED(attribute);
+    Q_UNUSED(value);
 }
 
 AData* AAbstractDataManager::createData()

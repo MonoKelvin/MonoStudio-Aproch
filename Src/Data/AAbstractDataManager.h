@@ -43,6 +43,18 @@ public:
     explicit AAbstractDataManager(QObject* parent = nullptr);
     ~AAbstractDataManager();
 
+    /** some default attribute names */
+
+    static const QString constraintAttribute;       // "constraint"
+    static const QString enumIconsAttribute;        // "enumIcons"
+    static const QString enumNamesAttribute;        // "enumNames"
+    static const QString flagNamesAttribute;        // "flagNames"
+    static const QString maximumAttribute;          // "maximum"
+    static const QString minimumAttribute;          // "minimum"
+    static const QString singleStepAttribute;       // "singleStep"
+    static const QString decimalsAttribute;         // "decimals"
+    static const QString regExpAttribute;           // "regExp"
+
     /** @brief 获取所有数据的列表 */
     QSet<AData*> getDataList() const;
 
@@ -51,6 +63,22 @@ public:
 
     /** @brief 添加数据 */
     AData* addData(const QString& name = QString());
+
+    /** @brief 获取数据类型 @see QMetaType */
+    virtual int getType() const = 0;
+
+    /** @brief 获取数据值 */
+    virtual QVariant getValue(AData* data) const = 0;
+
+    /** @brief 获取数据中的指定属性的值 */
+    virtual QVariant getAttribute(AData* data, const QString& attribute) const;
+
+public Q_SLOTS:
+    /** @brief 设置数据值 */
+    virtual void setValue(AData* data, const QVariant& value) = 0;
+
+    /** @brief 设置数据中的属性值 */
+    virtual void setAttribute(AData* data, const QString& attribute, const QVariant& value);
 
 Q_SIGNALS:
     /** @brief 信号：当添加子数据时。after为空时插入到parent第一个子节点前 */
@@ -64,6 +92,12 @@ Q_SIGNALS:
 
     /** @brief 信号：数据被析构前 */
     void dataDestroyed(AData* data);
+
+    /** @brief 信号：数据值修改 */
+    void valueChanged(AData* data, const QVariant& val);
+
+    /** @brief 信号：数据中属性值修改 */
+    void attributeChanged(AData* data, const QString& attribute, const QVariant& val);
 
 protected:
     /** @brief 获取指定数据是否被管理，或是否存在真实数据 */
