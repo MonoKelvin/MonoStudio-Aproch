@@ -246,6 +246,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void widgetDestroyed(QObject* obj);
+    void dataDestroyed(AData* data);
 
 private:
     static bool addBindMethod(ADataWidgetBindMethodPtr bindMethod, const char* widgetTypeName);

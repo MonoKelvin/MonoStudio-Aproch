@@ -257,7 +257,11 @@ bool ADataWidgetBindMethod::addBind(const ADWBindParameter& param)
         return false;
 
     if (!hasBind)
+    {
         method->d_func()->params.push_back(param);
+        connect(param.getData()->getDataManager(), &AAbstractDataManager::dataDestroyed,
+                method, &ADataWidgetBindMethod::dataDestroyed);
+    }
 
     return true;
 }
@@ -365,6 +369,20 @@ void ADataWidgetBindMethod::widgetDestroyed(QObject* obj)
     {
         QWidget* widget = iter->getWidget();
         if (widget == obj)
+            iter = d->params.erase(iter);
+        else
+            ++iter;
+    }
+}
+
+void ADataWidgetBindMethod::dataDestroyed(AData* data)
+{
+    Q_D(ADataWidgetBindMethod);
+
+    for (auto iter = d->params.begin(); iter != d->params.end(); )
+    {
+        AData* theData = iter->getData();
+        if (theData == data)
             iter = d->params.erase(iter);
         else
             ++iter;

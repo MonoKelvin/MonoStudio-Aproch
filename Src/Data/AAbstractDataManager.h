@@ -52,6 +52,9 @@ public:
     /** @brief 添加数据 */
     AData* addData(const QString& name = QString());
 
+    /** @brief 获取类型 */
+    virtual int getType() const = 0;
+
 Q_SIGNALS:
     /** @brief 信号：当添加子数据时。after为空时插入到parent第一个子节点前 */
     void dataInserted(AData* data, AData* parent, AData* after);
@@ -94,5 +97,92 @@ private:
     Q_DECLARE_PRIVATE(AAbstractDataManager);
     Q_DISABLE_COPY_MOVE(AAbstractDataManager);
 };
+
+/**
+ * @brief 数据管理器注册类
+ */
+class APROCH_API ADataManagerRegistry
+{
+public:
+    typedef AAbstractDataManager* (*Constructor)(QObject* parent);
+    typedef QMap<int, Constructor> ConstructorMap;
+
+    /** @brief 空构造器 */
+    static const Constructor Null;
+
+    /** @brief 实例化对象 */
+    Q_ALWAYS_INLINE static AAbstractDataManager* newDataManager(int type, QObject* parent = nullptr)
+    {
+        return constructor(type)(parent);
+    }
+
+    /** @brief 注册可实例化的对象 */
+    template<class T>
+    static bool registerDataManager(int type)
+    {
+        Constructor _constructor = [](QObject* parent) -> AAbstractDataManager* { return new T(parent); };
+        return registerDataManager(type, _constructor);
+    }
+
+    /** @brief 注册可实例化的对象 */
+    static bool registerDataManager(int type, Constructor constructor);
+
+    /** @brief 取消注册 */
+    static void unregister(int type);
+
+private:
+    ADataManagerRegistry() noexcept;
+    ADataManagerRegistry(const ADataManagerRegistry&) = delete;
+    ADataManagerRegistry& operator=(const ADataManagerRegistry&) = delete;
+
+private:
+    static const Constructor& constructor(int type);
+    static ConstructorMap& constructors() noexcept;
+    static ConstructorMap MyConstructorMap;
+};
+
+class ADataManagerContainerPrivate;
+
+/**
+ * @brief 数据管理器容器
+ */
+class APROCH_API ADataManagerContainer : public QObject
+{
+    Q_OBJECT;
+public:
+    explicit ADataManagerContainer(QObject* parent = nullptr);
+    ~ADataManagerContainer();
+
+    /** @brief 获取数据管理器，如果不存在则从ADataManagerRegistry中创建 */
+    AAbstractDataManager* getDataManager(int type);
+
+Q_SIGNALS:
+    /** @brief 信号：数据管理器创新增 */
+    void dataManagerAdded(AAbstractDataManager* dataManager);
+
+public Q_SLOTS: 
+    /** @brief 移除管理指定类型的数据管理器 */
+    void removeDataManager(int type);
+
+    /** @brief 移除所有数据管理器 */
+    void removeAll();
+
+private Q_SLOTS:
+    void onDataManagerDestroyed(QObject*);
+
+private:
+    QScopedPointer<ADataManagerContainerPrivate> d_ptr;
+};
+
+/** @brief 定义数据管理器自动注册的宏 */
+#define A_DATA_MANAGER_REGISTER(ClassName, MetaType)                                                \
+    class A##ClassName##_##DataManager##_InitClass                                                  \
+    {                                                                                               \
+    public:                                                                                         \
+        A##ClassName##_##DataManager##_InitClass()                                                  \
+        {                                                                                           \
+            APROCH_PRE_NAMESPACE(ADataManagerRegistry)::registerDataManager<ClassName>(MetaType);   \
+        }                                                                                           \
+    }a##ClassName##_##DataManager##_Instance
 
 APROCH_NAMESPACE_END

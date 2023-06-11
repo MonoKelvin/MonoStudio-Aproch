@@ -37,7 +37,7 @@ class QDateTime;
 class QLocale;
 
 /** @brief 数值型数据管理器的类声明宏 */
-#define A_DECLARE_NUMBER_DATAMANAGER(T, DataType)                         \
+#define A_DECLARE_NUMBER_DATAMANAGER(T, DataType, MetaType)               \
     class T##Private;                                                     \
     class APROCH_API T : public AAbstractDataManager                      \
     {                                                                     \
@@ -49,6 +49,7 @@ class QLocale;
         DataType minimum(const AData *data) const;                        \
         DataType maximum(const AData *data) const;                        \
         DataType singleStep(const AData *data) const;                     \
+        int getType() const override { return MetaType; }                 \
     public Q_SLOTS:                                                       \
         void setValue(AData *data, DataType val);                         \
         void setMinimum(AData *data, DataType minVal);                    \
@@ -171,14 +172,14 @@ class QLocale;
 
 APROCH_NAMESPACE_BEGIN
 
-A_DECLARE_NUMBER_DATAMANAGER(AInt8DataManager, qint8);
-A_DECLARE_NUMBER_DATAMANAGER(AUInt8DataManager, quint8);
-A_DECLARE_NUMBER_DATAMANAGER(AInt16DataManager, qint16);
-A_DECLARE_NUMBER_DATAMANAGER(AUInt16DataManager, quint16);
-A_DECLARE_NUMBER_DATAMANAGER(AIntDataManager, qint32);
-A_DECLARE_NUMBER_DATAMANAGER(AUIntDataManager, quint32);
-A_DECLARE_NUMBER_DATAMANAGER(ALongLongDataManager, qint64);
-A_DECLARE_NUMBER_DATAMANAGER(AULongLongDataManager, quint64);
+A_DECLARE_NUMBER_DATAMANAGER(AInt8DataManager, qint8, QMetaType::Char);
+A_DECLARE_NUMBER_DATAMANAGER(AUInt8DataManager, quint8, QMetaType::UChar);
+A_DECLARE_NUMBER_DATAMANAGER(AInt16DataManager, qint16, QMetaType::Short);
+A_DECLARE_NUMBER_DATAMANAGER(AUInt16DataManager, quint16, QMetaType::UShort);
+A_DECLARE_NUMBER_DATAMANAGER(AIntDataManager, qint32, QMetaType::Int);
+A_DECLARE_NUMBER_DATAMANAGER(AUIntDataManager, quint32, QMetaType::UInt);
+A_DECLARE_NUMBER_DATAMANAGER(ALongLongDataManager, qint64, QMetaType::LongLong);
+A_DECLARE_NUMBER_DATAMANAGER(AULongLongDataManager, quint64, QMetaType::ULongLong);
 
 class ABoolDataManagerPrivate;
 
@@ -190,6 +191,10 @@ public:
     ~ABoolDataManager();
 
     bool value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::Bool;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, bool val);
@@ -223,6 +228,10 @@ public:
     float maximum(const AData* data) const;
     float singleStep(const AData* data) const;
     int decimals(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::Float;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, float val);
@@ -263,6 +272,10 @@ public:
     double maximum(const AData* data) const;
     double singleStep(const AData* data) const;
     int decimals(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::Double;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, double val);
@@ -300,6 +313,10 @@ public:
 
     QString value(const AData* data) const;
     QRegExp regExp(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QString;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QString& val);
@@ -330,6 +347,10 @@ public:
     ~AStringListDataManager();
 
     QStringList value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QStringList;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QStringList& val);
@@ -360,6 +381,10 @@ public:
     QDate value(const AData* data) const;
     QDate minimum(const AData* data) const;
     QDate maximum(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QDate;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QDate& val);
@@ -391,6 +416,10 @@ public:
     ~ATimeDataManager();
 
     QTime value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QTime;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QTime& val);
@@ -418,6 +447,10 @@ public:
     ~ADateTimeDataManager();
 
     QDateTime value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QDateTime;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QDateTime& val);
@@ -445,6 +478,10 @@ public:
     ~AKeySequenceDataManager();
 
     QKeySequence value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QKeySequence;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QKeySequence& val);
@@ -472,6 +509,10 @@ public:
     ~ACharDataManager();
 
     QChar value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QChar;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QChar& val);
@@ -503,6 +544,10 @@ public:
     AEnumDataManager* subEnumDataManager() const;
 
     QLocale value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QLocale;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QLocale& val);
@@ -536,6 +581,10 @@ public:
     AIntDataManager* subIntDataManager() const;
 
     QPoint value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QPoint;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QPoint& val);
@@ -571,6 +620,10 @@ public:
 
     QPointF value(const AData* data) const;
     int decimals(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QPointF;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QPointF& val);
@@ -608,6 +661,10 @@ public:
     QSize value(const AData* data) const;
     QSize minimum(const AData* data) const;
     QSize maximum(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QSize;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QSize& val);
@@ -649,6 +706,10 @@ public:
     QSizeF minimum(const AData* data) const;
     QSizeF maximum(const AData* data) const;
     int decimals(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QSizeF;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QSizeF& val);
@@ -690,6 +751,10 @@ public:
 
     QRect value(const AData* data) const;
     QRect constraint(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QRect;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QRect& val);
@@ -727,6 +792,10 @@ public:
     QRectF value(const AData* data) const;
     QRectF constraint(const AData* data) const;
     int decimals(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QRectF;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QRectF& val);
@@ -764,6 +833,11 @@ public:
     int value(const AData* data) const;
     QStringList enumNames(const AData* data) const;
     QMap<int, QIcon> enumIcons(const AData* data) const;
+    int getType() const override
+    {
+        // todo
+        return QMetaType::UnknownType;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, int val);
@@ -800,6 +874,11 @@ public:
 
     int value(const AData* data) const;
     QStringList flagNames(const AData* data) const;
+    int getType() const override
+    {
+        // TODO
+        return QMetaType::UnknownType;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, int val);
@@ -837,6 +916,10 @@ public:
     AEnumDataManager* subEnumDataManager() const;
 
     QSizePolicy value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QSizePolicy;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QSizePolicy& val);
@@ -873,6 +956,10 @@ public:
     ABoolDataManager* subBoolDataManager() const;
 
     QFont value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QFont;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QFont& val);
@@ -912,6 +999,10 @@ public:
     AIntDataManager* subIntDataManager() const;
 
     QColor value(const AData* data) const;
+    int getType() const override
+    {
+        return QMetaType::QColor;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QColor& val);
@@ -947,6 +1038,10 @@ public:
 #ifndef QT_NO_CURSOR
     QCursor value(const AData* data) const;
 #endif
+    int getType() const override
+    {
+        return QMetaType::QCursor;
+    }
 
 public Q_SLOTS:
     void setValue(AData* data, const QCursor& val);
@@ -964,5 +1059,72 @@ private:
     Q_DECLARE_PRIVATE(ACursorDataManager);
     Q_DISABLE_COPY_MOVE(ACursorDataManager);
 };
+
+/** @brief 获取数据对应的真实数据 */
+template<class DataType, class DataManagerType>
+DataType aDataValue(AData* data, const DataType& def = DataType())
+{
+    if (!data)
+        return def;
+    DataManagerType* dm = dynamic_cast<DataManagerType*>(data->getDataManager());
+    if (!dm)
+        return def;
+    return dm->value(data);
+}
+
+Q_ALWAYS_INLINE bool aBoolValue(AData* data, bool def = false)
+{
+    return aDataValue<bool, ABoolDataManager>(data, def);
+}
+Q_ALWAYS_INLINE int aIntValue(AData* data, int def = 0)
+{
+    return aDataValue<int, AIntDataManager>(data, def);
+}
+Q_ALWAYS_INLINE float aFloatValue(AData* data, float def = 0.0f)
+{
+    return aDataValue<float, AFloatDataManager>(data, def);
+}
+Q_ALWAYS_INLINE double aDoubleValue(AData* data, double def = 0.0)
+{
+    return aDataValue<double, ADoubleDataManager>(data, def);
+}
+Q_ALWAYS_INLINE QString aStringValue(AData* data, const QString& def = QString())
+{
+    return aDataValue<QString, AStringDataManager>(data, def);
+}
+
+/** @brief 获取数据对应的真实数据 */
+template<class DataType, class DataManagerType>
+bool aSetDataValue(AData* data, const DataType& val)
+{
+    if (!data)
+        return false;
+    DataManagerType* dm = dynamic_cast<DataManagerType*>(data->getDataManager());
+    if (!dm)
+        return false;
+    dm->setValue(data, val);
+    return true;
+}
+
+Q_ALWAYS_INLINE bool aSetBoolValue(AData* data, bool val)
+{
+    return aSetDataValue<bool, ABoolDataManager>(data, val);
+}
+Q_ALWAYS_INLINE bool aSetIntValue(AData* data, int val)
+{
+    return aSetDataValue<int, AIntDataManager>(data, val);
+}
+Q_ALWAYS_INLINE bool aSetFloatValue(AData* data, float val)
+{
+    return aSetDataValue<float, AFloatDataManager>(data, val);
+}
+Q_ALWAYS_INLINE bool aSetDoubleValue(AData* data, double val)
+{
+    return aSetDataValue<double, ADoubleDataManager>(data, val);
+}
+Q_ALWAYS_INLINE bool aSetStringValue(AData* data, const QString& val)
+{
+    return aSetDataValue<QString, AStringDataManager>(data, val);
+}
 
 APROCH_NAMESPACE_END

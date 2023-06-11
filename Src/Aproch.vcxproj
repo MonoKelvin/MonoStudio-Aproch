@@ -175,6 +175,7 @@
     <ClCompile Include="Widget\AVerticalLabel.cpp" />
     <ClCompile Include="Widget\AWheelColorPicker.cpp" />
     <ClCompile Include="Widget\AWheelColorPickerWidget.cpp" />
+    <ClCompile Include="Widget\AWidgetFactory.cpp" />
     <ClCompile Include="Widget\AWindow.cpp" />
     <ClCompile Include="Widget\Style\AStyleDefines.cpp" />
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp" />
@@ -201,6 +202,7 @@
     <QtMoc Include="Data\ADataManager.h" />
     <QtMoc Include="Data\ADataWidgetBindMethod.h" />
     <QtMoc Include="Data\ADWBindMethods.h" />
+    <ClInclude Include="Widget\AWidgetFactory.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
     <QtMoc Include="WinUI\Private\AWinUIStyle.h" />
     <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h" />

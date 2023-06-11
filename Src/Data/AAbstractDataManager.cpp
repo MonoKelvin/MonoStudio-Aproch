@@ -111,4 +111,112 @@ void AAbstractDataManager::_destroyData(AData* data)
     }
 }
 
+// ----------------------------------------------------------------------------------------------------
+
+const ADataManagerRegistry::Constructor ADataManagerRegistry::Null = [](QObject*) -> AAbstractDataManager* { return nullptr; };
+ADataManagerRegistry::ConstructorMap ADataManagerRegistry::MyConstructorMap;
+
+ADataManagerRegistry::ADataManagerRegistry() noexcept
+{
+}
+
+bool ADataManagerRegistry::registerDataManager(int type, Constructor constructor)
+{
+    if (constructors().contains(type))
+    {
+        qWarning() << AStr("The data manager of type '%1' has been registered and will be overwritten "
+                           "by a new data manager.").arg(QString::fromLatin1(QMetaType::typeName(type)));
+    }
+
+    constructors()[type] = constructor;
+    return true;
+}
+
+void ADataManagerRegistry::unregister(int type)
+{
+    constructors().remove(type);
+}
+
+const ADataManagerRegistry::Constructor& ADataManagerRegistry::constructor(int type)
+{
+    if (constructors().contains(type))
+        return constructors()[type];
+    return Null;
+}
+
+ADataManagerRegistry::ConstructorMap& ADataManagerRegistry::constructors() noexcept
+{
+    return MyConstructorMap;
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+class ADataManagerContainerPrivate
+{
+public:
+    QMap<int, AAbstractDataManager*> dataManagerMap;
+};
+
+ADataManagerContainer::ADataManagerContainer(QObject* parent)
+    : QObject(parent)
+    , d_ptr(new ADataManagerContainerPrivate)
+{
+
+}
+
+ADataManagerContainer::~ADataManagerContainer()
+{
+    removeAll();
+}
+
+AAbstractDataManager* ADataManagerContainer::getDataManager(int type)
+{
+    AAbstractDataManager* dataManager = d_ptr->dataManagerMap.value(type, nullptr);
+    if (nullptr != dataManager)
+        return dataManager;
+
+    dataManager = ADataManagerRegistry::newDataManager(type, this);
+    if (nullptr == dataManager)
+    {
+        qWarning() << AStr("The data manager of type '%1' does not exist.").arg(type);
+        return nullptr;
+    }
+
+    connect(dataManager, &AAbstractDataManager::destroyed, this, &ADataManagerContainer::onDataManagerDestroyed);
+
+    // TODO: 支持多线程
+    d_ptr->dataManagerMap[type] = dataManager;
+
+    emit dataManagerAdded(dataManager);
+
+    return dataManager;
+}
+
+void ADataManagerContainer::removeDataManager(int type)
+{
+    AAbstractDataManager* dataManager = d_ptr->dataManagerMap.value(type, nullptr);
+    if (nullptr != dataManager)
+        delete dataManager;
+}
+
+void ADataManagerContainer::removeAll()
+{
+    QMap<int, AAbstractDataManager*> tempMap = d_ptr->dataManagerMap;
+    d_ptr->dataManagerMap.clear();
+
+    qDeleteAll(tempMap);
+}
+
+void ADataManagerContainer::onDataManagerDestroyed(QObject* obj)
+{
+    for (auto iter = d_ptr->dataManagerMap.begin(); iter != d_ptr->dataManagerMap.end(); ++iter)
+    {
+        if (iter.value() == obj)
+        {
+            d_ptr->dataManagerMap.erase(iter);
+            return;
+        }
+    }
+}
+
 APROCH_NAMESPACE_END

@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QComboBox>
 
+#include <QItemEditorCreator>
 WinUIWindow::WinUIWindow(QWidget *parent)
     : QWidget(parent)
 {
@@ -26,6 +27,8 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     ATextBox* textBox2 = new ATextBox(this);
     textBox2->setStyleSheet(AStr("border-radius: 7px; border-bottom:4px solid red outset;"));
     layout()->addWidget(textBox2);
+
+    auto* factory = QItemEditorFactory::defaultFactory();
 
     {
         AIntDataManager* IntDM = new AIntDataManager(this);

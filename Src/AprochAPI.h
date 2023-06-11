@@ -113,6 +113,7 @@
 #include "Widget/AVerticalLabel.h"
 #include "Widget/APromptWidget.h"
 #include "Widget/AAvatar.h"
+#include "Widget/AWidgetFactory.h"
 
 #include "Data/header.inc"
 

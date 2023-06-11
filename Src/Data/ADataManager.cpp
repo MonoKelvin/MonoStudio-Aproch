@@ -4422,6 +4422,41 @@ void ACursorDataManager::uninitializeData(AData* data)
     d_ptr->m_values.remove(data);
 }
 
+// ----------------------------------------------------------------------------------------------------
+
+A_DATA_MANAGER_REGISTER(AInt8DataManager, QMetaType::Char);
+A_DATA_MANAGER_REGISTER(AUInt8DataManager, QMetaType::UChar);
+A_DATA_MANAGER_REGISTER(AInt16DataManager, QMetaType::Short);
+A_DATA_MANAGER_REGISTER(AUInt16DataManager, QMetaType::UShort);
+A_DATA_MANAGER_REGISTER(AIntDataManager, QMetaType::Int);
+A_DATA_MANAGER_REGISTER(AUIntDataManager, QMetaType::UInt);
+A_DATA_MANAGER_REGISTER(ALongLongDataManager, QMetaType::LongLong);
+A_DATA_MANAGER_REGISTER(AULongLongDataManager, QMetaType::ULongLong);
+A_DATA_MANAGER_REGISTER(AFloatDataManager, QMetaType::Float);
+A_DATA_MANAGER_REGISTER(ADoubleDataManager, QMetaType::Double);
+A_DATA_MANAGER_REGISTER(ABoolDataManager, QMetaType::Bool);
+A_DATA_MANAGER_REGISTER(AStringDataManager, QMetaType::QString);
+A_DATA_MANAGER_REGISTER(AStringListDataManager, QMetaType::QStringList);
+A_DATA_MANAGER_REGISTER(ADateDataManager, QMetaType::QDate);
+A_DATA_MANAGER_REGISTER(ATimeDataManager, QMetaType::QTime);
+A_DATA_MANAGER_REGISTER(ADateTimeDataManager, QMetaType::QDateTime);
+A_DATA_MANAGER_REGISTER(AKeySequenceDataManager, QMetaType::QKeySequence);
+A_DATA_MANAGER_REGISTER(ACharDataManager, QMetaType::QChar);
+A_DATA_MANAGER_REGISTER(ALocaleDataManager, QMetaType::QLocale);
+A_DATA_MANAGER_REGISTER(APointDataManager, QMetaType::QPoint);
+A_DATA_MANAGER_REGISTER(APointFDataManager, QMetaType::QPointF);
+A_DATA_MANAGER_REGISTER(ASizeDataManager, QMetaType::QSize);
+A_DATA_MANAGER_REGISTER(ASizeFDataManager, QMetaType::QSizeF);
+A_DATA_MANAGER_REGISTER(ARectDataManager, QMetaType::QRect);
+A_DATA_MANAGER_REGISTER(ARectFDataManager, QMetaType::QRectF);
+//A_DATA_MANAGER_REGISTER(AEnumDataManager, QMetaType::Enum);   // TODO
+//A_DATA_MANAGER_REGISTER(AFlagDataManager, QMetaType::QFlag);
+A_DATA_MANAGER_REGISTER(ASizePolicyDataManager, QMetaType::QSizePolicy);
+A_DATA_MANAGER_REGISTER(AFontDataManager, QMetaType::QFont);
+A_DATA_MANAGER_REGISTER(AColorDataManager, QMetaType::QColor);
+A_DATA_MANAGER_REGISTER(ACursorDataManager, QMetaType::QCursor);
+
+
 APROCH_NAMESPACE_END
 
 #include "ADataManager.moc"
