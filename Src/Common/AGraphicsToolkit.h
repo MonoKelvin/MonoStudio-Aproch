@@ -66,9 +66,6 @@ public:
     /** @brief 将字体绘制到图片上 */
     static QPixmap drawFontToPixmap(const QFont& font, const QSize& size = QSize(16, 16),
                                     int ptSize = 13, const QString& text = QString(QLatin1Char('A')));
-
-    /** @brief 绘制简单勾选框 */
-    static QPixmap drawCheckBox(bool value);
 };
 
 APROCH_NAMESPACE_END

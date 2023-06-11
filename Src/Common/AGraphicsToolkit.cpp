@@ -29,7 +29,6 @@
 #include "stdafx.h"
 #include "AGraphicsToolkit.h"
 
-#include <QApplication>
 #include <QPainterPath>
 #include <QCoreApplication>
 
@@ -231,35 +230,6 @@ QPixmap AGraphicsToolkit::drawFontToPixmap(const QFont& font, const QSize& size,
     p.drawText(QRect(QPoint(0, 0), size), text, t);
 
     return QPixmap::fromImage(img);
-}
-
-QPixmap AGraphicsToolkit::drawCheckBox(bool value)
-{
-    QStyleOptionButton opt;
-    opt.state |= value ? QStyle::State_On : QStyle::State_Off;
-    opt.state |= QStyle::State_Enabled;
-    const QStyle* style = QApplication::style();
-    // Figure out size of an indicator and make sure it is not scaled down in a list view item
-    // by making the pixmap as big as a list view icon and centering the indicator in it.
-    // (if it is smaller, it can't be helped)
-    const int indicatorWidth = style->pixelMetric(QStyle::PM_IndicatorWidth, &opt);
-    const int indicatorHeight = style->pixelMetric(QStyle::PM_IndicatorHeight, &opt);
-    const int listViewIconSize = indicatorWidth;
-    const int pixmapWidth = indicatorWidth;
-    const int pixmapHeight = qMax(indicatorHeight, listViewIconSize);
-
-    opt.rect = QRect(0, 0, indicatorWidth, indicatorHeight);
-    QPixmap pixmap = QPixmap(pixmapWidth, pixmapHeight);
-    pixmap.fill(Qt::transparent);
-    {
-        // Center?
-        const int xoff = (pixmapWidth > indicatorWidth) ? (pixmapWidth - indicatorWidth) / 2 : 0;
-        const int yoff = (pixmapHeight > indicatorHeight) ? (pixmapHeight - indicatorHeight) / 2 : 0;
-        QPainter painter(&pixmap);
-        painter.translate(xoff, yoff);
-        style->drawPrimitive(QStyle::PE_IndicatorCheckBox, &opt, &painter);
-    }
-    return pixmap;
 }
 
 APROCH_NAMESPACE_END
