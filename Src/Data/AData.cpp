@@ -65,7 +65,7 @@ AData::~AData()
     for (AData* data : qAsConst(d_ptr->m_parentItems))
         emit data->d_ptr->m_manager->dataRemoved(this, data);
 
-    emit d_ptr->m_manager->_destroyData(this);
+    d_ptr->m_manager->_destroyData(this);
 
     for (AData* data : qAsConst(d_ptr->m_subItems))
         data->d_ptr->m_parentItems.remove(this);

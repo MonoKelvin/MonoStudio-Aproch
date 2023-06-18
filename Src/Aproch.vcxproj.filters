@@ -254,6 +254,9 @@
     <ClInclude Include="Common\ATimeToolkit.h">
       <Filter>Common\Toolkit</Filter>
     </ClInclude>
+    <ClInclude Include="Widget\AWidgetFactory.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -441,6 +444,9 @@
     </ClCompile>
     <ClCompile Include="Data\ADWBindMethods.cpp">
       <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWidgetFactory.cpp">
+      <Filter>Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

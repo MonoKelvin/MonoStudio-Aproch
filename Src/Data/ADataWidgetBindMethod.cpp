@@ -260,7 +260,8 @@ bool ADataWidgetBindMethod::addBind(const ADWBindParameter& param)
     {
         method->d_func()->params.push_back(param);
         connect(param.getData()->getDataManager(), &AAbstractDataManager::dataDestroyed,
-                method, &ADataWidgetBindMethod::dataDestroyed);
+                method, &ADataWidgetBindMethod::dataDestroyed,
+                Qt::ConnectionType(Qt::AutoConnection | Qt::UniqueConnection));
     }
 
     return true;
