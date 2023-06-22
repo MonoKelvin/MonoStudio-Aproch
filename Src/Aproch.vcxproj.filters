@@ -257,6 +257,9 @@
     <ClInclude Include="Widget\AWidgetFactory.h">
       <Filter>Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Common\AUnorderedPair.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">

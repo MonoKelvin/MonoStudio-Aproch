@@ -195,6 +195,7 @@
     <ClInclude Include="Common\AGraphicsToolkit.h" />
     <ClInclude Include="Common\AReflection.h" />
     <ClInclude Include="Common\ATimeToolkit.h" />
+    <ClInclude Include="Common\AUnorderedPair.h" />
     <ClInclude Include="Common\IContextObject.h" />
     <ClInclude Include="Common\ITextTranslatable.h" />
     <QtMoc Include="Data\AAbstractDataManager.h" />

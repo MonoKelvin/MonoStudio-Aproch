@@ -75,6 +75,7 @@
 #include "Common/AReflection.h"
 #include "Common/AContextContainter.h"
 #include "Common/ACursorDatabase.h"
+#include "Common/AUnorderedPair.h"
 
 // application
 #include "AAction.h"
