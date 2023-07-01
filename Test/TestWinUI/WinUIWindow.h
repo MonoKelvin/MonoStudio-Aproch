@@ -3,7 +3,7 @@
 #include <QtWidgets/QWidget>
 #include "ui_WinUIWindow.h"
 
-class WinUIWindow : public QWidget
+class WinUIWindow : public QMainWindow
 {
     Q_OBJECT
 

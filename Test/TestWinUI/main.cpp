@@ -6,6 +6,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setAttribute(Qt::AA_DontUseNativeMenuBar);
+    a.setOrganizationName(QStringLiteral("Mono Studio"));
 
     //AWinUIStyleEngine::instance()->initStyleTheme();
 

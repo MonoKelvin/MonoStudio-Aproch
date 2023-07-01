@@ -1,4 +1,4 @@
-﻿/****************************************************************************
+/****************************************************************************
  * @file    AprochGlobal.h
  * @date    2021-1-10
  * @author  MonoKelvin
@@ -38,6 +38,15 @@
 
 #include "AprochExportDefine.h"
 
+#define A_QUOTE_X(x) #x
+#define A_QUOTE(x) A_QUOTE_X(x)
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 8, 0))
+#define A_FALLTHROUGH() Q_FALLTHROUGH()
+#else
+#define A_FALLTHROUGH()
+#endif
+
 #if defined(APROCH_NAMESPACE)
 #define APROCH_NAMESPACE aproch
 #endif
@@ -48,12 +57,18 @@
 #define APROCH_USE_NAMESPACE
 #define APROCH_CLASSNAME(classname) classname
 #define APROCH_PRE_NAMESPACE(classname) classname
+#define APROCH_META_CLASSNAME(classname) classname
 #else
 #define APROCH_NAMESPACE_BEGIN namespace APROCH_NAMESPACE {
 #define APROCH_NAMESPACE_END }
 #define APROCH_USE_NAMESPACE using namespace APROCH_NAMESPACE;
 #define APROCH_CLASSNAME(classname) APROCH_NAMESPACE::classname
 #define APROCH_PRE_NAMESPACE(classname) APROCH_NAMESPACE::classname
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#define APROCH_META_CLASSNAME(classname) A_QUOTE(APROCH_NAMESPACE::)classname
+#else
+#define APROCH_META_CLASSNAME(classname) classname
+#endif
 #endif
 
 
@@ -274,6 +289,67 @@ public:                                                                         
 private:                                                                          \
     Q_PROPERTY(_Type_ _Var_ READ get##_FuncName_ WRITE set##_FuncName_)           \
     _Type_ A_M_VAR(_Var_)
+
+#define A_DECLARE_PRIVATE(Class)                         \
+    friend class Class##Private;                         \
+    Class##Private *aproch_d_ptr;                        \
+    Class##Private &aproch_d() { return *aproch_d_ptr; } \
+    const Class##Private &aproch_d() const { return *aproch_d_ptr; }
+
+#define A_DECLARE_PUBLIC(Class)                               \
+    friend class Class;                                       \
+    Class *aproch_p_ptr;                                      \
+    inline void setPublic(Class *ptr) { aproch_p_ptr = ptr; } \
+    Class &aproch_p() { return *aproch_p_ptr; }               \
+    const Class &aproch_p() const { return *aproch_p_ptr; }
+
+#define A_DECLARE_EX_PRIVATE(Class) friend class Class##Private;                                            \
+Class##Private& aproch_d() { return reinterpret_cast<Class##Private &>(*aproch_d_ptr); }                    \
+const Class##Private& aproch_d() const { return reinterpret_cast<const Class##Private &>(*aproch_d_ptr); }
+
+#define A_DECLARE_EX_PUBLIC(Class)                                              \
+friend class Class;                                                             \
+Class& aproch_p() { return static_cast<Class &>(*aproch_p_ptr); }               \
+const Class& aproch_p() const { return static_cast<Class &>(*aproch_p_ptr); }
+
+#define A_INIT_PRIVATE(Class)            \
+    aproch_d_ptr = new Class##Private(); \
+    aproch_d_ptr->setPublic(this)
+
+#define A_D(Class) Class##Private &d = aproch_d()
+#define A_P(Class) Class &p = aproch_p()
+#define A_DELETE_PRIVATE() \
+    delete aproch_d_ptr;   \
+    aproch_d_ptr = nullptr
+
+#if !defined(QStringLiteral)
+#define QStringLiteral(str) QString(QLatin1String(str))
+#endif
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)) && !defined(Q_QDOC)
+class QStringSubset : public QStringView
+{
+public:
+    QStringSubset(const QString* string, int position, int length)
+        : QStringView(&string->constData()[position], length)
+    {
+    }
+    QStringSubset(const QString* string)
+        : QStringView(*string)
+    {
+    }
+    QStringSubset()
+        : QStringView()
+    {
+    }
+    QStringSubset(const QStringView& s)
+        : QStringView(s)
+    {
+    }
+};
+#else
+#define QStringSubset QStringRef
+#endif
 
 /**
  * @brief 继承自QWidget的类如果不实现自己的paintEvent方法，那么该类就无法使用样式表

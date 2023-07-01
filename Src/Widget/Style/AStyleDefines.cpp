@@ -1,4 +1,4 @@
-﻿/****************************************************************************
+/****************************************************************************
  * @file    AStyleDefines.cpp
  * @date    2023-04-08 
  * @author  MonoKelvin
@@ -29,7 +29,78 @@
 #include "stdafx.h"
 #include "AStyleDefines.h"
 
+#include <QProcess>
+
 APROCH_NAMESPACE_BEGIN
+
+// 
+// The most of the following code is copied from Qtitan.
+// 
+// Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+// Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+// 
+
+// Qtitan begin
+
+#ifndef APROCH_NO_PROCESS
+/*!
+Returns system environment variable by \a key from current process.
+*/
+QString getSystemEnvironmentVariable(const QString& key)
+{
+    QStringList all = QProcess::systemEnvironment();
+    for (QStringList::const_iterator it = all.constBegin(); it != all.constEnd(); ++it)
+    {
+        QStringList pair = it->split(QStringLiteral("="));
+        if (pair.size() != 2)
+            continue;
+        if (key.compare(pair[0], Qt::CaseInsensitive) == 0)
+            return pair[1];
+    }
+    return QString();
+}
+
+/*!
+Returns environment variable by \a key from \a process.
+*/
+QString getEnvironmentVariable(QProcess* process, const QString& key)
+{
+    QStringList all = process->environment();
+    for (QStringList::const_iterator it = all.constBegin(); it != all.constEnd(); ++it)
+    {
+        QStringList pair = it->split(QStringLiteral("="));
+        if (pair.size() != 2)
+            continue;
+        if (key.compare(pair[0], Qt::CaseInsensitive) == 0)
+            return pair[1];
+    }
+    return QString();
+}
+
+/*!
+Sets environment variable using \a key and \a value for \a process.
+*/
+void setEnvironmentVariable(QProcess* process, const QString& key, const QString& value)
+{
+    QStringList all = process->environment();
+    QStringList::iterator it = all.begin();
+    for (; it != all.end(); ++it)
+    {
+        QStringList pair = it->split(QStringLiteral("="));
+        if (pair.size() != 2)
+            continue;
+        if (key.compare(pair[0], Qt::CaseInsensitive) == 0)
+            break;
+    }
+    if (it != all.end())
+        *it = QStringLiteral("%1=%2").arg(key).arg(value);
+    else
+        all.push_back(QStringLiteral("%1=%2").arg(key).arg(value));
+    process->setEnvironment(all);
+}
+#endif
+
+// Qtitan end
 
 void SetElidedText(QLabel* label, int maxWidth, Qt::TextElideMode mode)
 {

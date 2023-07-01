@@ -29,6 +29,7 @@
 #pragma once
 #include "AprochGlobal.h"
 
+class QProcess;
 class QLabel;
 
 APROCH_NAMESPACE_BEGIN
@@ -40,6 +41,172 @@ APROCH_NAMESPACE_BEGIN
 #if defined(Q_OS_WIN)
 #pragma comment(lib, "UXTheme.lib")
 #endif
+
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
+// Qtitan begin
+
+enum ESortOrder
+{
+    SortNone,
+    SortAscending,
+    SortDescending
+};
+
+enum EScrollBarsMode
+{
+    ScrollNone,
+    ScrollBoth,
+    ScrollHorizontal,
+    ScrollVertical,
+    ScrollAuto
+};
+
+enum ELinesStyle
+{
+    LinesNone = 0,
+    LinesBoth,
+    LinesBoth2D,
+    LinesHorizontal,
+    LinesHorizontal2D,
+    LinesVertical,
+    LinesVertical2D
+};
+
+enum EScrollItemStyle
+{
+    ScrollByItem,
+    ScrollByPixel
+};
+
+enum EHighlightEffect
+{
+    FlashEffect,
+    AlphaEffect
+};
+
+enum EItemPosition
+{
+    AtNone = 0,
+    AtBeginning,
+    AtEnd
+};
+
+enum ELayoutArea
+{
+    LeftArea = 1,
+    RightArea = 2,
+    TopArea = 3,
+    BottomArea = 4,
+    DefaultArea = LeftArea,
+};
+
+enum EBestFitModeFlag
+{
+    FitToHeader = 1,
+    FitToViewContent = 2,
+    FitToContent = 4,
+    FitToHeaderAndViewContent = FitToHeader | FitToViewContent,
+    FitToHeaderAndContent = FitToHeader | FitToContent
+};
+Q_DECLARE_FLAGS(FBestFitMode, EBestFitModeFlag)
+
+enum ESelectionOperator
+{
+    Empty = 0x0000,
+    Clear = 0x0001,
+    Select = 0x0002,
+    Unselect = 0x0004,
+    Invert = 0x0008,
+    StartCurrent = 0x0010
+};
+Q_DECLARE_FLAGS(FSelectionOperation, ESelectionOperator)
+
+enum EEditStrategy
+{
+    OnFieldChange,
+    OnRowChange
+};
+
+enum EIconApperance
+{
+    IconInvisible = 0,
+    IconOnly,
+    IconAlignLeft,
+    IconAlignRight
+};
+
+enum EExpandingMode
+{
+    Expanded = 0,
+    Compact = 1,
+    Minimal = 2,
+    Popup = 3
+};
+
+enum ETransitionMode
+{
+    Entrance,
+    DrillIn,
+    Suppress
+};
+
+enum EItemDataRoleEx
+{
+    ComboBoxRole = Qt::UserRole + 100,
+    QueryIndexRole
+};
+
+/**
+ * @brief 系统提供的上下文默认颜色
+ */
+enum EContextColor
+{
+    ContextColorNone,
+    ContextColorGreen,
+    ContextColorBlue,
+    ContextColorRed,
+    ContextColorYellow,
+    ContextColorCyan,
+    ContextColorPurple,
+    ContextColorOrange,
+};
+
+enum EDockPanelArea
+{
+    NoDockPanelArea = 0x00,
+    LeftDockPanelArea = 0x01,
+    RightDockPanelArea = 0x02,
+    TopDockPanelArea = 0x04,
+    BottomDockPanelArea = 0x08,
+    InsideDockPanelArea = 0x10,
+    DockPanelArea_Mask = 0xff,
+    AllDockPanelAreas = DockPanelArea_Mask,
+};
+Q_DECLARE_FLAGS(FDockPanelAreas, EDockPanelArea)
+
+enum EDockBarArea
+{
+    DockBarNone = 0,
+    DockBarLeft,
+    DockBarRight,
+    DockBarTop,
+    DockBarBottom,
+    DockBarFloat,
+};
+
+#ifndef APROCH_NO_PROCESS
+APROCH_API QString getSystemEnvironmentVariable(const QString& key);
+APROCH_API QString getEnvironmentVariable(QProcess* process, const QString& key);
+APROCH_API void setEnvironmentVariable(QProcess* process, const QString& key, const QString& value);
+#endif
+
+// Qtitan end
 
 /** @brief 控件可见性状态 */
 enum EWidgetVisiblityState
@@ -76,7 +243,7 @@ using BorderThicknessF = qreal;
 using LineWidth = qint32;
 using LineWidthF = qreal;
 using ForegroundColor = QColor;
-using BackgroundColor = QColor; 
+using BackgroundColor = QColor;
 
 // ------------------------------
 // data stucture defines

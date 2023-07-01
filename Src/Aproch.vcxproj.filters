@@ -27,9 +27,6 @@
     <Filter Include="Widget\Style">
       <UniqueIdentifier>{8bff72af-32aa-400a-8b34-e6f6a228b451}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Widget\Widgets">
-      <UniqueIdentifier>{5e2f0503-cf9f-4eba-b964-ea939fef9fe7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Application\Action">
       <UniqueIdentifier>{29c1ff07-2c30-49c1-b451-e3ac91d868de}</UniqueIdentifier>
     </Filter>
@@ -78,6 +75,18 @@
     <Filter Include="WinUI\Style">
       <UniqueIdentifier>{ad98d920-c39b-47b3-9969-f6ca8407e2d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Widget\Ribbon">
+      <UniqueIdentifier>{3f47ba0e-c4c7-4a7e-af2d-d41ef33d927f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{17bca0ff-cc3f-418b-83cb-2bd4e7e51373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget\Widget">
+      <UniqueIdentifier>{5e2f0503-cf9f-4eba-b964-ea939fef9fe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget\Ribbon\ui">
+      <UniqueIdentifier>{863d80b3-f5b1-458c-880f-57a545cf5402}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainWindow.h">
@@ -123,10 +132,10 @@
       <Filter>Defines</Filter>
     </ClInclude>
     <ClInclude Include="Widget\ABorderlessWidget.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClInclude>
     <ClInclude Include="Widget\AFlowLayout.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClInclude>
     <ClInclude Include="Widget\Style\AStyleDefines.h">
       <Filter>Widget\Style</Filter>
@@ -260,6 +269,39 @@
     <ClInclude Include="Common\AUnorderedPair.h">
       <Filter>Common\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Platform\APlatform.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\APlatform_win.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Style\ASegoeMDL2Assets.h">
+      <Filter>Widget\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Style\AStyleHelper.h">
+      <Filter>Widget\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Style\AStyleOption.h">
+      <Filter>Widget\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Style\AWindowsColor.h">
+      <Filter>Widget\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\AWindowTitleBar_win.h">
+      <Filter>Widget\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\AWindowTitleBarGlow_win.h">
+      <Filter>Widget\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Ribbon\ARibbonDef.h">
+      <Filter>Widget\Ribbon</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AXmlAccess.h">
+      <Filter>Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Ribbon\ARibbonButton_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -308,46 +350,46 @@
       <Filter>Defines</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AAbstractColorPicker.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AAvatar.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\ABorderlessWidget.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\ACaptionBar.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AColorPickerIndicator.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AColorSliderControl.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AFlowLayout.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\ANavigationBar.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\APromptWidget.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AToolBar.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AVerticalLabel.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AWheelColorPicker.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AWheelColorPickerWidget.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AWindow.cpp">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\Style\AStyleDefines.cpp">
       <Filter>Widget\Style</Filter>
@@ -451,6 +493,90 @@
     <ClCompile Include="Widget\AWidgetFactory.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Platform\APlatform.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\APlatform_win.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\ACommonStyle.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\ACommonStyle_p.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\ASegoeMDL2Assets.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\AStyleHelper.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\AStyleOption.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Style\AWindowsColor.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonBar.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ABackstageWidget.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AMaterialWidget.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\APopupMenu.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AScrollWidgetBar.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AToggleSwitch.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AToolTip.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWindowTitleBar.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWindowTitleBar_win.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWindowTitleBarGlow_win.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonMainWindow.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonSystemMenu.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonDef.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonQuickAccessBar.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonTitleBarWidget.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonCustomizeManager.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonGroup.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonPage.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonControls.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonButtonControls.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -463,40 +589,40 @@
       <Filter>Application</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AAbstractColorPicker.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AAvatar.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\ACaptionBar.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AColorPickerIndicator.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AColorSliderControl.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\ANavigationBar.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\APromptWidget.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AToolBar.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AVerticalLabel.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AWheelColorPicker.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AWheelColorPickerWidget.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AWindow.h">
-      <Filter>Widget\Widgets</Filter>
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="AAction.h">
       <Filter>Application\Action</Filter>
@@ -543,6 +669,93 @@
     <QtMoc Include="Data\ADWBindMethods.h">
       <Filter>Data</Filter>
     </QtMoc>
+    <QtMoc Include="Widget\Style\ACommonStyle.h">
+      <Filter>Widget\Style</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Style\ACommonStyle_p.h">
+      <Filter>Widget\Style</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonBar.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonBar_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\ABackstageWidget.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AMaterialWidget.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\APopupMenu.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\APopupMenu_p.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AScrollWidgetBar.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AToggleSwitch.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AToolTip.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AWindowTitleBar.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AWindowTitleBar_p.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonMainWindow.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonSystemMenu.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonSystemMenu_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonQuickAccessBar.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonTitleBarWidget.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonQuickAccessBar_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeManager.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeManager_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonGroup.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonGroup_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonPage.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonPage_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonControls.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonControls_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonButton.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonButtonControls.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">
@@ -556,5 +769,13 @@
     <None Include="Data\header.inc">
       <Filter>Data</Filter>
     </None>
+    <None Include="Widget\Ribbon\header.inc">
+      <Filter>Widget\Ribbon</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="Widget\Ribbon\ARibbonQuickAccessBarCustomizePage.ui">
+      <Filter>Widget\Ribbon\ui</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>
