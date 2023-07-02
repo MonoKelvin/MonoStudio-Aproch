@@ -1,62 +1,68 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#ifndef QTN_RIBBONBACKSTAGEVIEW_H
-#define QTN_RIBBONBACKSTAGEVIEW_H
-
+ * @file    ARibbonBackstageView.h
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#pragma once
 #include <QFrame>
 #include <QToolButton>
 
-#include "QtnRibbonBar.h"
-#include "QtitanDef.h"
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
-QTITAN_BEGIN_NAMESPACE
+APROCH_NAMESPACE_BEGIN
 
-class QTITAN_EXPORT RibbonBackstageSeparator : public QFrame
+class ARibbonBar;
+
+class APROCH_API ARibbonBackstageSeparator : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
 public:
-    RibbonBackstageSeparator(QWidget* parent);
-    virtual ~RibbonBackstageSeparator();
+    ARibbonBackstageSeparator(QWidget* parent);
+    virtual ~ARibbonBackstageSeparator();
 public:
     void setOrientation(Qt::Orientation orient);
     Qt::Orientation orientation() const;
 private:
-    Q_DISABLE_COPY(RibbonBackstageSeparator)
+    Q_DISABLE_COPY(ARibbonBackstageSeparator)
 };
 
-class RibbonBackstageButtonPrivate;
-class QTITAN_EXPORT RibbonBackstageButton : public QToolButton
+class ARibbonBackstageButtonPrivate;
+class APROCH_API ARibbonBackstageButton : public QToolButton
 {
     Q_OBJECT
     Q_PROPERTY(bool tabStyle READ tabStyle WRITE setTabStyle)
 public:
-    RibbonBackstageButton(QWidget* parent);
-    virtual ~RibbonBackstageButton();
+    ARibbonBackstageButton(QWidget* parent);
+    virtual ~ARibbonBackstageButton();
 public:
     bool tabStyle() const;
     void setTabStyle(bool style);
@@ -67,32 +73,32 @@ protected:
     virtual bool event(QEvent* event) override;
     virtual void paintEvent(QPaintEvent* event) override;
 private:
-    QTN_DECLARE_PRIVATE(RibbonBackstageButton)
-    Q_DISABLE_COPY(RibbonBackstageButton)
+    A_DECLARE_PRIVATE(ARibbonBackstageButton)
+    Q_DISABLE_COPY(ARibbonBackstageButton)
 };
 
-class QTITAN_EXPORT RibbonBackstagePage : public QWidget
+class APROCH_API ARibbonBackstagePage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RibbonBackstagePage(QWidget* parent);
-    virtual ~RibbonBackstagePage();
+    explicit ARibbonBackstagePage(QWidget* parent);
+    virtual ~ARibbonBackstagePage();
 protected:
     virtual void paintEvent(QPaintEvent* event) override;
 private:
-    Q_DISABLE_COPY(RibbonBackstagePage)
+    Q_DISABLE_COPY(ARibbonBackstagePage)
 };
 
 
-class RibbonBackstageViewPrivate;
-/* RibbonBackstageView */
-class QTITAN_EXPORT RibbonBackstageView : public QWidget
+class ARibbonBackstageViewPrivate;
+/* ARibbonBackstageView */
+class APROCH_API ARibbonBackstageView : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(int closePrevented READ isClosePrevented WRITE setClosePrevented)
 public:
-    explicit RibbonBackstageView(QWidget* parent = Q_NULL);
-    virtual ~RibbonBackstageView();
+    explicit ARibbonBackstageView(QWidget* parent = nullptr);
+    virtual ~ARibbonBackstageView();
 public:
     bool isClosePrevented() const;
     void setClosePrevented(bool prevent);
@@ -123,12 +129,10 @@ protected:
     virtual void hideEvent(QHideEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
 private:
-    friend class RibbonBackstageViewMenu;
-    friend class RibbonBar;
-    QTN_DECLARE_PRIVATE(RibbonBackstageView)
-    Q_DISABLE_COPY(RibbonBackstageView)
+    friend class ARibbonBackstageViewMenu;
+    friend class ARibbonBar;
+    A_DECLARE_PRIVATE(ARibbonBackstageView)
+    Q_DISABLE_COPY(ARibbonBackstageView)
 };
 
-QTITAN_END_NAMESPACE
-
-#endif // QTN_RIBBONBACKSTAGEVIEW_H
+APROCH_NAMESPACE_END

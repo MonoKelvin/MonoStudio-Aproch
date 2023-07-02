@@ -34,6 +34,13 @@
 #include <QToolBar>
 #include "ARibbonCustomizeManager.h"
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - ARibbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
 APROCH_NAMESPACE_BEGIN
 
 #define UserNameID 1000     // first user name id
@@ -50,26 +57,26 @@ class ACustomizeEngineAbstract : public QObject
     Q_OBJECT;
 
 public:
-    explicit ACustomizeEngineAbstract(QObject *parent);
+    explicit ACustomizeEngineAbstract(QObject* parent);
     virtual ~ACustomizeEngineAbstract();
 
 public:
     QString categoryAllActions() const;
-    QList<QAction *> actionsAll() const;
+    QList<QAction*> actionsAll() const;
 
-    QList<QAction *> actionsByCategory(const QString &category) const;
+    QList<QAction*> actionsByCategory(const QString& category) const;
     QStringList categories() const;
 
-    QString actionId(QAction *action) const;
-    void setActionId(QAction *action, const QString &id = QString());
-    void unsetActionId(QAction *action);
+    QString actionId(QAction* action) const;
+    void setActionId(QAction* action, const QString& id = QString());
+    void unsetActionId(QAction* action);
 
-    void addToCategory(const QString &category, QAction *action);
-    void removeFromCategory(const QString &category, QAction *action);
-    void addAllActionsCategory(const QString &category);
+    void addToCategory(const QString& category, QAction* action);
+    void removeFromCategory(const QString& category, QAction* action);
+    void addAllActionsCategory(const QString& category);
 
-    virtual void saveState(IXmlStreamWriter *xmlwriter) = 0;
-    virtual bool restoreState(IXmlStreamReader *xmlreader) = 0;
+    virtual void saveState(IXmlStreamWriter* xmlwriter) = 0;
+    virtual bool restoreState(IXmlStreamReader* xmlreader) = 0;
 
 protected:
     QString generateUniqueNameIdentifier(int hint = -1);
@@ -84,11 +91,11 @@ protected:
     QString m_allCategoryName;
     QList<QString> m_lstCategory;
 
-    QMap<QString, QAction *> m_allNameToActions;
-    QMap<QAction *, QString> m_allActionsToName;
+    QMap<QString, QAction*> m_allNameToActions;
+    QMap<QAction*, QString> m_allActionsToName;
 
-    QMap<QString, QList<QAction *>> m_categoryToActions;
-    QMap<QAction *, QString> m_actionToCategory;
+    QMap<QString, QList<QAction*>> m_categoryToActions;
+    QMap<QAction*, QString> m_actionToCategory;
 
 private:
     Q_DISABLE_COPY(ACustomizeEngineAbstract);
@@ -99,55 +106,55 @@ class AToolBarCustomizeEngine : public ACustomizeEngineAbstract
 {
     Q_OBJECT
 public:
-    explicit AToolBarCustomizeEngine(QObject *parent);
+    explicit AToolBarCustomizeEngine(QObject* parent);
     virtual ~AToolBarCustomizeEngine();
 
 public:
-    QList<QAction *> actions(QToolBar *toolBar) const;
-    QToolBar *toolBarWidgetAction(QAction *action) const;
-    QToolBar *findDefaultToolBar(const QString &objectName) const;
-    QMap<QToolBar *, QList<QAction *>> defaultToolBars() const;
+    QList<QAction*> actions(QToolBar* toolBar) const;
+    QToolBar* toolBarWidgetAction(QAction* action) const;
+    QToolBar* findDefaultToolBar(const QString& objectName) const;
+    QMap<QToolBar*, QList<QAction*>> defaultToolBars() const;
 
-    void removeWidgetActions(const QMap<QToolBar *, QList<QAction *>> &actions);
-    void addDefaultToolBar(QToolBar *toolBar);
+    void removeWidgetActions(const QMap<QToolBar*, QList<QAction*>>& actions);
+    void addDefaultToolBar(QToolBar* toolBar);
 
-    QList<QToolBar *> toolBarsByCategory(const QString &category) const;
-    void addToCategory(const QString &category, QToolBar *bar);
+    QList<QToolBar*> toolBarsByCategory(const QString& category) const;
+    void addToCategory(const QString& category, QToolBar* bar);
 
-    void setToolBar(QToolBar *toolBar, const QList<QAction *> &actions);
+    void setToolBar(QToolBar* toolBar, const QList<QAction*>& actions);
 
-    void saveStateQuickAccessBar(IXmlStreamWriter *xmlwriter);
-    bool restoreStateQuickAccessBar(IXmlStreamReader *xmlreader);
+    void saveStateQuickAccessBar(IXmlStreamWriter* xmlwriter);
+    bool restoreStateQuickAccessBar(IXmlStreamReader* xmlreader);
 
-    void saveState(IXmlStreamWriter *xmlwriter);
-    bool restoreState(IXmlStreamReader *xmlreader);
-
-protected:
-    QMap<QAction *, QToolBar *> m_widgetActions;
-    QMap<QAction *, QList<QToolBar *>> m_actionToToolBars;
-
-    QMap<QToolBar *, QString> m_barToCategory;
-
-    QMap<QToolBar *, QList<QAction *>> m_defaultToolBars;
-    QMap<QToolBar *, QList<QAction *>> m_toolBarsWithSeparators;
-    QMap<QToolBar *, QList<QAction *>> m_toolBars;
-    QMap<QToolBar *, QList<QAction *>> m_regularToolBars;
+    void saveState(IXmlStreamWriter* xmlwriter);
+    bool restoreState(IXmlStreamReader* xmlreader);
 
 protected:
-signals:
+    QMap<QAction*, QToolBar*> m_widgetActions;
+    QMap<QAction*, QList<QToolBar*>> m_actionToToolBars;
+
+    QMap<QToolBar*, QString> m_barToCategory;
+
+    QMap<QToolBar*, QList<QAction*>> m_defaultToolBars;
+    QMap<QToolBar*, QList<QAction*>> m_toolBarsWithSeparators;
+    QMap<QToolBar*, QList<QAction*>> m_toolBars;
+    QMap<QToolBar*, QList<QAction*>> m_regularToolBars;
+
+    // TODO
+Q_SIGNALS:
     /**
      * @brief 动作转换为名称ID
      * @param [in] pAction 动作
      * @param [out] strNameId 名称ID
      */
-    void ActionToNameId(const QAction *pAction, QString &strNameID);
+    void ActionToNameId(const QAction* pAction, QString& strNameID);
 
     /**
      * @brief 名称ID转动作
      * @param [in] strNameID 名称ID
      * @param [out] ppAction 动作
      */
-    void NameIdToAction(const QString &strNameID, QAction **ppAction);
+    void NameIdToAction(const QString& strNameID, QAction** ppAction);
 
 private:
     Q_DISABLE_COPY(AToolBarCustomizeEngine)
@@ -160,42 +167,42 @@ class ARibbonBarCustomizeEngine : public AToolBarCustomizeEngine
 {
     Q_OBJECT
 public:
-    explicit ARibbonBarCustomizeEngine(QObject *parent, ARibbonBar *ribbonBar);
+    explicit ARibbonBarCustomizeEngine(QObject* parent, ARibbonBar* ribbonBar);
     virtual ~ARibbonBarCustomizeEngine();
 
 public:
-    QString pageId(ARibbonPage *page) const;
-    void setPageId(ARibbonPage *page, const QString &id = QString());
+    QString pageId(ARibbonPage* page) const;
+    void setPageId(ARibbonPage* page, const QString& id = QString());
 
-    QString groupId(ARibbonGroup *group) const;
-    void setGroupId(ARibbonPage *page, ARibbonGroup *group, const QString &id = QString());
+    QString groupId(ARibbonGroup* group) const;
+    void setGroupId(ARibbonPage* page, ARibbonGroup* group, const QString& id = QString());
 
-    void addToCategory(const QString &category, QAction *act);
-    void removeFromCategory(const QString &category, QAction *action);
+    void addToCategory(const QString& category, QAction* act);
+    void removeFromCategory(const QString& category, QAction* action);
 
-    QList<ARibbonPage *> pagesByCategory(const QString &category) const;
-    void addToCategory(const QString &category, ARibbonPage *page);
+    QList<ARibbonPage*> pagesByCategory(const QString& category) const;
+    void addToCategory(const QString& category, ARibbonPage* page);
 
-    QList<ARibbonGroup *> groupsByCategory(const QString &category) const;
-    void addToCategory(const QString &category, ARibbonGroup *group);
+    QList<ARibbonGroup*> groupsByCategory(const QString& category) const;
+    void addToCategory(const QString& category, ARibbonGroup* group);
 
-    QList<ARibbonGroup *> pageDefaultGroups(ARibbonPage *page) const;
-    QList<ARibbonPage *> defaultHiddenPages() const;
-    QList<ARibbonPage *> editHiddenPages() const;
+    QList<ARibbonGroup*> pageDefaultGroups(ARibbonPage* page) const;
+    QList<ARibbonPage*> defaultHiddenPages() const;
+    QList<ARibbonPage*> editHiddenPages() const;
 
-    const QMap<ARibbonPage *, QString> &defaultPageNames() const;
-    QString defaultPageName(ARibbonPage *page) const;
+    const QMap<ARibbonPage*, QString>& defaultPageNames() const;
+    QString defaultPageName(ARibbonPage* page) const;
 
-    QList<ARibbonGroup *> regularGroups(ARibbonPage *page) const;
-    const QMap<ARibbonPage *, QList<ARibbonGroup *>> &defaultPageGroups() const;
-    const QMap<ARibbonPage *, QList<ARibbonGroup *>> &regularPageGroups() const;
-    const QMap<ARibbonGroup *, QString> &defaultGroupNames() const;
-    QString defaultGroupName(ARibbonGroup *group) const;
+    QList<ARibbonGroup*> regularGroups(ARibbonPage* page) const;
+    const QMap<ARibbonPage*, QList<ARibbonGroup*>>& defaultPageGroups() const;
+    const QMap<ARibbonPage*, QList<ARibbonGroup*>>& regularPageGroups() const;
+    const QMap<ARibbonGroup*, QString>& defaultGroupNames() const;
+    QString defaultGroupName(ARibbonGroup* group) const;
 
-    const QList<ARibbonPage *> &defaultPages() const;
+    const QList<ARibbonPage*>& defaultPages() const;
 
     void addDefaultPages();
-    void addDefaultGroups(ARibbonPage *page);
+    void addDefaultGroups(ARibbonPage* page);
     void addNonContextCategories();
 
     void setQuickAccessBar();
@@ -205,41 +212,41 @@ public:
     void deleteFreeGroups();
     void deleteFreePages();
 
-    void saveStateGroup(IXmlStreamWriter *xmlwriter, ARibbonPage *page);
-    bool restoreStateGroup(IXmlStreamReader *xmlreader, ARibbonPage *page);
+    void saveStateGroup(IXmlStreamWriter* xmlwriter, ARibbonPage* page);
+    bool restoreStateGroup(IXmlStreamReader* xmlreader, ARibbonPage* page);
 
-    void saveStatePage(IXmlStreamWriter *xmlwriter);
-    bool restoreStatePage(IXmlStreamReader *xmlreader);
+    void saveStatePage(IXmlStreamWriter* xmlwriter);
+    bool restoreStatePage(IXmlStreamReader* xmlreader);
 
-    void saveStateRibbonBar(IXmlStreamWriter *xmlwriter);
-    bool restoreStateRibbonBar(IXmlStreamReader *xmlreader);
+    void saveStateRibbonBar(IXmlStreamWriter* xmlwriter);
+    bool restoreStateRibbonBar(IXmlStreamReader* xmlreader);
 
-    void saveState(IXmlStreamWriter *xmlwriter);
-    bool restoreState(IXmlStreamReader *xmlreader);
+    void saveState(IXmlStreamWriter* xmlwriter);
+    bool restoreState(IXmlStreamReader* xmlreader);
 
 protected:
-    ARibbonBar *m_ribbonBar;
+    ARibbonBar* m_ribbonBar;
 
-    QMap<ARibbonPage *, QString> m_pageToCategory;
-    QMap<ARibbonGroup *, QString> m_groupToCategory;
+    QMap<ARibbonPage*, QString> m_pageToCategory;
+    QMap<ARibbonGroup*, QString> m_groupToCategory;
 
-    QList<ARibbonPage *> m_defaultPages;
-    QList<ARibbonPage *> m_defaultHiddenPages;
-    QMap<ARibbonPage *, QString> m_defaultPagesName;
-    QMap<ARibbonPage *, QList<ARibbonGroup *>> m_defaultPageGroups;
-    QMap<ARibbonGroup *, QString> m_defaultNameGroups;
+    QList<ARibbonPage*> m_defaultPages;
+    QList<ARibbonPage*> m_defaultHiddenPages;
+    QMap<ARibbonPage*, QString> m_defaultPagesName;
+    QMap<ARibbonPage*, QList<ARibbonGroup*>> m_defaultPageGroups;
+    QMap<ARibbonGroup*, QString> m_defaultNameGroups;
 
-    QList<ARibbonPage *> m_regularPages;
-    QMap<ARibbonPage *, QString> m_regularPagesName;
-    QList<ARibbonPage *> m_regularHiddenPages;
-    QMap<ARibbonPage *, QList<ARibbonGroup *>> m_regularPageGroups;
-    QMap<ARibbonGroup *, QString> m_regularNameGroups;
+    QList<ARibbonPage*> m_regularPages;
+    QMap<ARibbonPage*, QString> m_regularPagesName;
+    QList<ARibbonPage*> m_regularHiddenPages;
+    QMap<ARibbonPage*, QList<ARibbonGroup*>> m_regularPageGroups;
+    QMap<ARibbonGroup*, QString> m_regularNameGroups;
 
-    QMap<QString, ARibbonPage *> m_allNameIdToPages;
+    QMap<QString, ARibbonPage*> m_allNameIdToPages;
 
-    QMap<QString, ARibbonGroup *> m_allNameIdToGroups;
+    QMap<QString, ARibbonGroup*> m_allNameIdToGroups;
 
-    QMap<ARibbonGroup *, QList<QAction *>> m_regularGroupsActions;
+    QMap<ARibbonGroup*, QList<QAction*>> m_regularGroupsActions;
 
 private:
     friend class ARibbonCustomizeManager;
@@ -256,7 +263,9 @@ public:
     virtual ~ARibbonCustomizeManagerPrivate();
 
 public:
-    void init(ARibbonBar *ribbonBar);
+    void init(ARibbonBar* ribbonBar);
+
+    // TODO
 
     /*
      * @brief 允许还原页面可见性
@@ -277,8 +286,8 @@ public:
     QMap<QString, bool> _pagesVisual;
     bool _bRestoreVisualizePage = false;
     bool m_editMode;
-    ARibbonBar *m_ribbonBar;
-    ARibbonBarCustomizeEngine *m_customizeEngine;
+    ARibbonBar* m_ribbonBar;
+    ARibbonBarCustomizeEngine* m_customizeEngine;
 
 private:
     Q_DISABLE_COPY(ARibbonCustomizeManagerPrivate)

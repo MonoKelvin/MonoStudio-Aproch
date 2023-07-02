@@ -36,10 +36,17 @@
 #include <QWidgetAction>
 #include <QMenu>
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
 APROCH_NAMESPACE_BEGIN
 
-class RibbonControl;
-class RibbonControlSizeDefinitionPrivate;
+class ARibbonControl;
+class ARibbonControlSizeDefinitionPrivate;
 class APROCH_API ARibbonControlSizeDefinition : public QObject
 {
     Q_OBJECT
@@ -62,7 +69,7 @@ public:
     };
 
 public:
-    explicit ARibbonControlSizeDefinition(RibbonControl* parent, GroupSize size);
+    explicit ARibbonControlSizeDefinition(ARibbonControl* parent, GroupSize size);
     virtual ~ARibbonControlSizeDefinition();
 public:
     ControlImageSize imageSize() const;
@@ -104,14 +111,14 @@ private:
 };
 
 class ARibbonGroup;
-class RibbonControlPrivate;
-/* RibbonControl */
-class APROCH_API RibbonControl : public QWidget
+class ARibbonControlPrivate;
+/* ARibbonControl */
+class APROCH_API ARibbonControl : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RibbonControl(ARibbonGroup* parent = nullptr);
-    virtual ~RibbonControl();
+    explicit ARibbonControl(ARibbonGroup* parent = nullptr);
+    virtual ~ARibbonControl();
 public:
     void setParentGroup(ARibbonGroup* parentGroup);
     ARibbonGroup* parentGroup() const;
@@ -134,18 +141,18 @@ public:
 private:
     friend class ARibbonGroup;
     friend class ARibbonBarPrivate;
-    A_DECLARE_PRIVATE(RibbonControl)
-    Q_DISABLE_COPY(RibbonControl)
+    A_DECLARE_PRIVATE(ARibbonControl)
+    Q_DISABLE_COPY(ARibbonControl)
 };
 
-class RibbonWidgetControlPrivate;
-/* RibbonWidgetControl */
-class APROCH_API RibbonWidgetControl : public RibbonControl
+class ARibbonWidgetControlPrivate;
+/* ARibbonWidgetControl */
+class APROCH_API ARibbonWidgetControl : public ARibbonControl
 {
     Q_OBJECT
 public:
-    explicit RibbonWidgetControl(ARibbonGroup* parent, bool ignoreActionSettings);
-    virtual ~RibbonWidgetControl();
+    explicit ARibbonWidgetControl(ARibbonGroup* parent, bool ignoreActionSettings);
+    virtual ~ARibbonWidgetControl();
 public:
     int margin() const;
     void setMargin(int margin);
@@ -161,18 +168,18 @@ protected:
     virtual void resizeEvent(QResizeEvent* event) override;
 private:
     friend class ARibbonGroup;
-    friend class RibbonGroupPrivate;
-    A_DECLARE_PRIVATE(RibbonWidgetControl)
-    Q_DISABLE_COPY(RibbonWidgetControl)
+    friend class ARibbonGroupPrivate;
+    A_DECLARE_PRIVATE(ARibbonWidgetControl)
+    Q_DISABLE_COPY(ARibbonWidgetControl)
 };
 
-class RibbonColumnBreakControlPrivate;
-class APROCH_API RibbonColumnBreakControl : public RibbonWidgetControl
+class ARibbonColumnBreakControlPrivate;
+class APROCH_API ARibbonColumnBreakControl : public ARibbonWidgetControl
 {
     Q_OBJECT
 public:
-    explicit RibbonColumnBreakControl(ARibbonGroup* parent = nullptr);
-    virtual ~RibbonColumnBreakControl();
+    explicit ARibbonColumnBreakControl(ARibbonGroup* parent = nullptr);
+    virtual ~ARibbonColumnBreakControl();
 public:
     Qt::Alignment alignmentText() const;
     void setAlignmentText(Qt::Alignment alignment);
@@ -182,30 +189,30 @@ public:
 protected:
     virtual void paintEvent(QPaintEvent* event) override;
 private:
-    A_DECLARE_PRIVATE(RibbonColumnBreakControl)
-    Q_DISABLE_COPY(RibbonColumnBreakControl)
+    A_DECLARE_PRIVATE(ARibbonColumnBreakControl)
+    Q_DISABLE_COPY(ARibbonColumnBreakControl)
 };
 
-class APROCH_API RibbonLabelControl : public RibbonWidgetControl
+class APROCH_API ARibbonLabelControl : public ARibbonWidgetControl
 {
 public: 
-    explicit RibbonLabelControl(ARibbonGroup* parent = nullptr);
-    explicit RibbonLabelControl(const QString& text, ARibbonGroup* parent = nullptr);
-    virtual ~RibbonLabelControl();
+    explicit ARibbonLabelControl(ARibbonGroup* parent = nullptr);
+    explicit ARibbonLabelControl(const QString& text, ARibbonGroup* parent = nullptr);
+    virtual ~ARibbonLabelControl();
 public:
     QLabel* widget() const;
 private:
-    Q_DISABLE_COPY(RibbonLabelControl)
+    Q_DISABLE_COPY(ARibbonLabelControl)
 };
 
-class RibbonToolBarControlPrivate;
-/* RibbonToolBarControl */
-class APROCH_API RibbonToolBarControl : public RibbonControl
+class ARibbonToolBarControlPrivate;
+/* ARibbonToolBarControl */
+class APROCH_API ARibbonToolBarControl : public ARibbonControl
 {
     Q_OBJECT
 public:
-    explicit RibbonToolBarControl(ARibbonGroup* parent = nullptr);
-    virtual ~RibbonToolBarControl();
+    explicit ARibbonToolBarControl(ARibbonGroup* parent = nullptr);
+    virtual ~ARibbonToolBarControl();
 public:
     void clear();
     QAction* addWidget(QWidget* widget);
@@ -240,14 +247,8 @@ protected:
     virtual void actionEvent(QActionEvent* event) override;
     virtual void changeEvent(QEvent* event) override;
 private:
-    A_DECLARE_PRIVATE(RibbonToolBarControl)
-    Q_DISABLE_COPY(RibbonToolBarControl)
+    A_DECLARE_PRIVATE(ARibbonToolBarControl)
+    Q_DISABLE_COPY(ARibbonToolBarControl)
 };
 
-
-QTITAN_END_NAMESPACE
-
-
-#endif // A_RIBBONCONTROLS_H
-
-
+APROCH_NAMESPACE_END

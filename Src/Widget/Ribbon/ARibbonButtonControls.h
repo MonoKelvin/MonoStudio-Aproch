@@ -1,51 +1,56 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#ifndef A_RIBBONBUTTONSCONTROLS_H
-#define A_RIBBONBUTTONSCONTROLS_H
-
+ * @file    ARibbonButtonControls.h
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#pragma once
 #include <QCheckBox>
 #include <QToolButton>
 #include <QRadioButton>
 #include <QMenu>
 
 #include "ARibbonControls.h"
-#include "QtitanDef.h"
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
-QTITAN_BEGIN_NAMESPACE
+APROCH_NAMESPACE_BEGIN
 
-class RibbonButtonControlPrivate;
-/* RibbonButtonControl */
-class APROCH_API RibbonButtonControl : public RibbonWidgetControl
+class ARibbonButtonControlPrivate;
+/* ARibbonButtonControl */
+class APROCH_API ARibbonButtonControl : public ARibbonWidgetControl
 {
     Q_OBJECT
 public:
-    explicit RibbonButtonControl(ARibbonGroup* parent = nullptr);
-    virtual ~RibbonButtonControl();
+    explicit ARibbonButtonControl(ARibbonGroup* parent = nullptr);
+    virtual ~ARibbonButtonControl();
 public:
     const QIcon& largeIcon() const;
     void setLargeIcon(const QIcon& icon);
@@ -73,38 +78,33 @@ public:
 protected:
     virtual bool event(QEvent* event);
 private:
-    A_DECLARE_PRIVATE(RibbonButtonControl)
-    Q_DISABLE_COPY(RibbonButtonControl)
+    A_DECLARE_PRIVATE(ARibbonButtonControl)
+    Q_DISABLE_COPY(ARibbonButtonControl)
 };
 
 
-/* RibbonCheckBoxControl */
-class APROCH_API RibbonCheckBoxControl : public RibbonWidgetControl
+/* ARibbonCheckBoxControl */
+class APROCH_API ARibbonCheckBoxControl : public ARibbonWidgetControl
 {
 public:
-    explicit RibbonCheckBoxControl(const QString& text = QString(), ARibbonGroup* parent = nullptr);
-    virtual ~RibbonCheckBoxControl();
+    explicit ARibbonCheckBoxControl(const QString& text = QString(), ARibbonGroup* parent = nullptr);
+    virtual ~ARibbonCheckBoxControl();
 public:
     QCheckBox* widget() const;
 private:
-    Q_DISABLE_COPY(RibbonCheckBoxControl)
+    Q_DISABLE_COPY(ARibbonCheckBoxControl)
 };
 
-/* RibbonRadioButtonControl */
-class APROCH_API RibbonRadioButtonControl : public RibbonWidgetControl
+/* ARibbonRadioButtonControl */
+class APROCH_API ARibbonRadioButtonControl : public ARibbonWidgetControl
 {
 public:
-    explicit RibbonRadioButtonControl(const QString& text = QString(), ARibbonGroup* parent = nullptr);
-    virtual ~RibbonRadioButtonControl();
+    explicit ARibbonRadioButtonControl(const QString& text = QString(), ARibbonGroup* parent = nullptr);
+    virtual ~ARibbonRadioButtonControl();
 public:
     QRadioButton* widget() const;
 private:
-    Q_DISABLE_COPY(RibbonRadioButtonControl)
+    Q_DISABLE_COPY(ARibbonRadioButtonControl)
 };
 
-QTITAN_END_NAMESPACE
-
-
-#endif // A_RIBBONBUTTONSCONTROLS_H
-
-
+APROCH_NAMESPACE_END

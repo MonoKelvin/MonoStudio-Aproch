@@ -31,8 +31,6 @@
 #include "Widget/APopupMenu.h"
 #include <QToolButton>
 
-#include "ARibbonBar.h"
-
  // 
  // The most of the following code is copied from Qtitan.
  // 
@@ -42,6 +40,7 @@
 
 APROCH_NAMESPACE_BEGIN
 
+class ARibbonBar;
 class ASystemToolButtonStyleOption;
 class ARibbonBackstageView;
 class ARibbonSystemButtonPrivate;
@@ -79,7 +78,7 @@ private:
 
 class ARibbonPageSystemRecentFileList;
 class ARibbonPageSystemPopup;
-class RibbonFrameMenuStyleOption;
+class ARibbonFrameMenuStyleOption;
 class ARibbonSystemMenuPrivate;
 
 class APROCH_API ARibbonSystemMenu : public APopupMenu
@@ -97,7 +96,7 @@ public:
     QSize sizeHint() const override;
     void updateLayout() override;
 protected:
-    void initFrameMenuStyleOption(RibbonFrameMenuStyleOption* option) const;
+    void initFrameMenuStyleOption(ARibbonFrameMenuStyleOption* option) const;
 
     void paintEvent(QPaintEvent* event) override;
     void paintMenuItem(QPainter* painter, QStyleOptionMenuItem* option) override;

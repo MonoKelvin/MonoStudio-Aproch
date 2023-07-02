@@ -1,49 +1,54 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
+ * @file    ARibbonCustomizeDialog.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
 #include <QApplication>
 #include <QScreen>
 #include <QPainter>
 #include <QVBoxLayout>
 
-#include "QtnRibbonCustomizeDialog.h"
-#include "QtnRibbonCustomizeDialogPrivate.h"
-#include "QtnRibbonCustomizeManager.h"
-#include "QtnRibbonCustomizePage.h"
-#include "QtnPlatform.h"
-#include "QtnRibbonDef.h"
-#ifdef QTN_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+#include "ARibbonCustomizeDialog.h"
+#include "ARibbonCustomizeDialog_p.h"
+#include "ARibbonCustomizeManager.h"
+#include "ARibbonCustomizePage.h"
+#include "Platform/APlatform.h"
+#include "ARibbonDef.h"
 
-QTITAN_USE_NAMESPACE
+// 
+// The most of the following code is copied from Qtitan.
+// 
+// Qtitan Library by Developer Machines(Microsoft - ARibbon implementation for Qt.C++)
+// Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+// 
 
-QTITAN_BEGIN_NAMESPACE
+APROCH_NAMESPACE_BEGIN
 
-static QWidget* qtn_WantTheFocus(QWidget* ancestor)
+static QWidget* aproch_WantTheFocus(QWidget* ancestor)
 {
   const int MaxIterations = 100;
 
@@ -63,25 +68,26 @@ static QWidget* qtn_WantTheFocus(QWidget* ancestor)
   return 0;
 }
 
+// TODO
 
-/* RibbonCustomizePageWidget */
-class RibbonCustomizePageWidget : public QWidget
+/* ARibbonCustomizePageWidget */
+class ARibbonCustomizePageWidget : public QWidget
 {
 public:
-    explicit RibbonCustomizePageWidget(QWidget* parent);
-    virtual ~RibbonCustomizePageWidget();
+    explicit ARibbonCustomizePageWidget(QWidget* parent);
+    virtual ~ARibbonCustomizePageWidget();
 public:
     QWidget* content() const;
 
     /*
-    * @brief ÉèÖÃ×Ô¶¨ÒåÒ³Ç©¿Ø¼þ(Ö§³Ö¼ÓÈëÍ¼±êºÍÎÄ±¾¡¤)
-    * @param [in] content ÄÚÈÝ
+    * @brief è®¾ç½®è‡ªå®šä¹‰é¡µç­¾æŽ§ä»¶(æ”¯æŒåŠ å…¥å›¾æ ‡å’Œæ–‡æœ¬Â·)
+    * @param [in] content å†…å®¹
     */
     void setContent(QWidget* content);
 
     /*
-    * @brief ÉèÖÃ×Ô¶¨ÒåÒ³Ç©¿Ø¼þ(Ö§³Ö¼ÓÈëÍ¼±êºÍÎÄ±¾¡¤)
-    * @param [in] content ÄÚÈÝ
+    * @brief è®¾ç½®è‡ªå®šä¹‰é¡µç­¾æŽ§ä»¶(æ”¯æŒåŠ å…¥å›¾æ ‡å’Œæ–‡æœ¬Â·)
+    * @param [in] content å†…å®¹
     */
     void setContent(QWidget* content,bool bText,bool bIcon);
 protected:
@@ -91,18 +97,15 @@ protected:
     QLabel m_labelTitle;
     QWidget* m_content;
 private:
-    friend class RibbonCustomizeDialog;
-    Q_DISABLE_COPY(RibbonCustomizePageWidget)
+    friend class ARibbonCustomizeDialog;
+    Q_DISABLE_COPY(ARibbonCustomizePageWidget)
 };
 
-QTITAN_END_NAMESPACE
-
-
-/* RibbonCustomizePageWidget */
-RibbonCustomizePageWidget::RibbonCustomizePageWidget(QWidget* parent)
+/* ARibbonCustomizePageWidget */
+ARibbonCustomizePageWidget::ARibbonCustomizePageWidget(QWidget* parent)
     : QWidget(parent)
 {
-    m_content = Q_NULL;
+    m_content = nullptr;
     QFont font = m_labelTitle.font();
     font.setBold(true);
     m_labelTitle.setFont(font);
@@ -113,18 +116,18 @@ RibbonCustomizePageWidget::RibbonCustomizePageWidget(QWidget* parent)
     m_vBoxLayout->addLayout(m_hBoxLayout);
 }
 
-RibbonCustomizePageWidget::~RibbonCustomizePageWidget()
+ARibbonCustomizePageWidget::~ARibbonCustomizePageWidget()
 {
 }
 
-QWidget* RibbonCustomizePageWidget::content() const
+QWidget* ARibbonCustomizePageWidget::content() const
 {
     return m_content;
 }
 
-void RibbonCustomizePageWidget::setContent(QWidget* content)
+void ARibbonCustomizePageWidget::setContent(QWidget* content)
 {
-	if (content == Q_NULL)
+	if (content == nullptr)
 	{
 		Q_ASSERT(false);
 		return;
@@ -138,9 +141,9 @@ void RibbonCustomizePageWidget::setContent(QWidget* content)
 	m_content = content;
 }
 
-void RibbonCustomizePageWidget::setContent(QWidget* content, bool bText, bool bIcon)
+void ARibbonCustomizePageWidget::setContent(QWidget* content, bool bText, bool bIcon)
 {
-    if (content == Q_NULL)
+    if (content == nullptr)
     {
         Q_ASSERT(false);
         return;
@@ -168,17 +171,17 @@ void RibbonCustomizePageWidget::setContent(QWidget* content, bool bText, bool bI
     m_content = content;
 }
 
-/* RibbonCustomizeListWidget */
-RibbonCustomizeListWidget::RibbonCustomizeListWidget(QWidget* parent)
+/* ARibbonCustomizeListWidget */
+ARibbonCustomizeListWidget::ARibbonCustomizeListWidget(QWidget* parent)
     : QListWidget(parent)
 {
 }
 
-RibbonCustomizeListWidget::~RibbonCustomizeListWidget()
+ARibbonCustomizeListWidget::~ARibbonCustomizeListWidget()
 {
 }
 
-QSize RibbonCustomizeListWidget::sizeHint() const
+QSize ARibbonCustomizeListWidget::sizeHint() const
 {
     QSize sz = QListWidget::sizeHint();
     QStyleOption opt;
@@ -197,7 +200,7 @@ QSize RibbonCustomizeListWidget::sizeHint() const
     return QSize(maxWidth, sz.height());
 }
 
-QSize RibbonCustomizeListWidget::minimumSizeHint() const
+QSize ARibbonCustomizeListWidget::minimumSizeHint() const
 {
     QSize sz = QListWidget::minimumSizeHint();
     sz.setWidth( sizeHint().width() );
@@ -208,34 +211,34 @@ int m_currentPage;
 QVBoxLayout* m_pageVBoxLayout;
 
 
-/* RibbonCustomizeDialogPrivate */
-RibbonCustomizeDialogPrivate::RibbonCustomizeDialogPrivate()
-    : m_verticalLayout(Q_NULL)
-    , m_horizontalLayout(Q_NULL)
-    , m_listPage(Q_NULL)
-    , m_pageFrame(Q_NULL)
-    , m_buttonBox(Q_NULL)
+/* ARibbonCustomizeDialogPrivate */
+ARibbonCustomizeDialogPrivate::ARibbonCustomizeDialogPrivate()
+    : m_verticalLayout(nullptr)
+    , m_horizontalLayout(nullptr)
+    , m_listPage(nullptr)
+    , m_pageFrame(nullptr)
+    , m_buttonBox(nullptr)
     , m_currentPage(0)
-    , m_pageVBoxLayout(Q_NULL)
+    , m_pageVBoxLayout(nullptr)
 {
 }
 
-RibbonCustomizeDialogPrivate::~RibbonCustomizeDialogPrivate()
+ARibbonCustomizeDialogPrivate::~ARibbonCustomizeDialogPrivate()
 {
 }
 
-void RibbonCustomizeDialogPrivate::init()
+void ARibbonCustomizeDialogPrivate::init()
 {
-    QTN_P(RibbonCustomizeDialog);
-    p.setWindowTitle(RibbonBar::tr_compatible(QtnRibbonCustomizeDialogOptionsString));
+    A_P(ARibbonCustomizeDialog);
+    p.setWindowTitle(ARibbonBar::tr_compatible(RibbonCustomizeDialogOptionsString));
 
-    QRect geom = qtn_availableGeometry(&p);
+    QRect geom = aproch_availableGeometry(&p);
     p.resize(2 * geom.width() / 5, 2 * geom.height() / 5);
 
     m_verticalLayout = new QVBoxLayout(&p);
     m_horizontalLayout = new QHBoxLayout();
     m_horizontalLayout->setSpacing(1);
-    m_listPage = new RibbonCustomizeListWidget(&p);
+    m_listPage = new ARibbonCustomizeListWidget(&p);
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
@@ -280,16 +283,16 @@ void RibbonCustomizeDialogPrivate::init()
     connect(m_listPage, SIGNAL(currentRowChanged(int)), this, SLOT(switchToPage(int)));
 }
 
-void RibbonCustomizeDialogPrivate::setCustomizeMode(bool edit)
+void ARibbonCustomizeDialogPrivate::setCustomizeMode(bool edit)
 {
     for (int index = 0, count = m_listWidget.count(); count > index; ++index)
     {
-        if (RibbonBarCustomizePage* page = qobject_cast<RibbonBarCustomizePage*>(m_listWidget.at(index)))
+        if (ARibbonBarCustomizePage* page = qobject_cast<ARibbonBarCustomizePage*>(m_listWidget.at(index)))
         {
             page->ribbonBar()->customizeManager()->setEditMode(edit);
             break;
         }
-        else if (RibbonQuickAccessBarCustomizePage* page = qobject_cast<RibbonQuickAccessBarCustomizePage*>(m_listWidget.at(index)))
+        else if (ARibbonQuickAccessBarCustomizePage* page = qobject_cast<ARibbonQuickAccessBarCustomizePage*>(m_listWidget.at(index)))
         {
             page->ribbonBar()->customizeManager()->setEditMode(edit);
             break;
@@ -297,11 +300,11 @@ void RibbonCustomizeDialogPrivate::setCustomizeMode(bool edit)
     }
 }
 
-void RibbonCustomizeDialogPrivate::addPage(RibbonCustomizePageWidget* page)
+void ARibbonCustomizeDialogPrivate::addPage(ARibbonCustomizePageWidget* page)
 {
     if (!page) 
     {
-        qWarning("RibbonCustomizeDialogPrivate::addPage: Cannot insert null page");
+        qWarning("ARibbonCustomizeDialogPrivate::addPage: Cannot insert null page");
         return;
     }
     page->setParent(m_pageFrame);
@@ -316,19 +319,19 @@ void RibbonCustomizeDialogPrivate::addPage(RibbonCustomizePageWidget* page)
     // hide new page and reset layout to old status
     page->hide();
     m_pageVBoxLayout->setEnabled(pageVBoxLayoutEnabled);
-    RibbonCustomizePageItem* item = new RibbonCustomizePageItem(page->windowTitle(), page);
+    ARibbonCustomizePageItem* item = new ARibbonCustomizePageItem(page->windowTitle(), page);
     m_listPage->addItem(item);
 }
 
-void RibbonCustomizeDialogPrivate::insertPage(int index, RibbonCustomizePageWidget* page)
+void ARibbonCustomizeDialogPrivate::insertPage(int index, ARibbonCustomizePageWidget* page)
 {
     if (!page) 
     {
-        qWarning("RibbonCustomizeDialogPrivate::insertPage: Cannot insert null page");
+        qWarning("ARibbonCustomizeDialogPrivate::insertPage: Cannot insert null page");
         return;
     }
 
-    RibbonCustomizePageItem* posItem = static_cast<RibbonCustomizePageItem*>(m_listPage->item(index));
+    ARibbonCustomizePageItem* posItem = static_cast<ARibbonCustomizePageItem*>(m_listPage->item(index));
     int indexItem = m_listPage->row(posItem);
     if (indexItem == -1)
         return;
@@ -346,17 +349,17 @@ void RibbonCustomizeDialogPrivate::insertPage(int index, RibbonCustomizePageWidg
     page->hide();
     m_pageVBoxLayout->setEnabled(pageVBoxLayoutEnabled);
 
-    RibbonCustomizePageItem* item = new RibbonCustomizePageItem(page->windowTitle(), page);
+    ARibbonCustomizePageItem* item = new ARibbonCustomizePageItem(page->windowTitle(), page);
     m_listPage->insertItem(indexItem, item);
 }
 
-void RibbonCustomizeDialogPrivate::switchToPage(int currentRow)
+void ARibbonCustomizeDialogPrivate::switchToPage(int currentRow)
 {
     if (m_currentPage != currentRow)
     {
-        if (RibbonCustomizePageItem* item = static_cast<RibbonCustomizePageItem*>(m_listPage->item(m_currentPage)))
+        if (ARibbonCustomizePageItem* item = static_cast<ARibbonCustomizePageItem*>(m_listPage->item(m_currentPage)))
         {
-            RibbonCustomizePageWidget* page = item->m_page;
+            ARibbonCustomizePageWidget* page = item->m_page;
             page->hide();
             page->parentWidget()->update();
         }
@@ -364,12 +367,12 @@ void RibbonCustomizeDialogPrivate::switchToPage(int currentRow)
 
     m_currentPage = currentRow;
 
-    if (RibbonCustomizePageItem* item = static_cast<RibbonCustomizePageItem*>(m_listPage->item(m_currentPage)))
+    if (ARibbonCustomizePageItem* item = static_cast<ARibbonCustomizePageItem*>(m_listPage->item(m_currentPage)))
     {
-        RibbonCustomizePageWidget* page = item->m_page;
+        ARibbonCustomizePageWidget* page = item->m_page;
         page->show();
 
-        if (QWidget* candidate = qtn_WantTheFocus(page))
+        if (QWidget* candidate = aproch_WantTheFocus(page))
           candidate->setFocus();
 
         bool expandPage = !page->layout();
@@ -387,34 +390,34 @@ void RibbonCustomizeDialogPrivate::switchToPage(int currentRow)
 }
 
 /*!
-\class RibbonCustomizeDialog
+\class ARibbonCustomizeDialog
 \inmodule QtitanRibbon
-\brief RibbonCustomizeDialog implements dialog to configure actions, pages, groups that are located at RibbonBar.
-\sa RibbonBar::customizeDialog(), RibbonBar::showCustomizeDialog()
+\brief ARibbonCustomizeDialog implements dialog to configure actions, pages, groups that are located at ARibbonBar.
+\sa ARibbonBar::customizeDialog(), ARibbonBar::showCustomizeDialog()
 */
-RibbonCustomizeDialog::RibbonCustomizeDialog(QWidget* parent)
+ARibbonCustomizeDialog::ARibbonCustomizeDialog(QWidget* parent)
     : QDialog(parent)
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    QTN_INIT_PRIVATE(RibbonCustomizeDialog);
-    QTN_D(RibbonCustomizeDialog);
+    A_INIT_PRIVATE(ARibbonCustomizeDialog);
+    A_D(ARibbonCustomizeDialog);
     d.init();
 }
 
-RibbonCustomizeDialog::~RibbonCustomizeDialog()
+ARibbonCustomizeDialog::~ARibbonCustomizeDialog()
 {
-    QTN_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
 /*!
 Adds a widget to the dialogue as a setting \a page. 
 */ 
-void RibbonCustomizeDialog::addPage(QWidget* page)
+void ARibbonCustomizeDialog::addPage(QWidget* page)
 {
-    QTN_D(RibbonCustomizeDialog);
-    Q_ASSERT(page != Q_NULL);
-    RibbonCustomizePageWidget* pageWidget = new RibbonCustomizePageWidget(this);
+    A_D(ARibbonCustomizeDialog);
+    Q_ASSERT(page != nullptr);
+    ARibbonCustomizePageWidget* pageWidget = new ARibbonCustomizePageWidget(this);
     pageWidget->setContent(page,false,false);
     pageWidget->setWindowTitle(page->windowTitle());
 
@@ -433,11 +436,11 @@ void RibbonCustomizeDialog::addPage(QWidget* page)
 /*!
 Inserts a widget to the dialogue in a position \a index as a setting \a page.
 */
-void RibbonCustomizeDialog::insertPage(int index, QWidget* page)
+void ARibbonCustomizeDialog::insertPage(int index, QWidget* page)
 {
-    QTN_D(RibbonCustomizeDialog);
-    Q_ASSERT(page != Q_NULL);
-    RibbonCustomizePageWidget* pageWidget = new RibbonCustomizePageWidget(this);
+    A_D(ARibbonCustomizeDialog);
+    Q_ASSERT(page != nullptr);
+    ARibbonCustomizePageWidget* pageWidget = new ARibbonCustomizePageWidget(this);
     pageWidget->setContent(page);
     pageWidget->setWindowTitle(page->windowTitle());
     connect(this, SIGNAL(accepted()), page, SLOT(accepted()));
@@ -449,25 +452,25 @@ void RibbonCustomizeDialog::insertPage(int index, QWidget* page)
 /*!
 Returns index of the \a page.
 */
-int RibbonCustomizeDialog::indexOf(QWidget* page) const
+int ARibbonCustomizeDialog::indexOf(QWidget* page) const
 {
-    QTN_D(const RibbonCustomizeDialog);
+    A_D(const ARibbonCustomizeDialog);
     return d.m_listWidget.indexOf(page);
 }
 
 /*!
 Returns a \a page that is active at the moment.
 */
-QWidget* RibbonCustomizeDialog::currentPage() const
+QWidget* ARibbonCustomizeDialog::currentPage() const
 {
-    QTN_D(const RibbonCustomizeDialog);
+    A_D(const ARibbonCustomizeDialog);
     return d.m_listWidget.at(d.m_currentPage);
 }
 
 /*!
 Makes the \a page an active.
 */
-void RibbonCustomizeDialog::setCurrentPage(QWidget* page)
+void ARibbonCustomizeDialog::setCurrentPage(QWidget* page)
 {
     int index = indexOf(page);
     if (index != -1)
@@ -477,18 +480,18 @@ void RibbonCustomizeDialog::setCurrentPage(QWidget* page)
 /*!
 Returns an index of the page that is active at the moment.
 */
-int RibbonCustomizeDialog::currentPageIndex() const
+int ARibbonCustomizeDialog::currentPageIndex() const
 {
-    QTN_D(const RibbonCustomizeDialog);
+    A_D(const ARibbonCustomizeDialog);
     return d.m_currentPage;
 }
 
 /*!
 Makes the page with the \a index an active.
 */
-void RibbonCustomizeDialog::setCurrentPageIndex(int index)
+void ARibbonCustomizeDialog::setCurrentPageIndex(int index)
 {
-    QTN_D(RibbonCustomizeDialog);
+    A_D(ARibbonCustomizeDialog);
 
     if (index == -1)
     {
@@ -498,7 +501,7 @@ void RibbonCustomizeDialog::setCurrentPageIndex(int index)
     d.m_currentPage = index;
     d.m_listPage->setCurrentRow(index);
 
-    if (RibbonCustomizePageItem* posItem = static_cast<RibbonCustomizePageItem*>(d.m_listPage->item(index)))
+    if (ARibbonCustomizePageItem* posItem = static_cast<ARibbonCustomizePageItem*>(d.m_listPage->item(index)))
     {
         if (posItem->m_page)
             posItem->m_page->setVisible(true);
@@ -508,55 +511,55 @@ void RibbonCustomizeDialog::setCurrentPageIndex(int index)
 /*!
 Returns a count of the pages in the dialogue.
 */
-int RibbonCustomizeDialog::pageCount() const
+int ARibbonCustomizeDialog::pageCount() const
 {
-    QTN_D(const RibbonCustomizeDialog);
+    A_D(const ARibbonCustomizeDialog);
     return d.m_listWidget.count();
 }
 
 /*!
 Returns a page by its \a index.
 */
-QWidget* RibbonCustomizeDialog::pageByIndex(int index) const
+QWidget* ARibbonCustomizeDialog::pageByIndex(int index) const
 {
-    QTN_D(const RibbonCustomizeDialog);
+    A_D(const ARibbonCustomizeDialog);
     return d.m_listWidget[index];
 }
 
 /*! \reimp */
-void RibbonCustomizeDialog::accept()
+void ARibbonCustomizeDialog::accept()
 {
-    QTN_D(RibbonCustomizeDialog);
+    A_D(ARibbonCustomizeDialog);
     QDialog::accept();
     d.setCustomizeMode(false);
 }
 
 /*! \reimp */
-void RibbonCustomizeDialog::reject()
+void ARibbonCustomizeDialog::reject()
 {
-    QTN_D(RibbonCustomizeDialog);
+    A_D(ARibbonCustomizeDialog);
     QDialog::reject();
     d.setCustomizeMode(false);
 }
 
 /*! \reimp */
-void RibbonCustomizeDialog::showEvent(QShowEvent* event)
+void ARibbonCustomizeDialog::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
-    QTN_D(RibbonCustomizeDialog);
+    A_D(ARibbonCustomizeDialog);
     d.setCustomizeMode(true);
     if (d.m_currentPage != -1)
         setCurrentPageIndex(d.m_currentPage);
 }
 
 /*! \reimp */
-void RibbonCustomizeDialog::hideEvent(QHideEvent* event)
+void ARibbonCustomizeDialog::hideEvent(QHideEvent* event)
 {
-    QTN_D(RibbonCustomizeDialog);
+    A_D(ARibbonCustomizeDialog);
     QDialog::hideEvent(event);
     for (int index = 0, count = d.m_listPage->count(); count > index; ++index)
     {
-        if (RibbonCustomizePageItem* posItem = static_cast<RibbonCustomizePageItem*>(d.m_listPage->item(index)))
+        if (ARibbonCustomizePageItem* posItem = static_cast<ARibbonCustomizePageItem*>(d.m_listPage->item(index)))
         {
             if (posItem->m_page)
                 posItem->m_page->setVisible(false);
@@ -564,3 +567,4 @@ void RibbonCustomizeDialog::hideEvent(QHideEvent* event)
     }
 }
 
+APROCH_NAMESPACE_END

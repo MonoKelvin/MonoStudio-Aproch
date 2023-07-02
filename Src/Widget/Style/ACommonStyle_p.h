@@ -286,31 +286,31 @@ class AStandardSymbolIcon
 public:
     AStandardSymbolIcon();
 public:
-    inline static SegoeMDL2Font::IconSymbol symbolStandardPixmap(QStyle::StandardPixmap sp)
+    inline static ASegoeMDL2Font::IconSymbol symbolStandardPixmap(QStyle::StandardPixmap sp)
     {
         switch (sp)
         {
-        case QStyle::SP_TitleBarMinButton:    return SegoeMDL2Font::ChromeMinimize;
-        case QStyle::SP_TitleBarMaxButton:    return SegoeMDL2Font::ChromeMaximize;
-        case QStyle::SP_TitleBarCloseButton:  return SegoeMDL2Font::ChromeClose;
-        case QStyle::SP_TitleBarNormalButton: return SegoeMDL2Font::ChromeRestore;
-        case QStyle::SP_TitleBarShadeButton: return SegoeMDL2Font::ChromeRestore;
-        case QStyle::SP_TitleBarUnshadeButton: return SegoeMDL2Font::ChromeMinimize;
-        case QStyle::SP_TitleBarContextHelpButton: return SegoeMDL2Font::Help;
-        case QStyle::SP_ArrowDown:            return SegoeMDL2Font::ChevronDown;
+        case QStyle::SP_TitleBarMinButton:    return ASegoeMDL2Font::ChromeMinimize;
+        case QStyle::SP_TitleBarMaxButton:    return ASegoeMDL2Font::ChromeMaximize;
+        case QStyle::SP_TitleBarCloseButton:  return ASegoeMDL2Font::ChromeClose;
+        case QStyle::SP_TitleBarNormalButton: return ASegoeMDL2Font::ChromeRestore;
+        case QStyle::SP_TitleBarShadeButton: return ASegoeMDL2Font::ChromeRestore;
+        case QStyle::SP_TitleBarUnshadeButton: return ASegoeMDL2Font::ChromeMinimize;
+        case QStyle::SP_TitleBarContextHelpButton: return ASegoeMDL2Font::Help;
+        case QStyle::SP_ArrowDown:            return ASegoeMDL2Font::ChevronDown;
         default: break;
         }
 
         switch (static_cast<ACommonStyle::StandardPixmapEx>(sp))
         {
-        case ACommonStyle::SP_TitleBarPinButton:        return SegoeMDL2Font::Pin;
-        case ACommonStyle::SP_TitleBarPinFillButton:    return SegoeMDL2Font::PinFill;
-        case ACommonStyle::SP_TitleBarPinnedButton:     return SegoeMDL2Font::Pinned;
-        case ACommonStyle::SP_TitleBarPinnedFillButton: return SegoeMDL2Font::PinnedFill;
-        case ACommonStyle::SP_NavigationBackButton:     return SegoeMDL2Font::ChromeBack;
+        case ACommonStyle::SP_TitleBarPinButton:        return ASegoeMDL2Font::Pin;
+        case ACommonStyle::SP_TitleBarPinFillButton:    return ASegoeMDL2Font::PinFill;
+        case ACommonStyle::SP_TitleBarPinnedButton:     return ASegoeMDL2Font::Pinned;
+        case ACommonStyle::SP_TitleBarPinnedFillButton: return ASegoeMDL2Font::PinnedFill;
+        case ACommonStyle::SP_NavigationBackButton:     return ASegoeMDL2Font::ChromeBack;
         default: break;
         }
-        return SegoeMDL2Font::None;
+        return ASegoeMDL2Font::None;
     }
 public:
     QPixmap standardSymbolPixmap(QStyle::StandardPixmap sp, const QStyleOption* option, const QWidget* widget) const;
@@ -450,7 +450,7 @@ public:
     virtual bool drawHeaderSection(const QStyleOption* opt, QPainter* painter, const QWidget* w) const;
     virtual bool drawHeaderLabel(const QStyleOption* opt, QPainter* painter, const QWidget* w) const;
     virtual bool drawDockWidgetTitle(const QStyleOption* opt, QPainter* painter, const QWidget* w) const;
-    // for RibbonBar
+    // for ARibbonBar
     // draw PrimitiveElement
     virtual bool drawRibbonBar(const QStyleOption* opt, QPainter* painter, const QWidget* w = nullptr) const;
     virtual bool drawRibbonFrameGroups(const QStyleOption* opt, QPainter* painter, const QWidget* w = nullptr) const;
@@ -666,7 +666,7 @@ protected:
 APROCH_API void aproch_paintLight(const QWidget* widget, QPainter* p, const QRect& r);
 APROCH_API void aproch_paintLightFrame(const QWidget* widget, QPainter* p, const QRect& r);
 APROCH_API void aproch_clickLight(const QWidget* widget);
-APROCH_API void aproch_setShadecolor(QImage& image, const QColor& color, const QColor& origColor = Qt::black);
+APROCH_API void aproch_setShadeColor(QImage& image, const QColor& color, const QColor& origColor = Qt::black);
 APROCH_API bool aproch_hasWindowTitleBar(const QWidget* widget);
 
 inline QPixmap aproch_iconPixmap(const QIcon& icon, const QWidget* widget, const QSize& size, QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off)

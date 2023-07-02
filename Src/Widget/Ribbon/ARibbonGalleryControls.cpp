@@ -1,88 +1,94 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#include "QtnRibbonGalleryControls.h"
-#include "QtnRibbonButtonPrivate.h"
-#include "QtnRibbonGroup.h"
-#ifdef QTN_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+ * @file    ARibbonGalleryControls.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
+#include "ARibbonGalleryControls.h"
+#include "ARibbonButton_p.h"
+#include "ARibbonGroup.h"
 
-QTITAN_USE_NAMESPACE
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - ARibbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
+APROCH_NAMESPACE_BEGIN
 
-RibbonGalleryControl::RibbonGalleryControl(RibbonGroup* parentGroup)
-    : RibbonWidgetControl(parentGroup, true/*ignoreActionSettings*/)
+ARibbonGalleryControl::ARibbonGalleryControl(ARibbonGroup* parentGroup)
+    : ARibbonWidgetControl(parentGroup, true/*ignoreActionSettings*/)
     , m_marginTop(0) 
     , m_marginBottom(0)
 
 {
     setContentsMargins(3, 3);
     // 6 3-5 2 6
-    sizeDefinition(RibbonControlSizeDefinition::GroupLarge)->setMinimumItemCount(6);
-    sizeDefinition(RibbonControlSizeDefinition::GroupLarge)->setMaximumItemCount(6);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupLarge)->setMinimumItemCount(6);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupLarge)->setMaximumItemCount(6);
 
-    sizeDefinition(RibbonControlSizeDefinition::GroupMedium)->setMinimumItemCount(3);
-    sizeDefinition(RibbonControlSizeDefinition::GroupMedium)->setMaximumItemCount(5);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupMedium)->setMinimumItemCount(3);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupMedium)->setMaximumItemCount(5);
 
-    sizeDefinition(RibbonControlSizeDefinition::GroupSmall)->setMinimumItemCount(2);
-    sizeDefinition(RibbonControlSizeDefinition::GroupSmall)->setMaximumItemCount(2);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupSmall)->setMinimumItemCount(2);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupSmall)->setMaximumItemCount(2);
 
-    sizeDefinition(RibbonControlSizeDefinition::GroupPopup)->setMinimumItemCount(6);
-    sizeDefinition(RibbonControlSizeDefinition::GroupPopup)->setMaximumItemCount(6);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupPopup)->setMinimumItemCount(6);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupPopup)->setMaximumItemCount(6);
 
-    sizeDefinition(RibbonControlSizeDefinition::GroupSimplifiedOverflow)->setVisible(false);
+    sizeDefinition(ARibbonControlSizeDefinition::GroupSimplifiedOverflow)->setVisible(false);
 
-    RibbonGallery* gallery = new RibbonGallery(this);
+    ARibbonGallery* gallery = new ARibbonGallery(this);
     gallery->setGeometry(0, 0, 0, 0);
     setContentWidget(gallery);
     widget()->updatelayout();
 }
 
-RibbonGalleryControl::~RibbonGalleryControl()
+ARibbonGalleryControl::~ARibbonGalleryControl()
 {
 }
 
-RibbonGallery* RibbonGalleryControl::widget() const
+ARibbonGallery* ARibbonGalleryControl::widget() const
 {
-    return qobject_cast<RibbonGallery*>(contentWidget());
+    return qobject_cast<ARibbonGallery*>(contentWidget());
 }
 
-void RibbonGalleryControl::setContentsMargins(int top, int bottom)
+void ARibbonGalleryControl::setContentsMargins(int top, int bottom)
 {
     m_marginTop = top;
     m_marginBottom = bottom;
 }
 
-QSize RibbonGalleryControl::sizeHint() const
+QSize ARibbonGalleryControl::sizeHint() const
 {
-    QSize sz = RibbonWidgetControl::sizeHint();
+    QSize sz = ARibbonWidgetControl::sizeHint();
     if (widget() && parentGroup())
     {
-        if (RibbonBar* ribbonBar = parentGroup()->ribbonBar())
+        if (ARibbonBar* ribbonBar = parentGroup()->ribbonBar())
         {
             if (widget()->rowCount() == -1)
                 sz.setHeight(ribbonBar->rowItemHeight() * ribbonBar->rowItemCount() - (m_marginTop + m_marginBottom));
@@ -91,7 +97,7 @@ QSize RibbonGalleryControl::sizeHint() const
         int count = widget()->columnCount();
         if (count > 0 && widget()->itemCount() > 0)
         {
-            RibbonGalleryItem* item = widget()->item(0);
+            ARibbonGalleryItem* item = widget()->item(0);
             QSize szItem = item->sizeHint();
             Q_ASSERT(!szItem.isNull());
             sz.setWidth(count * szItem.width() + widget()->borders().width() + 2);
@@ -107,11 +113,11 @@ QSize RibbonGalleryControl::sizeHint() const
     return sz;
 }
 
-bool RibbonGalleryControl::adjustCurrentSize(bool expand)
+bool ARibbonGalleryControl::adjustCurrentSize(bool expand)
 {
-    RibbonControlSizeDefinition::GroupSize sizeDef = currentSize();
+    ARibbonControlSizeDefinition::GroupSize sizeDef = currentSize();
     if (sizeDefinition(sizeDef)->isVisible() &&
-        sizeDef == RibbonControlSizeDefinition::GroupSimplifiedOverflow)
+        sizeDef == ARibbonControlSizeDefinition::GroupSimplifiedOverflow)
     {
         int min = sizeDefinition(sizeDef)->minimumItemCount();
         if (min != -1)
@@ -135,15 +141,15 @@ bool RibbonGalleryControl::adjustCurrentSize(bool expand)
 
     if (old != widget()->columnCount())
         return true;
-    return RibbonWidgetControl::adjustCurrentSize(expand);
+    return ARibbonWidgetControl::adjustCurrentSize(expand);
  }
 
-void RibbonGalleryControl::sizeChanged(RibbonControlSizeDefinition::GroupSize size)
+void ARibbonGalleryControl::sizeChanged(ARibbonControlSizeDefinition::GroupSize size)
 {
-    int minCount = sizeDefinition(RibbonControlSizeDefinition::GroupSimplifiedOverflow)->minimumItemCount();
-    if ((minCount != -1 || sizeDefinition(size)->isVisible()) && size == RibbonControlSizeDefinition::GroupSimplifiedOverflow)
+    int minCount = sizeDefinition(ARibbonControlSizeDefinition::GroupSimplifiedOverflow)->minimumItemCount();
+    if ((minCount != -1 || sizeDefinition(size)->isVisible()) && size == ARibbonControlSizeDefinition::GroupSimplifiedOverflow)
     {
-        size = RibbonControlSizeDefinition::GroupSimplified;
+        size = ARibbonControlSizeDefinition::GroupSimplified;
     }
 
     int min = sizeDefinition(size)->minimumItemCount();
@@ -154,11 +160,13 @@ void RibbonGalleryControl::sizeChanged(RibbonControlSizeDefinition::GroupSize si
     else
         widget()->setColumnCount(min);
 
-    RibbonWidgetControl::sizeChanged(size);
+    ARibbonWidgetControl::sizeChanged(size);
 }
 
-void RibbonGalleryControl::resizeEvent(QResizeEvent* event)
+void ARibbonGalleryControl::resizeEvent(QResizeEvent* event)
 {
-    RibbonWidgetControl::resizeEvent(event);
+    ARibbonWidgetControl::resizeEvent(event);
     widget()->updatelayout();
 }
+
+APROCH_NAMESPACE_END

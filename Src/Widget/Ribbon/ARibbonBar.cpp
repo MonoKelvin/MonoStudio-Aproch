@@ -55,10 +55,11 @@
 #include "AOfficePopupMenu.h"
 #include "ARibbonSystemMenu.h"
 #include "ARibbonBackstageView_p.h"
-#include "ARibbonKeyTip_p.h"
+#include "ARibbonKeyTip.h"
 #include "ARibbonGroup_p.h"
 #include "ARibbonGallery.h"
 #include "ARibbonCustomizeManager.h"
+#include "ARibbonBackstageView.h"
 
  // 
  // The most of the following code is copied from Qtitan.
@@ -146,14 +147,14 @@ bool ARibbonToolTipManager::showToolTip(const QPoint& pos, QWidget* w)
 {
     if (!qobject_cast<ARibbonGallery*>(w))
     {
-        if (QtnPrivate::aproch_isAncestor(w, QTITAN_META_CLASSNAME("ARibbonSystemMenu")))
+        if (aproch_isAncestor(w, APROCH_META_CLASSNAME("ARibbonSystemMenu")))
             return true;
-        if (QtnPrivate::aproch_isAncestor(w, "QDialog"))
+        if (aproch_isAncestor(w, "QDialog"))
             return false;
-        if (!QtnPrivate::aproch_isAncestor(w, QTITAN_META_CLASSNAME("ARibbonQuickAccessBar")) && 
-            !QtnPrivate::aproch_isAncestor(w, QTITAN_META_CLASSNAME("ARibbonBar")) &&
-            !QtnPrivate::aproch_isAncestor(w, QTITAN_META_CLASSNAME("ARibbonStatusBar")) &&
-            !QtnPrivate::aproch_isAncestor(w, QTITAN_META_CLASSNAME("ARibbonTitleBarWidget")))
+        if (!aproch_isAncestor(w, APROCH_META_CLASSNAME("ARibbonQuickAccessBar")) && 
+            !aproch_isAncestor(w, APROCH_META_CLASSNAME("ARibbonBar")) &&
+            !aproch_isAncestor(w, APROCH_META_CLASSNAME("ARibbonStatusBar")) &&
+            !aproch_isAncestor(w, APROCH_META_CLASSNAME("ARibbonTitleBarWidget")))
             return false;
     }
 
@@ -275,7 +276,7 @@ bool ARibbonToolTipManager::showToolTip(const QPoint& pos, QWidget* w)
     if (!tipTitleText.isEmpty() || !tipText.isEmpty() || !tipIcon.isNull())
     {
         QPoint globalPos(posX, posY);
-        ToolTip::showToolTip(globalPos, tipTitleText, tipText, tipIcon, w);
+        AToolTip::showToolTip(globalPos, tipTitleText, tipText, tipIcon, w);
         return true;
     }
     return false;
@@ -301,14 +302,14 @@ bool ARibbonToolTipManager::eventFilter(QObject* watched, QEvent* event)
 
 /* ARibbonBarView */
 ARibbonBarView::ARibbonBarView(ARibbonBar* ribbonBar)
-    : MaterialWidget(ribbonBar), m_ribbonBar(ribbonBar)
+    : AMaterialWidget(ribbonBar), m_ribbonBar(ribbonBar)
 {
-    setBlendType(MaterialWidget::DisabledBlend);
+    setBlendType(AMaterialWidget::DisabledBlend);
 }
 
 void ARibbonBarView::paintEvent(QPaintEvent* event)
 {
-    MaterialWidget::paintEvent(event);
+    AMaterialWidget::paintEvent(event);
     if (m_ribbonBar->titleBackground().isNull())
         return;
     QPainter painter(this);
@@ -366,12 +367,12 @@ ARibbonBarPrivate::ARibbonBarPrivate()
 ARibbonBarPrivate::~ARibbonBarPrivate()
 {
     qApp->removeEventFilter(this);
-    deleteARibbonTitleBarWidget();
-    Q_DELETE_AND_NULL(m_view);
-    Q_DELETE_AND_NULL(m_activePageAnimation);
+    deleteRibbonTitleBarWidget();
+    A_DELETE_AND_NULL(m_view);
+    A_DELETE_AND_NULL(m_activePageAnimation);
 }
 
-ARibbonBar* ARibbonBarPrivate::findARibbonBar(const QWidget* widget)
+ARibbonBar* ARibbonBarPrivate::findRibbonBar(const QWidget* widget)
 {
     if (widget == nullptr)
         return nullptr;
@@ -409,7 +410,7 @@ void ARibbonBarPrivate::init()
     m_overflowMenuButton = new ARibbonOverflowMenuButton(getPageParent());
     m_overflowMenuButton->setPopupMode(QToolButton::InstantPopup);
     m_overflowMenuButton->setVisible(false);
-    createARibbonTitleBarWidget();
+    createRibbonTitleBarWidget();
 
     p.setNativeMenuBar(false);
     p.setAttribute(Qt::WA_Hover, true);
@@ -551,7 +552,7 @@ void ARibbonBarPrivate::updateLayoutRects()
     A_P(ARibbonBar);
     updateMetrics();
 
-    WindowTitleBar* titleBar = findTitleBar();
+    AWindowTitleBar* titleBar = findTitleBar();
 
     if (m_systemButton != nullptr)
     {
@@ -713,7 +714,7 @@ void ARibbonBarPrivate::updateLayoutRects()
             else
 #endif
             {
-                const int spacing = p.style()->pixelMetric(static_cast<QStyle::PixelMetric>(CommonStyle::PM_ARibbonLayoutHorizontalSpacing), nullptr, &p);
+                const int spacing = p.style()->pixelMetric(static_cast<QStyle::PixelMetric>(ACommonStyle::PM_RibbonLayoutHorizontalSpacing), nullptr, &p);
                 m_overflowButtonRect.setSize(sh);
                 m_overflowButtonRect.adjust(groupContentMargins().left(), groupContentMargins().top(),
                     -groupContentMargins().right(), -groupContentMargins().bottom());
@@ -757,7 +758,7 @@ bool ARibbonBarPrivate::updateOverflowButton()
         m_overflowMenuButton->setMenu(activePage->aproch_d().m_overflowMenu);
         const QRect rect = activePage->geometry();
         const int groupsLength = qMin(ARibbonPagePrivate::_get(activePage)->groupsLength(), rect.width());
-        const int spacing = p.style()->pixelMetric(static_cast<QStyle::PixelMetric>(CommonStyle::PM_ARibbonLayoutHorizontalSpacing), nullptr, &p);
+        const int spacing = p.style()->pixelMetric(static_cast<QStyle::PixelMetric>(ACommonStyle::PM_RibbonLayoutHorizontalSpacing), nullptr, &p);
         overflowButtonRect.moveLeft(rect.left() + groupsLength + spacing);
         m_overflowMenuButton->setGeometry(overflowButtonRect);
         m_overflowMenuButton->raise();
@@ -783,7 +784,7 @@ void ARibbonBarPrivate::updateLayout()
     const int hmargin = p.style()->pixelMetric(QStyle::PM_MenuBarHMargin, &opt, &p);
     m_pageContentMargins = QMargins(hmargin, vmargin, hmargin, vmargin);
 
-    const int margin = p.style()->pixelMetric(static_cast<QStyle::PixelMetric>(CommonStyle::PM_ARibbonGroupContentMargin), nullptr, &p);
+    const int margin = p.style()->pixelMetric(static_cast<QStyle::PixelMetric>(ACommonStyle::PM_RibbonGroupContentMargin), nullptr, &p);
     m_groupContentMargins = QMargins(margin, margin, margin, margin);
  
     updateTitleBarWidget();
@@ -852,9 +853,9 @@ void ARibbonBarPrivate::layoutCorner()
 }
 
 /*! \internal */
-void ARibbonBarPrivate::createARibbonTitleBarWidget()
+void ARibbonBarPrivate::createRibbonTitleBarWidget()
 {
-    A_P(ARibbonBar); 
+    A_P(ARibbonBar); ;
     if (m_ribbonTitleBarWidget == nullptr)
     {
         m_ribbonTitleBarWidget = new ARibbonTitleBarWidget(&p);
@@ -863,10 +864,10 @@ void ARibbonBarPrivate::createARibbonTitleBarWidget()
         m_ribbonTitleBarWidget->addWidget(m_quickAccessBar);
         m_quickAccessBar->setVisible(false);
 
-        m_simplifiedAction = new QAction(ARibbonBar::tr_compatible(QtnARibbonSimplifiedARibbonActionString), &p);
-        m_simplifiedAction->setToolTip(ARibbonBar::tr_compatible(QtnARibbonSimplifiedARibbonActionToolTipsString));
+        m_simplifiedAction = new QAction(ARibbonBar::tr_compatible(RibbonSimplifiedRibbonActionString), &p);
+        m_simplifiedAction->setToolTip(ARibbonBar::tr_compatible(RibbonSimplifiedRibbonActionToolTipsString));
         m_simplifiedAction->setCheckable(true);
-        ToggleSwitch* toggleSwitch = new ToggleSwitch();
+        AToggleSwitch* toggleSwitch = new AToggleSwitch();
         toggleSwitch->setTextAlignment(Qt::AlignRight);
         m_ribbonTitleBarWidget->addWidgetToRightSide(toggleSwitch);
         toggleSwitch->setDefaultAction(m_simplifiedAction);
@@ -875,24 +876,24 @@ void ARibbonBarPrivate::createARibbonTitleBarWidget()
 }
 
 /*! \internal */
-void ARibbonBarPrivate::deleteARibbonTitleBarWidget()
+void ARibbonBarPrivate::deleteRibbonTitleBarWidget()
 {
     if (m_ribbonTitleBarWidget == nullptr)
         return;
-    if (WindowTitleBar* titleBar = findTitleBar())
+    if (AWindowTitleBar* titleBar = findTitleBar())
     {
         titleBar->setWidget(nullptr);
         titleBar->removeAndDelete();
     }
     m_ribbonTitleBarWidget->setParent(nullptr);
-    Q_DELETE_AND_NULL(m_ribbonTitleBarWidget);
+    A_DELETE_AND_NULL(m_ribbonTitleBarWidget);
 }
 
 /*! \internal */
 void ARibbonBarPrivate::setBackstageViewVisible(bool visible)
 {
     A_P(ARibbonBar);
-    if (static_cast<bool>(p.style()->styleHint((QStyle::StyleHint)CommonStyle::SH_ARibbonBackstageHideTabs)))
+    if (static_cast<bool>(p.style()->styleHint((QStyle::StyleHint)ACommonStyle::SH_RibbonBackstageHideTabs)))
     {
         if (visible)
         {
@@ -920,7 +921,7 @@ void ARibbonBarPrivate::setBackstageViewVisible(bool visible)
                 m_simplifiedAction->setVisible(false);
             }
 
-            if (WindowTitleBar* titleBar = findTitleBar())
+            if (AWindowTitleBar* titleBar = findTitleBar())
             {
                 m_saveVisibleSysMenu = titleBar->isSysMenuButtonVisible();
                 titleBar->setSysMenuButtonVisible(false);
@@ -938,7 +939,7 @@ void ARibbonBarPrivate::setBackstageViewVisible(bool visible)
                 (*it)->setVisible(true);
             m_visibleActions.clear();
 
-            if (WindowTitleBar* titleBar = findTitleBar())
+            if (AWindowTitleBar* titleBar = findTitleBar())
                 titleBar->setSysMenuButtonVisible(m_saveVisibleSysMenu);
         }
     }
@@ -982,7 +983,7 @@ void ARibbonBarPrivate::insertPage(int index, ARibbonPage* page)
 {
     Q_ASSERT(page != nullptr);
     A_P(ARibbonBar);
-    ARibbonPagePrivate::_get(page)->setARibbonBar(&p);
+    ARibbonPagePrivate::_get(page)->setRibbonBar(&p);
     m_ribbonTabBar->insertTab(index, page->title(), page);
 }
 
@@ -994,7 +995,7 @@ void ARibbonBarPrivate::removePage(int index, bool deletePage)
         ARibbonPage* page = m_ribbonTabBar->getTab(index)->page();
         ARibbonPagePrivate* page_private = ARibbonPagePrivate::_get(page);
         page_private->setAssociativeTab(nullptr);
-        page_private->setARibbonBar(nullptr);
+        page_private->setRibbonBar(nullptr);
         if (deletePage)
             delete page;
 
@@ -1011,7 +1012,7 @@ int ARibbonBarPrivate::backstageViewTop() const
     int height = 0;
     if (p.isFrameThemeEnabled())
     {
-        if (WindowTitleBar* titleBar = findTitleBar())
+        if (AWindowTitleBar* titleBar = findTitleBar())
         {
             if (titleBar->extendViewIntoTitleBar())
             height = p.style()->pixelMetric(QStyle::PM_TitleBarHeight, nullptr, p.window());
@@ -1060,18 +1061,18 @@ bool ARibbonBarPrivate::isPagePopupVisible() const
 /*! \internal */
 QWidget* ARibbonBarPrivate::getPageParent()
 {
-    A_P(ARibbonBar)
+    A_P(ARibbonBar);
     if (p.isMinimized())
         return m_pagePopup;
     else
         return material();
 }
 
-WindowTitleBar* ARibbonBarPrivate::findTitleBar() const
+AWindowTitleBar* ARibbonBarPrivate::findTitleBar() const
 {
-    A_P(const ARibbonBar)
+    A_P(const ARibbonBar);
     QWidget* parent = p.parentWidget();
-    return parent != nullptr && parent->isWindow() ? WindowTitleBar::find(parent) : nullptr;
+    return parent != nullptr && parent->isWindow() ? AWindowTitleBar::find(parent) : nullptr;
 }
 
 bool ARibbonBarPrivate::isUpdating() const
@@ -1090,7 +1091,7 @@ QMargins ARibbonBarPrivate::groupContentMargins() const
     return m_groupContentMargins;
 }
 
-MaterialWidget* ARibbonBarPrivate::material() const
+AMaterialWidget* ARibbonBarPrivate::material() const
 {
     return m_view;
 }
@@ -1111,8 +1112,8 @@ QFont ARibbonBarPrivate::getPageFont() const
 
 int ARibbonBarPrivate::extendedTitleBarHeight() const
 {
-    A_P(const ARibbonBar)
-    WindowTitleBar* titleBar = findTitleBar();
+    A_P(const ARibbonBar);
+    AWindowTitleBar* titleBar = findTitleBar();
     if (titleBar != nullptr && titleBar->isVisible())
     {
         if (!titleBar->styledFrame())
@@ -1132,7 +1133,7 @@ int ARibbonBarPrivate::extendedTitleBarHeight() const
 void ARibbonBarPrivate::updateTitleBar()
 {
     A_P(ARibbonBar);
-    WindowTitleBar* titleBar = findTitleBar();
+    AWindowTitleBar* titleBar = findTitleBar();
     if (titleBar == nullptr)
         return;
 
@@ -1140,14 +1141,14 @@ void ARibbonBarPrivate::updateTitleBar()
     {
         if (p.isFrameThemeEnabled())
         {
-            const bool styledFrame = p.style()->styleHint((QStyle::StyleHint)CommonStyle::SH_ARibbonStyledFrame);
+            const bool styledFrame = p.style()->styleHint((QStyle::StyleHint)ACommonStyle::SH_RibbonStyledFrame);
             titleBar->setExtendViewIntoTitleBar(styledFrame);
             titleBar->setStyledFrame(styledFrame);
 
-            WindowTitleBar::SysButtonKind buttonKind = titleBar->sysButtonKind();
-            bool visible = p.style()->styleHint((QStyle::StyleHint)CommonStyle::SH_ARibbonsSysMenuButtonVisible);
+            AWindowTitleBar::SysButtonKind buttonKind = titleBar->sysButtonKind();
+            bool visible = p.style()->styleHint((QStyle::StyleHint)ACommonStyle::SH_RibbonsSysMenuButtonVisible);
             if (visible)
-                visible = buttonKind == WindowTitleBar::SysMenuButton || buttonKind == WindowTitleBar::BackButton;
+                visible = buttonKind == AWindowTitleBar::SysMenuButton || buttonKind == AWindowTitleBar::BackButton;
             titleBar->setSysMenuButtonVisible(visible);
         }
         titleBar->setVisible(true);
@@ -1159,7 +1160,7 @@ void ARibbonBarPrivate::updateTitleBar()
 void ARibbonBarPrivate::updateTitleBarWidget()
 {
     A_P(ARibbonBar);
-    WindowTitleBar* titleBar = findTitleBar();
+    AWindowTitleBar* titleBar = findTitleBar();
     
     if (!p.isFrameThemeEnabled() || p.tabBarPosition() == ARibbonBar::BottomPosition)
     {
@@ -1177,7 +1178,7 @@ void ARibbonBarPrivate::updateTitleBarWidget()
         if (titleBar->widget() == nullptr)
         {
             m_ribbonTitleBarWidget->setParent(nullptr);
-            titleBar->setWidget(m_ribbonTitleBarWidget, WindowTitleBar::AlignClient);
+            titleBar->setWidget(m_ribbonTitleBarWidget, AWindowTitleBar::AlignClient);
         }
         //m_ribbonTitleBarWidget->setPalette(titleBar->palette());
         m_ribbonTitleBarWidget->setPalette(m_ribbonTabBar->palette());
@@ -1248,7 +1249,7 @@ void ARibbonBarPrivate::currentChanged(int index)
         if (i == index)
         {
             activePage = page;
-            CommonStyle* commonStyle = CommonStyle::ensureStyle();
+            ACommonStyle* commonStyle = ACommonStyle::ensureStyle();
             const bool animation = !isUpdating() && commonStyle != nullptr ? commonStyle->isAnimationEnabled() : true;
             updateActivePageLayout(activePage, animation);
             updateOverflowButton();
@@ -1338,7 +1339,7 @@ void ARibbonBarPrivate::updateActivePageLayout(ARibbonPage* activePage, bool ani
 
 QMenu* ARibbonBarPrivate::createContextMenu()
 {
-    A_P(ARibbonBar)
+    A_P(ARibbonBar);
     if (p.isBackstageVisible())
         return nullptr;
 
@@ -1350,23 +1351,23 @@ QMenu* ARibbonBarPrivate::createContextMenu()
         QList<QAction*> actions = quickAccessBar->actions();
         if (actions.size() > 0)
         {
-            action = popup->addAction(ARibbonBar::tr_compatible(QtnARibbonCustomizeQuickAccessToolBarDotString));
+            action = popup->addAction(ARibbonBar::tr_compatible(RibbonCustomizeQuickAccessToolBarDotString));
             action->setObjectName(strCustomizeQAToolBar);
             connect(action, SIGNAL(triggered()), this, SLOT(toggledCustomizeBar()));
 
-            action = popup->addAction(p.quickAccessBarPosition() == ARibbonBar::TopPosition ? ARibbonBar::tr_compatible(QtnARibbonShowQuickAccessToolBarBelowString)
-                : ARibbonBar::tr_compatible(QtnARibbonShowQuickAccessToolBarAboveString));
+            action = popup->addAction(p.quickAccessBarPosition() == ARibbonBar::TopPosition ? ARibbonBar::tr_compatible(RibbonShowQuickAccessToolBarBelowString)
+                : ARibbonBar::tr_compatible(RibbonShowQuickAccessToolBarAboveString));
             action->setObjectName(strCustomizeARibbonBar);
             connect(action, SIGNAL(triggered()), this, SLOT(toggledQuickAccessBarPos()));
         }
         popup->addSeparator();
     }
 
-    action = popup->addAction(ARibbonBar::tr_compatible(QtnARibbonCustomizeActionString));
+    action = popup->addAction(ARibbonBar::tr_compatible(RibbonCustomizeActionString));
     action->setObjectName(strCustomizeARibbonBar);
     connect(action, SIGNAL(triggered()), this, SLOT(toggledCustomizeBar()));
 
-    action = popup->addAction(ARibbonBar::tr_compatible(QtnARibbonMinimizeActionString));
+    action = popup->addAction(ARibbonBar::tr_compatible(RibbonMinimizeActionString));
     action->setCheckable(true);
     action->setChecked(p.isMinimized());
     action->setVisible(p.isMinimizationEnabled());
@@ -1521,7 +1522,7 @@ void ARibbonBarPrivate::showKeyTips(QWidget* w)
         QString strUsed(QStringLiteral("& "));
         for ( int j = i + 1; j < count; j++)
         {
-            ARibbonKeyTip* keyTipWidget = m_keyTips.at(j);;
+            ARibbonKeyTip* keyTipWidget = m_keyTips.at(j);
             if (keyTipWidget->getStringTip().at(0) == strTip.at(0))
             {
                 list.append(keyTipWidget);
@@ -1760,7 +1761,7 @@ void ARibbonBarPrivate::createWidgetKeyTips(ARibbonGroup* group, QWidget* widget
                     {
                         if (toolButton->property(_aproch_PopupButtonGallery).toBool())
                         {
-                            if (OfficePopupMenu* menu = ribGallery->popupMenu())
+                            if (AOfficePopupMenu* menu = ribGallery->popupMenu())
                             {
                                 if (QAction* act = menu->defaultAction())
                                     strCaption = act->text();
@@ -2229,7 +2230,7 @@ QRect ARibbonBarPrivate::getPageFrameRect() const
 /*! \internal */
 void ARibbonBarPrivate::createCustomizeDialog()
 {
-    A_P(ARibbonBar)
+    A_P(ARibbonBar);
     if (m_customizeDialog != nullptr)
         return;
 
@@ -2315,11 +2316,11 @@ Constructs ARibbonBar object with the given \a parent.
 ARibbonBar::ARibbonBar(QWidget* parent)
     : QMenuBar(parent)
 {
-    initARibbonResource();
+    initRibbonResource();
     A_INIT_PRIVATE(ARibbonBar);
     A_D(ARibbonBar);
     d.init();
-    CommonStyle::ensureStyle();
+    ACommonStyle::ensureStyle();
     ensurePolished();
 }
 
@@ -2331,7 +2332,7 @@ ARibbonBar::~ARibbonBar()
     A_D(ARibbonBar);
     d.m_destoying = true;
     clearPages();
-    A_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
 /*!
@@ -2768,7 +2769,7 @@ bool ARibbonBar::isMinimizationEnabled() const
     return d.m_minimizationEnabled;
 }
 
-void ARibbonBar::visualARibbonBarView(bool bVisble) 
+void ARibbonBar::visualRibbonBarView(bool bVisble) 
 { 
     A_D(ARibbonBar); 
     d.m_bShowARibbonBarView = bVisble;
@@ -2869,7 +2870,7 @@ Shows customization dialog related to customizeDialog() function. Dialog is show
 */
 void ARibbonBar::showCustomizeDialog()
 {
-    A_D(ARibbonBar)
+    A_D(ARibbonBar);
     ARibbonCustomizeDialog* dialog = customizeDialog();
     Q_ASSERT(dialog != nullptr);
     if (QAction* action = qobject_cast<QAction*>(d.sender()))
@@ -3068,26 +3069,26 @@ bool ARibbonBar::isBackstageVisible() const
 bool ARibbonBar::isAcrilycEnabled() const
 {
     A_D(const ARibbonBar);
-    return d.material()->blendType() != MaterialWidget::DisabledBlend;
+    return d.material()->blendType() != AMaterialWidget::DisabledBlend;
 }
 
 void ARibbonBar::setAcrilycEnabled(bool enabled)
 {
     A_D(ARibbonBar);
-    d.material()->setBlendType(enabled ? MaterialWidget::BackgroundBlend : MaterialWidget::DisabledBlend);
+    d.material()->setBlendType(enabled ? AMaterialWidget::BackgroundBlend : AMaterialWidget::DisabledBlend);
 #ifndef QTITAN_DESIGNER
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     Q_ASSERT(this->parentWidget());
     Q_ASSERT(this->parentWidget()->isWindow());
     if (enabled)
     {
-        WindowTitleBar* titleBar = WindowTitleBar::get(this->parentWidget());
+        AWindowTitleBar* titleBar = AWindowTitleBar::get(this->parentWidget());
         titleBar->setBlurBehindWindowEnabled(true);
         d.updateTitleBar();
     }
     else
     {
-        if (WindowTitleBar* titleBar = d.findTitleBar())
+        if (AWindowTitleBar* titleBar = d.findTitleBar())
         {
             titleBar->setBlurBehindWindowEnabled(false);
         }
@@ -3115,11 +3116,11 @@ void ARibbonBar::setFrameThemeEnabled(bool enabled)
         Q_ASSERT(this->parentWidget()->isWindow());
 
         //Creates window title bar, if needed
-        WindowTitleBar* titleBar = WindowTitleBar::get(this->parentWidget());
+        AWindowTitleBar* titleBar = AWindowTitleBar::get(this->parentWidget());
         Q_UNUSED(titleBar);
         d.updateTitleBar();
     }
-    else if (WindowTitleBar* titleBar = d.findTitleBar())
+    else if (AWindowTitleBar* titleBar = d.findTitleBar())
     {
         titleBar->setWidget(nullptr);
         titleBar->removeAndDelete();
@@ -3136,7 +3137,7 @@ void ARibbonBar::setFrameThemeEnabled(bool enabled)
     This property holds whether display the content for modern Office 2007, 2010, 2013, 2016 styles on the window title bar and 
     activate Windows Air support (applications under Windows 10, 8, 7, Vista) is enabled. 
     By default parameter is enabled. The property supports Windows, Linux and MacOSX.
-\sa WindowTitleBar
+\sa AWindowTitleBar
 \inmodule QtitanARibbon
 */ 
 bool ARibbonBar::isFrameThemeEnabled() const
@@ -3277,7 +3278,7 @@ bool ARibbonBar::event(QEvent* event)
             {
                 if (event->type() == QEvent::StyleChange)
                 {
-                    CommonStyle::ensureStyle();
+                    ACommonStyle::ensureStyle();
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
                     d.updateTitleBar();
 #endif
@@ -3360,12 +3361,12 @@ void ARibbonBar::paintEvent(QPaintEvent* event)
         opt.contextColor = p->contextColor();
 
     p.setBackgroundMode(Qt::TransparentMode);
-    style()->drawPrimitive((QStyle::PrimitiveElement)CommonStyle::PE_ARibbonBarPanel, &opt, &p, this);
+    style()->drawPrimitive((QStyle::PrimitiveElement)ACommonStyle::PE_RibbonBarPanel, &opt, &p, this);
 
     if (!isMinimized())
     {
         opt.rect = d.getPageFrameRect();
-        style()->drawPrimitive((QStyle::PrimitiveElement)CommonStyle::PE_ARibbonFrameGroups, &opt, &p, this);
+        style()->drawPrimitive((QStyle::PrimitiveElement)ACommonStyle::PE_RibbonFrameGroups, &opt, &p, this);
     }
 }
 
@@ -3422,12 +3423,12 @@ void ARibbonBar::wheelEvent(QWheelEvent* event)
 
 void ARibbonBar::contextMenuEvent(QContextMenuEvent* event)
 {
-    A_D(ARibbonBar)
+    A_D(ARibbonBar);
     if (QMenu* menu = d.createContextMenu()) 
     {
         menu->setAttribute(Qt::WA_DeleteOnClose);
         event->accept();
-        emit showARibbonContextMenu(menu, event);
+        emit showRibbonContextMenu(menu, event);
         if (event->isAccepted())
             menu->exec(event->globalPos());
     }

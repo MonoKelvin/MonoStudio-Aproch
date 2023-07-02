@@ -1,47 +1,52 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
+ * @file    ARibbonButton.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
 #include <QApplication>
 #include <QPainter>
 
-#include "QtnRibbonButtonPrivate.h"
-#include "QtnRibbonBarPrivate.h"
-#include "QtnCommonStyle.h"
-#include "QtnCommonStylePrivate.h"
-#include "QtnRibbonGroup.h"
-#include "QtnStyleHelperPrivate.h"
+#include "ARibbonButton_p.h"
+#include "ARibbonBar_p.h"
+#include "Widget/Style/ACommonStyle.h"
+#include "Widget/Style/ACommonStyle_p.h"
+#include "ARibbonGroup.h"
+#include "Widget/Style/AStyleHelper.h"
 
-#ifdef QTN_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
-QTITAN_USE_NAMESPACE
+APROCH_NAMESPACE_BEGIN
 
-
-RibbonButtonPrivate::RibbonButtonPrivate()
+ARibbonButtonPrivate::ARibbonButtonPrivate()
     : QObject()
     , m_wordWrap(true)
     , m_largeIcon(false)
@@ -53,9 +58,9 @@ RibbonButtonPrivate::RibbonButtonPrivate()
 {
 }
 
-void RibbonButtonPrivate::resetWordWrap()
+void ARibbonButtonPrivate::resetWordWrap()
 {
-    QTN_P(RibbonButton);
+    A_P(ARibbonButton);
     m_wordIndexes.clear();
 
     int start = 0;
@@ -75,15 +80,15 @@ void RibbonButtonPrivate::resetWordWrap()
     }
 }
 
-QSize RibbonButtonPrivate::sizeWordWrap()
+QSize ARibbonButtonPrivate::sizeWordWrap()
 {
-    QTN_P(RibbonButton);
+    A_P(ARibbonButton);
     QStyleOptionToolButton opt;
     p.initStyleOption(&opt);
 
     QString strText = opt.text;
     QSize sizeText = opt.fontMetrics.size(Qt::TextShowMnemonic, strText);
-    const int space = qtn_horizontalAdvanceFont(opt.fontMetrics, QLatin1Char(' ')) * 2;
+    const int space = aproch_horizontalAdvanceFont(opt.fontMetrics, QLatin1Char(' ')) * 2;
     const int textLineHeight = sizeText.height();
     const bool indicatorCenter = m_wordIndexes.size() == 0 && opt.features & QStyleOptionToolButton::HasMenu;
     sizeText.setWidth(sizeText.width() + space);
@@ -125,32 +130,32 @@ QSize RibbonButtonPrivate::sizeWordWrap()
 }
 
 /*!
-\class RibbonButton
+\class ARibbonButton
 \inmodule QtitanRibbon
-\brief RibbonButton class implements tool button that used in ribbon ui. Button appearance and behavior adapted for display inside the RibbonBar. 
+\brief ARibbonButton class implements tool button that used in ribbon ui. Button appearance and behavior adapted for display inside the ARibbonBar. 
 
 */
-RibbonButton::RibbonButton(QWidget* parent)
+ARibbonButton::ARibbonButton(QWidget* parent)
     : QToolButton(parent)
 {
-    QTN_INIT_PRIVATE(RibbonButton);
+    A_INIT_PRIVATE(ARibbonButton);
     setAutoRaise(true);
 }
 
-RibbonButton::~RibbonButton()
+ARibbonButton::~ARibbonButton()
 {
-    QTN_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
-bool RibbonButton::wordWrap() const
+bool ARibbonButton::wordWrap() const
 { 
-    QTN_D(const RibbonButton);
+    A_D(const ARibbonButton);
     return d.m_wordWrap; 
 }
 
-void RibbonButton::setWordWrap(bool on)
+void ARibbonButton::setWordWrap(bool on)
 {
-    QTN_D(RibbonButton);
+    A_D(ARibbonButton);
     if (d.m_wordWrap != on)
     {
         d.m_wordWrap = on;
@@ -158,27 +163,27 @@ void RibbonButton::setWordWrap(bool on)
     }
 }
 
-bool RibbonButton::isLargeIcon() const
+bool ARibbonButton::isLargeIcon() const
 { 
-    QTN_D(const RibbonButton);
+    A_D(const ARibbonButton);
     return d.m_largeIcon; 
 }
 
-void RibbonButton::setLargeIcon(bool large)
+void ARibbonButton::setLargeIcon(bool large)
 { 
-    QTN_D(RibbonButton);
+    A_D(ARibbonButton);
     d.m_largeIcon = large; 
 }
 
-bool RibbonButton::simplifiedMode() const
+bool ARibbonButton::simplifiedMode() const
 {
-    QTN_D(const RibbonButton);
+    A_D(const ARibbonButton);
     return d.m_simplifiedMode;
 }
 
-void RibbonButton::setSimplifiedMode(bool enabled)
+void ARibbonButton::setSimplifiedMode(bool enabled)
 {
-    QTN_D(RibbonButton);
+    A_D(ARibbonButton);
     // this function is valid if the button is on RibbonToolBarControl
     if (d.m_simplifiedMode == enabled)
         return;
@@ -203,13 +208,13 @@ void RibbonButton::setSimplifiedMode(bool enabled)
 }
 
 /*! \reimp */
-QSize RibbonButton::sizeHint() const
+QSize ARibbonButton::sizeHint() const
 {
-    QTN_D(const RibbonButton);
-    RibbonButtonPrivate& pd = const_cast<RibbonButtonPrivate&>(d);
+    A_D(const ARibbonButton);
+    ARibbonButtonPrivate& pd = const_cast<ARibbonButtonPrivate&>(d);
 
     if (pd.m_saveButtonStyle != toolButtonStyle() || pd.m_saveArrowType != arrowType())
-        const_cast<RibbonButton *>(this)->changed();
+        const_cast<ARibbonButton *>(this)->changed();
 
     if (pd.m_sizeHint.isValid())
         return pd.m_sizeHint;
@@ -218,9 +223,9 @@ QSize RibbonButton::sizeHint() const
     pd.m_saveArrowType = arrowType();
 
     QSize sz = QToolButton::sizeHint();
-    if (RibbonControl* control = qobject_cast<RibbonControl *>(parentWidget()))
+    if (ARibbonControl* control = qobject_cast<ARibbonControl *>(parentWidget()))
     {
-        if (RibbonBar* ribbonBar = control->parentGroup()->ribbonBar())
+        if (ARibbonBar* ribbonBar = control->parentGroup()->ribbonBar())
             sz.setHeight(ribbonBar->rowItemHeight());
     }
 
@@ -229,9 +234,9 @@ QSize RibbonButton::sizeHint() const
     initStyleOption(&opt);
 
     QString textButton = text();
-    if (!textButton.isEmpty() && (bool)style()->styleHint((QStyle::StyleHint)CommonStyle::SH_RibbonItemUpperCase, 0, this))
+    if (!textButton.isEmpty() && (bool)style()->styleHint((QStyle::StyleHint)ACommonStyle::SH_RibbonItemUpperCase, 0, this))
     {
-        if (qobject_cast<RibbonTabBar*>(parentWidget()) != Q_NULL)
+        if (qobject_cast<ARibbonTabBar*>(parentWidget()) != nullptr)
             textButton = textButton.toUpper();
     }
 
@@ -252,9 +257,9 @@ QSize RibbonButton::sizeHint() const
 
             h = sz.height();
 
-            if (RibbonControl* control = qobject_cast<RibbonControl *>(parentWidget()))
+            if (ARibbonControl* control = qobject_cast<ARibbonControl *>(parentWidget()))
             {
-                if (RibbonBar* ribbonBar = control->parentGroup()->ribbonBar())
+                if (ARibbonBar* ribbonBar = control->parentGroup()->ribbonBar())
                     h = ribbonBar->rowItemHeight() * ribbonBar->rowItemCount();
             }
             // if the text is more than icon
@@ -265,19 +270,19 @@ QSize RibbonButton::sizeHint() const
         {
             allowIndicator = true;
             QSize textSize = opt.fontMetrics.size(Qt::TextShowMnemonic, textButton);
-            textSize.setWidth(textSize.width() + qtn_horizontalAdvanceFont(opt.fontMetrics, QLatin1Char(' ')) * 2);
+            textSize.setWidth(textSize.width() + aproch_horizontalAdvanceFont(opt.fontMetrics, QLatin1Char(' ')) * 2);
             h = sz.height();
 
             if (opt.toolButtonStyle == Qt::ToolButtonTextBesideIcon)
             {
                 w = h;
-                w += textSize.width() + CommonStylePrivate::dpiScaled(2, this);
+                w += textSize.width() + ACommonStylePrivate::dpiScaled(2, this);
 
                 if (textSize.height() > h)
                     h = textSize.height();
             }
             else
-                w = textSize.width() + CommonStylePrivate::dpiScaled(4, this);
+                w = textSize.width() + ACommonStylePrivate::dpiScaled(4, this);
         }
     }
     else
@@ -291,16 +296,16 @@ QSize RibbonButton::sizeHint() const
         w = h;
 
         if ((opt.features & QStyleOptionToolButton::HasMenu) || (opt.subControls & QStyle::SC_ToolButtonMenu))
-            w += CommonStylePrivate::dpiScaled(1, this);
+            w += ACommonStylePrivate::dpiScaled(1, this);
 
         if (isLargeIcon() && opt.toolButtonStyle == Qt::ToolButtonIconOnly)
         {
-            if (RibbonControl* control = qobject_cast<RibbonControl *>(parentWidget()))
+            if (ARibbonControl* control = qobject_cast<ARibbonControl *>(parentWidget()))
             {
-                if (RibbonBar* ribbonBar = control->parentGroup()->ribbonBar())
+                if (ARibbonBar* ribbonBar = control->parentGroup()->ribbonBar())
                 {
                     h = ribbonBar->rowItemHeight() * ribbonBar->rowItemCount();
-                    w = opt.iconSize.width() + CommonStylePrivate::dpiScaled(4, this);
+                    w = opt.iconSize.width() + ACommonStylePrivate::dpiScaled(4, this);
                 }
             }
         }
@@ -318,13 +323,13 @@ QSize RibbonButton::sizeHint() const
     return pd.m_sizeHint;
 }
 
-void RibbonButton::changed()
+void ARibbonButton::changed()
 {
-    QTN_D(RibbonButton);
+    A_D(ARibbonButton);
     d.m_sizeHint = QSize();
 }
 
-void RibbonButton::updateIconSize()
+void ARibbonButton::updateIconSize()
 {
     const int sz = style()->pixelMetric(isLargeIcon() ? QStyle::PM_LargeIconSize : 
         QStyle::PM_SmallIconSize, 0, this);
@@ -334,7 +339,7 @@ void RibbonButton::updateIconSize()
 }
 
 /*! \reimp */
-bool RibbonButton::event(QEvent* event)
+bool ARibbonButton::event(QEvent* event)
 {
     QEvent::Type type = event->type();
     if (type == QEvent::LayoutRequest || type == QEvent::FontChange || type == QEvent::StyleChange)
@@ -344,11 +349,11 @@ bool RibbonButton::event(QEvent* event)
 }
 
 /*! \reimp */
-void RibbonButton::paintEvent(QPaintEvent* event)
+void ARibbonButton::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
 
-    QTN_D(const RibbonButton);
+    A_D(const ARibbonButton);
     QPainter p(this);
     QStyleOptionToolButton opt;
     initStyleOption(&opt);
@@ -367,11 +372,11 @@ void RibbonButton::paintEvent(QPaintEvent* event)
             }
         }
     }
-    style()->drawComplexControl((QStyle::ComplexControl)CommonStyle::CC_RibbonButton, &opt, &p, this);
+    style()->drawComplexControl((QStyle::ComplexControl)ACommonStyle::CC_RibbonButton, &opt, &p, this);
 }
 
 /*! \reimp */
-void RibbonButton::actionEvent(QActionEvent* event)
+void ARibbonButton::actionEvent(QActionEvent* event)
 {
     QToolButton::actionEvent(event);
     switch (event->type()) 
@@ -387,7 +392,9 @@ void RibbonButton::actionEvent(QActionEvent* event)
 }
 
 /*! \reimp */
-void RibbonButton::changeEvent(QEvent* event)
+void ARibbonButton::changeEvent(QEvent* event)
 {
     QToolButton::changeEvent(event);
 }
+
+APROCH_NAMESPACE_END

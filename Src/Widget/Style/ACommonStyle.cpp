@@ -338,7 +338,7 @@ void APROCH_PRE_NAMESPACE(aproch_paintLightFrame)(const QWidget *widget, QPainte
     p->restore();
 }
 
-void APROCH_PRE_NAMESPACE(aproch_set_shadecolor)(QImage &image, const QColor &color, const QColor &origColor)
+void APROCH_PRE_NAMESPACE(aproch_setShadeColor)(QImage &image, const QColor &color, const QColor &origColor)
 {
 #ifdef _DEBUG_PALETTE
     check_icon(image);
@@ -1062,7 +1062,7 @@ QColor ACommonStylePrivate::m_clrCloseButton = QColor(224, 67, 67);
 QColor ACommonStylePrivate::m_clrCloseButtonHighlight = QColor(199, 30, 30);
 
 /*!
-\class CommonStylePrivate
+\class ACommonStylePrivate
 \internal
 */
 ACommonStylePrivate::ACommonStylePrivate()
@@ -1394,7 +1394,7 @@ static qreal aproch_dpi(const QStyleOption* option)
     return aprochstyleBaseDpi;
 }
 
-qreal CommonStylePrivate::dpiScaled(qreal value, const QStyleOption* option)
+qreal ACommonStylePrivate::dpiScaled(qreal value, const QStyleOption* option)
 {
     return value * aproch_dpi(option) / aprochstyleBaseDpi;
 }
@@ -1460,11 +1460,11 @@ QPalette ACommonStylePrivate::getWidgetPalette(QWidget *widget) const
     {
         // Do nothing
     }
-    else if (widget->inherits(APROCH_META_CLASSNAME("RibbonTabBar")))
+    else if (widget->inherits(APROCH_META_CLASSNAME("ARibbonTabBar")))
     {
         QPalette_setBrush(palette, QPalette::Active, QPalette::HighlightedText, palette.color(QPalette::ButtonText));
     }
-    else if (widget->inherits(APROCH_META_CLASSNAME("OfficePopupMenu")))
+    else if (widget->inherits(APROCH_META_CLASSNAME("AOfficePopupMenu")))
     {
         QPalette_setBrush(palette, QPalette::All, QPalette::Window, darkBackgroundLight(palette));
         QPalette_setBrush(palette, QPalette::All, QPalette::Button, darkBackgroundLight(palette));
@@ -1496,7 +1496,7 @@ QFont ACommonStylePrivate::getWidgetFont(const QString &className) const
 {
     if (className == QLatin1String(APROCH_META_CLASSNAME("ARibbonBar")) ||
         className == QLatin1String(APROCH_META_CLASSNAME("RibbonStatusBar")) ||
-        className == QLatin1String(APROCH_META_CLASSNAME("RibbonBackstageView")))
+        className == QLatin1String(APROCH_META_CLASSNAME("ARibbonBackstageView")))
     {
         QFont result = QApplication::font("QMenuBar");
         result.setPointSizeF(result.pointSizeF() - 2);
@@ -1931,7 +1931,7 @@ bool ACommonStylePrivate::drawFrameWindow(const QStyleOption *option, QPainter *
     A_P(const ACommonStyle);
     if (const QStyleOptionFrame *frm = qstyleoption_cast<const QStyleOptionFrame *>(option))
     {
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("RibbonBackstagePage")))
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonBackstagePage")))
         {
             painter->fillRect(option->rect, option->palette.color(QPalette::Base));
             return true;
@@ -2049,7 +2049,7 @@ bool ACommonStylePrivate::drawIndicatorButtonDropDown(const QStyleOption * /*opt
 bool ACommonStylePrivate::drawIndicatorTabClose(const QStyleOption *opt, QPainter *painter, const QWidget *widget) const
 {
     bool qtitanIcon = isAprochStyle() && (widget && widget->inherits("CloseButton"));
-    if (widget && (qtitanIcon || widget->inherits(APROCH_META_CLASSNAME("AbstractTab"))))
+    if (widget && (qtitanIcon || widget->inherits(APROCH_META_CLASSNAME("AAbstractTab"))))
     {
         QRect rect = opt->rect;
         bool highlight = opt->state & QStyle::State_Raised;
@@ -2919,7 +2919,7 @@ void ACommonStylePrivate::tabLayout(const QStyleOptionTabV3 *opt, const QWidget 
 bool ACommonStylePrivate::drawTabBarTabLabel(const QStyleOption *opt, QPainter *painter, const QWidget *widget) const
 {
     A_P(const ACommonStyle);
-    if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("AbstractTab")))
+    if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("AAbstractTab")))
     {
         if (const AStyleOptionTab *tab = qstyleoption_cast<const AStyleOptionTab *>(opt))
         {
@@ -3170,10 +3170,10 @@ bool ACommonStylePrivate::drawToolBoxTabShape(const QStyleOption *opt, QPainter 
 
 bool ACommonStylePrivate::drawToolButtonLabel(const QStyleOption *opt, QPainter *painter, const QWidget *widget) const
 {
-    if (widget != nullptr && widget->parentWidget() != nullptr && widget->parentWidget()->inherits(APROCH_META_CLASSNAME("RibbonQuickAccessBar")))
+    if (widget != nullptr && widget->parentWidget() != nullptr && widget->parentWidget()->inherits(APROCH_META_CLASSNAME("ARibbonQuickAccessBar")))
         return drawToolButtonLabelDp(opt, painter, widget);
 
-    if (widget == nullptr || !widget->inherits(APROCH_META_CLASSNAME("RibbonSystemButton")))
+    if (widget == nullptr || !widget->inherits(APROCH_META_CLASSNAME("ARibbonSystemButton")))
         return false;
 
     A_P(const ACommonStyle);
@@ -3264,7 +3264,7 @@ bool ACommonStylePrivate::drawSizeGrip(const QStyleOption * /*opt*/, QPainter * 
 
 bool ACommonStylePrivate::drawToolBar(const QStyleOption * /*opt*/, QPainter * /*painter*/, const QWidget *widget) const
 {
-    if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("RibbonQuickAccessBar")))
+    if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("ARibbonQuickAccessBar")))
     {
         return true;
     }
@@ -3300,7 +3300,7 @@ bool ACommonStylePrivate::drawTabBarTabShape(const QStyleOption *option, QPainte
             return true;
         }
     }
-    else if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("AbstractTab")))
+    else if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("AAbstractTab")))
     {
         if (const AStyleOptionTab *tab = qstyleoption_cast<const AStyleOptionTab *>(option))
         {
@@ -3879,7 +3879,7 @@ bool ACommonStylePrivate::drawRibbonQuickAccessButton(const QStyleOption *option
     A_P(const ACommonStyle);
     drawHighlightButton(option, painter, w);
     QStyleOption opt = *option;
-    int space = 0; //(CommonStylePrivate::dpiScaled(2.0, w));
+    int space = 0; //(ACommonStylePrivate::dpiScaled(2.0, w));
     opt.rect = opt.rect.adjusted(space, space, -space, -space);
     drawIconDp(p.proxy()->standardPixmap(static_cast<QStyle::StandardPixmap>(ACommonStyle::SP_RibbonButtonPopupMenu), option, w), &opt, painter, w);
     return true;
@@ -4249,7 +4249,7 @@ bool ACommonStylePrivate::drawRibbonSysMenuItem(const QStyleOption *opt, QPainte
         {
             int yoff = y - 1 + h / 2;
             int xIcon = iconSize;
-            if (widget && widget->inherits(APROCH_META_CLASSNAME("OfficePopupMenu")))
+            if (widget && widget->inherits(APROCH_META_CLASSNAME("AOfficePopupMenu")))
                 xIcon = 0;
             painter->setPen(opt->palette.brush(QPalette::Midlight).color().darker(105));
             painter->drawLine(x + 2 + xIcon, yoff, x + w - 4, yoff);
@@ -4456,18 +4456,18 @@ bool ACommonStylePrivate::drawRibbonButtonLabel(const QStyleOption *opt, QPainte
 
         QString text = toolbutton->text;
         QPalette::ColorRole textRole = QPalette::ButtonText;
-        const bool isAncestorTabBar = aproch_isAncestor(w, APROCH_META_CLASSNAME("RibbonTabBar"));
+        const bool isAncestorTabBar = aproch_isAncestor(w, APROCH_META_CLASSNAME("ARibbonTabBar"));
         if (isAncestorTabBar && p.proxy()->styleHint(static_cast<QStyle::StyleHint>(ACommonStyle::SH_RibbonItemUpperCase), opt, w))
             text = text.toUpper();
 
         QPalette palText = toolbutton->palette;
         if (isAncestorTabBar && isAprochStyle())
         {
-            QColor clrText = brushSubControl(QStringLiteral("RibbonTabBar"), QStringLiteral("RibbonButton"),
+            QColor clrText = brushSubControl(QStringLiteral("ARibbonTabBar"), QStringLiteral("ARibbonButton"),
                                              enabled ? QPalette::Active : QPalette::Disabled, QPalette::ButtonText)
                                  .color();
             QPalette_setBrush(palText, QPalette::ButtonText, clrText);
-            clrText = brushSubControl(QStringLiteral("RibbonTabBar"), QStringLiteral("RibbonButton"),
+            clrText = brushSubControl(QStringLiteral("ARibbonTabBar"), QStringLiteral("ARibbonButton"),
                                       QPalette::Active, QPalette::HighlightedText)
                           .color();
             QPalette_setBrush(palText, QPalette::HighlightedText, clrText);
@@ -5529,7 +5529,7 @@ QRect ACommonStylePrivate::ribbonSubControlRect(QStyle::ComplexControl cc, const
         return p.QProxyStyle::subControlRect(cc, opt, sc, widget);
 
     QRect retRect;
-    if (!(widget && widget->inherits(APROCH_META_CLASSNAME("RibbonButton"))))
+    if (!(widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonButton"))))
         return retRect;
 
     switch (cc)
@@ -5616,7 +5616,7 @@ QSize ACommonStylePrivate::ribbonSizeFromContents(QStyle::ContentsType ct, const
     }
     break;
     case QStyle::CT_TabBarTab:
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("RibbonTabBar")) && !sz.isEmpty())
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonTabBar")) && !sz.isEmpty())
             sz.setHeight(widget->height());
         break;
     case QStyle::CT_MenuBarItem:
@@ -5686,7 +5686,7 @@ QSize ACommonStylePrivate::ribbonSizeFromContents(QStyle::ContentsType ct, const
                 //                        sz.setWidth(widget->width());
             }
         }
-        else if (widget && widget->inherits(APROCH_META_CLASSNAME("OfficePopupMenu")))
+        else if (widget && widget->inherits(APROCH_META_CLASSNAME("AOfficePopupMenu")))
         {
             if (const QStyleOptionMenuItem *mi = qstyleoption_cast<const QStyleOptionMenuItem *>(opt))
             {
@@ -5743,7 +5743,7 @@ QRect ACommonStylePrivate::ribbonSubElementRect(QStyle::SubElement se, const QSt
     {
     case QStyle::SE_LineEditContents:
     {
-        if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("RibbonSearchBar")))
+        if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("ARibbonSearchBar")))
         {
             QRect r = p.QProxyStyle::subElementRect(se, option, widget);
             result = r;
@@ -5943,9 +5943,9 @@ int ACommonStylePrivate::ribbonPixelMetric(QStyle::PixelMetric metric, const QSt
         //                widget->inherits(APROCH_META_CLASSNAME("RibbonPageSystemPopup"))))
         //                val = 0;
         //            else
-        if ((widget && widget->inherits(APROCH_META_CLASSNAME("OfficePopupMenu"))) ||
+        if ((widget && widget->inherits(APROCH_META_CLASSNAME("AOfficePopupMenu"))) ||
             (QApplication::activePopupWidget() &&
-             QApplication::activePopupWidget()->inherits(APROCH_META_CLASSNAME("OfficePopupMenu"))))
+             QApplication::activePopupWidget()->inherits(APROCH_META_CLASSNAME("AOfficePopupMenu"))))
             val = 1;
         break;
     case QStyle::PM_MenuHMargin:
@@ -5969,14 +5969,14 @@ int ACommonStylePrivate::ribbonPixelMetric(QStyle::PixelMetric metric, const QSt
             val = isAprochStyle() ? ACommonStylePrivate::dpiScaled(32.0, widget) : 32;
         break;
     case QStyle::PM_ScrollBarExtent:
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("RibbonGallery")))
-            val = ACommonStylePrivate::dpiScaled(14.0, widget); // isAprochStyle() ? qRound(CommonStylePrivate::dpiScaled(14.0, widget)) : 14;
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonGallery")))
+            val = ACommonStylePrivate::dpiScaled(14.0, widget); // isAprochStyle() ? qRound(ACommonStylePrivate::dpiScaled(14.0, widget)) : 14;
         break;
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 8, 0))
     case QStyle::PM_TitleBarButtonSize:
         if (const QMdiArea *area = qobject_cast<const QMdiArea *>(widget))
         {
-            if (const QWidget *ribbonTabBar = qobject_cast<const QWidget *>(aproch_findChild(area->parentWidget(), APROCH_META_CLASSNAME("RibbonTabBar"))))
+            if (const QWidget *ribbonTabBar = qobject_cast<const QWidget *>(aproch_findChild(area->parentWidget(), APROCH_META_CLASSNAME("ARibbonTabBar"))))
                 val = qRound(static_cast<double>(ribbonTabBar->height()) * 0.7);
         }
         break;
@@ -5990,7 +5990,7 @@ int ACommonStylePrivate::ribbonPixelMetric(QStyle::PixelMetric metric, const QSt
         switch (static_cast<ACommonStyle::PixelMetricEx>(metric))
         {
         case ACommonStyle::PM_RibbonQuickAccessBarMargin:
-            val = m_config.pixelMetric(widget, QStringLiteral("RibbonQuickAccessBar"), QStringLiteral("RibbonQuickAccessBarMargin"), defaultValue, &ok);
+            val = m_config.pixelMetric(widget, QStringLiteral("ARibbonQuickAccessBar"), QStringLiteral("RibbonQuickAccessBarMargin"), defaultValue, &ok);
             break;
         case ACommonStyle::PM_RibbonGroupContentMargin:
             val = ACommonStylePrivate::dpiScaled(3, widget);
@@ -6153,10 +6153,10 @@ QPixmap ACommonStylePrivate::ribbonStandardPixmap(QStyle::StandardPixmap sp, con
         if (!isAprochStyle() && widget && widget->inherits(APROCH_META_CLASSNAME("RibbonQuickAccessButton")))
         {
             QWidget *parentWidget = widget->parentWidget();
-            if (parentWidget && parentWidget->inherits(APROCH_META_CLASSNAME("RibbonQuickAccessBar")))
+            if (parentWidget && parentWidget->inherits(APROCH_META_CLASSNAME("ARibbonQuickAccessBar")))
             {
                 parentWidget = parentWidget->parentWidget();
-                if (parentWidget && parentWidget->inherits(APROCH_META_CLASSNAME("RibbonTitleBarWidget")))
+                if (parentWidget && parentWidget->inherits(APROCH_META_CLASSNAME("ARibbonTitleBarWidget")))
                 {
                     if (!aproch_isColorLight(opt->palette.color(QPalette::Window)))
                         state = (opt && opt->state & QStyle::State_Enabled) ? White : LtGray;
@@ -6282,7 +6282,7 @@ void ACommonStylePrivate::roundedAngle(QPainterPath &path, const QRectF &rect, q
 }
 
 #if 0
-void CommonStylePrivate::drawRectDPI(QPainter* painter, const QRect& rect)
+void ACommonStylePrivate::drawRectDPI(QPainter* painter, const QRect& rect)
 {
     //  QPaintDevice* device = painter.device();
     //  Q_ASSERT(device != nullptr);
@@ -6833,7 +6833,7 @@ bool ACommonStylePrivate::showToolTip(const QPoint &pos, QWidget *widget)
     QString strTipText = widget->toolTip();
     if (!strTipText.isEmpty())
     {
-        ToolTip::showToolTip(globalPos, QString(), strTipText, QIcon(), widget);
+        AToolTip::showToolTip(globalPos, QString(), strTipText, QIcon(), widget);
         return true;
     }
 #endif
@@ -7273,8 +7273,8 @@ void ACommonStyle::polish(QApplication *app)
                      QLatin1String(APROCH_META_CLASSNAME("RibbonStatusBar"))),
                  APROCH_META_CLASSNAME("RibbonStatusBar"));
     app->setFont(d.getWidgetFont(
-                     QLatin1String(APROCH_META_CLASSNAME("RibbonBackstageView"))),
-                 APROCH_META_CLASSNAME("RibbonBackstageView"));
+                     QLatin1String(APROCH_META_CLASSNAME("ARibbonBackstageView"))),
+                 APROCH_META_CLASSNAME("ARibbonBackstageView"));
 
     app->installEventFilter(this);
 }
@@ -7342,7 +7342,7 @@ void ACommonStyle::polish(QWidget *widget)
     {
         widget->setBackgroundRole(d.isAprochStyle() ? QPalette::Window : QPalette::Base);
     }
-    else if (widget->inherits(APROCH_META_CLASSNAME("RibbonSystemButton")))
+    else if (widget->inherits(APROCH_META_CLASSNAME("ARibbonSystemButton")))
         widget->setForegroundRole(d.isAprochStyle() ? QPalette::ButtonText : QPalette::BrightText);
 
 #if 0
@@ -8095,8 +8095,8 @@ int ACommonStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *op
         val = d.m_config.pixelMetric(widget, QString(), QStringLiteral("ButtonIconSize"), defaultValue, &ok);
         break;
     case PM_SmallIconSize:
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("RibbonBackstageViewMenu")))
-            val = d.m_config.pixelMetric(widget, QStringLiteral("RibbonBackstageViewMenu"), QStringLiteral("SmallIconSize"), defaultValue, &ok);
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonBackstageViewMenu")))
+            val = d.m_config.pixelMetric(widget, QStringLiteral("ARibbonBackstageViewMenu"), QStringLiteral("SmallIconSize"), defaultValue, &ok);
         else
             val = d.m_config.pixelMetric(widget, QString(), QStringLiteral("SmallIconSize"), defaultValue, &ok);
         break;
@@ -8123,8 +8123,8 @@ int ACommonStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *op
         {
             if (widget->inherits(APROCH_META_CLASSNAME("DockDocumentAreaTabBar")))
                 val = d.m_config.pixelMetric(widget, QStringLiteral("DockDocumentAreaTabBar"), QStringLiteral("TabBarTabHSpace"), defaultValue, &ok);
-            else if (widget->inherits(APROCH_META_CLASSNAME("AbstractTabBar")))
-                val = d.m_config.pixelMetric(widget, QStringLiteral("AbstractTabBar"), QStringLiteral("TabBarTabHSpace"), defaultValue, &ok);
+            else if (widget->inherits(APROCH_META_CLASSNAME("AAbstractTabBar")))
+                val = d.m_config.pixelMetric(widget, QStringLiteral("AAbstractTabBar"), QStringLiteral("TabBarTabHSpace"), defaultValue, &ok);
             else
                 val = d.m_config.pixelMetric(widget, QStringLiteral("QTabBar"), QStringLiteral("TabBarTabHSpace"), defaultValue, &ok);
         }
@@ -8144,20 +8144,20 @@ int ACommonStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *op
         val = d.m_config.pixelMetric(widget, QStringLiteral("QToolButton"), QStringLiteral("ButtonShiftVertical"), defaultValue, &ok);
         break;
     case PM_SliderTickmarkOffset:
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("RibbonSliderSlider")))
-            val = d.m_config.pixelMetric(widget, QStringLiteral("RibbonSliderSlider"), QStringLiteral("SliderTickmarkOffset"), defaultValue, &ok);
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonSliderSlider")))
+            val = d.m_config.pixelMetric(widget, QStringLiteral("ARibbonSliderSlider"), QStringLiteral("SliderTickmarkOffset"), defaultValue, &ok);
         else
             val = d.m_config.pixelMetric(widget, QStringLiteral("QSlider"), QStringLiteral("SliderTickmarkOffset"), defaultValue, &ok);
         break;
     case PM_SliderThickness:
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("RibbonSliderSlider")))
-            val = d.m_config.pixelMetric(widget, QStringLiteral("RibbonSliderSlider"), QStringLiteral("SliderThickness"), defaultValue, &ok);
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonSliderSlider")))
+            val = d.m_config.pixelMetric(widget, QStringLiteral("ARibbonSliderSlider"), QStringLiteral("SliderThickness"), defaultValue, &ok);
         else
             val = d.m_config.pixelMetric(widget, QStringLiteral("QSlider"), QStringLiteral("SliderThickness"), defaultValue, &ok);
         break;
     case PM_SliderLength:
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("RibbonSliderSlider")))
-            val = d.m_config.pixelMetric(widget, QStringLiteral("RibbonSliderSlider"), QStringLiteral("SliderLength"), defaultValue, &ok) / 2;
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonSliderSlider")))
+            val = d.m_config.pixelMetric(widget, QStringLiteral("ARibbonSliderSlider"), QStringLiteral("SliderLength"), defaultValue, &ok) / 2;
         else
             val = d.m_config.pixelMetric(widget, QStringLiteral("QSlider"), QStringLiteral("SliderLength"), defaultValue, &ok);
         break;
@@ -8199,7 +8199,7 @@ int ACommonStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *op
     }
     case PM_ToolBarFrameWidth:
     {
-        if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("RibbonQuickAccessBar")))
+        if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("ARibbonQuickAccessBar")))
             defaultValue = 0;
         const QString className = widget != nullptr ? aproch_className(widget) : QStringLiteral("QToolBar");
         val = d.m_config.pixelMetric(widget, className, QStringLiteral("ToolBarFrameWidth"), defaultValue, &ok);
@@ -8290,7 +8290,7 @@ int ACommonStyle::styleHint(QStyle::StyleHint hint, const QStyleOption *option, 
     {
     case SH_ToolButtonStyle:
     {
-        if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("RibbonSystemButton")))
+        if (widget != nullptr && widget->inherits(APROCH_META_CLASSNAME("ARibbonSystemButton")))
             result = Qt::ToolButtonTextOnly;
     }
     break;
@@ -8298,12 +8298,12 @@ int ACommonStyle::styleHint(QStyle::StyleHint hint, const QStyleOption *option, 
         result = d.m_config.styleHint(QString(), QStringLiteral("DitherDisabledText"), defaultValue);
         break;
     case SH_Menu_Scrollable:
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("PopupMenu")))
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("APopupMenu")))
             result = 0;
         break;
     case SH_UnderlineShortcut:
     {
-        if (widget && widget->inherits(APROCH_META_CLASSNAME("RibbonTab")))
+        if (widget && widget->inherits(APROCH_META_CLASSNAME("ARibbonTab")))
             defaultValue = 0;
         result = d.m_config.styleHint(QString(), QStringLiteral("UnderlineShortcut"), defaultValue);
     }

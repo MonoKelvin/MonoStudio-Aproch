@@ -1,29 +1,32 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
+ * @file    ARibbonTabBar.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
 #include <QApplication>
 #include <QPainter>
 #include <QTime>
@@ -32,68 +35,71 @@
 #include <QStyleOption>
 #include <QEvent>
 
-#include "QtnRibbonBarPrivate.h"
-#include "QtnRibbonTabBar.h"
-#include "QtnRibbonPagePrivate.h"
-#include "QtnRibbonBackstageView.h"
+#include "ARibbonTabBar.h"
+#include "ARibbonBar_p.h"
+#include "ARibbonPage_p.h"
+#include "ARibbonBackstageView.h"
 
-#include "QtnStyleHelperPrivate.h"
-#include "QtnStyleOption.h"
-#include "QtnCommonStylePrivate.h"
-#include "QtnRibbonQuickAccessBar.h"
-#include "QtnRibbonDef.h"
-#ifdef QTN_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+#include "Widget/Style/AStyleHelper.h"
+#include "Widget/Style/AStyleOption.h"
+#include "Widget/Style/ACommonStyle_p.h"
+#include "ARibbonQuickAccessBar.h"
 
-QTITAN_USE_NAMESPACE
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
-/* ContextualTab */
-ContextualTab::ContextualTab(RibbonBar* bar, RibbonTab* tab)
+APROCH_NAMESPACE_BEGIN
+
+/* AContextualTab */
+AContextualTab::AContextualTab(ARibbonBar* bar, ARibbonTab* tab)
     : ribbonBar(bar), firstTab(tab), lastTab(tab)
 {
-    Q_ASSERT(bar != Q_NULL && tab != Q_NULL);
+    Q_ASSERT(bar != nullptr && tab != nullptr);
     firstTab->setContextualTab(this);
 }
 
-ContextualTab::~ContextualTab()
+AContextualTab::~AContextualTab()
 {
-    if (firstTab != Q_NULL)
-        firstTab->setContextualTab(Q_NULL);
-    if (lastTab != Q_NULL)
-        lastTab->setContextualTab(Q_NULL);
+    if (firstTab != nullptr)
+        firstTab->setContextualTab(nullptr);
+    if (lastTab != nullptr)
+        lastTab->setContextualTab(nullptr);
 }
 
-const QColor& ContextualTab::color() const
+const QColor& AContextualTab::color() const
 {
-    if (firstTab != Q_NULL)
+    if (firstTab != nullptr)
         return firstTab->contextColor();
     static QColor empty = QColor();
     return empty;
 }
 
-const QString& ContextualTab::title() const
+const QString& AContextualTab::title() const
 {
-    if (firstTab != Q_NULL)
+    if (firstTab != nullptr)
         return firstTab->contextTitle();
     static QString empty = QString();
     return empty;
 }
 
-const QString& ContextualTab::groupName() const
+const QString& AContextualTab::groupName() const
 {
-    if (firstTab != Q_NULL)
+    if (firstTab != nullptr)
         return firstTab->contextGroupName();
     static QString empty = QString();
     return empty;
 }
 
-QRect ContextualTab::rect() const
+QRect AContextualTab::rect() const
 {
-    RibbonBarPrivate* ribbonBarPrivate = RibbonBarPrivate::_get(ribbonBar);
+    ARibbonBarPrivate* ribbonBarPrivate = ARibbonBarPrivate::_get(ribbonBar);
 
     int offset = 0;
-    if (WindowTitleBar* titleBar = ribbonBarPrivate->m_ribbonTitleBarWidget->getWindowTitleBar())
+    if (AWindowTitleBar* titleBar = ribbonBarPrivate->m_ribbonTitleBarWidget->getWindowTitleBar())
         offset = ribbonBarPrivate->m_ribbonTitleBarWidget->geometry().left() - titleBar->borderThickness();
 
     QRect firstRect = firstTab->geometry();
@@ -105,28 +111,26 @@ QRect ContextualTab::rect() const
     return rect;
 }
 
-QFont ContextualTab::font() const
+QFont AContextualTab::font() const
 {
-    RibbonBarPrivate* ribbonBarPrivate = RibbonBarPrivate::_get(ribbonBar);
+    ARibbonBarPrivate* ribbonBarPrivate = ARibbonBarPrivate::_get(ribbonBar);
     return ribbonBarPrivate->m_ribbonTitleBarWidget->font();
 }
 
-QTITAN_BEGIN_NAMESPACE
-
-class RibbonTabPrivate : public QObject
+class ARibbonTabPrivate : public QObject
 {
 public:
-    QTN_DECLARE_PUBLIC(RibbonTab)
+    A_DECLARE_PUBLIC(ARibbonTab)
 public:
-    explicit RibbonTabPrivate();
-    static RibbonTabPrivate* get(RibbonTab* tab)
-    { return &tab->qtn_d(); }
+    explicit ARibbonTabPrivate();
+    static ARibbonTabPrivate* get(ARibbonTab* tab)
+    { return &tab->aproch_d(); }
 public:
     void init();
     void updateLabel();
 public:
     Qt::Alignment m_align;
-    ContextualTab* m_contextualTab;
+    AContextualTab* m_contextualTab;
     QAction* m_defaultAction;
 #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     QTime m_dblClickInterval;
@@ -134,16 +138,14 @@ public:
     mutable uint m_isTextLabel : 1;
 };
 
-QTITAN_END_NAMESPACE
-
-RibbonTabPrivate::RibbonTabPrivate()
+ARibbonTabPrivate::ARibbonTabPrivate()
 {
 }
 
-void RibbonTabPrivate::init()
+void ARibbonTabPrivate::init()
 {
-    QTN_P(RibbonTab);
-    m_contextualTab = Q_NULL;
+    A_P(ARibbonTab);
+    m_contextualTab = nullptr;
     m_isTextLabel   = false;
 #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     m_dblClickInterval.start();
@@ -153,9 +155,9 @@ void RibbonTabPrivate::init()
     p.setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, QSizePolicy::Label));
 }
 
-void RibbonTabPrivate::updateLabel()
+void ARibbonTabPrivate::updateLabel()
 {
-    QTN_P(RibbonTab);
+    A_P(ARibbonTab);
     if (m_isTextLabel)
     {
         QSizePolicy policy = p.sizePolicy();
@@ -168,49 +170,49 @@ void RibbonTabPrivate::updateLabel()
     p.update(p.contentsRect());
 }
 
-/* RibbonTab */
-RibbonTab::RibbonTab(RibbonTabBar* parent, const QString& text)
-    : AbstractTab(parent, QIcon(), QString())
+/* ARibbonTab */
+ARibbonTab::ARibbonTab(ARibbonTabBar* parent, const QString& text)
+    : AAbstractTab(parent, QIcon(), QString())
 {
-    QTN_INIT_PRIVATE(RibbonTab);
-    QTN_D(RibbonTab);
+    A_INIT_PRIVATE(ARibbonTab);
+    A_D(ARibbonTab);
     d.init();
     setText(text);
     setAlignment(Qt::AlignCenter);
 }
 
-RibbonTab::~RibbonTab()
+ARibbonTab::~ARibbonTab()
 {
-    QTN_D(RibbonTab);
-    if (d.m_contextualTab != Q_NULL)
+    A_D(ARibbonTab);
+    if (d.m_contextualTab != nullptr)
     {
         if (d.m_contextualTab->firstTab == this)
-            d.m_contextualTab->firstTab = Q_NULL;
+            d.m_contextualTab->firstTab = nullptr;
         if (d.m_contextualTab->lastTab == this)
-            d.m_contextualTab->lastTab  = Q_NULL;
+            d.m_contextualTab->lastTab  = nullptr;
     }
-    QTN_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
-RibbonTabBar* RibbonTab::tabBar() const
+ARibbonTabBar* ARibbonTab::tabBar() const
 { 
-    return static_cast<RibbonTabBar*>(m_tabBar);
+    return static_cast<ARibbonTabBar*>(m_tabBar);
 }
 
-RibbonPage* RibbonTab::page() const
+ARibbonPage* ARibbonTab::page() const
 { 
-    return qobject_cast<RibbonPage*>(object());
+    return qobject_cast<ARibbonPage*>(object());
 }
 
-Qt::Alignment RibbonTab::alignment() const
+Qt::Alignment ARibbonTab::alignment() const
 {
-    QTN_D(const RibbonTab);
+    A_D(const ARibbonTab);
     return QFlag(d.m_align & (Qt::AlignVertical_Mask|Qt::AlignHorizontal_Mask));
 }
 
-void RibbonTab::setAlignment(Qt::Alignment alignment)
+void ARibbonTab::setAlignment(Qt::Alignment alignment)
 {
-    QTN_D(RibbonTab);
+    A_D(ARibbonTab);
     if (alignment == (d.m_align & (Qt::AlignVertical_Mask|Qt::AlignHorizontal_Mask)))
         return;
     d.m_align = (d.m_align & ~(Qt::AlignVertical_Mask|Qt::AlignHorizontal_Mask)) | 
@@ -219,100 +221,100 @@ void RibbonTab::setAlignment(Qt::Alignment alignment)
     d.updateLabel();
 }
 
-void RibbonTab::setText(const QString& text)
+void ARibbonTab::setText(const QString& text)
 {
-    QTN_D(RibbonTab);
+    A_D(ARibbonTab);
     d.m_isTextLabel = true;
-    AbstractTab::setText(text);
+    AAbstractTab::setText(text);
     d.updateLabel();
 }
 
-const QString& RibbonTab::text() const
+const QString& ARibbonTab::text() const
 {
     return m_text;
 }
 
-const QString& RibbonTab::contextTitle() const
+const QString& ARibbonTab::contextTitle() const
 {
-    if (page() != Q_NULL)
+    if (page() != nullptr)
         return page()->contextTitle();
     static QString empty = QString();
     return empty;
 }
 
-const QString& RibbonTab::contextGroupName() const
+const QString& ARibbonTab::contextGroupName() const
 {
-    if (page() != Q_NULL)
+    if (page() != nullptr)
         return page()->contextGroupName();
     static QString empty = QString();
     return empty;
 }
 
-const QColor& RibbonTab::contextColor() const
+const QColor& ARibbonTab::contextColor() const
 {
-    if (page() != Q_NULL)
+    if (page() != nullptr)
         return page()->contextColor();
     static QColor empty = QColor();
     return empty;
 }
 
-void RibbonTab::setContextualTab(ContextualTab* tab)
+void ARibbonTab::setContextualTab(AContextualTab* tab)
 {
-    QTN_D(RibbonTab);
+    A_D(ARibbonTab);
     d.m_contextualTab = tab;
 }
 
-ContextualTab* RibbonTab::contextualTab() const
+AContextualTab* ARibbonTab::contextualTab() const
 {
-    QTN_D(const RibbonTab);
+    A_D(const ARibbonTab);
     return d.m_contextualTab;
 }
 
-QAction* RibbonTab::defaultAction() const
+QAction* ARibbonTab::defaultAction() const
 {
-    QTN_D(const RibbonTab);
+    A_D(const ARibbonTab);
     return d.m_defaultAction;
 }
 
-QSize RibbonTab::sizeHint() const
+QSize ARibbonTab::sizeHint() const
 {
-    QSize sh = AbstractTab::sizeHint();
-    if (contextualTab() != Q_NULL)
+    QSize sh = AAbstractTab::sizeHint();
+    if (contextualTab() != nullptr)
     {
-        int spacing = style()->pixelMetric(QStyle::PM_TabBarTabVSpace, Q_NULL, tabBar());
-        sh.rwidth() = qMax(qtn_horizontalAdvanceFont(QFontMetrics(contextualTab()->font()), contextualTab()->title()) + spacing * 2, sh.width());
+        int spacing = style()->pixelMetric(QStyle::PM_TabBarTabVSpace, nullptr, tabBar());
+        sh.rwidth() = qMax(aproch_horizontalAdvanceFont(QFontMetrics(contextualTab()->font()), contextualTab()->title()) + spacing * 2, sh.width());
     }
     return sh;
 }
-QSize RibbonTab::minimumSizeHint() const
+QSize ARibbonTab::minimumSizeHint() const
 {
-    return AbstractTab::minimumSizeHint();
+    return AAbstractTab::minimumSizeHint();
 }
 
-void RibbonTab::clicked()
+void ARibbonTab::clicked()
 {
     bool selectionChanged = isCurrent();
-    AbstractTab::clicked();
+    AAbstractTab::clicked();
     selectionChanged = selectionChanged != isCurrent();
 
-    RibbonBar* _ribbonBar = tabBar()->ribbonBar();
+    ARibbonBar* _ribbonBar = tabBar()->ribbonBar();
     
-    Q_ASSERT(_ribbonBar != Q_NULL);
-    if (_ribbonBar == Q_NULL)
+    Q_ASSERT(_ribbonBar != nullptr);
+    if (_ribbonBar == nullptr)
         return;
 
     if (_ribbonBar->isBackstageVisible())
     {
-        if (RibbonSystemButton* button = _ribbonBar->systemButton())
+        if (ARibbonSystemButton* button = _ribbonBar->systemButton())
         {
-            if (RibbonBackstageView* backstage = qobject_cast<RibbonBackstageView*>(button->backstage()))
+            if (ARibbonBackstageView* backstage = qobject_cast<ARibbonBackstageView*>(button->backstage()))
                 backstage->close();
         }
     }
 
     if (_ribbonBar->isMinimized())
     {
-        RibbonBarPrivate* barprivate = RibbonBarPrivate::_get(_ribbonBar);
+        ARibbonBarPrivate* barprivate = ARibbonBarPrivate::_get(_ribbonBar);
         if (selectionChanged || !barprivate->isPagePopupVisible())
             barprivate->showPagePopup(page());
         else
@@ -320,29 +322,29 @@ void RibbonTab::clicked()
     }
 }
 
-void RibbonTab::dblClicked()
+void ARibbonTab::dblClicked()
 {
-    AbstractTab::dblClicked();
-    RibbonBar* _ribbonBar = tabBar()->ribbonBar();
-    if (_ribbonBar != Q_NULL)
-        RibbonBarPrivate::_get(_ribbonBar)->toggledMinimized();
+    AAbstractTab::dblClicked();
+    ARibbonBar* _ribbonBar = tabBar()->ribbonBar();
+    if (_ribbonBar != nullptr)
+        ARibbonBarPrivate::_get(_ribbonBar)->toggledMinimized();
 }
 
 /*! \reimp */
-void RibbonTab::paintEvent(QPaintEvent* event)
+void ARibbonTab::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
-    QTN_D(RibbonTab);
+    A_D(ARibbonTab);
 
     QPainter p(this);
     p.setClipRegion(event->region());
 
-    RibbonOptionHeaderStyleOption opt;
+    ARibbonOptionHeaderStyleOption opt;
     initStyleOption(&opt);
-    opt.firstTab = contextualTab() != Q_NULL && contextualTab()->firstTab == this;
-    opt.lastTab = contextualTab() != Q_NULL && contextualTab()->lastTab == this;
-    opt.rcFirst = contextualTab() != Q_NULL ? contextualTab()->firstTab->rect() : QRect();
-    opt.rcLast = contextualTab() != Q_NULL ? contextualTab()->lastTab->rect() : QRect();
+    opt.firstTab = contextualTab() != nullptr && contextualTab()->firstTab == this;
+    opt.lastTab = contextualTab() != nullptr && contextualTab()->lastTab == this;
+    opt.rcFirst = contextualTab() != nullptr ? contextualTab()->firstTab->rect() : QRect();
+    opt.rcLast = contextualTab() != nullptr ? contextualTab()->lastTab->rect() : QRect();
     opt.textAlignment = d.m_align;
     opt.contextColor = contextColor();
 
@@ -350,8 +352,8 @@ void RibbonTab::paintEvent(QPaintEvent* event)
 
     bool minimized = false;
     bool backstageVisible = false;
-    RibbonTabBar* _tabBar = this->tabBar();
-    RibbonBar* _ribbonBar = _tabBar->ribbonBar();
+    ARibbonTabBar* _tabBar = this->tabBar();
+    ARibbonBar* _ribbonBar = _tabBar->ribbonBar();
     opt.tabBarPosition = _ribbonBar->tabBarPosition();
 
     minimized = _ribbonBar->isMinimized();
@@ -365,8 +367,8 @@ void RibbonTab::paintEvent(QPaintEvent* event)
     else
         opt.state &= ~QStyle::State_Small;
 
-    RibbonPage* _page = page();
-    const bool selected = !backstageVisible && isCurrent() && _page != Q_NULL && _page->isVisible();
+    ARibbonPage* _page = page();
+    const bool selected = !backstageVisible && isCurrent() && _page != nullptr && _page->isVisible();
     if (selected)
     {
         opt.state |= QStyle::State_Selected;
@@ -383,7 +385,7 @@ void RibbonTab::paintEvent(QPaintEvent* event)
     bool drawControl = true;
     if (minimized)
     {
-        RibbonBarPrivate* barprivate = RibbonBarPrivate::_get(_ribbonBar);
+        ARibbonBarPrivate* barprivate = ARibbonBarPrivate::_get(_ribbonBar);
         if (!barprivate->isPagePopupVisible())
         {
             drawControl = false;
@@ -397,14 +399,14 @@ void RibbonTab::paintEvent(QPaintEvent* event)
     if (!_tabBar->m_startDrag)
     {
         if (isHighlight || drawControl)
-            style()->drawControl(static_cast<QStyle::ControlElement>(CommonStyle::CE_RibbonTab), &opt, &p, this);
-        style()->drawControl(static_cast<QStyle::ControlElement>(CommonStyle::CE_RibbonTabShapeLabel), &opt, &p, this);
+            style()->drawControl(static_cast<QStyle::ControlElement>(ACommonStyle::CE_RibbonTab), &opt, &p, this);
+        style()->drawControl(static_cast<QStyle::ControlElement>(ACommonStyle::CE_RibbonTabShapeLabel), &opt, &p, this);
     }
 }
 
-/* RibbonTabBar */
-RibbonTabBar::RibbonTabBar(RibbonBar* ribbonBar)
-    : AbstractTabBar(RibbonBarPrivate::_get(ribbonBar)->material())
+/* ARibbonTabBar */
+ARibbonTabBar::ARibbonTabBar(ARibbonBar* ribbonBar)
+    : AAbstractTabBar(ARibbonBarPrivate::_get(ribbonBar)->material())
 {
     setScrollable(true);
 //    setAlignmentRightLayout(Qt::AlignRight);
@@ -412,28 +414,28 @@ RibbonTabBar::RibbonTabBar(RibbonBar* ribbonBar)
     m_ribbonBar = ribbonBar;
 }
 
-RibbonTabBar::~RibbonTabBar()
+ARibbonTabBar::~ARibbonTabBar()
 {
 }
 
-RibbonBar* RibbonTabBar::ribbonBar() const
+ARibbonBar* ARibbonTabBar::ribbonBar() const
 { return m_ribbonBar; }
 
-RibbonTab* RibbonTabBar::getTab(int index)
-{ return qobject_cast<RibbonTab*>(tabAt(index)); }
+ARibbonTab* ARibbonTabBar::getTab(int index)
+{ return qobject_cast<ARibbonTab*>(tabAt(index)); }
 
-const RibbonTab* RibbonTabBar::getTab(int index) const
-{ return qobject_cast<const RibbonTab*>(tabAt(index)); }
+const ARibbonTab* ARibbonTabBar::getTab(int index) const
+{ return qobject_cast<const ARibbonTab*>(tabAt(index)); }
 
-QAction* RibbonTabBar::addAction(const QIcon& icon, const QString& text, Qt::ToolButtonStyle style, QMenu* menu)
+QAction* ARibbonTabBar::addAction(const QIcon& icon, const QString& text, Qt::ToolButtonStyle style, QMenu* menu)
 {
     QAction* action = new QAction(icon, text, this);
-    if (menu != Q_NULL)
+    if (menu != nullptr)
         action->setMenu(menu);
     return addAction(action, style);
 }
 
-QAction* RibbonTabBar::addAction(QAction* action, Qt::ToolButtonStyle style)
+QAction* ARibbonTabBar::addAction(QAction* action, Qt::ToolButtonStyle style)
 {
     if ( Qt::ToolButtonTextUnderIcon == style )
     {
@@ -441,7 +443,7 @@ QAction* RibbonTabBar::addAction(QAction* action, Qt::ToolButtonStyle style)
         style = Qt::ToolButtonTextBesideIcon;
     }
     QWidget::addAction(action);
-    RibbonButton* button = new RibbonButton(this);
+    ARibbonButton* button = new ARibbonButton(this);
 
     button->setAutoRaise(true);
     button->setFocusPolicy(Qt::NoFocus);
@@ -454,10 +456,10 @@ QAction* RibbonTabBar::addAction(QAction* action, Qt::ToolButtonStyle style)
     return action;
 }
 
-QMenu* RibbonTabBar::addMenu(const QString& title)
+QMenu* ARibbonTabBar::addMenu(const QString& title)
 {
     QMenu* menu = new QMenu(title, this);
-    RibbonButton* button = new RibbonButton(this);
+    ARibbonButton* button = new ARibbonButton(this);
     button->setAutoRaise(true);
     button->setFocusPolicy(Qt::NoFocus);
     button->setPopupMode(QToolButton::InstantPopup);
@@ -469,24 +471,24 @@ QMenu* RibbonTabBar::addMenu(const QString& title)
     return menu;
 }
 
-void RibbonTabBar::paintTab(QPainter* painter, AbstractTab* tab) const
+void ARibbonTabBar::paintTab(QPainter* painter, AAbstractTab* tab) const
 {
-    RibbonOptionHeaderStyleOption opt;
+    ARibbonOptionHeaderStyleOption opt;
     tab->initStyleOption(&opt);
-    opt.textAlignment = RibbonTabPrivate::get(static_cast<RibbonTab *>(tab))->m_align;
+    opt.textAlignment = ARibbonTabPrivate::get(static_cast<ARibbonTab *>(tab))->m_align;
     opt.position = QStyleOptionTab::OnlyOneTab;
-    style()->drawControl(static_cast<QStyle::ControlElement>(CommonStyle::CE_RibbonTab), &opt, painter, tab);
-    style()->drawControl(static_cast<QStyle::ControlElement>(CommonStyle::CE_RibbonTabShapeLabel), &opt, painter, tab);
+    style()->drawControl(static_cast<QStyle::ControlElement>(ACommonStyle::CE_RibbonTab), &opt, painter, tab);
+    style()->drawControl(static_cast<QStyle::ControlElement>(ACommonStyle::CE_RibbonTabShapeLabel), &opt, painter, tab);
 }
 
-void RibbonTabBar::paintTabBarFrame(QPainter* painter, QStyleOptionTabBarBase* optTabBase)
+void ARibbonTabBar::paintTabBarFrame(QPainter* painter, QStyleOptionTabBarBase* optTabBase)
 {
     Q_UNUSED(painter);
     Q_UNUSED(optTabBase);
 }
 
 /*! \reimp */
-bool RibbonTabBar::event(QEvent* event)
+bool ARibbonTabBar::event(QEvent* event)
 {
     switch(event->type())
     {
@@ -506,38 +508,40 @@ bool RibbonTabBar::event(QEvent* event)
         default:
             break;
     }
-    return AbstractTabBar::event(event);
+    return AAbstractTabBar::event(event);
 }
 
 /*! \reimp */
-void RibbonTabBar::paintEvent(QPaintEvent* event)
+void ARibbonTabBar::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     QPainter p(this);
     QStyleOption opt;
     opt.initFrom(this);
-    style()->drawControl(static_cast<QStyle::ControlElement>(CommonStyle::CE_RibbonTabBar), &opt, &p, this);
+    style()->drawControl(static_cast<QStyle::ControlElement>(ACommonStyle::CE_RibbonTabBar), &opt, &p, this);
 }
 
 /*! \reimp */
-void RibbonTabBar::mouseDoubleClickEvent(QMouseEvent* event)
+void ARibbonTabBar::mouseDoubleClickEvent(QMouseEvent* event)
 {
     event->setAccepted(false);
-    AbstractTabBar::mouseDoubleClickEvent(event);
+    AAbstractTabBar::mouseDoubleClickEvent(event);
 }
 
-AbstractTab* RibbonTabBar::createTab(const QIcon& icon, const QString& text, QObject* object)
+AAbstractTab* ARibbonTabBar::createTab(const QIcon& icon, const QString& text, QObject* object)
 {
     Q_UNUSED(icon);
-    RibbonTab* tab = new RibbonTab(this, text);
+    ARibbonTab* tab = new ARibbonTab(this, text);
     tab->setObject(object);
-    RibbonPagePrivate::_get(tab->page())->setAssociativeTab(tab);
+    ARibbonPagePrivate::_get(tab->page())->setAssociativeTab(tab);
     return tab;
 }
 
 /*! \reimp */
-QSize RibbonTabBar::sizeHint() const
+QSize ARibbonTabBar::sizeHint() const
 {
-    QSize sh = AbstractTabBar::sizeHint();
+    QSize sh = AAbstractTabBar::sizeHint();
     return sh;
 }
+
+APROCH_NAMESPACE_END

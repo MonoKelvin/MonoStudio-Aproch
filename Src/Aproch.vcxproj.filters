@@ -84,7 +84,10 @@
     <Filter Include="Widget\Widget">
       <UniqueIdentifier>{5e2f0503-cf9f-4eba-b964-ea939fef9fe7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Widget\Ribbon\ui">
+    <Filter Include="Widget\RC">
+      <UniqueIdentifier>{202fc43d-500a-4e0c-ab9b-f86c37f110e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget\Ribbon\res">
       <UniqueIdentifier>{863d80b3-f5b1-458c-880f-57a545cf5402}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -300,6 +303,12 @@
       <Filter>Common\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Widget\Ribbon\ARibbonButton_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Ribbon\ARibbonInputControls.h">
+      <Filter>Widget\Ribbon</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Ribbon\ARibbonSearchBar_p.h">
       <Filter>Widget\Ribbon</Filter>
     </ClInclude>
   </ItemGroup>
@@ -577,6 +586,48 @@
     <ClCompile Include="Widget\Ribbon\ARibbonButtonControls.cpp">
       <Filter>Widget\Ribbon</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonPopup.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonButton.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonGallery.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonBackstageView.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonCustomizeDialog.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonCustomizePage.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonGalleryControls.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonInputControls.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonKeyTip.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonTabBar.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonSliderPane.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AAbstractTabBar.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\ARibbonSearchBar.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Ribbon\AOfficePopupMenu.cpp">
+      <Filter>Widget\Ribbon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -756,10 +807,67 @@
     <QtMoc Include="Widget\Ribbon\ARibbonButtonControls.h">
       <Filter>Widget\Ribbon</Filter>
     </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonPopup.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonGallery.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonGallery_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonBackstageView.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonBackstageView_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeDialog.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeDialog_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonCustomizePage.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonGalleryControls.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonKeyTip.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonTabBar.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonSliderPane.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonSliderPane_p.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AAbstractTabBar.h">
+      <Filter>Widget\Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\ARibbonSearchBar.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Ribbon\AOfficePopupMenu.h">
+      <Filter>Widget\Ribbon</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">
       <Filter>Resource Files</Filter>
+    </QtRcc>
+    <QtRcc Include="Widget\RC_BaseResources.qrc">
+      <Filter>Widget\RC</Filter>
+    </QtRcc>
+    <QtRcc Include="Widget\Ribbon\RC_RibbonResources.qrc">
+      <Filter>Widget\Ribbon\res</Filter>
+    </QtRcc>
+    <QtRcc Include="Widget\Ribbon\RC_RibbonTranslations.qrc">
+      <Filter>Widget\Ribbon\res</Filter>
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
@@ -769,13 +877,16 @@
     <None Include="Data\header.inc">
       <Filter>Data</Filter>
     </None>
-    <None Include="Widget\Ribbon\header.inc">
-      <Filter>Widget\Ribbon</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="Widget\Ribbon\ARibbonQuickAccessBarCustomizePage.ui">
-      <Filter>Widget\Ribbon\ui</Filter>
+    <QtUic Include="Widget\Ribbon\UI_RibbonBarCustomizePage.ui">
+      <Filter>Widget\Ribbon\res</Filter>
+    </QtUic>
+    <QtUic Include="Widget\Ribbon\UI_RibbonQuickAccessBarCustomizePage.ui">
+      <Filter>Widget\Ribbon\res</Filter>
+    </QtUic>
+    <QtUic Include="Widget\Ribbon\UI_RibbonRenameDialog.ui">
+      <Filter>Widget\Ribbon\res</Filter>
     </QtUic>
   </ItemGroup>
 </Project>

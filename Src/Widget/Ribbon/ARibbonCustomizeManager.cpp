@@ -38,6 +38,13 @@
 #include "ARibbonQuickAccessBar.h"
 #include "ARibbonDef.h"
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - ARibbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
 APROCH_NAMESPACE_BEGIN
 
 #define A_XML_TAGNAME_RIBBON_STORAGE   QStringLiteral("RibbonStorage")
@@ -752,9 +759,9 @@ void ARibbonBarCustomizeEngine::addToCategory(const QString& category, ARibbonGr
 
     for (int index = 0, count = group->controlCount(); count > index; ++index)
     {
-        RibbonControl* control = group->controlByIndex(index);
+        ARibbonControl* control = group->controlByIndex(index);
         Q_ASSERT(control != nullptr);
-        if (RibbonToolBarControl* toolBarControl = qobject_cast<RibbonToolBarControl*>(control))
+        if (ARibbonToolBarControl* toolBarControl = qobject_cast<ARibbonToolBarControl*>(control))
         {
             QList<QAction*> actions = toolBarControl->actions();
             QListIterator<QAction*> itActions(actions);
@@ -873,7 +880,7 @@ void ARibbonBarCustomizeEngine::addDefaultGroups(ARibbonPage* page)
 
 void ARibbonBarCustomizeEngine::setQuickAccessBar()
 {
-    if (RibbonQuickAccessBar* quickAccessBar = m_ribbonBar->quickAccessBar())
+    if (ARibbonQuickAccessBar* quickAccessBar = m_ribbonBar->quickAccessBar())
         setToolBar(quickAccessBar, m_regularToolBars.value(quickAccessBar));
 }
 
@@ -1023,7 +1030,7 @@ void ARibbonBarCustomizeEngine::updateRibbonBar()
     int currentIndex = m_ribbonBar->currentPageIndex();
     if (currentIndex != -1)
     {
-        RibbonBarAutoUpdater autoUpdater(m_ribbonBar);
+        ARibbonBarAutoUpdater autoUpdater(m_ribbonBar);
         if (ARibbonPage* page = m_ribbonBar->page(currentIndex))
         {
 #if 0
@@ -1033,7 +1040,7 @@ void ARibbonBarCustomizeEngine::updateRibbonBar()
                 return;
             }
 #endif
-            RibbonBarAutoUpdater autoUpdater(m_ribbonBar);
+            ARibbonBarAutoUpdater autoUpdater(m_ribbonBar);
             if (!m_regularHiddenPages.contains(page))
                 return;
         }
@@ -1110,7 +1117,7 @@ void ARibbonBarCustomizeEngine::saveStateGroup(IXmlStreamWriter* xmlwriter, ARib
                     qWarning("ARibbonBarCustomizeEngine::saveStateGroup(): 'objectName' not set for ARibbonGroup "
                              "%p '%s', using 'text' instead", group, group->title().toLocal8Bit().constData());
                 }
-                nameId = QStringLiteral("新建：") + page->title() + QStringLiteral(":") + QString::number(nNewGroupId);
+                nameId = QStringLiteral("NEW: ") + page->title() + QStringLiteral(":") + QString::number(nNewGroupId);
                 nNewGroupId++;
             }
 
@@ -1296,7 +1303,7 @@ void ARibbonBarCustomizeEngine::saveStatePage(IXmlStreamWriter* xmlwriter)
 
 bool ARibbonBarCustomizeEngine::restoreStatePage(IXmlStreamReader* xmlreader)
 {
-    RibbonBarAutoUpdater autoUpdater(m_ribbonBar);
+    ARibbonBarAutoUpdater autoUpdater(m_ribbonBar);
     bool ok = true;
     m_regularHiddenPages.clear();
 
@@ -1404,7 +1411,7 @@ void ARibbonBarCustomizeEngine::saveState(IXmlStreamWriter* xmlwriter)
 bool ARibbonBarCustomizeEngine::restoreState(IXmlStreamReader* xmlreader)
 {
 
-    RibbonBarAutoUpdater autoUpdater(m_ribbonBar);
+    ARibbonBarAutoUpdater autoUpdater(m_ribbonBar);
     if (!AToolBarCustomizeEngine::restoreState(xmlreader))
     {
         Q_ASSERT(false);
@@ -1433,7 +1440,7 @@ ARibbonCustomizeManagerPrivate::~ARibbonCustomizeManagerPrivate()
 
 void ARibbonCustomizeManagerPrivate::init(ARibbonBar* ribbonBar)
 {
-    A_P(ARibbonCustomizeManager)
+    A_P(ARibbonCustomizeManager);
         m_ribbonBar = ribbonBar;
     m_customizeEngine = new ARibbonBarCustomizeEngine(&p, ribbonBar);
 }
@@ -1694,7 +1701,7 @@ void ARibbonCustomizeManager::setEditMode(bool set)
         d.m_customizeEngine->m_regularPageGroups.clear();
         d.m_customizeEngine->m_regularGroupsActions.clear();
 
-        if (RibbonQuickAccessBar* toolBar = d.m_customizeEngine->m_ribbonBar->quickAccessBar())
+        if (ARibbonQuickAccessBar* toolBar = d.m_customizeEngine->m_ribbonBar->quickAccessBar())
         {
             QList<QAction*> listAction = toolBar->actions();
             for (QList< QAction* >::iterator it = listAction.begin(); it != listAction.end(); ++it)
@@ -1725,9 +1732,9 @@ void ARibbonCustomizeManager::setEditMode(bool set)
 
                 for (int index = 0, count = group->controlCount(); count > index; ++index)
                 {
-                    RibbonControl* control = group->controlByIndex(index);
+                    ARibbonControl* control = group->controlByIndex(index);
                     Q_ASSERT(control != nullptr);
-                    if (RibbonToolBarControl* toolBarControl = qobject_cast<RibbonToolBarControl*>(control))
+                    if (ARibbonToolBarControl* toolBarControl = qobject_cast<ARibbonToolBarControl*>(control))
                     {
                         QList<QAction*> actions = toolBarControl->actions();
                         d.m_customizeEngine->m_regularGroupsActions.insert(group, actions);
@@ -1778,9 +1785,9 @@ void ARibbonCustomizeManager::reset(QToolBar* toolBar)
 
                 for (int index = 0, count = group->controlCount(); count > index; ++index)
                 {
-                    RibbonControl* control = group->controlByIndex(index);
+                    ARibbonControl* control = group->controlByIndex(index);
                     Q_ASSERT(control != nullptr);
-                    if (RibbonToolBarControl* toolBarControl = qobject_cast<RibbonToolBarControl*>(control))
+                    if (ARibbonToolBarControl* toolBarControl = qobject_cast<ARibbonToolBarControl*>(control))
                     {
                         QList<QAction*> actions = toolBarControl->actions();
                         d.m_customizeEngine->m_regularGroupsActions.insert(group, actions);
@@ -1832,7 +1839,7 @@ void ARibbonCustomizeManager::commit()
         if (d._bRestoreVisualizePage)
             d.storePageVisual();
 
-        RibbonBarAutoUpdater autoUpdater(d.m_ribbonBar);
+        ARibbonBarAutoUpdater autoUpdater(d.m_ribbonBar);
         d.m_customizeEngine->setQuickAccessBar();
         d.m_customizeEngine->setRibbonBar();
         d.m_customizeEngine->setRibbonGroups();
@@ -1849,7 +1856,7 @@ Returns all actions from \a toolBar.
 QList< QAction* > ARibbonCustomizeManager::actions(QToolBar* toolBar) const
 {
     A_D(const ARibbonCustomizeManager);
-    if (qobject_cast<RibbonQuickAccessBar*>(toolBar))
+    if (qobject_cast<ARibbonQuickAccessBar*>(toolBar))
         return d.m_customizeEngine->m_regularToolBars.value(toolBar);
     else
         return d.m_customizeEngine->actions(toolBar);
@@ -2165,7 +2172,7 @@ void ARibbonCustomizeManager::setDefaultState()
 {
     A_D(ARibbonCustomizeManager);
     d.m_customizeEngine->addDefaultPages();
-    if (RibbonQuickAccessBar* quickAccessBar = d.m_ribbonBar->quickAccessBar())
+    if (ARibbonQuickAccessBar* quickAccessBar = d.m_ribbonBar->quickAccessBar())
         d.m_customizeEngine->addDefaultToolBar(quickAccessBar);
 }
 
@@ -2174,7 +2181,7 @@ void ARibbonCustomizeManager::enableModifyPage(bool bEnable)
     A_D(ARibbonCustomizeManager);
     if (d.m_ribbonBar == nullptr)
         return;
-    RibbonCustomizeDialog* pDialog = d.m_ribbonBar->customizeDialog();
+    ARibbonCustomizeDialog* pDialog = d.m_ribbonBar->customizeDialog();
     if (pDialog == nullptr)
         return;
 
@@ -2183,7 +2190,7 @@ void ARibbonCustomizeManager::enableModifyPage(bool bEnable)
 
     for (int i = 0; i < pDialog->pageCount(); i++)
     {
-        auto pRibbonBarCustomizePage = dynamic_cast<RibbonBarCustomizePage*>(pDialog->pageByIndex(i));
+        auto pRibbonBarCustomizePage = dynamic_cast<ARibbonBarCustomizePage*>(pDialog->pageByIndex(i));
         if (pRibbonBarCustomizePage == nullptr)
             continue;
 
@@ -2199,7 +2206,7 @@ Save the ribbon bar state to the \a device with given \a autoFormatting.
 */
 bool ARibbonCustomizeManager::saveStateToDevice(QIODevice* device, bool autoFormatting)
 {
-    XmlStreamWriter xmlwriter(device);
+    AXmlStreamWriter xmlwriter(device);
     xmlwriter.setAutoFormatting(autoFormatting);
     return saveStateToXML(&xmlwriter);
 }
@@ -2245,7 +2252,7 @@ bool ARibbonCustomizeManager::loadStateFromXML(IXmlStreamReader* xmlreader)
 {
     A_D(ARibbonCustomizeManager);
 
-    connect(d.m_customizeEngine, SIGNAL(NameIdToAction(const QString&, QAction**)), 
+    connect(d.m_customizeEngine, SIGNAL(NameIdToAction(const QString&, QAction**)),
             this, SIGNAL(NameIdToAction(const QString&, QAction**)));
 
 

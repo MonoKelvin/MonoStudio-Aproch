@@ -127,7 +127,12 @@
 #include "Widget/AWindowTitleBar.h"
 #include "Widget/AWindowTitleBar_win.h"
 
-#include "Widget/Ribbon/header.inc"
+#include "Widget/Ribbon/ARibbonDef.h"
+#include "Widget/Ribbon/ARibbonMainWindow.h"
+#include <Widget/Ribbon/ARibbonBar.h>
+#include "Widget/Ribbon/ARibbonButton.h"
+#include "Widget/Ribbon/ARibbonPage.h"
+#include "Widget/Ribbon/ARibbonGroup.h"
 
 #include "Data/header.inc"
 

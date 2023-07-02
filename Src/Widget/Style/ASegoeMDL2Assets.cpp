@@ -1230,7 +1230,7 @@ static const SymbolInfo knownIconSymbols[ASegoeMDL2Font::NumSymbols] =
     { ASegoeMDL2Font::ToggleFilled, 0xEEB8, 0xEC11 },
     { ASegoeMDL2Font::ToggleThumb, 0xEEB9, 0xEC14 },
     { ASegoeMDL2Font::TollSolid, 0xEEBA, 0xF161 },
-    { ASegoeMDL2Font::ToolTip, 0xEEBB, 0xE82F },
+    { ASegoeMDL2Font::AToolTip, 0xEEBB, 0xE82F },
     { ASegoeMDL2Font::Touch, 0xEEBC, 0xE815 },
     { ASegoeMDL2Font::TouchPointer, 0xEEBD, 0xE7C9 },
     { ASegoeMDL2Font::Touchpad, 0xEEBE, 0xEFA5 },

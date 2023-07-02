@@ -1,6 +1,6 @@
 /****************************************************************************
  * @file    ARibbonGroup.h
- * @date    2023-07-01 
+ * @date    2023-07-01
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -32,50 +32,59 @@
 #include <QMenu>
 
 #include "ARibbonControls.h"
-#include "ARibbonPage.h"
-#include "QtitanDef.h"
+
+//
+// The most of the following code is copied from Qtitan.
+//
+// Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+// Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+//
 
 APROCH_NAMESPACE_BEGIN
 
-class RibbonGroupPrivate;
+class ARibbonBar;
+class ARibbonPage;
+
+class ARibbonGroupPrivate;
 class APROCH_API ARibbonGroup : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(bool reduced READ isReduced)
-    Q_PROPERTY(const QString& title READ title WRITE setTitle)
-    Q_PROPERTY(const QFont& titleFont READ titleFont WRITE setTitleFont)
-    Q_PROPERTY(const QColor& titleColor READ titleColor WRITE setTitleColor)
+    Q_PROPERTY(const QString &title READ title WRITE setTitle)
+    Q_PROPERTY(const QFont &titleFont READ titleFont WRITE setTitleFont)
+    Q_PROPERTY(const QColor &titleColor READ titleColor WRITE setTitleColor)
     Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
     Q_PROPERTY(int spacing READ spacing WRITE setSpacing)
     Q_PROPERTY(bool optionButtonVisible READ isOptionButtonVisible WRITE setOptionButtonVisible DESIGNABLE false)
     Q_PROPERTY(Qt::Alignment contentAlignment READ contentAlignment WRITE setContentAlignment)
     Q_PROPERTY(Qt::TextElideMode titleElideMode READ titleElideMode WRITE setTitleElideMode)
 public:
-    explicit ARibbonGroup(QWidget* parent = nullptr);
-    explicit ARibbonGroup(ARibbonPage* page, const QString& title);
+    explicit ARibbonGroup(QWidget *parent = nullptr);
+    explicit ARibbonGroup(ARibbonPage *page, const QString &title);
     ~ARibbonGroup() override;
+
 public:
-    ARibbonBar* ribbonBar() const;
+    ARibbonBar *ribbonBar() const;
 
     bool isReduced() const;
 
-    const QString& title() const;
-    void setTitle(const QString& title);
+    const QString &title() const;
+    void setTitle(const QString &title);
 
-    const QFont& titleFont() const;
-    void setTitleFont(const QFont& font);
+    const QFont &titleFont() const;
+    void setTitleFont(const QFont &font);
 
-    const QColor& titleColor() const;
-    void setTitleColor(const QColor& color);
+    const QColor &titleColor() const;
+    void setTitleColor(const QColor &color);
 
-    const QIcon& icon() const;
-    void setIcon(const QIcon& icon);
+    const QIcon &icon() const;
+    void setIcon(const QIcon &icon);
 
     bool isOptionButtonVisible() const;
     void setOptionButtonVisible(bool visible = true);
 
-    QAction* optionButtonAction() const;
-    void setOptionButtonAction(QAction* action);
+    QAction *optionButtonAction() const;
+    void setOptionButtonAction(QAction *action);
 
     Qt::Alignment contentAlignment() const;
     void setContentAlignment(Qt::Alignment alignment);
@@ -87,71 +96,77 @@ public:
     void setSpacing(int);
 
     int controlCount() const;
-    RibbonControl* controlByIndex(int index) const;
-    RibbonControl* controlByAction(QAction* action) const;
-    RibbonWidgetControl* controlByWidget(QWidget* widget) const;
+    ARibbonControl *controlByIndex(int index) const;
+    ARibbonControl *controlByAction(QAction *action) const;
+    ARibbonWidgetControl *controlByWidget(QWidget *widget) const;
     ARibbonControlSizeDefinition::GroupSize currentSize() const;
 
-    void addControl(RibbonControl* control);
-    void removeControl(RibbonControl* control);
+    void addControl(ARibbonControl *control);
+    void removeControl(ARibbonControl *control);
 
-    QAction* addAction(const QIcon& icon, const QString& text, Qt::ToolButtonStyle style, 
-        QMenu* menu = nullptr, QToolButton::ToolButtonPopupMode mode = QToolButton::MenuButtonPopup);
-    QAction* addAction(QAction* action, Qt::ToolButtonStyle style, QMenu* menu = nullptr, 
-        QToolButton::ToolButtonPopupMode mode = QToolButton::MenuButtonPopup);
-    QAction* insertAction(QAction* before, QAction* action, Qt::ToolButtonStyle style, QMenu* menu = nullptr, 
-        QToolButton::ToolButtonPopupMode mode = QToolButton::MenuButtonPopup);
+    QAction *addAction(const QIcon &icon, const QString &text, Qt::ToolButtonStyle style,
+                       QMenu *menu = nullptr, QToolButton::ToolButtonPopupMode mode = QToolButton::MenuButtonPopup);
+    QAction *addAction(QAction *action, Qt::ToolButtonStyle style, QMenu *menu = nullptr,
+                       QToolButton::ToolButtonPopupMode mode = QToolButton::MenuButtonPopup);
+    QAction *insertAction(QAction *before, QAction *action, Qt::ToolButtonStyle style, QMenu *menu = nullptr,
+                          QToolButton::ToolButtonPopupMode mode = QToolButton::MenuButtonPopup);
 
-    QAction* addWidget(QWidget* widget);
-    QAction* addWidget(const QIcon& icon, const QString& text, QWidget* widget);
-    QAction* addWidget(const QIcon& icon, const QString& text, bool stretch, QWidget* widget);
-    QMenu* addMenu(const QIcon& icon, const QString& text, Qt::ToolButtonStyle style = Qt::ToolButtonFollowStyle);
-    QAction* addSeparator();
+    QAction *addWidget(QWidget *widget);
+    QAction *addWidget(const QIcon &icon, const QString &text, QWidget *widget);
+    QAction *addWidget(const QIcon &icon, const QString &text, bool stretch, QWidget *widget);
+    QMenu *addMenu(const QIcon &icon, const QString &text, Qt::ToolButtonStyle style = Qt::ToolButtonFollowStyle);
+    QAction *addSeparator();
 
-    void remove(QWidget* widget);
+    void remove(QWidget *widget);
     void clear();
 
     Qt::TextElideMode titleElideMode() const;
     void setTitleElideMode(Qt::TextElideMode mode);
+
 public:
-    void setControlsCentering(bool enabled = true); //Deprecated, user setContentAlignment instead
-    bool isControlsCentering() const; //Deprecated
-    void setControlsGrouping(bool enabled = true); //Deprecated, user RibbonToolBarControl instead
-    bool isControlsGrouping() const; //Deprecated
+    void setControlsCentering(bool enabled = true); // Deprecated, user setContentAlignment instead
+    bool isControlsCentering() const;               // Deprecated
+    void setControlsGrouping(bool enabled = true);  // Deprecated, user ARibbonToolBarControl instead
+    bool isControlsGrouping() const;                // Deprecated
+
 public:
     QSize sizeHint() const override;
+
 public:
     using QWidget::addAction;
     using QWidget::insertAction;
+
 Q_SIGNALS:
     /*! \internal */
     void released();
     /*! \internal */
-    void actionTriggered(QAction*);
+    void actionTriggered(QAction *);
     /*! \internal */
     void hidePopup();
+
 Q_SIGNALS:
-    void titleChanged(const QString& title);
-    void titleFontChanged(const QFont& font);
+    void titleChanged(const QString &title);
+    void titleFontChanged(const QFont &font);
+
 protected Q_SLOTS:
     /*! \internal */
     void currentIndexChanged(int index);
+
 protected:
-    bool event(QEvent* event) override;
-    void paintEvent(QPaintEvent* event) override;
-    void actionEvent(QActionEvent* event) override;
+    bool event(QEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void actionEvent(QActionEvent *event) override;
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-    void enterEvent(QEnterEvent* event) override;
+    void enterEvent(QEnterEvent *event) override;
 #else
-    void enterEvent(QEvent* event) override;
+    void enterEvent(QEvent *event) override;
 #endif
-    void leaveEvent(QEvent* event) override;
-    void mousePressEvent(QMouseEvent* event) override;
+    void leaveEvent(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+
 private:
     A_DECLARE_PRIVATE(ARibbonGroup)
     Q_DISABLE_COPY(ARibbonGroup)
 };
 
-QTITAN_END_NAMESPACE
-
-#endif // A_RIBBONGROUP_H
+APROCH_NAMESPACE_END

@@ -1,117 +1,123 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#include "ARibbonButtonControls.h"
+ * @file    ARibbonButtonControls.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
 #include "ARibbonGroup.h"
-#include "ARibbonControlsPrivate.h"
-#ifdef A_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+#include "ARibbonControls_p.h"
 
-QTITAN_USE_NAMESPACE
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
+APROCH_NAMESPACE_BEGIN
 
 static Qt::ToolButtonStyle defineToolButtonStyle = Qt::ToolButtonTextUnderIcon;
 
-RibbonButtonControlPrivate::RibbonButtonControlPrivate()
+ARibbonButtonControlPrivate::ARibbonButtonControlPrivate()
     : m_toolButton(nullptr)
 {
 }
 
-RibbonButtonControlPrivate::~RibbonButtonControlPrivate()
+ARibbonButtonControlPrivate::~ARibbonButtonControlPrivate()
 {
 }
 
-void RibbonButtonControlPrivate::init()
+void ARibbonButtonControlPrivate::init()
 {
-    A_P(RibbonButtonControl);
+    A_P(ARibbonButtonControl);
     p.sizeDefinition(ARibbonControlSizeDefinition::GroupLarge)->setStretchable(false);
     p.sizeDefinition(ARibbonControlSizeDefinition::GroupMedium)->setStretchable(false);
     p.sizeDefinition(ARibbonControlSizeDefinition::GroupSmall)->setStretchable(false);
     p.sizeDefinition(ARibbonControlSizeDefinition::GroupPopup)->setStretchable(false);
 
-    m_toolButton = new RibbonButton(&p);
+    m_toolButton = new ARibbonButton(&p);
     p.setContentWidget(m_toolButton);
 }
 
 /*!
-\class RibbonButtonControl
+\class ARibbonButtonControl
 \inmodule QtitanRibbon
 */
-RibbonButtonControl::RibbonButtonControl(ARibbonGroup* parentGroup)
-    : RibbonWidgetControl(parentGroup, true)
+ARibbonButtonControl::ARibbonButtonControl(ARibbonGroup* parentGroup)
+    : ARibbonWidgetControl(parentGroup, true)
 {
-    A_INIT_PRIVATE(RibbonButtonControl);
-    A_D(RibbonButtonControl);
+    A_INIT_PRIVATE(ARibbonButtonControl);
+    A_D(ARibbonButtonControl);
     d.init();
 }
 
-RibbonButtonControl::~RibbonButtonControl()
+ARibbonButtonControl::~ARibbonButtonControl()
 {
-    A_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
-const QIcon& RibbonButtonControl::largeIcon() const
+const QIcon& ARibbonButtonControl::largeIcon() const
 {
-    A_D(const RibbonButtonControl);
+    A_D(const ARibbonButtonControl);
     return d.m_largeIcon;
 }
 
-void RibbonButtonControl::setLargeIcon(const QIcon& icon)
+void ARibbonButtonControl::setLargeIcon(const QIcon& icon)
 {
-    A_D(RibbonButtonControl);
+    A_D(ARibbonButtonControl);
     d.m_largeIcon = icon;
 }
 
-const QIcon& RibbonButtonControl::smallIcon() const
+const QIcon& ARibbonButtonControl::smallIcon() const
 {
-    A_D(const RibbonButtonControl);
+    A_D(const ARibbonButtonControl);
     return d.m_smallIcon;
 }
 
-void RibbonButtonControl::setSmallIcon(const QIcon& icon)
+void ARibbonButtonControl::setSmallIcon(const QIcon& icon)
 {
-    A_D(RibbonButtonControl);
+    A_D(ARibbonButtonControl);
     d.m_smallIcon = icon;
 }
 
-const QString& RibbonButtonControl::label() const
+const QString& ARibbonButtonControl::label() const
 {
-    A_D(const RibbonButtonControl);
+    A_D(const ARibbonButtonControl);
     return d.m_label;
 }
 
-void RibbonButtonControl::setLabel(const QString& label)
+void ARibbonButtonControl::setLabel(const QString& label)
 {
-    A_D(RibbonButtonControl);
+    A_D(ARibbonButtonControl);
     d.m_label = label;
 }
 
-void RibbonButtonControl::setMenu(QMenu* menu)
+void ARibbonButtonControl::setMenu(QMenu* menu)
 {
-    A_D(RibbonButtonControl);
+    A_D(ARibbonButtonControl);
 
      if (menu && d.m_toolButton->actions().contains(menu->menuAction()))
         d.m_toolButton->removeAction(menu->menuAction());
@@ -119,27 +125,27 @@ void RibbonButtonControl::setMenu(QMenu* menu)
     d.m_toolButton->setMenu(menu);
 }
 
-QMenu* RibbonButtonControl::menu() const
+QMenu* ARibbonButtonControl::menu() const
 {
-    A_D(const RibbonButtonControl);
+    A_D(const ARibbonButtonControl);
     return d.m_toolButton->menu();
 }
 
-void RibbonButtonControl::setPopupMode(QToolButton::ToolButtonPopupMode mode)
+void ARibbonButtonControl::setPopupMode(QToolButton::ToolButtonPopupMode mode)
 {
-    A_D(RibbonButtonControl);
+    A_D(ARibbonButtonControl);
     d.m_toolButton->setPopupMode(mode);
 }
 
-QToolButton::ToolButtonPopupMode RibbonButtonControl::popupMode() const
+QToolButton::ToolButtonPopupMode ARibbonButtonControl::popupMode() const
 {
-    A_D(const RibbonButtonControl);
+    A_D(const ARibbonButtonControl);
     return d.m_toolButton->popupMode();
 }
 
-void RibbonButtonControl::setToolButtonStyle(Qt::ToolButtonStyle style)
+void ARibbonButtonControl::setToolButtonStyle(Qt::ToolButtonStyle style)
 {
-    A_D(RibbonButtonControl);
+    A_D(ARibbonButtonControl);
     if (style == Qt::ToolButtonFollowStyle)
         style = defineToolButtonStyle;
 
@@ -182,22 +188,22 @@ void RibbonButtonControl::setToolButtonStyle(Qt::ToolButtonStyle style)
     }
 }
 
-Qt::ToolButtonStyle RibbonButtonControl::toolButtonStyle() const
+Qt::ToolButtonStyle ARibbonButtonControl::toolButtonStyle() const
 {
-    A_D(const RibbonButtonControl);
+    A_D(const ARibbonButtonControl);
     return d.m_toolButton->toolButtonStyle();
 }
 
-QToolButton* RibbonButtonControl::widget() const
+QToolButton* ARibbonButtonControl::widget() const
 {
-    A_D(const RibbonButtonControl);
+    A_D(const ARibbonButtonControl);
     return d.m_toolButton;
 }
 
-QSize RibbonButtonControl::sizeHint() const
+QSize ARibbonButtonControl::sizeHint() const
 {
-    A_D(const RibbonButtonControl);
-    QSize sz = RibbonWidgetControl::sizeHint();
+    A_D(const ARibbonButtonControl);
+    QSize sz = ARibbonWidgetControl::sizeHint();
 
     // 菜单类型预留箭头宽度
 	if (d.m_toolButton && menu())
@@ -224,10 +230,10 @@ QSize RibbonButtonControl::sizeHint() const
     return sz;
 }
 
-void RibbonButtonControl::sizeChanged(ARibbonControlSizeDefinition::GroupSize size)
+void ARibbonButtonControl::sizeChanged(ARibbonControlSizeDefinition::GroupSize size)
 {
-    A_D(RibbonButtonControl);
-    RibbonControl::sizeChanged(size);
+    A_D(ARibbonButtonControl);
+    ARibbonControl::sizeChanged(size);
 
     d.m_toolButton->setDefaultAction(defaultAction());
 
@@ -269,7 +275,7 @@ void RibbonButtonControl::sizeChanged(ARibbonControlSizeDefinition::GroupSize si
     }
 }
 
-void RibbonButtonControl::actionChanged()
+void ARibbonButtonControl::actionChanged()
 {
     if (defaultAction() != nullptr)
     {
@@ -282,13 +288,13 @@ void RibbonButtonControl::actionChanged()
         setSmallIcon(defaultAction()->icon());
     }
 
-    RibbonControl::actionChanged();
+    ARibbonControl::actionChanged();
 }
 
 /*! \reimp */
-bool RibbonButtonControl::event(QEvent* event)
+bool ARibbonButtonControl::event(QEvent* event)
 {
-    bool result = RibbonWidgetControl::event(event);
+    bool result = ARibbonWidgetControl::event(event);
 
     QEvent::Type type = event->type();
     if (type == QEvent::FontChange || type == QEvent::StyleChange)
@@ -299,36 +305,38 @@ bool RibbonButtonControl::event(QEvent* event)
 }
 
 
-/* RibbonCheckBoxControl */
-RibbonCheckBoxControl::RibbonCheckBoxControl(const QString& text, ARibbonGroup* parentGroup)
-    : RibbonWidgetControl(parentGroup, true/*ignoreActionSettings*/)
+/* ARibbonCheckBoxControl */
+ARibbonCheckBoxControl::ARibbonCheckBoxControl(const QString& text, ARibbonGroup* parentGroup)
+    : ARibbonWidgetControl(parentGroup, true/*ignoreActionSettings*/)
 {
     QCheckBox* checkBox = new QCheckBox(text, this);
     setContentWidget(checkBox);
 }
 
-RibbonCheckBoxControl::~RibbonCheckBoxControl()
+ARibbonCheckBoxControl::~ARibbonCheckBoxControl()
 {
 }
 
-QCheckBox* RibbonCheckBoxControl::widget() const
+QCheckBox* ARibbonCheckBoxControl::widget() const
 {
     return qobject_cast<QCheckBox*>(contentWidget());
 }
 
-/* RibbonCheckBoxControl */
-RibbonRadioButtonControl::RibbonRadioButtonControl(const QString& text, ARibbonGroup* parentGroup)
-    : RibbonWidgetControl(parentGroup, true/*ignoreActionSettings*/)
+/* ARibbonCheckBoxControl */
+ARibbonRadioButtonControl::ARibbonRadioButtonControl(const QString& text, ARibbonGroup* parentGroup)
+    : ARibbonWidgetControl(parentGroup, true/*ignoreActionSettings*/)
 {
     QRadioButton* radioButton = new QRadioButton(text, this);
     setContentWidget(radioButton);
 }
 
-RibbonRadioButtonControl::~RibbonRadioButtonControl()
+ARibbonRadioButtonControl::~ARibbonRadioButtonControl()
 {
 }
 
-QRadioButton* RibbonRadioButtonControl::widget() const
+QRadioButton* ARibbonRadioButtonControl::widget() const
 {
     return qobject_cast<QRadioButton*>(contentWidget());
 }
+
+APROCH_NAMESPACE_END

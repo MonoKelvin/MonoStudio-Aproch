@@ -1,6 +1,6 @@
 /****************************************************************************
  * @file    ARibbonGroup_p.h
- * @date    2023-07-01 
+ * @date    2023-07-01
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -31,27 +31,33 @@
 #include <QIcon>
 #include "ARibbonGroup.h"
 #include "ARibbonControls.h"
-#include "QtnStyleOption.h"
-#include "QtnStyleHelperPrivate.h"
-#include "QtitanDef.h"
+#include "Widget/Style/AStyleOption.h"
+#include "Widget/Style/AStyleHelper.h"
 
 class QAction;
 
+// 
+// The most of the following code is copied from Qtitan.
+// 
+// Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+// Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+// 
+
 APROCH_NAMESPACE_BEGIN
 
-class RibbonGroupOption;
+class ARibbonGroupOption;
 class ARibbonGroupScrollButton;
-class RibbonControl;
-class RibbonGroupPopup;
+class ARibbonControl;
+class ARibbonGroupPopup;
 
-class RibbonGroupPrivate : public QObject
+class ARibbonGroupPrivate : public QObject
 {
     Q_OBJECT
-    A_DECLARE_PUBLIC(ARibbonGroup)
+        A_DECLARE_PUBLIC(ARibbonGroup)
 public:
-    explicit RibbonGroupPrivate();
-    virtual ~RibbonGroupPrivate();
-    inline static RibbonGroupPrivate* _get(ARibbonGroup* group);
+    explicit ARibbonGroupPrivate();
+    virtual ~ARibbonGroupPrivate();
+    inline static ARibbonGroupPrivate* _get(ARibbonGroup* group);
     ARibbonPage* parentPage() const;
 public:
     void init();
@@ -59,9 +65,9 @@ public:
     void enableGroupScroll(bool scrollLeft, bool scrollRight);
     void showGroupScroll();
 
-    void initStyleOption(RibbonGroupStyleOption& opt) const;
+    void initStyleOption(ARibbonGroupStyleOption& opt) const;
     int calcMinimumWidth(ARibbonControlSizeDefinition::GroupSize size) const;
-    int arrangeRowContent(QList<RibbonControl *>& row, int leftOffset, int topOffset, int rowItemHeight, int rowItemCount, QWidget* parent) const;
+    int arrangeRowContent(QList<ARibbonControl*>& row, int leftOffset, int topOffset, int rowItemHeight, int rowItemCount, QWidget* parent) const;
     void reposition(const QRect& rect);
     void updateOptionButtonLayout(QWidget* parent);
     QSize updateControlsLayout(QWidget* parent, int leftOffset = 0, int topOffset = 0);
@@ -72,24 +78,24 @@ public:
     void setReductionSize(ARibbonControlSizeDefinition::GroupSize size);
     void reduce();
     void expand();
-    RibbonGroupPopup* groupPopup();
+    ARibbonGroupPopup* groupPopup();
     QWidget* parentForControls();
-    QList<RibbonControl*> controlsOrdered() const;
+    QList<ARibbonControl*> controlsOrdered() const;
     bool hasOverflowContent() const;
-    static bool visualIndexLessThan(RibbonControl* first, RibbonControl* second);
+    static bool visualIndexLessThan(ARibbonControl* first, ARibbonControl* second);
     static int calcGroupTitleHeight(const QFont& titleFont);
     void showPopupMenu();
 public Q_SLOTS:
     void pressLeftScrollButton();
     void pressRightScrollButton();
 public:
-    RibbonGroupOption* m_optionButton;
+    ARibbonGroupOption* m_optionButton;
     ARibbonGroupScrollButton* m_buttonScrollLeft;    // Button to draw left scroll
     ARibbonGroupScrollButton* m_buttonScrollRight;   // Button to draw right scroll
-    RibbonGroupPopup* m_groupPopup;
-    RibbonToolBarControl* m_toolBar;
+    ARibbonGroupPopup* m_groupPopup;
+    ARibbonToolBarControl* m_toolBar;
 
-    QList<RibbonControl*> m_controls;
+    QList<ARibbonControl*> m_controls;
     ARibbonControlSizeDefinition::GroupSize m_currentSize;
     Qt::Alignment m_contentAlignment;
     Qt::Alignment m_controlsAlignment;
@@ -106,10 +112,13 @@ public:
     int m_groupScrollPos;  // Scroll position
     Qt::TextElideMode m_titleElideMode;
 private:
-    Q_DISABLE_COPY(RibbonGroupPrivate)
+    Q_DISABLE_COPY(ARibbonGroupPrivate)
 };
 
-inline RibbonGroupPrivate* RibbonGroupPrivate::_get(ARibbonGroup* group) { return &group->aproch_d(); }
+inline ARibbonGroupPrivate* ARibbonGroupPrivate::_get(ARibbonGroup* group)
+{
+    return &group->aproch_d();
+}
 inline ARibbonControlSizeDefinition::GroupSize aproch_get_groupsize(ARibbonControlSizeDefinition::GroupSize& size, const ARibbonGroup* group)
 {
     const bool simplified = group != nullptr && group->ribbonBar() != nullptr && group->ribbonBar()->simplifiedMode();
@@ -120,8 +129,4 @@ inline ARibbonControlSizeDefinition::GroupSize aproch_get_groupsize(ARibbonContr
     return size;
 }
 
-QTITAN_END_NAMESPACE
-
-#endif // A_RIBBONGROUPPRIVATE_H
-
-
+APROCH_NAMESPACE_END

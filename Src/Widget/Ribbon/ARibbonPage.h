@@ -29,7 +29,13 @@
 #pragma once
 #include <QWidget>
 #include "Widget/Style/ACommonStyle.h"
-#include "ARibbonBar.h"
+
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
 APROCH_NAMESPACE_BEGIN
 
@@ -40,7 +46,7 @@ class ARibbonPagePrivate;
 class APROCH_API ARibbonPage : public QWidget
 {
     Q_OBJECT;
-    Q_ENUMS(ContextColor);
+    Q_ENUMS(EContextColor);
     Q_PROPERTY(const QString& title READ title WRITE setTitle);
     Q_PROPERTY(const QString& contextTitle READ contextTitle WRITE setContextTitle);
     Q_PROPERTY(const QString& contextGroupName READ contextGroupName WRITE setContextGroupName);

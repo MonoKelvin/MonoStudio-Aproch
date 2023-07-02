@@ -37,6 +37,11 @@
  // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
  // 
 
+Q_ALWAYS_INLINE void initBaseResource()
+{
+    Q_INIT_RESOURCE(RC_BaseResources);
+}
+
 #ifndef QT_NO_EFFECTS
 struct QEffects
 {
@@ -56,11 +61,6 @@ extern void Q_GUI_EXPORT qFadeEffect(QWidget*, int time = -1);
 #endif
 
 APROCH_NAMESPACE_BEGIN
-
-Q_ALWAYS_INLINE void initBaseResource()
-{
-    Q_INIT_RESOURCE(ABaseResources);
-}
 
 class ACommonStylePrivate;
 
@@ -174,8 +174,8 @@ public:
         /*! \internal */
         enum StyleHintEx
     {
-        SH_QtitanBegin = SH_CustomBase + 1,
-        SH_RibbonBegin = SH_QtitanBegin,
+        SH_AprochBegin = SH_CustomBase + 1,
+        SH_RibbonBegin = SH_AprochBegin,
         SH_RibbonStyledFrame = SH_RibbonBegin,
         SH_RibbonsSysMenuButtonVisible,
         SH_RecentFileListBackground,

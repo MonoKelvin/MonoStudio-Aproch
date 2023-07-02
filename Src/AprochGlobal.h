@@ -322,6 +322,9 @@ const Class& aproch_p() const { return static_cast<Class &>(*aproch_p_ptr); }
     delete aproch_d_ptr;   \
     aproch_d_ptr = nullptr
 
+#define A_DELETE_AND_NULL(p) { delete p; p = nullptr; }
+#define A_SAFE_DELETE(p) if (nullptr != p) { delete p; p = nullptr; }
+
 #if !defined(QStringLiteral)
 #define QStringLiteral(str) QString(QLatin1String(str))
 #endif
@@ -370,8 +373,10 @@ public:
 #define APROCH_RESIZE_BOUNDARY 8
 
 /** * meta type defines */
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
 Q_DECLARE_METATYPE(QMargins)
 Q_DECLARE_METATYPE(QMarginsF)
+#endif
 
 template <class SizeValue>
 static SizeValue qBoundSize(const SizeValue& minVal, const SizeValue& val, const SizeValue& maxVal)

@@ -1,32 +1,32 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#ifndef QTN_RIBBONGALLERYPRIVATE_H
-#define QTN_RIBBONGALLERYPRIVATE_H
-
+ * @file    ARibbonGallery_p.h
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#pragma once
 #include <QRect>
 #include <QVector>
 #include <QVariant>
@@ -34,8 +34,14 @@
 #include <QToolButton>
 #include <QIcon>
 
-#include "QtitanDef.h"
-#include "QtnRibbonGallery.h"
+#include "ARibbonGallery.h"
+
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - ARibbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
 class QPainter;
 class QScrollBar;
@@ -44,47 +50,47 @@ class QAction;
 class QMenu;
 class QToolButton;
 
-QTITAN_BEGIN_NAMESPACE
+APROCH_NAMESPACE_BEGIN
 
-class WidgetItemData
+class AWidgetItemData
 {
 public:
-    inline WidgetItemData() : role(-1) {}
-    inline WidgetItemData(int r, QVariant v) : role(r), value(v) {}
+    inline AWidgetItemData() : role(-1) {}
+    inline AWidgetItemData(int r, QVariant v) : role(r), value(v) {}
     int role;
     QVariant value;
-    inline bool operator==(const WidgetItemData &other) { return role == other.role && value == other.value; }
+    inline bool operator==(const AWidgetItemData &other) { return role == other.role && value == other.value; }
 };
 
-class RibbonGalleryItem;
-class RibbonGalleryItemPrivate: public QObject
+class ARibbonGalleryItem;
+class ARibbonGalleryItemPrivate: public QObject
 {
 public:
-    QTN_DECLARE_PUBLIC(RibbonGalleryItem)
+    A_DECLARE_PUBLIC(ARibbonGalleryItem);
 public:
-    explicit RibbonGalleryItemPrivate();
+    explicit ARibbonGalleryItemPrivate();
 public:
     void init();
 public:
     int m_index;
     QString m_descriptionText;
-    RibbonGalleryGroup* m_items;
+    ARibbonGalleryGroup* m_items;
     bool m_separator : 1;
     bool m_enabled   : 1;
     bool m_visible   : 1;
 
-    QVector<WidgetItemData> m_values;
+    QVector<AWidgetItemData> m_values;
 };
 
-class RibbonGalleryGroup;
-/* RibbonGalleryGroupPrivate */
-class RibbonGalleryGroupPrivate : public QObject
+class ARibbonGalleryGroup;
+/* ARibbonGalleryGroupPrivate */
+class ARibbonGalleryGroupPrivate : public QObject
 {
 public:
-    QTN_DECLARE_PUBLIC(RibbonGalleryGroup)
+    A_DECLARE_PUBLIC(ARibbonGalleryGroup)
 public:
-    explicit RibbonGalleryGroupPrivate();
-    virtual ~RibbonGalleryGroupPrivate();
+    explicit ARibbonGalleryGroupPrivate();
+    virtual ~ARibbonGalleryGroupPrivate();
 public:
     void init();
     void updateIndexes(int start /*= 0*/);
@@ -94,43 +100,43 @@ public:
 public:
     bool m_clipItems : 1;
     QSize m_sizeItem;
-    QVector<RibbonGalleryItem*> m_arrItems;
+    QVector<ARibbonGalleryItem*> m_arrItems;
     QList<QWidget*> m_viewWidgets;
 };
 
 
-class RibbonGallery;
+class ARibbonGallery;
 
-struct qtn_galleryitem_rect
+struct SGalleryItemRect
 {
-    RibbonGalleryItem* item;
+    ARibbonGalleryItem* item;
     QRect rect;
     bool beginRow;
 };
 
-/* RibbonGalleryButton */
-class RibbonGalleryButton : public QToolButton
+/* ARibbonGalleryButton */
+class ARibbonGalleryButton : public QToolButton
 {
     Q_OBJECT
 public:
-    RibbonGalleryButton(QWidget* parent) : QToolButton(parent) {}
+    ARibbonGalleryButton(QWidget* parent) : QToolButton(parent) {}
 protected:
     virtual void paintEvent(QPaintEvent* event);
 private:
-    Q_DISABLE_COPY(RibbonGalleryButton)
+    Q_DISABLE_COPY(ARibbonGalleryButton)
 };
 
 
-class OfficePopupMenu;
-/* RibbonGalleryPrivate */
-class RibbonGalleryPrivate : public QObject
+class AOfficePopupMenu;
+/* ARibbonGalleryPrivate */
+class ARibbonGalleryPrivate : public QObject
 {
 public:
     Q_OBJECT
-    QTN_DECLARE_PUBLIC(RibbonGallery)
+    A_DECLARE_PUBLIC(ARibbonGallery)
 public:
-    explicit RibbonGalleryPrivate();
-    virtual ~RibbonGalleryPrivate();
+    explicit ARibbonGalleryPrivate();
+    virtual ~ARibbonGalleryPrivate();
 public:
     void init();
     void layoutItems();
@@ -138,12 +144,12 @@ public:
     void setScrollBarValue();
     void setScrollBarPolicy(Qt::ScrollBarPolicy policy);
     Qt::ScrollBarPolicy scrollBarPolicy() const;
-    QAction* setPopupMenu(OfficePopupMenu* popup);
+    QAction* setPopupMenu(AOfficePopupMenu* popup);
 
     void drawGalleryItems(QPainter* painter);
-    void repaintItems(QRect* pRect = Q_NULL, bool bAnimate = true);
+    void repaintItems(QRect* pRect = nullptr, bool bAnimate = true);
 
-    bool isItemChecked(RibbonGalleryItem* pItem) const;
+    bool isItemChecked(ARibbonGalleryItem* pItem) const;
     bool isScrollButtonEnabled(bool buttonUp);
 
     int scrollWidth() const;
@@ -163,8 +169,8 @@ public:
     QToolButton* m_buttonScrollUp;
     QToolButton* m_buttonScrollDown;
     QToolButton* m_buttonPopup;
-    OfficePopupMenu* m_menuBar;
-    QVector<qtn_galleryitem_rect> m_arrRects;
+    AOfficePopupMenu* m_menuBar;
+    QVector<SGalleryItemRect> m_arrRects;
 
     bool m_showBorders       : 1;
     bool m_showLabels        : 1;
@@ -183,8 +189,8 @@ public:
     int m_timerElapse;
 
     int m_selected;
-    RibbonGalleryItem* m_checkedItem;
-    RibbonGalleryGroup* m_items;
+    ARibbonGalleryItem* m_checkedItem;
+    ARibbonGalleryGroup* m_items;
 
     QPoint m_ptPressed;
     QBasicTimer m_scrollTimer;
@@ -194,9 +200,7 @@ public:
     int m_currentColumnCount;
     int m_currentRowCount;
 private:
-    Q_DISABLE_COPY(RibbonGalleryPrivate)
+    Q_DISABLE_COPY(ARibbonGalleryPrivate)
 };
 
-QTITAN_END_NAMESPACE
-
-#endif // QTN_RIBBONGALLERYPRIVATE_H
+APROCH_NAMESPACE_END

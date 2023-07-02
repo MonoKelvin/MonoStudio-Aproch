@@ -1,49 +1,54 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#ifndef QTN_RIBBONCUSTOMIZEPAGE_H
-#define QTN_RIBBONCUSTOMIZEPAGE_H
+ * @file    ARibbonCustomizePage.h
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#pragma once
+#include "ARibbonCustomizeDialog.h"
 
-#include "QtnRibbonCustomizeDialog.h"
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
+APROCH_NAMESPACE_BEGIN
 
-QTITAN_BEGIN_NAMESPACE
-
-
-class RibbonBar;
-class RibbonQuickAccessBarCustomizePagePrivate;
-/* RibbonQuickAccessBarCustomizePage */
-class QTITAN_EXPORT RibbonQuickAccessBarCustomizePage : public QWidget
+class ARibbonBar;
+class ARibbonQuickAccessBarCustomizePagePrivate;
+/* ARibbonQuickAccessBarCustomizePage */
+class APROCH_API ARibbonQuickAccessBarCustomizePage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RibbonQuickAccessBarCustomizePage(RibbonBar* ribbonBar);
-    virtual ~RibbonQuickAccessBarCustomizePage();
+    explicit ARibbonQuickAccessBarCustomizePage(ARibbonBar* ribbonBar);
+    virtual ~ARibbonQuickAccessBarCustomizePage();
 public:
-    RibbonBar* ribbonBar() const; 
+    ARibbonBar* ribbonBar() const; 
     void addCustomCategory(const QString& strCategory);
     void addSeparatorCategory(const QString& strCategory = QString());
 public Q_SLOTS:
@@ -51,25 +56,25 @@ public Q_SLOTS:
 protected:
     virtual void showEvent(QShowEvent* event);
 private:
-    QTN_DECLARE_PRIVATE(RibbonQuickAccessBarCustomizePage)
-    Q_DISABLE_COPY(RibbonQuickAccessBarCustomizePage)
+    A_DECLARE_PRIVATE(ARibbonQuickAccessBarCustomizePage)
+    Q_DISABLE_COPY(ARibbonQuickAccessBarCustomizePage)
 };
 
-class RibbonBarCustomizePagePrivate;
-/* RibbonBarCustomizePage */ 
-class QTITAN_EXPORT RibbonBarCustomizePage : public QWidget
+class ARibbonBarCustomizePagePrivate;
+/* ARibbonBarCustomizePage */ 
+class APROCH_API ARibbonBarCustomizePage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RibbonBarCustomizePage(RibbonBar* ribbonBar);
-    virtual ~RibbonBarCustomizePage();
+    explicit ARibbonBarCustomizePage(ARibbonBar* ribbonBar);
+    virtual ~ARibbonBarCustomizePage();
 public:
-    RibbonBar* ribbonBar() const; 
+    ARibbonBar* ribbonBar() const; 
     void addCustomCategory(const QString& strCategory);
     void addSeparatorCategory(const QString& strCategory = QString());
 
     /*
-    * @brief  «∑Ò‘ –Ì–ﬁ∏ƒ“≥√Ê
+    * @brief ÊòØÂê¶ÂÖÅËÆ∏‰øÆÊîπÈ°µÈù¢
     */
     void enableModifyPage(bool bEnable = true);
 
@@ -80,11 +85,8 @@ protected:
     virtual void showEvent(QShowEvent* event);
     virtual void hideEvent(QHideEvent* event);
 private:
-    QTN_DECLARE_PRIVATE(RibbonBarCustomizePage)
-    Q_DISABLE_COPY(RibbonBarCustomizePage)
+    A_DECLARE_PRIVATE(ARibbonBarCustomizePage)
+    Q_DISABLE_COPY(ARibbonBarCustomizePage)
 };
 
-
-QTITAN_END_NAMESPACE
-
-#endif // QTN_RIBBONCUSTOMIZEPAGE_H
+APROCH_NAMESPACE_END

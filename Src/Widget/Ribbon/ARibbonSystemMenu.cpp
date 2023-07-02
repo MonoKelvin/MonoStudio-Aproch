@@ -86,7 +86,7 @@ ARibbonSystemButton::ARibbonSystemButton(QWidget* parent)
 ARibbonSystemButton::~ARibbonSystemButton()
 {
     qApp->removeEventFilter(this);
-    A_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
 ARibbonBar* ARibbonSystemButton::ribbonBar() const
@@ -155,7 +155,7 @@ void ARibbonSystemButton::setSystemMenu(ARibbonSystemMenu* menu)
     defaultAction()->setMenu(menu);
 }
 
-void ARibbonSystemButton::initButtonStyleOption(SystemToolButtonStyleOption* option) const
+void ARibbonSystemButton::initButtonStyleOption(ASystemToolButtonStyleOption* option) const
 {
     initStyleOption(option);
     option->toolButtonStyle = toolButtonStyle();
@@ -175,7 +175,7 @@ QSize ARibbonSystemButton::sizeHint() const
     if (_ribbonBar == nullptr)
         return sz;
 
-    SystemToolButtonStyleOption opt;
+    ASystemToolButtonStyleOption opt;
     initStyleOption(&opt);
 
     QRect rc = opt.rect;
@@ -215,7 +215,7 @@ QSize ARibbonSystemButton::sizeHint() const
 /*! \reimp */
 bool ARibbonSystemButton::event(QEvent* event)
 {
-    A_D(ARibbonSystemButton)
+    A_D(ARibbonSystemButton);
     bool result = QToolButton::event(event);
     switch (event->type()) 
     {
@@ -233,7 +233,7 @@ bool ARibbonSystemButton::event(QEvent* event)
 /*! \reimp */
 bool ARibbonSystemButton::eventFilter(QObject* watched, QEvent* event)
 {
-    A_D(ARibbonSystemButton)
+    A_D(ARibbonSystemButton);
     if (ARibbonBar* _ribbonBar = ribbonBar())
     {
         ARibbonBarPrivate* privateRibbon = ARibbonBarPrivate::_get(_ribbonBar);
@@ -286,7 +286,7 @@ void ARibbonSystemButton::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     QPainter p(this);
-    SystemToolButtonStyleOption opt;
+    ASystemToolButtonStyleOption opt;
     initButtonStyleOption(&opt);
     style()->drawComplexControl(static_cast<QStyle::ComplexControl>(ACommonStyle::CC_RibbonFileButton), &opt, &p, this);
 }
@@ -429,7 +429,7 @@ QAction* ARibbonSystemMenu::addPopupBarAction(const QString& text)
 
 /*!
 Adds the button to the bottom of the menu with the given \a style.
-Parameter \a action - is a pointer to the QAction object used to initialize the tips (ToolTip), the text in the Status Bar (StatusTip) and icon.
+Parameter \a action - is a pointer to the QAction object used to initialize the tips (AToolTip), the text in the Status Bar (StatusTip) and icon.
 */
 void ARibbonSystemMenu::addPopupBarAction(QAction* action, Qt::ToolButtonStyle style)
 {
@@ -546,7 +546,7 @@ QSize ARibbonSystemMenu::sizeHint() const
 }
 
 /*! \internal */
-void ARibbonSystemMenu::initFrameMenuStyleOption(RibbonFrameMenuStyleOption* option) const
+void ARibbonSystemMenu::initFrameMenuStyleOption(ARibbonFrameMenuStyleOption* option) const
 {
     A_D(const ARibbonSystemMenu);
     QSize szMenu = APopupMenu::sizeHint();
@@ -607,7 +607,7 @@ void ARibbonSystemMenu::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     QPainter p(this);
-    RibbonFrameMenuStyleOption menuOpt;
+    ARibbonFrameMenuStyleOption menuOpt;
     initFrameMenuStyleOption(&menuOpt);
     style()->drawPrimitive((QStyle::PrimitiveElement)ACommonStyle::PE_RibbonSysFrameMenu, &menuOpt, &p, this);
  
@@ -617,7 +617,7 @@ void ARibbonSystemMenu::paintEvent(QPaintEvent* event)
         {
             if (button->geometry().top() != this->geometry().top())
             {
-                SystemToolButtonStyleOption opt;
+                ASystemToolButtonStyleOption opt;
                 button->initStyleOption(&opt);
 
                 Qt::ToolButtonStyle styleButton = button->toolButtonStyle();
@@ -716,15 +716,15 @@ void ARibbonSystemMenu::changeEvent(QEvent* event)
 }
 
 
-/* RibbonPageSystemRecentFileListPrivate */
-RibbonPageSystemRecentFileListPrivate::RibbonPageSystemRecentFileListPrivate()
+/* ARibbonPageSystemRecentFileListPrivate */
+ARibbonPageSystemRecentFileListPrivate::ARibbonPageSystemRecentFileListPrivate()
 {
     m_itemsDirty = true;
     m_hasCheckableItems = false;
     m_currentAction = nullptr;
 }
 
-QAction* RibbonPageSystemRecentFileListPrivate::actionAt(const QPoint& pt) const
+QAction* ARibbonPageSystemRecentFileListPrivate::actionAt(const QPoint& pt) const
 {
     A_P(const ARibbonPageSystemRecentFileList);
 
@@ -739,17 +739,17 @@ QAction* RibbonPageSystemRecentFileListPrivate::actionAt(const QPoint& pt) const
     return 0;
 }
 
-QRect RibbonPageSystemRecentFileListPrivate::actionRect(QAction* act) const
+QRect ARibbonPageSystemRecentFileListPrivate::actionRect(QAction* act) const
 {
     int index = m_recentFileActs.indexOf(act);
     if (index == -1)
         return QRect();
-    const_cast<RibbonPageSystemRecentFileListPrivate*>(this)->updateActionRects();
+    const_cast<ARibbonPageSystemRecentFileListPrivate*>(this)->updateActionRects();
     //we found the action
     return m_actionRects.at(index);
 }
 
-void RibbonPageSystemRecentFileListPrivate::setCurrentAction(QAction* currentAction)
+void ARibbonPageSystemRecentFileListPrivate::setCurrentAction(QAction* currentAction)
 {
     A_P(ARibbonPageSystemRecentFileList);
 
@@ -763,7 +763,7 @@ void RibbonPageSystemRecentFileListPrivate::setCurrentAction(QAction* currentAct
     p.update(actionRect(m_currentAction));
 }
 
-void RibbonPageSystemRecentFileListPrivate::activateAction(QAction* action, QAction::ActionEvent action_e, bool self)
+void ARibbonPageSystemRecentFileListPrivate::activateAction(QAction* action, QAction::ActionEvent action_e, bool self)
 {
     Q_UNUSED(self);
     Q_UNUSED(action_e);
@@ -775,7 +775,7 @@ void RibbonPageSystemRecentFileListPrivate::activateAction(QAction* action, QAct
     emit p.openRecentFile(action->data().toString());
 }
 
-void RibbonPageSystemRecentFileListPrivate::updateActionRects()
+void ARibbonPageSystemRecentFileListPrivate::updateActionRects()
 {
     A_P(const ARibbonPageSystemRecentFileList);
     if (!m_itemsDirty)
@@ -844,7 +844,7 @@ void RibbonPageSystemRecentFileListPrivate::updateActionRects()
     }
 }
 
-void RibbonPageSystemRecentFileListPrivate::initStyleOption(QStyleOptionMenuItem* option, const QAction* action) const
+void ARibbonPageSystemRecentFileListPrivate::initStyleOption(QStyleOptionMenuItem* option, const QAction* action) const
 {
     A_P(const ARibbonPageSystemRecentFileList);
     if (option == nullptr || action == nullptr)
@@ -913,7 +913,7 @@ ARibbonPageSystemRecentFileList::ARibbonPageSystemRecentFileList(const QString& 
     A_INIT_PRIVATE(ARibbonPageSystemRecentFileList);
     setWindowTitle(caption);
     if (caption.isEmpty())
-        setWindowTitle(ARibbonBar::tr_compatible(ARibbonRecentDocumentsString));
+        setWindowTitle(ARibbonBar::tr_compatible(RibbonRecentDocumentsString));
     setAttribute(Qt::WA_MouseTracking, true);
 }
 
@@ -922,7 +922,7 @@ Destructor of the ARibbonPageSystemRecentFileList object.
 */
 ARibbonPageSystemRecentFileList::~ARibbonPageSystemRecentFileList()
 {
-    A_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
 /*! \reimp */
@@ -1016,7 +1016,7 @@ void ARibbonPageSystemRecentFileList::updateRecentFileActions(const QStringList&
     {
         QAction* recentFileAct = d.m_recentFileActs.at(i);
         QString text = QString(QStringLiteral("&%1")).arg(i + 1);
-        text += QStringLiteral("%1 %2").arg(QLatin1Char(' ')).arg(strippedName(files[i]));;
+        text += QStringLiteral("%1 %2").arg(QLatin1Char(' ')).arg(strippedName(files[i]));
         recentFileAct->setText(text);
         recentFileAct->setData(files[i]);
         recentFileAct->setVisible(true);

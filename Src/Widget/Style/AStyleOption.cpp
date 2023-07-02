@@ -242,7 +242,7 @@ AStyleOptionTab::AStyleOptionTab()
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     : QStyleOptionTab(AStyleOptionTab::Version)
 #else
-    : QStyleOptionTabV3(StyleOptionTab::Version)
+    : QStyleOptionTabV3(AStyleOptionTab::Version)
 #endif // (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
       , tabIndex(-1), hoverClose(false)
 {

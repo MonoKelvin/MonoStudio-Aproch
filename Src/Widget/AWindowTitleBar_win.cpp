@@ -42,10 +42,6 @@ using namespace QNativeInterface::Private;
 #endif
 #endif
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-Q_DECLARE_METATYPE(QMargins)
-#endif
-
 // 
 // The most of the following code is copied from Qtitan.
 // 

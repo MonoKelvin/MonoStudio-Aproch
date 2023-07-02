@@ -1,29 +1,32 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
+ * @file    ARibbonGallery.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
 #include <QApplication>
 #include <QPainter>
 #include <QToolButton>
@@ -38,20 +41,25 @@
 #include <QWidgetAction>
 #include <qmath.h>
 
-#include "QtnOfficePopupMenu.h"
-#include "QtnCommonStyle.h"
-#include "QtnCommonStylePrivate.h"
-#include "QtnStyleOption.h"
-#include "QtnStyleHelperPrivate.h"
-#include "QtnRibbonGalleryPrivate.h"
-#include "QtnRibbonBarPrivate.h"
-#ifdef QTN_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+#include "Widget/Style/ACommonStyle.h"
+#include "Widget/Style/ACommonStyle_p.h"
+#include "Widget/Style/AStyleOption.h"
+#include "Widget/Style/AStyleHelper.h"
+#include "ARibbonGallery.h"
+#include "ARibbonGallery_p.h"
+#include "ARibbonBar_p.h"
+#include "AOfficePopupMenu.h"
 
-QTITAN_USE_NAMESPACE
+// 
+// The most of the following code is copied from Qtitan.
+// 
+// Qtitan Library by Developer Machines(Microsoft - ARibbon implementation for Qt.C++)
+// Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+// 
 
-RibbonGalleryItemPrivate::RibbonGalleryItemPrivate()
+APROCH_NAMESPACE_BEGIN
+
+ARibbonGalleryItemPrivate::ARibbonGalleryItemPrivate()
 {
     m_index = -1;
     m_separator = false;
@@ -59,80 +67,80 @@ RibbonGalleryItemPrivate::RibbonGalleryItemPrivate()
     m_visible = true;
 }
 
-void RibbonGalleryItemPrivate::init()
+void ARibbonGalleryItemPrivate::init()
 {
-    QTN_P(RibbonGalleryItem)
+    A_P(ARibbonGalleryItem);
     p.setSizeHint(QSize(0, 0));
 }
 
-RibbonGalleryGroupPrivate::RibbonGalleryGroupPrivate()
+ARibbonGalleryGroupPrivate::ARibbonGalleryGroupPrivate()
 {
     m_sizeItem = QSize(0, 0);
     m_clipItems = true;
 }
 
-RibbonGalleryGroupPrivate::~RibbonGalleryGroupPrivate()
+ARibbonGalleryGroupPrivate::~ARibbonGalleryGroupPrivate()
 {
     for (int i = 0, count = m_viewWidgets.size(); count > i; ++i)
     {
-        if (RibbonGallery* gallery = qobject_cast<RibbonGallery*>(m_viewWidgets.at(i)))
-            gallery->qtn_d().m_items = Q_NULL; 
+        if (ARibbonGallery* gallery = qobject_cast<ARibbonGallery*>(m_viewWidgets.at(i)))
+            gallery->aproch_d().m_items = nullptr; 
     }
 }
 
-void RibbonGalleryGroupPrivate::init()
+void ARibbonGalleryGroupPrivate::init()
 {
 }
 
-void RibbonGalleryGroupPrivate::updateIndexes(int start /*= 0*/)
+void ARibbonGalleryGroupPrivate::updateIndexes(int start /*= 0*/)
 {
-    QTN_P(RibbonGalleryGroup)
+    A_P(ARibbonGalleryGroup);
     for (int i = start; i < m_arrItems.size(); ++i)
-        p.item(i)->qtn_d().m_index = i;
+        p.item(i)->aproch_d().m_index = i;
 }
 
-void RibbonGalleryGroupPrivate::itemsChanged()
+void ARibbonGalleryGroupPrivate::itemsChanged()
 {
     for (int i = 0; i < m_viewWidgets.size(); ++i)
     {
-        if (RibbonGallery* gallery = qobject_cast<RibbonGallery*>(m_viewWidgets.at(i)))
+        if (ARibbonGallery* gallery = qobject_cast<ARibbonGallery*>(m_viewWidgets.at(i)))
         {
-            gallery->qtn_d().m_checkedItem = Q_NULL; 
-            gallery->qtn_d().m_selected  = -1;
-            gallery->qtn_d().m_scrollPos = 0;
-            gallery->qtn_d().layoutItems();
+            gallery->aproch_d().m_checkedItem = nullptr; 
+            gallery->aproch_d().m_selected  = -1;
+            gallery->aproch_d().m_scrollPos = 0;
+            gallery->aproch_d().layoutItems();
 
-            if (gallery->qtn_d().m_preview)
-                gallery->qtn_d().m_preview = false;
+            if (gallery->aproch_d().m_preview)
+                gallery->aproch_d().m_preview = false;
             gallery->update();
         }
     }
 }
 
-void RibbonGalleryGroupPrivate::redrawWidget()
+void ARibbonGalleryGroupPrivate::redrawWidget()
 {
     for (int i = 0, count = m_viewWidgets.size(); count > i; ++i)
         m_viewWidgets.at(i)->update();
 }
 
-void RibbonGalleryGroupPrivate::clear()
+void ARibbonGalleryGroupPrivate::clear()
 {
-    RibbonGalleryItem* item = Q_NULL;
+    ARibbonGalleryItem* item = nullptr;
     foreach (item, m_arrItems)
         delete item;
     m_arrItems.clear();
 }
 
-void RibbonGalleryButton::paintEvent(QPaintEvent* event)
+void ARibbonGalleryButton::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event)
     QPainter p(this);
     QStyleOptionToolButton option;
     initStyleOption(&option);
-    style()->drawComplexControl(static_cast<QStyle::ComplexControl>(CommonStyle::CC_RibbonGalleryButton), &option, &p, this);
+    style()->drawComplexControl(static_cast<QStyle::ComplexControl>(ACommonStyle::CC_RibbonGalleryButton), &option, &p, this);
 }
 
-RibbonGalleryPrivate::RibbonGalleryPrivate()
+ARibbonGalleryPrivate::ARibbonGalleryPrivate()
 {
     m_showBorders        = false;
     m_showLabels         = true;
@@ -147,14 +155,14 @@ RibbonGalleryPrivate::RibbonGalleryPrivate()
     m_scrollPosTarget    = 0;
     m_totalHeight        = 0;
     m_selected           = -1;
-    m_checkedItem        = Q_NULL; 
-    m_items              = Q_NULL;
+    m_checkedItem        = nullptr; 
+    m_items              = nullptr;
     m_ptPressed          = QPoint(0, 0);
-    m_scrollBar          = Q_NULL; 
-    m_menuBar            = Q_NULL;
-    m_buttonPopup        = Q_NULL;
-    m_buttonScrollUp     = Q_NULL;
-    m_buttonScrollDown   = Q_NULL;
+    m_scrollBar          = nullptr; 
+    m_menuBar            = nullptr;
+    m_buttonPopup        = nullptr;
+    m_buttonScrollUp     = nullptr;
+    m_buttonScrollDown   = nullptr;
     m_animationStep      = 0.0;
     m_timerElapse        = 0;
     m_minimumColumnCount   = -1;
@@ -163,25 +171,25 @@ RibbonGalleryPrivate::RibbonGalleryPrivate()
     m_currentRowCount      = -1;
 }
 
-RibbonGalleryPrivate::~RibbonGalleryPrivate()
+ARibbonGalleryPrivate::~ARibbonGalleryPrivate()
 {
-    QTN_P(RibbonGallery)
-    if (m_items && m_items->qtn_d().m_viewWidgets.size() > 0)
-        m_items->qtn_d().m_viewWidgets.removeOne(&p);
+    A_P(ARibbonGallery);
+    if (m_items && m_items->aproch_d().m_viewWidgets.size() > 0)
+        m_items->aproch_d().m_viewWidgets.removeOne(&p);
 }
 
-void RibbonGalleryPrivate::init()
+void ARibbonGalleryPrivate::init()
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
     p.setAttribute(Qt::WA_MouseTracking);
-    p.setObjectName(QStringLiteral("RibbonGallery"));
-    p.setProperty(_qtn_WidgetGallery, true);
+    p.setObjectName(QStringLiteral("ARibbonGallery"));
+    p.setProperty(_aproch_WidgetGallery, true);
     setScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
-void RibbonGalleryPrivate::layoutItems()
+void ARibbonGalleryPrivate::layoutItems()
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
 
     if (p.isShowAsButton())
         return;
@@ -190,7 +198,7 @@ void RibbonGalleryPrivate::layoutItems()
 
     if (p.autoWidth() && p.itemCount() > 0 && m_currentColumnCount != -1)
     {
-        RibbonGalleryItem* item = p.item(0);
+        ARibbonGalleryItem* item = p.item(0);
         int width = m_currentColumnCount * item->sizeHint().width() + p.borders().width();
         rcItems.setWidth(width);
     }
@@ -206,7 +214,7 @@ void RibbonGalleryPrivate::layoutItems()
 
     for (int i = 0; i < count; ++i)
     {
-        RibbonGalleryItem* item = p.item(i);
+        ARibbonGalleryItem* item = p.item(i);
         m_arrRects[i].item = item;
         m_arrRects[i].beginRow = false;
 
@@ -225,7 +233,7 @@ void RibbonGalleryPrivate::layoutItems()
             }
 
             QFont font = p.font();
-            if (qobject_cast<OfficePopupMenu*>(p.parentWidget()))
+            if (qobject_cast<AOfficePopupMenu*>(p.parentWidget()))
                 font.setBold(true);
 
             QFontMetrics qfm(font);
@@ -282,9 +290,9 @@ void RibbonGalleryPrivate::layoutItems()
     setScrollBarValue();
 }
 
-void RibbonGalleryPrivate::layoutScrollBar()
+void ARibbonGalleryPrivate::layoutScrollBar()
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
 
     if (m_scrollBar)
     {
@@ -293,7 +301,7 @@ void RibbonGalleryPrivate::layoutScrollBar()
         QRect rectScroll(p.rect());
         rectScroll.setLeft(rectScroll.right() - size.width());
 
-        if (qobject_cast<OfficePopupMenu*>(p.parentWidget()))
+        if (qobject_cast<AOfficePopupMenu*>(p.parentWidget()))
             rectScroll.adjust(0, 0, 0, 0);
         else if (m_showBorders )
             rectScroll.adjust(0, 1, -1, -1 );
@@ -307,7 +315,7 @@ void RibbonGalleryPrivate::layoutScrollBar()
         if (m_showBorders)
             rectScroll.adjust(1, 0, 0, 0);
 
-        int width = p.style()->pixelMetric(QStyle::PM_ScrollBarExtent, Q_NULL, &p);
+        int width = p.style()->pixelMetric(QStyle::PM_ScrollBarExtent, nullptr, &p);
         rectScroll.setLeft(rectScroll.right() - width);
         
         int height = qRound(static_cast<qreal>(rectScroll.height()) / 3.0);
@@ -320,11 +328,11 @@ void RibbonGalleryPrivate::layoutScrollBar()
     }
 }
 
-void RibbonGalleryPrivate::setScrollBarValue()
+void ARibbonGalleryPrivate::setScrollBarValue()
 {
     if (m_scrollBar)
     {
-        QTN_P(RibbonGallery)
+        A_P(ARibbonGallery);
         QRect rcItems = p.getItemsRect();
 
         int rangeMax = qMax(0, (m_totalHeight + 2) - m_scrollBar->rect().height());
@@ -340,9 +348,9 @@ void RibbonGalleryPrivate::setScrollBarValue()
     }
 }
 
-void RibbonGalleryPrivate::setScrollPos(int scrollPos)
+void ARibbonGalleryPrivate::setScrollPos(int scrollPos)
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
     QRect rcItems = p.getItemsRect();
 
     if (scrollPos > m_totalHeight - rcItems.height())
@@ -365,16 +373,16 @@ void RibbonGalleryPrivate::setScrollPos(int scrollPos)
     m_scrollPos = scrollPos;
     layoutItems();
 
-    repaintItems(Q_NULL, false);
+    repaintItems(nullptr, false);
 }
 
-void RibbonGalleryPrivate::actionTriggered(int action)
+void ARibbonGalleryPrivate::actionTriggered(int action)
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
     int y = m_animation ? m_scrollPosTarget : m_scrollPos;
     QRect rcItems = p.getItemsRect();
 
-    RibbonGalleryGroup* items = p.galleryGroup();
+    ARibbonGalleryGroup* items = p.galleryGroup();
     if (!items)
         return;
 
@@ -411,30 +419,30 @@ void RibbonGalleryPrivate::actionTriggered(int action)
         setScrollPos(y);
 }
 
-void RibbonGalleryPrivate::pressedScrollUp()
+void ARibbonGalleryPrivate::pressedScrollUp()
 {
     m_timerElapse = QApplication::doubleClickInterval() * 4 / 5;
     actionTriggered(QAbstractSlider::SliderSingleStepSub);
 }
 
-void RibbonGalleryPrivate::pressedScrollDown()
+void ARibbonGalleryPrivate::pressedScrollDown()
 {
     m_timerElapse = QApplication::doubleClickInterval() * 4 / 5;
     actionTriggered(QAbstractSlider::SliderSingleStepAdd);
 }
 
-void RibbonGalleryPrivate::setScrollBarPolicy(Qt::ScrollBarPolicy policy)
+void ARibbonGalleryPrivate::setScrollBarPolicy(Qt::ScrollBarPolicy policy)
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
 
     if (policy == Qt::ScrollBarAlwaysOn)
     {
-        Q_DELETE_AND_NULL(m_buttonScrollUp)
-        Q_DELETE_AND_NULL(m_buttonScrollDown)
-        Q_DELETE_AND_NULL(m_buttonPopup)
+        A_DELETE_AND_NULL(m_buttonScrollUp);
+        A_DELETE_AND_NULL(m_buttonScrollDown);
+        A_DELETE_AND_NULL(m_buttonPopup);
         if (m_menuBar)
             m_menuBar->removeEventFilter(this);
-        m_menuBar = Q_NULL;
+        m_menuBar = nullptr;
 
         if (!m_scrollBar)
         {
@@ -449,31 +457,31 @@ void RibbonGalleryPrivate::setScrollBarPolicy(Qt::ScrollBarPolicy policy)
         {
             disconnect(m_scrollBar, SIGNAL(actionTriggered(int)), this, SLOT(actionTriggered(int)));
             delete m_scrollBar;
-            m_scrollBar = Q_NULL;
+            m_scrollBar = nullptr;
         }
     }
 }
 
-Qt::ScrollBarPolicy RibbonGalleryPrivate::scrollBarPolicy() const
+Qt::ScrollBarPolicy ARibbonGalleryPrivate::scrollBarPolicy() const
 {
     return m_scrollBar ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAlwaysOff;
 }
 
-QAction* RibbonGalleryPrivate::setPopupMenu(OfficePopupMenu* popup)
+QAction* ARibbonGalleryPrivate::setPopupMenu(AOfficePopupMenu* popup)
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
     QAction* act = new QAction(&p);
     setScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     m_menuBar = popup;
     m_menuBar->installEventFilter(this);
 
-    m_buttonScrollUp = new RibbonGalleryButton(&p);
-    m_buttonScrollUp->setProperty(_qtn_ScrollUpButtonGallery, true);
-    m_buttonScrollDown = new RibbonGalleryButton(&p);
-    m_buttonScrollDown->setProperty(_qtn_ScrollDownButtonGallery, true);
-    m_buttonPopup = new RibbonGalleryButton(&p);
-    m_buttonPopup->setProperty(_qtn_PopupButtonGallery, true);
+    m_buttonScrollUp = new ARibbonGalleryButton(&p);
+    m_buttonScrollUp->setProperty(_aproch_ScrollUpButtonGallery, true);
+    m_buttonScrollDown = new ARibbonGalleryButton(&p);
+    m_buttonScrollDown->setProperty(_aproch_ScrollDownButtonGallery, true);
+    m_buttonPopup = new ARibbonGalleryButton(&p);
+    m_buttonPopup->setProperty(_aproch_PopupButtonGallery, true);
 
     layoutScrollBar();
     m_buttonPopup->setPopupMode(QToolButton::InstantPopup);
@@ -486,11 +494,11 @@ QAction* RibbonGalleryPrivate::setPopupMenu(OfficePopupMenu* popup)
     return act;
 }
 
-void RibbonGalleryPrivate::drawGalleryItems(QPainter* painter)
+void ARibbonGalleryPrivate::drawGalleryItems(QPainter* painter)
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
 
-    RibbonGalleryGroup* items = p.galleryGroup();
+    ARibbonGalleryGroup* items = p.galleryGroup();
     if (!items)
         return;
 
@@ -502,7 +510,7 @@ void RibbonGalleryPrivate::drawGalleryItems(QPainter* painter)
     int selected = m_hideSelection ? -1 : m_selected;
     for (int i = 0; i < m_arrRects.size(); ++i)
     {
-        const qtn_galleryitem_rect& pos = m_arrRects[i];
+        const SGalleryItemRect& pos = m_arrRects[i];
 
         QRect rcItem = pos.rect;
         rcItem.translate(0, -m_scrollPos);
@@ -521,10 +529,10 @@ void RibbonGalleryPrivate::drawGalleryItems(QPainter* painter)
     }
 }
 
-void RibbonGalleryPrivate::repaintItems(QRect* pRect, bool bAnimate)
+void ARibbonGalleryPrivate::repaintItems(QRect* pRect, bool bAnimate)
 {
     Q_UNUSED(bAnimate)
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
 #ifdef Q_OS_MAC
     Q_UNUSED(pRect);
     p.update();
@@ -533,28 +541,28 @@ void RibbonGalleryPrivate::repaintItems(QRect* pRect, bool bAnimate)
 #endif
 }
 
-bool RibbonGalleryPrivate::isItemChecked(RibbonGalleryItem* pItem) const
+bool ARibbonGalleryPrivate::isItemChecked(ARibbonGalleryItem* pItem) const
 {
     return m_checkedItem == pItem;
 }
 
-bool RibbonGalleryPrivate::isScrollButtonEnabled(bool buttonUp)
+bool ARibbonGalleryPrivate::isScrollButtonEnabled(bool buttonUp)
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
 
     if (!p.isEnabled())
         return false;
     return buttonUp ? m_scrollPos > 0 : m_scrollPos < m_totalHeight - p.getItemsRect().height();
 }
 
-int RibbonGalleryPrivate::scrollWidth() const
+int ARibbonGalleryPrivate::scrollWidth() const
 {
     return m_scrollBar ? m_scrollBar->sizeHint().width() : m_buttonScrollUp ? m_buttonScrollUp->width() : 0;
 }
 
-void RibbonGalleryPrivate::startAnimation(int scrollPos)
+void ARibbonGalleryPrivate::startAnimation(int scrollPos)
 {
-    QTN_P(RibbonGallery)
+    A_P(ARibbonGallery);
     QRect rcItems = p.getItemsRect();
 
     if (scrollPos > m_totalHeight - rcItems.height())
@@ -581,7 +589,7 @@ void RibbonGalleryPrivate::startAnimation(int scrollPos)
     startAnimate();
 }
 
-void RibbonGalleryPrivate::startAnimate()
+void ARibbonGalleryPrivate::startAnimate()
 {
     if (qAbs(m_scrollPos - m_scrollPosTarget) > qFabs(m_animationStep))
     {
@@ -596,11 +604,11 @@ void RibbonGalleryPrivate::startAnimate()
     }
     layoutItems();
     setScrollBarValue();
-    repaintItems(Q_NULL, false);
+    repaintItems(nullptr, false);
 }
 
 /*! \reimp */
-bool RibbonGalleryPrivate::event(QEvent* event)
+bool ARibbonGalleryPrivate::event(QEvent* event)
 {
     switch (event->type()) 
     {
@@ -622,17 +630,17 @@ bool RibbonGalleryPrivate::event(QEvent* event)
 }
 
 /*! \reimp */
-bool RibbonGalleryPrivate::eventFilter(QObject* object, QEvent* event)
+bool ARibbonGalleryPrivate::eventFilter(QObject* object, QEvent* event)
 {
     bool bResult = QObject::eventFilter(object, event);
 
     if (event->type() == QEvent::Show)
     {
-        if (OfficePopupMenu* popup = qobject_cast<OfficePopupMenu*>(object))
+        if (AOfficePopupMenu* popup = qobject_cast<AOfficePopupMenu*>(object))
         {
-            QTN_P(RibbonGallery)
+            A_P(ARibbonGallery);
             QPoint pos;
-            QRect screen = qtn_availableGeometry(m_buttonPopup);
+            QRect screen = aproch_availableGeometry(m_buttonPopup);
             QSize sh = popup->sizeHint();
             QRect rect = p.rect();
             if (p.mapToGlobal(QPoint(0, rect.bottom())).y() + sh.height() <= screen.height())
@@ -645,7 +653,7 @@ bool RibbonGalleryPrivate::eventFilter(QObject* object, QEvent* event)
     else if (event->type() == QEvent::Hide)
     {
 /*
-        if (OfficePopupMenu* popup = qobject_cast<OfficePopupMenu*>(object))
+        if (AOfficePopupMenu* popup = qobject_cast<AOfficePopupMenu*>(object))
         {
             popup->setTearOffEnabled(true);
             popup->setGeometry(QRect(QPoint(0,0), QSize(0, 0)));
@@ -657,35 +665,35 @@ bool RibbonGalleryPrivate::eventFilter(QObject* object, QEvent* event)
 }
 
 /*!
-\class RibbonGalleryItem
+\class ARibbonGalleryItem
 \inmodule QtitanRibbon
-\brief RibbonGalleryItem class represents one element of the gallery.
+\brief ARibbonGalleryItem class represents one element of the gallery.
 */
 
 /*!
-Constructs RibbonGalleryItem.
+Constructs ARibbonGalleryItem.
 */
-RibbonGalleryItem::RibbonGalleryItem()
+ARibbonGalleryItem::ARibbonGalleryItem()
 {
-    QTN_INIT_PRIVATE(RibbonGalleryItem)
-    QTN_D(RibbonGalleryItem)
+    A_INIT_PRIVATE(ARibbonGalleryItem);
+    A_D(ARibbonGalleryItem);
     d.init();
 }
 
 /*!
-Destructor of the RibbonGalleryGroup object.
+Destructor of the ARibbonGalleryGroup object.
 */
-RibbonGalleryItem::~RibbonGalleryItem()
+ARibbonGalleryItem::~ARibbonGalleryItem()
 {
-    QTN_FINI_PRIVATE()
+    A_DELETE_PRIVATE();
 }
 
 /*!
 Returns the size hint for the item.
 */ 
-QSize RibbonGalleryItem::sizeHint() const
+QSize ARibbonGalleryItem::sizeHint() const
 {
-    QTN_D(const RibbonGalleryItem)
+    A_D(const ARibbonGalleryItem);
 
     QSize size = qvariant_cast<QSize>(data(Qt::SizeHintRole));
 
@@ -698,7 +706,7 @@ QSize RibbonGalleryItem::sizeHint() const
 /*!
 Sets the \a size hint for the item.
 */ 
-void RibbonGalleryItem::setSizeHint(const QSize& size)
+void ARibbonGalleryItem::setSizeHint(const QSize& size)
 {
     setData(Qt::SizeHintRole, size);
 }
@@ -706,7 +714,7 @@ void RibbonGalleryItem::setSizeHint(const QSize& size)
 /*!
 Returns the icon of the item.
 */
-QIcon RibbonGalleryItem::icon() const
+QIcon ARibbonGalleryItem::icon() const
 {
     return qvariant_cast<QIcon>(data(Qt::DecorationRole));
 }
@@ -714,7 +722,7 @@ QIcon RibbonGalleryItem::icon() const
 /*!
 Sets the icon of the item.
 */
-void RibbonGalleryItem::setIcon(const QIcon& icon)
+void ARibbonGalleryItem::setIcon(const QIcon& icon)
 {
     setData(Qt::DecorationRole, icon);
 }
@@ -722,7 +730,7 @@ void RibbonGalleryItem::setIcon(const QIcon& icon)
 /*!
 Returns the \a caption of the item.
 */
-QString RibbonGalleryItem::caption() const
+QString ARibbonGalleryItem::caption() const
 { 
     return data(Qt::DisplayRole).toString(); 
 }
@@ -730,7 +738,7 @@ QString RibbonGalleryItem::caption() const
 /*!
 Sets the caption of the item.
 */
-void RibbonGalleryItem::setCaption(const QString& caption)
+void ARibbonGalleryItem::setCaption(const QString& caption)
 {
     setData(Qt::DisplayRole, caption);
 }
@@ -738,7 +746,7 @@ void RibbonGalleryItem::setCaption(const QString& caption)
 /*!
 Returns the toolTip of the item.
 */
-QString RibbonGalleryItem::toolTip() const
+QString ARibbonGalleryItem::toolTip() const
 {
     return data(Qt::ToolTipRole).toString();
 }
@@ -746,7 +754,7 @@ QString RibbonGalleryItem::toolTip() const
 /*!
 Sets the \a toolTip of the item.
 */
-void RibbonGalleryItem::setToolTip(const QString& toolTip)
+void ARibbonGalleryItem::setToolTip(const QString& toolTip)
 {
     setData(Qt::ToolTipRole, toolTip);
 }
@@ -754,7 +762,7 @@ void RibbonGalleryItem::setToolTip(const QString& toolTip)
 /*!
 Returns the statusTip of the item.
 */
-QString RibbonGalleryItem::statusTip() const
+QString ARibbonGalleryItem::statusTip() const
 { 
     return data(Qt::StatusTipRole).toString(); 
 }
@@ -762,7 +770,7 @@ QString RibbonGalleryItem::statusTip() const
 /*!
 Sets the \a statusTip of the item.
 */
-void RibbonGalleryItem::setStatusTip(const QString& statusTip)
+void ARibbonGalleryItem::setStatusTip(const QString& statusTip)
 {
     setData(Qt::StatusTipRole, statusTip);
 }
@@ -770,69 +778,69 @@ void RibbonGalleryItem::setStatusTip(const QString& statusTip)
 /*!
 Returns the index of this item in the gallery group.
 */
-int RibbonGalleryItem::getIndex() const
+int ARibbonGalleryItem::getIndex() const
 {
-    QTN_D(const RibbonGalleryItem)
+    A_D(const ARibbonGalleryItem);
     return d.m_index;
 }
 
 /*!
 Returns true if the item is the separator.
 */ 
-bool RibbonGalleryItem::isSeparator() const
+bool ARibbonGalleryItem::isSeparator() const
 {
-    QTN_D(const RibbonGalleryItem)
+    A_D(const ARibbonGalleryItem);
     return d.m_separator;
 }
 
 /*!
 Sets the representation for the item as a separator if parameter \a b is true.
 */ 
-void RibbonGalleryItem::setSeparator(bool b)
+void ARibbonGalleryItem::setSeparator(bool b)
 {
-    QTN_D(RibbonGalleryItem)
+    A_D(ARibbonGalleryItem);
     d.m_separator = b;
 }
 
-void RibbonGalleryItem::setEnabled(bool enabled)
+void ARibbonGalleryItem::setEnabled(bool enabled)
 {
-    QTN_D(RibbonGalleryItem)
+    A_D(ARibbonGalleryItem);
     if (d.m_enabled == enabled)
         return;
 
     d.m_enabled = enabled;
 
     if (d.m_items)
-        d.m_items->qtn_d().redrawWidget();
+        d.m_items->aproch_d().redrawWidget();
 }
 
-bool RibbonGalleryItem::isEnabled() const
+bool ARibbonGalleryItem::isEnabled() const
 {
-    QTN_D(const RibbonGalleryItem)
+    A_D(const ARibbonGalleryItem);
     return d.m_enabled;
 }
 
-void RibbonGalleryItem::setVisible(bool visible)
+void ARibbonGalleryItem::setVisible(bool visible)
 {
-    QTN_D(RibbonGalleryItem)
+    A_D(ARibbonGalleryItem);
     if (d.m_visible == visible)
         return;
 
     d.m_visible = visible;
 
     if (d.m_items)
-        d.m_items->qtn_d().itemsChanged();
+        d.m_items->aproch_d().itemsChanged();
 }
 
-bool RibbonGalleryItem::isVisible() const
+bool ARibbonGalleryItem::isVisible() const
 {
-    QTN_D(const RibbonGalleryItem)
+    A_D(const ARibbonGalleryItem);
     return d.m_visible;
 }
 
-void RibbonGalleryItem::setData(int role, const QVariant& value)
+void ARibbonGalleryItem::setData(int role, const QVariant& value)
 {
-    QTN_D(RibbonGalleryItem)
+    A_D(ARibbonGalleryItem);
     bool found = false;
     role = (role == Qt::EditRole ? Qt::DisplayRole : role);
     for (int i = 0; i < d.m_values.count(); ++i) 
@@ -847,15 +855,15 @@ void RibbonGalleryItem::setData(int role, const QVariant& value)
         }
     }
     if (!found)
-        d.m_values.append(WidgetItemData(role, value));
+        d.m_values.append(AWidgetItemData(role, value));
 
 //    if (QListModel *model = (view ? qobject_cast<QListModel*>(view->model()) : 0))
 //        model->itemChanged(this);
 }
 
-QVariant RibbonGalleryItem::data(int role) const
+QVariant ARibbonGalleryItem::data(int role) const
 {
-    QTN_D(const RibbonGalleryItem)
+    A_D(const ARibbonGalleryItem);
     role = (role == Qt::EditRole ? Qt::DisplayRole : role);
     for (int i = 0; i < d.m_values.count(); ++i)
         if (d.m_values.at(i).role == role)
@@ -866,10 +874,10 @@ QVariant RibbonGalleryItem::data(int role) const
 /*!
 Draws the item on painter \a p.
 */
-void RibbonGalleryItem::draw(QPainter* p, RibbonGallery* gallery, QRect rectItem, bool enabled, bool selected, bool pressed, bool checked)
+void ARibbonGalleryItem::draw(QPainter* p, ARibbonGallery* gallery, QRect rectItem, bool enabled, bool selected, bool pressed, bool checked)
 {
     Q_UNUSED(gallery)
-    RibbonGalleryItemStyleOption option;
+    ARibbonGalleryItemStyleOption option;
     option.initFrom(gallery);
     option.state = QStyle::State_None;
     if (enabled)
@@ -888,42 +896,42 @@ void RibbonGalleryItem::draw(QPainter* p, RibbonGallery* gallery, QRect rectItem
     option.separator = isSeparator();
     option.rectItem = rectItem;
 
-    gallery->style()->drawControl(static_cast<QStyle::ControlElement>(CommonStyle::CE_RibbonGalleryItem), &option, p, gallery);
+    gallery->style()->drawControl(static_cast<QStyle::ControlElement>(ACommonStyle::CE_RibbonGalleryItem), &option, p, gallery);
 }
 
 /*!
-\class RibbonGalleryGroup
+\class ARibbonGalleryGroup
 \inmodule QtitanRibbon
-\brief RibbonGalleryGroup class is a container for the RibbonGalleryItem.
+\brief ARibbonGalleryGroup class is a container for the ARibbonGalleryItem.
 */
 
 /*!
-Constructs RibbonGalleryGroup object with the given \a parent.
+Constructs ARibbonGalleryGroup object with the given \a parent.
 */ 
-RibbonGalleryGroup::RibbonGalleryGroup(QObject* parent)
+ARibbonGalleryGroup::ARibbonGalleryGroup(QObject* parent)
     : QObject(parent)
 {
-    setObjectName(QStringLiteral("RibbonGalleryGroup"));
-    QTN_INIT_PRIVATE(RibbonGalleryGroup)
-    QTN_D(RibbonGalleryGroup)
+    setObjectName(QStringLiteral("ARibbonGalleryGroup"));
+    A_INIT_PRIVATE(ARibbonGalleryGroup);
+    A_D(ARibbonGalleryGroup);
     d.init();
 }
 
 /*!
-Destructor of the RibbonGalleryGroup object.
+Destructor of the ARibbonGalleryGroup object.
 */ 
-RibbonGalleryGroup::~RibbonGalleryGroup()
+ARibbonGalleryGroup::~ARibbonGalleryGroup()
 {
     clear();
-    QTN_FINI_PRIVATE()
+    A_DELETE_PRIVATE();
 }
 
 /*!
 Creates and adds new item to the gallery with \a caption, \a pixmap. Additionaly it is possible to specify transparent color \a transparentColor in the \a pixmap.
 */ 
-RibbonGalleryItem* RibbonGalleryGroup::addItem(const QString& caption, const QPixmap& pixmap, const QColor& transparentColor)
+ARibbonGalleryItem* ARibbonGalleryGroup::addItem(const QString& caption, const QPixmap& pixmap, const QColor& transparentColor)
 {
-    RibbonGalleryItem* item = new RibbonGalleryItem();
+    ARibbonGalleryItem* item = new ARibbonGalleryItem();
 
     if (!pixmap.isNull())
     {
@@ -953,7 +961,7 @@ RibbonGalleryItem* RibbonGalleryGroup::addItem(const QString& caption, const QPi
 Creates and adds new item to the gallery with \a caption and pixmap from pixmap \a map. Parameter \a mapIndex is a index in the map. Parameter \a mapItemSize is a size of the one item in the map.
 Additionaly it is possible to specify transparent color \a transparentColor in the pixmap.
 */ 
-RibbonGalleryItem* RibbonGalleryGroup::addItemFromMap(const QString& caption, int mapIndex, const QPixmap& map, const QSize& mapSizeImage, const QColor& clrTransparent)
+ARibbonGalleryItem* ARibbonGalleryGroup::addItemFromMap(const QString& caption, int mapIndex, const QPixmap& map, const QSize& mapSizeImage, const QColor& clrTransparent)
 {
     QSize szImage = mapSizeImage;
     QRect rcImage(mapIndex * szImage.width(), 0, szImage.width(), szImage.height());
@@ -962,25 +970,25 @@ RibbonGalleryItem* RibbonGalleryGroup::addItemFromMap(const QString& caption, in
     Q_ASSERT(!copyPix.isNull());
 
     if (copyPix.isNull())
-        return Q_NULL;
+        return nullptr;
 
     return addItem(caption, copyPix, clrTransparent);
 }
 
 /*! Adds existing \a item to the gallery.
-Note: RibbonGalleryGroup object is assigned as a owner for the item.
+Note: ARibbonGalleryGroup object is assigned as a owner for the item.
 */ 
-void RibbonGalleryGroup::appendItem(RibbonGalleryItem* item)
+void ARibbonGalleryGroup::appendItem(ARibbonGalleryItem* item)
 {
     insertItem(itemCount(), item);
 }
 
 /*! Inserts existing \a item to the gallery in pos \a index.
-Note: RibbonGalleryGroup object is assigned as a owner for the item.
+Note: ARibbonGalleryGroup object is assigned as a owner for the item.
 */ 
-void RibbonGalleryGroup::insertItem(int index, RibbonGalleryItem* item)
+void ARibbonGalleryGroup::insertItem(int index, ARibbonGalleryItem* item)
 {
-    QTN_D(RibbonGalleryGroup)
+    A_D(ARibbonGalleryGroup);
 
     if (!item)
     {
@@ -994,16 +1002,16 @@ void RibbonGalleryGroup::insertItem(int index, RibbonGalleryItem* item)
     d.m_arrItems.insert(index, item);
     d.updateIndexes(index);
 
-    item->qtn_d().m_items = this;
+    item->aproch_d().m_items = this;
     d.itemsChanged();
 }
 
 /*!
 Adds separator to the group with given \a caption and returns reference to them.
 */ 
-RibbonGalleryItem* RibbonGalleryGroup::addSeparator(const QString& caption)
+ARibbonGalleryItem* ARibbonGalleryGroup::addSeparator(const QString& caption)
 {
-    RibbonGalleryItem* item = new RibbonGalleryItem();
+    ARibbonGalleryItem* item = new ARibbonGalleryItem();
     appendItem(item);
     item->setCaption(caption);
     item->setSeparator(true);
@@ -1013,9 +1021,9 @@ RibbonGalleryItem* RibbonGalleryGroup::addSeparator(const QString& caption)
 /*!
 Clear the collection the item.
 */
-void RibbonGalleryGroup::clear()
+void ARibbonGalleryGroup::clear()
 {
-    QTN_D(RibbonGalleryGroup)
+    A_D(ARibbonGalleryGroup);
     d.clear();
     d.itemsChanged();
 }
@@ -1023,11 +1031,11 @@ void RibbonGalleryGroup::clear()
 /*!
 Removes the item from the gallery by given \a index.
 */
-void RibbonGalleryGroup::remove(int index)
+void ARibbonGalleryGroup::remove(int index)
 {
-    QTN_D(RibbonGalleryGroup)
+    A_D(ARibbonGalleryGroup);
 
-    RibbonGalleryItem* galleryItem = item(index);
+    ARibbonGalleryItem* galleryItem = item(index);
     if (!galleryItem)
         return;
 
@@ -1041,31 +1049,31 @@ void RibbonGalleryGroup::remove(int index)
 /*!
 Returns the count of the items.
 */ 
-int RibbonGalleryGroup::itemCount() const
+int ARibbonGalleryGroup::itemCount() const
 {
-    QTN_D(const RibbonGalleryGroup)
+    A_D(const ARibbonGalleryGroup);
     return d.m_arrItems.size();
 }
 
 /*!
-Returns reference to the RibbonGalleryItem by the given \a index.
+Returns reference to the ARibbonGalleryItem by the given \a index.
 */ 
-RibbonGalleryItem* RibbonGalleryGroup::item(int index) const
+ARibbonGalleryItem* ARibbonGalleryGroup::item(int index) const
 {
-    QTN_D(const RibbonGalleryGroup)
-    return index >= 0 && index < itemCount() ? d.m_arrItems.at(index) : Q_NULL;
+    A_D(const ARibbonGalleryGroup);
+    return index >= 0 && index < itemCount() ? d.m_arrItems.at(index) : nullptr;
 }
 
 /*!
 Removes item at index from item list without deleting it
 */ 
-RibbonGalleryItem* RibbonGalleryGroup::takeItem(int index)
+ARibbonGalleryItem* ARibbonGalleryGroup::takeItem(int index)
 {
-    QTN_D(RibbonGalleryGroup)
+    A_D(ARibbonGalleryGroup);
 
-    RibbonGalleryItem* galleryItem = item(index);
+    ARibbonGalleryItem* galleryItem = item(index);
     if (!galleryItem)
-        return Q_NULL;
+        return nullptr;
 
     d.m_arrItems.remove(index);    
     d.updateIndexes(0);
@@ -1077,17 +1085,17 @@ RibbonGalleryItem* RibbonGalleryGroup::takeItem(int index)
 /*!
 Returns size of the group.
 */ 
-QSize RibbonGalleryGroup::size() const
+QSize ARibbonGalleryGroup::size() const
 {
-    QTN_D(const RibbonGalleryGroup)
+    A_D(const ARibbonGalleryGroup);
 
-    if (!CommonStylePrivate::isUse96Dpi())
+    if (!ACommonStylePrivate::isUse96Dpi())
     {
-        QWidget* wd = Q_NULL;
+        QWidget* wd = nullptr;
         QList<QWidget*> lst = d.m_viewWidgets;
         if (lst.count() > 0)
             wd = lst.at(0);
-        return QSize(CommonStylePrivate::dpiScaled(d.m_sizeItem.width(), wd), CommonStylePrivate::dpiScaled(d.m_sizeItem.height(), wd));
+        return QSize(ACommonStylePrivate::dpiScaled(d.m_sizeItem.width(), wd), ACommonStylePrivate::dpiScaled(d.m_sizeItem.height(), wd));
     }
     else
         return d.m_sizeItem;
@@ -1096,89 +1104,89 @@ QSize RibbonGalleryGroup::size() const
 /*!
 Sets \a size of the group.
 */ 
-void RibbonGalleryGroup::setSize(const QSize& size)
+void ARibbonGalleryGroup::setSize(const QSize& size)
 {
-    QTN_D(RibbonGalleryGroup)
+    A_D(ARibbonGalleryGroup);
     d.m_sizeItem = size;
 }
 
 /*!
 Sets clipping items if selection was changed. Paramter \a clipItems - true to enable clipping or false to disable. By default clipping is enabled.
 */
-void RibbonGalleryGroup::setClipItems(bool clipItems)
+void ARibbonGalleryGroup::setClipItems(bool clipItems)
 {
-    QTN_D(RibbonGalleryGroup)
+    A_D(ARibbonGalleryGroup);
     d.m_clipItems = clipItems;
 }
 
 /*!
-    \class RibbonGallery
+    \class ARibbonGallery
     \inmodule QtitanRibbon
-    \brief RibbonGallery class represents the gallery control.
+    \brief ARibbonGallery class represents the gallery control.
 */
 
 /*!
-    \fn void RibbonGallery::itemPressed(RibbonGalleryItem* item);
+    \fn void ARibbonGallery::itemPressed(ARibbonGalleryItem* item);
     Signal throws when you press mouse button on the \a item in the gallery.
 */
 
 /*!
-    \fn void RibbonGallery::itemClicked(RibbonGalleryItem* item);
+    \fn void ARibbonGallery::itemClicked(ARibbonGalleryItem* item);
     Signal throws when you click on the \a item in the gallery.
 */
 
 /*!
-    \fn void RibbonGallery::itemClicking(RibbonGalleryItem* item, bool& handled);
+    \fn void ARibbonGallery::itemClicking(ARibbonGalleryItem* item, bool& handled);
     Signal throws when user is clicking on the \a item in the gallery. \a item - the reference to teh clicking element.
     \a handled - the flag to prevent of closing the gallery popup. If handled is false then the gallery popup will not be closed.
 */
 
 /*!
-    \fn void RibbonGallery::currentItemChanged(RibbonGalleryItem* current, RibbonGalleryItem* previous);
+    \fn void ARibbonGallery::currentItemChanged(ARibbonGalleryItem* current, ARibbonGalleryItem* previous);
     Signal throws when the current item was changed. previous - reference to the previous selected item. current the reference to the current selected item.
 */
 
 /*!
-    \fn void RibbonGallery::itemSelectionChanged();
+    \fn void ARibbonGallery::itemSelectionChanged();
     Signal throws when selected was changed.
 */
 
 /*!
-Constructs RibbonGallery object with the given \a parent.
+Constructs ARibbonGallery object with the given \a parent.
 */
-RibbonGallery::RibbonGallery(QWidget* parent)
+ARibbonGallery::ARibbonGallery(QWidget* parent)
     : QWidget(parent)
 {
-    QTN_INIT_PRIVATE(RibbonGallery)
-    QTN_D(RibbonGallery)
+    A_INIT_PRIVATE(ARibbonGallery);
+    A_D(ARibbonGallery);
     d.init();
 }
 
 /*!
-Destructor of the RibbonGallery object.
+Destructor of the ARibbonGallery object.
 */
-RibbonGallery::~RibbonGallery()
+ARibbonGallery::~ARibbonGallery()
 {
-    QTN_FINI_PRIVATE()
+    A_DELETE_PRIVATE();
 }
 
 /*!
 Sets group for the gallery. group - is a pointer to the elements group.
 */ 
-void RibbonGallery::setGalleryGroup(RibbonGalleryGroup* items)
+void ARibbonGallery::setGalleryGroup(ARibbonGalleryGroup* items)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     if (d.m_items)
     {
         d.m_arrRects.clear();
-        d.m_items->qtn_d().m_viewWidgets.removeOne(this);
-        d.m_items = Q_NULL;
+        d.m_items->aproch_d().m_viewWidgets.removeOne(this);
+        d.m_items = nullptr;
     }
 
     if (items)
     {
         d.m_items = items;
-        d.m_items->qtn_d().m_viewWidgets.append(this);
+        d.m_items->aproch_d().m_viewWidgets.append(this);
     }
     d.layoutItems();
     update();
@@ -1187,18 +1195,18 @@ void RibbonGallery::setGalleryGroup(RibbonGalleryGroup* items)
 /*!
 Returns the visibility of the border around the gallery. By default the border is not visible.
 */
-bool RibbonGallery::isBorderVisible() const
+bool ARibbonGallery::isBorderVisible() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_showBorders;
 }
 
 /*!
 Sets the visibility of the border around the gallery to \visible. 
 */
-void RibbonGallery::setBorderVisible(bool visible)
+void ARibbonGallery::setBorderVisible(bool visible)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     if (d.m_showBorders != visible)
     {
         d.m_showBorders = visible;
@@ -1206,15 +1214,15 @@ void RibbonGallery::setBorderVisible(bool visible)
     }
 }
 
-bool RibbonGallery::isTransparent() const
+bool ARibbonGallery::isTransparent() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_transparent;
 }
 
-void RibbonGallery::setTransparent(bool transparent)
+void ARibbonGallery::setTransparent(bool transparent)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     if (d.m_transparent != transparent)
     {
         d.m_transparent = transparent;
@@ -1222,45 +1230,45 @@ void RibbonGallery::setTransparent(bool transparent)
     }
 }
 
-void RibbonGallery::setLabelsVisible(bool showLabels)
+void ARibbonGallery::setLabelsVisible(bool showLabels)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     d.m_showLabels = showLabels;
 }
 
-bool RibbonGallery::isLabelsVisible() const
+bool ARibbonGallery::isLabelsVisible() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_showLabels;
 }
 
 /*!
 Sets \a policy of the scrollbars.
 */
-void RibbonGallery::setScrollBarPolicy(Qt::ScrollBarPolicy policy)
+void ARibbonGallery::setScrollBarPolicy(Qt::ScrollBarPolicy policy)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     d.setScrollBarPolicy(policy);
 }
 
 /*!
 Returns policy of the scrollbars.
 */
-Qt::ScrollBarPolicy RibbonGallery::scrollBarPolicy() const
+Qt::ScrollBarPolicy ARibbonGallery::scrollBarPolicy() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.scrollBarPolicy();
 }
 
-void RibbonGallery::ensureVisible(int index)
+void ARibbonGallery::ensureVisible(int index)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
 
     if (itemCount() == 0 || index == -1 || index >= itemCount() || 
         index >= d.m_arrRects.size())
         return;
 
-    const qtn_galleryitem_rect& pos = d.m_arrRects.at(index);
+    const SGalleryItemRect& pos = d.m_arrRects.at(index);
 
     QRect rcItem = pos.rect;
     rcItem.translate(0, -d.m_scrollPos);
@@ -1274,7 +1282,7 @@ void RibbonGallery::ensureVisible(int index)
         {
             for (int i = index - 1; i >= 0; i--)
             {
-                const qtn_galleryitem_rect& posLabel = d.m_arrRects.at(i);
+                const SGalleryItemRect& posLabel = d.m_arrRects.at(i);
                 if (posLabel.item->isSeparator() && pos.rect.top() - posLabel.rect.top() <= rcItems.height() - rcItem.height())
                 {
                     scrollPos = posLabel.rect.top() - rcItems.top();
@@ -1295,48 +1303,48 @@ void RibbonGallery::ensureVisible(int index)
 /*!
 Sets \a popup menu for the gallery.
 */ 
-QAction* RibbonGallery::setPopupMenu(OfficePopupMenu* popupMenu)
+QAction* ARibbonGallery::setPopupMenu(AOfficePopupMenu* popupMenu)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     return d.setPopupMenu(popupMenu);
 }
 
 /*!
 Returns gallery's popup menu.
 */ 
-OfficePopupMenu* RibbonGallery::popupMenu() const
+AOfficePopupMenu* ARibbonGallery::popupMenu() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_menuBar;
 }
 
-int RibbonGallery::itemCount() const
+int ARibbonGallery::itemCount() const
 {
-    RibbonGalleryGroup* pItems = galleryGroup();
+    ARibbonGalleryGroup* pItems = galleryGroup();
     return pItems ? pItems->itemCount() : 0;
 }
 
-RibbonGalleryItem* RibbonGallery::item(int index) const
+ARibbonGalleryItem* ARibbonGallery::item(int index) const
 {
-    RibbonGalleryGroup* items = galleryGroup();
-    return items ? items->item(index) : Q_NULL;
+    ARibbonGalleryGroup* items = galleryGroup();
+    return items ? items->item(index) : nullptr;
 }
 
 /*!
-Returns reference to the RibbonGalleryGroup object.
+Returns reference to the ARibbonGalleryGroup object.
 */ 
-RibbonGalleryGroup* RibbonGallery::galleryGroup() const
+ARibbonGalleryGroup* ARibbonGallery::galleryGroup() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_items;
 }
 
 /*!
 Sets the selected element in the gallery by its \a index.
 */
-void RibbonGallery::setSelectedItem(int index)
+void ARibbonGallery::setSelectedItem(int index)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
 
     int indSelected = d.m_selected;
 
@@ -1345,9 +1353,9 @@ void RibbonGallery::setSelectedItem(int index)
     d.m_pressed = false;
     d.m_keyboardSelected = true;
 
-    RibbonGalleryGroup* items = galleryGroup();
+    ARibbonGalleryGroup* items = galleryGroup();
 
-    if (items && items->qtn_d().m_clipItems && indSelected != -1)
+    if (items && items->aproch_d().m_clipItems && indSelected != -1)
     {
         QRect rect(getDrawItemRect(indSelected));
         d.repaintItems(&rect, true);
@@ -1355,13 +1363,13 @@ void RibbonGallery::setSelectedItem(int index)
 
     ensureVisible(d.m_selected);
 
-    if (items && items->qtn_d().m_clipItems && d.m_selected != -1)
+    if (items && items->aproch_d().m_clipItems && d.m_selected != -1)
     {
         QRect rect(getDrawItemRect(d.m_selected));
         d.repaintItems(&rect, false);
     }
 
-    if (!items || !items->qtn_d().m_clipItems)
+    if (!items || !items->aproch_d().m_clipItems)
         d.repaintItems();
 
     if (d.m_selected != -1)
@@ -1382,25 +1390,25 @@ void RibbonGallery::setSelectedItem(int index)
 /*!
 Returns the index of the selected element in the gallery.
 */
-int RibbonGallery::selectedItem() const
+int ARibbonGallery::selectedItem() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_selected;
 }
 
 /*!
 Sets checked item with the given \a index.
 */ 
-void RibbonGallery::setCheckedIndex(int index)
+void ARibbonGallery::setCheckedIndex(int index)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
 
-    RibbonGalleryItem* previous = Q_NULL;
+    ARibbonGalleryItem* previous = nullptr;
     int previousInd = checkedIndex();
     if (previousInd != -1)
         previous = item(previousInd);
 
-    RibbonGalleryItem* currentItem = item(index);
+    ARibbonGalleryItem* currentItem = item(index);
     if (d.m_checkedItem != currentItem)
     {
         d.m_checkedItem = currentItem;
@@ -1414,39 +1422,39 @@ void RibbonGallery::setCheckedIndex(int index)
 /*!
 Returns chcked item index in the gallery.
 */
-int RibbonGallery::checkedIndex() const
+int ARibbonGallery::checkedIndex() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     if (d.m_checkedItem)
         return d.m_checkedItem->getIndex();
     return -1;
 }
 
 /*!
-Sets checked \a item with the given reference to the RibbonGalleryItem object.
+Sets checked \a item with the given reference to the ARibbonGalleryItem object.
 See setCheckedIndex(int index).
 */ 
-void RibbonGallery::setCheckedItem(const RibbonGalleryItem* item)
+void ARibbonGallery::setCheckedItem(const ARibbonGalleryItem* item)
 {
-    Q_ASSERT(item != Q_NULL);
+    Q_ASSERT(item != nullptr);
     if (item->getIndex() != -1)
         setCheckedIndex(item->getIndex());
 }
 
 /*!
-Returs the reference to the RibbonGalleryItem object of the chcked item in the gallery.
+Returs the reference to the ARibbonGalleryItem object of the chcked item in the gallery.
 See int getCheckedIndex();
 */ 
-RibbonGalleryItem* RibbonGallery::checkedItem() const
+ARibbonGalleryItem* ARibbonGallery::checkedItem() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_checkedItem;
 }
 
 /*!
 Returns if the gallery needs to draw a normal button. Function is reserved.
 */
-bool RibbonGallery::isShowAsButton() const
+bool ARibbonGallery::isShowAsButton() const
 {
     return false;
 }
@@ -1454,18 +1462,18 @@ bool RibbonGallery::isShowAsButton() const
 /*!
 Returns whether selected items in the gallery.
 */
-bool RibbonGallery::isItemSelected() const
+bool ARibbonGallery::isItemSelected() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return !d.m_hideSelection && selectedItem() != -1;
 }
 
 /*!
 Returns the bounds of gallery in the rectangle form.
 */
-QRect RibbonGallery::borders() const
+QRect ARibbonGallery::borders() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     QRect rcBorders(0, 0, 0, 0);
 
     if (d.m_showBorders)
@@ -1494,9 +1502,9 @@ QRect RibbonGallery::borders() const
 /*!
 Returns the bounded rectangle of the item by the given \a index.
 */ 
-QRect RibbonGallery::getDrawItemRect(int index)
+QRect ARibbonGallery::getDrawItemRect(int index)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     if (index < 0 || index >= d.m_arrRects.size())
         return QRect(0, 0, 0, 0);
 
@@ -1510,29 +1518,29 @@ QRect RibbonGallery::getDrawItemRect(int index)
 /*!
 Returns possibility to resize.
 */
-bool RibbonGallery::isResizable() const
+bool ARibbonGallery::isResizable() const
 {
     bool isResizable = sizePolicy().horizontalPolicy() == QSizePolicy::Expanding || 
         sizePolicy().horizontalPolicy() == QSizePolicy::MinimumExpanding;
     return !isShowAsButton() && galleryGroup() ? isResizable : false;
 }
 
-bool RibbonGallery::autoWidth() const
+bool ARibbonGallery::autoWidth() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_autoWidth;
 }
 
-void RibbonGallery::setAutoWidth(bool width)
+void ARibbonGallery::setAutoWidth(bool width)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     d.m_autoWidth = width;
 }
 
 /*!
-Returns the index of the item by given mouse \a point. If rect is not Q_NULL it will contain the rectangle the gallery's item.
+Returns the index of the item by given mouse \a point. If rect is not nullptr it will contain the rectangle the gallery's item.
 */
-int RibbonGallery::hitTestItem(QPoint point, QRect* rect) const
+int ARibbonGallery::hitTestItem(QPoint point, QRect* rect) const
 {
     if (!isEnabled())
         return -1;
@@ -1540,14 +1548,14 @@ int RibbonGallery::hitTestItem(QPoint point, QRect* rect) const
     if (isShowAsButton())
         return -1;
 
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     Q_ASSERT(d.m_arrRects.size() == itemCount());
 
     QRect rcItems = getItemsRect();
 
     for (int i = 0; i < d.m_arrRects.size(); ++i)
     {
-        const qtn_galleryitem_rect& pos = d.m_arrRects[i];
+        const SGalleryItemRect& pos = d.m_arrRects[i];
 
         QRect rcItem = pos.rect;
         rcItem.translate(0, -d.m_scrollPos);
@@ -1560,7 +1568,7 @@ int RibbonGallery::hitTestItem(QPoint point, QRect* rect) const
 
         if (rcItem.contains(point))
         {
-            if (rect != Q_NULL)
+            if (rect != nullptr)
                 *rect = rcItem;
             return pos.item->isSeparator() ? -1 : i;
         }
@@ -1572,14 +1580,14 @@ int RibbonGallery::hitTestItem(QPoint point, QRect* rect) const
 /*!
 Returns the united boundary of all elements within the galleries.
 */
-QRect RibbonGallery::getItemsRect() const
+QRect ARibbonGallery::getItemsRect() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     QRect rc = rect();
 
     if (itemCount() > 0 && (minimumColumnCount() != -1 || maximumColumnCount() != -1))
     {
-        RibbonGalleryItem* it = item(0);
+        ARibbonGalleryItem* it = item(0);
         int width = d.m_currentColumnCount * it->sizeHint().width() + borders().width();
         rc.setWidth(width);
     }
@@ -1598,16 +1606,16 @@ QRect RibbonGallery::getItemsRect() const
 /*!
 Hide all selection of the gallery's item.
 */
-void RibbonGallery::hideSelection()
+void ARibbonGallery::hideSelection()
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     d.m_hideSelection = true;
     d.m_keyboardSelected = false;
 
     if (d.m_selected != -1)
     {
-        RibbonGalleryGroup* pItems = galleryGroup();
-        if (pItems && pItems->qtn_d().m_clipItems)
+        ARibbonGalleryGroup* pItems = galleryGroup();
+        if (pItems && pItems->aproch_d().m_clipItems)
         {
             QRect rect(getDrawItemRect(d.m_selected));
             d.repaintItems(&rect, false);
@@ -1625,18 +1633,18 @@ void RibbonGallery::hideSelection()
     selectedItemChanged();
 }
 
-void RibbonGallery::updatelayout()
+void ARibbonGallery::updatelayout()
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     d.layoutItems();
     d.layoutScrollBar();
 }
 
-void RibbonGallery::bestFit()
+void ARibbonGallery::bestFit()
 {
     if (itemCount() > 0)
     {
-        RibbonGalleryItem* galleryItem = item(0);
+        ARibbonGalleryItem* galleryItem = item(0);
         QSize szItem = galleryItem->sizeHint();
         int totalWidth = width() - borders().width();
         if (szItem.width() > 0 &&  szItem.width() < totalWidth)
@@ -1651,16 +1659,16 @@ void RibbonGallery::bestFit()
     }
 }
 
-void RibbonGallery::selectedItemChanged()
+void ARibbonGallery::selectedItemChanged()
 {
 }
 
 /*!
 Assigns a minimum \a count of column in the ribbon gallery.
 */
-void RibbonGallery::setMinimumColumnCount(int count)
+void ARibbonGallery::setMinimumColumnCount(int count)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     if (d.m_minimumColumnCount != count)
     {
         d.m_minimumColumnCount = count;
@@ -1675,18 +1683,18 @@ void RibbonGallery::setMinimumColumnCount(int count)
 /*!
 Returns a minimum count of column in the ribbon gallery.
 */
-int RibbonGallery::minimumColumnCount() const
+int ARibbonGallery::minimumColumnCount() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_minimumColumnCount;
 }
 
 /*!
 Assigns a maximum \a count of column in the ribbon gallery.
 */
-void RibbonGallery::setMaximumColumnCount(int count)
+void ARibbonGallery::setMaximumColumnCount(int count)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     if ( d.m_maximumColumnCount != count )
     {
         d.m_maximumColumnCount = count;
@@ -1701,18 +1709,18 @@ void RibbonGallery::setMaximumColumnCount(int count)
 /*!
 Returns a maximum count of column in the ribbon gallery.
 */
-int RibbonGallery::maximumColumnCount() const
+int ARibbonGallery::maximumColumnCount() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_maximumColumnCount;
 }
 
 /*!
 Assigns a current \a count of column in the ribbon gallery.
 */
-void RibbonGallery::setColumnCount(int count)
+void ARibbonGallery::setColumnCount(int count)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
 
     if (d.m_maximumColumnCount != -1 && d.m_maximumColumnCount < count)
         count = d.m_maximumColumnCount;
@@ -1728,18 +1736,18 @@ void RibbonGallery::setColumnCount(int count)
 /*!
 Returns a current count of column in the ribbon gallery.
 */
-int RibbonGallery::columnCount() const
+int ARibbonGallery::columnCount() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_currentColumnCount;
 }
 
 /*!
 Assigns a current \a count of row in the ribbon gallery.
 */
-void RibbonGallery::setRowCount(int row)
+void ARibbonGallery::setRowCount(int row)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     Q_ASSERT(row > 0);
     if (row > 0)
         d.m_currentRowCount = row;
@@ -1748,22 +1756,22 @@ void RibbonGallery::setRowCount(int row)
 /*!
 Returns a current count of row in the ribbon gallery.
 */
-int RibbonGallery::rowCount() const
+int ARibbonGallery::rowCount() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
     return d.m_currentRowCount;
 }
 
 /*! \reimp */
-QSize RibbonGallery::sizeHint() const
+QSize ARibbonGallery::sizeHint() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
 
     QSize size = minimumSizeHint();
 
     if (columnCount() != -1)
     {
-        if (RibbonGalleryGroup* group = galleryGroup())
+        if (ARibbonGalleryGroup* group = galleryGroup())
         {
             size.setWidth(columnCount() * group->size().width());
             if (d.m_currentRowCount == -1)
@@ -1778,22 +1786,22 @@ QSize RibbonGallery::sizeHint() const
 }
 
 /*! \reimp */
-QSize RibbonGallery::minimumSizeHint() const
+QSize ARibbonGallery::minimumSizeHint() const
 {
-    QTN_D(const RibbonGallery)
+    A_D(const ARibbonGallery);
 
     if (!parentWidget() || !galleryGroup())
         return QSize(0, 0);
 
     QRect rcBorders(borders());
-    int width = qMax(16, galleryGroup()->qtn_d().m_sizeItem.width()) + rcBorders.left() + rcBorders.right();
+    int width = qMax(16, galleryGroup()->aproch_d().m_sizeItem.width()) + rcBorders.left() + rcBorders.right();
 
-    if (RibbonGalleryGroup* group = galleryGroup())
+    if (ARibbonGalleryGroup* group = galleryGroup())
         width = d.m_minimumColumnCount != -1 ? d.m_minimumColumnCount * group->size().width() : width;
 
     int height = 0;
     if (d.m_currentRowCount == -1)
-        height = qMax(galleryGroup()->qtn_d().m_sizeItem.height() + rcBorders.top() + rcBorders.bottom(), 32);
+        height = qMax(galleryGroup()->aproch_d().m_sizeItem.height() + rcBorders.top() + rcBorders.bottom(), 32);
     else if (itemCount() > 0)
         height = qMax((item(0)->sizeHint().height() * d.m_currentRowCount) + (rcBorders.top() + rcBorders.bottom()), 32);
 
@@ -1801,7 +1809,7 @@ QSize RibbonGallery::minimumSizeHint() const
 }
 
 /*! \reimp */
-bool RibbonGallery::event(QEvent* event)
+bool ARibbonGallery::event(QEvent* event)
 {
     if (event->type() == QEvent::ParentChange)
         updatelayout();
@@ -1809,22 +1817,22 @@ bool RibbonGallery::event(QEvent* event)
 }
 
 /*! \reimp */
-void RibbonGallery::paintEvent(QPaintEvent*)
+void ARibbonGallery::paintEvent(QPaintEvent*)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     QPainter p(this);
     QtStyleOptionFrame opt;
     opt.initFrom(this);
-    opt.lineWidth = !parentWidget()->property(_qtn_PopupBar).toBool() && isBorderVisible() ? 1 : 0;
+    opt.lineWidth = !parentWidget()->property(_aproch_PopupBar).toBool() && isBorderVisible() ? 1 : 0;
     opt.features |= isTransparent() ? QtStyleOptionFrame::None : QtStyleOptionFrame::Flat;
-    style()->drawPrimitive(static_cast<QStyle::PrimitiveElement>(CommonStyle::PE_RibbonFrameGallery), &opt, &p, this);
+    style()->drawPrimitive(static_cast<QStyle::PrimitiveElement>(ACommonStyle::PE_RibbonFrameGallery), &opt, &p, this);
     d.drawGalleryItems(&p);
 }
 
 /*! \reimp */
-void RibbonGallery::mousePressEvent(QMouseEvent* event)
+void ARibbonGallery::mousePressEvent(QMouseEvent* event)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
 
     if (isShowAsButton())
     {
@@ -1845,9 +1853,9 @@ void RibbonGallery::mousePressEvent(QMouseEvent* event)
 }
 
 /*! \reimp */
-void RibbonGallery::mouseReleaseEvent(QMouseEvent* event)
+void ARibbonGallery::mouseReleaseEvent(QMouseEvent* event)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     if (d.m_pressed || isItemSelected())
     {
         d.m_pressed = false;
@@ -1858,7 +1866,7 @@ void RibbonGallery::mouseReleaseEvent(QMouseEvent* event)
         {
             d.repaintItems();
             emit itemSelectionChanged();
-            RibbonGalleryItem* galleryItem = item(index);
+            ARibbonGalleryItem* galleryItem = item(index);
 
             emit itemClicked(galleryItem);
 
@@ -1867,7 +1875,7 @@ void RibbonGallery::mouseReleaseEvent(QMouseEvent* event)
 
             if (handled)
             {
-                if (OfficePopupMenu* popupBar = qobject_cast<OfficePopupMenu*>(parentWidget()))
+                if (AOfficePopupMenu* popupBar = qobject_cast<AOfficePopupMenu*>(parentWidget()))
                 {
                     popupBar->close();
                     for (QWidget* widget = QApplication::activePopupWidget(); widget;) 
@@ -1885,9 +1893,9 @@ void RibbonGallery::mouseReleaseEvent(QMouseEvent* event)
 }
 
 /*! \reimp */
-void RibbonGallery::mouseMoveEvent(QMouseEvent* event)
+void ARibbonGallery::mouseMoveEvent(QMouseEvent* event)
 {
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
 
     if (isShowAsButton())
     {
@@ -1914,9 +1922,9 @@ void RibbonGallery::mouseMoveEvent(QMouseEvent* event)
         d.m_keyboardSelected = false;
         d.m_pressed = false;
 
-        RibbonGalleryGroup* pItems = galleryGroup();
+        ARibbonGalleryGroup* pItems = galleryGroup();
 
-        if (pItems && pItems->qtn_d().m_clipItems)
+        if (pItems && pItems->aproch_d().m_clipItems)
         {
             if (nSelected != -1)
             {
@@ -1955,13 +1963,13 @@ void RibbonGallery::mouseMoveEvent(QMouseEvent* event)
 }
 
 /*! \reimp */
-void RibbonGallery::wheelEvent(QWheelEvent* event)
+void ARibbonGallery::wheelEvent(QWheelEvent* event)
 {
     QWidget::wheelEvent(event);
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
 
-    RibbonGalleryGroup* group = galleryGroup();
-    if (group == Q_NULL)
+    ARibbonGalleryGroup* group = galleryGroup();
+    if (group == nullptr)
         return;
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     int delta = (qAbs(event->angleDelta().x()) > qAbs(event->angleDelta().y()) ?
@@ -1969,31 +1977,33 @@ void RibbonGallery::wheelEvent(QWheelEvent* event)
 #else
     int delta = event->delta();
 #endif
-    if (qobject_cast<OfficePopupMenu*>(parentWidget()))
+    if (qobject_cast<AOfficePopupMenu*>(parentWidget()))
         d.setScrollPos(d.m_scrollPos + (delta < 0 ? 3 * group->size().height() : -3 * group->size().height()));
 }
 
 /*! \reimp */
-void RibbonGallery::leaveEvent(QEvent* event)
+void ARibbonGallery::leaveEvent(QEvent* event)
 {
     QWidget::leaveEvent(event);
 
-    QTN_D(RibbonGallery)
+    A_D(ARibbonGallery);
     if (d.m_selected != -1)
         hideSelection();
 }
 
 /*! \reimp */
-void RibbonGallery::focusOutEvent(QFocusEvent* event)
+void ARibbonGallery::focusOutEvent(QFocusEvent* event)
 {
     QWidget::focusOutEvent(event);
 }
 
 /*! \reimp */
-void RibbonGallery::resizeEvent(QResizeEvent* event)
+void ARibbonGallery::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
     if (autoWidth())
         bestFit();
     updatelayout();
 }
+
+APROCH_NAMESPACE_END

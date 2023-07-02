@@ -1,53 +1,58 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#ifndef QTN_RIBBONGALLERY_H
-#define QTN_RIBBONGALLERY_H
-
+ * @file    ARibbonGallery.h
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#pragma once
 #include <QIcon>
 #include <QWidget>
 
-#include "QtitanDef.h"
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - ARibbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
 class QStyleOptionSlider;
 class QMenu;
 
-QTITAN_BEGIN_NAMESPACE
+APROCH_NAMESPACE_BEGIN
 
-class RibbonGallery;
-class RibbonGalleryGroup;
-class RibbonGalleryItemStyleOption;
-class RibbonGalleryItemPrivate;
+class ARibbonGallery;
+class ARibbonGalleryGroup;
+class ARibbonGalleryItemStyleOption;
+class ARibbonGalleryItemPrivate;
 
-/* RibbonGalleryItem */
-class QTITAN_EXPORT RibbonGalleryItem
+/* ARibbonGalleryItem */
+class APROCH_API ARibbonGalleryItem
 {
 public:
-    RibbonGalleryItem();
-    virtual ~RibbonGalleryItem();
+    ARibbonGalleryItem();
+    virtual ~ARibbonGalleryItem();
 public:
     virtual QSize sizeHint() const;
     void setSizeHint(const QSize& size);
@@ -68,55 +73,55 @@ public:
     bool isVisible() const;
     virtual QVariant data(int role) const;
     virtual void setData(int role, const QVariant& value);
-    virtual void draw(QPainter* p, RibbonGallery* gallery, QRect rectItem,
+    virtual void draw(QPainter* p, ARibbonGallery* gallery, QRect rectItem,
     bool enabled, bool selected, bool pressed, bool checked);
 private:
-    QTN_DECLARE_PRIVATE(RibbonGalleryItem)
-    Q_DISABLE_COPY(RibbonGalleryItem)
-    friend class RibbonGalleryGroup;
-    friend class RibbonGalleryGroupPrivate;
+    A_DECLARE_PRIVATE(ARibbonGalleryItem)
+    Q_DISABLE_COPY(ARibbonGalleryItem)
+    friend class ARibbonGalleryGroup;
+    friend class ARibbonGalleryGroupPrivate;
 };
 
-class RibbonGalleryGroupPrivate;
-class OfficePopupMenu;
-/* RibbonGalleryGroup */
-class QTITAN_EXPORT RibbonGalleryGroup : public QObject
+class ARibbonGalleryGroupPrivate;
+class AOfficePopupMenu;
+/* ARibbonGalleryGroup */
+class APROCH_API ARibbonGalleryGroup : public QObject
 {
     Q_OBJECT
 public:
-    RibbonGalleryGroup(QObject* parent = Q_NULL);
-    virtual ~RibbonGalleryGroup();
+    ARibbonGalleryGroup(QObject* parent = nullptr);
+    virtual ~ARibbonGalleryGroup();
 public:
-    RibbonGalleryItem* addItem(const QString& caption, const QPixmap& pixmap = QPixmap(), const QColor& transparentColor = QColor());
-    RibbonGalleryItem* addItemFromMap(const QString& caption, int mapIndex, const QPixmap& map, const QSize& mapSizeImage, const QColor& transparentColor = QColor());
+    ARibbonGalleryItem* addItem(const QString& caption, const QPixmap& pixmap = QPixmap(), const QColor& transparentColor = QColor());
+    ARibbonGalleryItem* addItemFromMap(const QString& caption, int mapIndex, const QPixmap& map, const QSize& mapSizeImage, const QColor& transparentColor = QColor());
 
-    void appendItem(RibbonGalleryItem* item);
-    void insertItem(int index, RibbonGalleryItem* item);
+    void appendItem(ARibbonGalleryItem* item);
+    void insertItem(int index, ARibbonGalleryItem* item);
 
-    RibbonGalleryItem* addSeparator(const QString& caption);
+    ARibbonGalleryItem* addSeparator(const QString& caption);
 
     void clear();
     void remove(int index);
 
     int itemCount() const;
-    RibbonGalleryItem* item(int index) const;
-    RibbonGalleryItem* takeItem(int index); 
+    ARibbonGalleryItem* item(int index) const;
+    ARibbonGalleryItem* takeItem(int index); 
 
     QSize size() const;
     void setSize(const QSize& size);
 public:
     void setClipItems(bool clipItems);
 private:
-    friend class RibbonGalleryItem;
-    friend class RibbonGallery;
-    friend class RibbonGalleryPrivate;
-    QTN_DECLARE_PRIVATE(RibbonGalleryGroup)
-    Q_DISABLE_COPY(RibbonGalleryGroup)
+    friend class ARibbonGalleryItem;
+    friend class ARibbonGallery;
+    friend class ARibbonGalleryPrivate;
+    A_DECLARE_PRIVATE(ARibbonGalleryGroup)
+    Q_DISABLE_COPY(ARibbonGalleryGroup)
 };
 
-class RibbonGalleryPrivate;
-/* RibbonGallery */
-class QTITAN_EXPORT RibbonGallery : public QWidget
+class ARibbonGalleryPrivate;
+/* ARibbonGallery */
+class APROCH_API ARibbonGallery : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(bool isBorderVisible READ isBorderVisible WRITE setBorderVisible)
@@ -128,11 +133,11 @@ class QTITAN_EXPORT RibbonGallery : public QWidget
     Q_PROPERTY(bool autoWidth READ autoWidth WRITE setAutoWidth)
 
 public:
-    RibbonGallery(QWidget* parent = Q_NULL);
-    virtual ~RibbonGallery();
+    ARibbonGallery(QWidget* parent = nullptr);
+    virtual ~ARibbonGallery();
 public:
-    void setGalleryGroup(RibbonGalleryGroup* items);
-    RibbonGalleryGroup* galleryGroup() const;
+    void setGalleryGroup(ARibbonGalleryGroup* items);
+    ARibbonGalleryGroup* galleryGroup() const;
 
     bool isBorderVisible() const;
     void setBorderVisible(bool visible);
@@ -148,8 +153,8 @@ public:
 
     void ensureVisible(int index);
 
-    QAction* setPopupMenu(OfficePopupMenu* popupMenu);
-    OfficePopupMenu* popupMenu() const;
+    QAction* setPopupMenu(AOfficePopupMenu* popupMenu);
+    AOfficePopupMenu* popupMenu() const;
 
     void setMinimumColumnCount(int count);
     int minimumColumnCount() const;
@@ -165,15 +170,15 @@ public:
 public:
     int itemCount() const;
 
-    RibbonGalleryItem* item(int index) const;
+    ARibbonGalleryItem* item(int index) const;
     void setSelectedItem(int index);
     int selectedItem() const;
 
     void setCheckedIndex(int index);
     int checkedIndex() const;
 
-    void setCheckedItem(const RibbonGalleryItem* item);
-    RibbonGalleryItem* checkedItem() const;
+    void setCheckedItem(const ARibbonGalleryItem* item);
+    ARibbonGalleryItem* checkedItem() const;
 
     bool isShowAsButton() const;
     bool isItemSelected() const;
@@ -185,17 +190,17 @@ public:
     bool autoWidth() const;
     void setAutoWidth(bool width);
 
-    int hitTestItem(QPoint point, QRect* rect = Q_NULL) const;
+    int hitTestItem(QPoint point, QRect* rect = nullptr) const;
 
     QRect getItemsRect() const;
     void hideSelection();
     void updatelayout();
     void bestFit();
 Q_SIGNALS:
-    void itemPressed(RibbonGalleryItem* item);
-    void itemClicked(RibbonGalleryItem* item);
-    void itemClicking(RibbonGalleryItem* item, bool& handled);
-    void currentItemChanged(RibbonGalleryItem* current, RibbonGalleryItem* previous);
+    void itemPressed(ARibbonGalleryItem* item);
+    void itemClicked(ARibbonGalleryItem* item);
+    void itemClicking(ARibbonGalleryItem* item, bool& handled);
+    void currentItemChanged(ARibbonGalleryItem* current, ARibbonGalleryItem* previous);
     void itemSelectionChanged();
 public:
     virtual void selectedItemChanged();
@@ -212,11 +217,9 @@ protected:
     virtual void focusOutEvent(QFocusEvent*);
     virtual void resizeEvent(QResizeEvent*);
 private:
-    friend class RibbonGalleryGroupPrivate;
-    QTN_DECLARE_PRIVATE(RibbonGallery)
-    Q_DISABLE_COPY(RibbonGallery)
+    friend class ARibbonGalleryGroupPrivate;
+    A_DECLARE_PRIVATE(ARibbonGallery)
+    Q_DISABLE_COPY(ARibbonGallery)
 };
 
-QTITAN_END_NAMESPACE
-
-#endif // QTN_RIBBONGALLERY_H
+APROCH_NAMESPACE_END

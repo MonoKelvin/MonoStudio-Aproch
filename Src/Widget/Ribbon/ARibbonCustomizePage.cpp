@@ -1,29 +1,32 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
+ * @file    ARibbonCustomizePage.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
 #include <QPainter>
 #include <QBitmap>
 #include <QRadioButton>
@@ -33,39 +36,42 @@
 #include <QPainterPath>
 #include <QWidgetAction>
 #include <QMessageBox>
+#include <QApplication>
 
-#include "QtnStyleOption.h"
-#include "QtnRibbonCustomizePage.h"
-#include "QtnRibbonCustomizeDialogPrivate.h"
-#include "QtnRibbonCustomizeManager.h"
-#include "QtnRibbonCustomizeManagerPrivate.h"
-#include "QtnRibbonQuickAccessBar.h"
-#include "QtnRibbonBar.h"   
-#include "QtnRibbonPage.h"
-#include "QtnRibbonGroup.h"
-#include "QtnStyleHelperPrivate.h"
-#include "ui_QtnRibbonRenameDialog.h"
+#include "Widget/Style/AStyleOption.h"
+#include "Widget/Style/AStyleHelper.h"
+#include "ARibbonCustomizePage.h"
+#include "ARibbonCustomizeDialog_p.h"
+#include "ARibbonCustomizeManager.h"
+#include "ARibbonCustomizeManager_p.h"
+#include "ARibbonQuickAccessBar.h"
+#include "ARibbonBar.h"   
+#include "ARibbonPage.h"
+#include "ARibbonGroup.h"
+#include "ARibbonDef.h"
+#include "ui_UI_RibbonRenameDialog.h"
 
-#include "QtnRibbonDef.h"
-#ifdef QTN_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
-QTITAN_USE_NAMESPACE
+APROCH_NAMESPACE_BEGIN
 
-
-/* RibbonCustomizeStyledItemDelegate */
-RibbonCustomizeStyledItemDelegate::RibbonCustomizeStyledItemDelegate(QListWidget* listWidget)
+/* ARibbonCustomizeStyledItemDelegate */
+ARibbonCustomizeStyledItemDelegate::ARibbonCustomizeStyledItemDelegate(QListWidget* listWidget)
     : QStyledItemDelegate(listWidget)
     , m_listWidget(listWidget)
 {
 }
 
-RibbonCustomizeStyledItemDelegate::~RibbonCustomizeStyledItemDelegate()
+ARibbonCustomizeStyledItemDelegate::~ARibbonCustomizeStyledItemDelegate()
 {
 }
 
-void RibbonCustomizeStyledItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void ARibbonCustomizeStyledItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     Q_ASSERT(index.isValid());
 
@@ -147,38 +153,38 @@ void RibbonCustomizeStyledItemDelegate::paint(QPainter* painter, const QStyleOpt
 }
 
 
-/* RibbonQuickAccessBarCustomizePagePrivate */
-RibbonQuickAccessBarCustomizePagePrivate::RibbonQuickAccessBarCustomizePagePrivate()
+/* ARibbonQuickAccessBarCustomizePagePrivate */
+ARibbonQuickAccessBarCustomizePagePrivate::ARibbonQuickAccessBarCustomizePagePrivate()
 {
-    m_ribbonBar = Q_NULL;
-    m_separator = Q_NULL;
-    m_currentAction = Q_NULL;
-    m_separatorText = RibbonBar::tr_compatible(QtnRibbonSeparatorString);
+    m_ribbonBar = nullptr;
+    m_separator = nullptr;
+    m_currentAction = nullptr;
+    m_separatorText = ARibbonBar::tr_compatible(RibbonSeparatorString);
     m_heightRowItem = 16;
     m_widthColIconItem = 20;
     m_widthColViewItem = 35;
     m_wasDisplayed = false;
 }
 
-RibbonQuickAccessBarCustomizePagePrivate::~RibbonQuickAccessBarCustomizePagePrivate()
+ARibbonQuickAccessBarCustomizePagePrivate::~ARibbonQuickAccessBarCustomizePagePrivate()
 {
     delete m_separator;
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::init()
+void ARibbonQuickAccessBarCustomizePagePrivate::init()
 {
-    QTN_P(RibbonQuickAccessBarCustomizePage)
-    Q_ASSERT(m_ribbonBar != Q_NULL);
+    A_P(ARibbonQuickAccessBarCustomizePage);
+    Q_ASSERT(m_ribbonBar != nullptr);
     m_pageUI.setupUi(&p);
 
     QAbstractItemDelegate* itemDelegate = m_pageUI.commandsList->itemDelegate();
-    m_pageUI.commandsList->setItemDelegate(new RibbonCustomizeStyledItemDelegate(m_pageUI.commandsList));
+    m_pageUI.commandsList->setItemDelegate(new ARibbonCustomizeStyledItemDelegate(m_pageUI.commandsList));
     delete itemDelegate;
 
     QSize sz = QSize(24, 24);
-    QPixmap m_imagesUpSrc = p.style()->standardPixmap(static_cast<QStyle::StandardPixmap>(CommonStyle::SP_RibbonShadedArrowUp), Q_NULL);
+    QPixmap m_imagesUpSrc = p.style()->standardPixmap(static_cast<QStyle::StandardPixmap>(ACommonStyle::SP_RibbonShadedArrowUp), nullptr);
     m_imagesUpSrc = m_imagesUpSrc.scaled(sz, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    QPixmap m_imagesDownSrc = p.style()->standardPixmap(static_cast<QStyle::StandardPixmap>(CommonStyle::SP_RibbonShadedArrowDown), Q_NULL);
+    QPixmap m_imagesDownSrc = p.style()->standardPixmap(static_cast<QStyle::StandardPixmap>(ACommonStyle::SP_RibbonShadedArrowDown), nullptr);
     m_imagesDownSrc = m_imagesDownSrc.scaled(sz, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     m_pageUI.upButton->setText(QString());
@@ -186,7 +192,7 @@ void RibbonQuickAccessBarCustomizePagePrivate::init()
     m_pageUI.downButton->setText(QString());
     m_pageUI.downButton->setIcon(m_imagesDownSrc);
 
-    m_separator = new QAction(m_separatorText, Q_NULL);
+    m_separator = new QAction(m_separatorText, nullptr);
     m_separator->setSeparator(true);
 
     initListWidgetCommands();
@@ -205,21 +211,21 @@ void RibbonQuickAccessBarCustomizePagePrivate::init()
     connect(m_pageUI.commandsList,       SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(currentCommandChanged(QListWidgetItem*)));
     connect(m_pageUI.quickAccessBarList, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(currentQTCommandChanged(QListWidgetItem*)));
 
-    m_pageUI.checkBoxQATOn->setChecked(m_ribbonBar->quickAccessBarPosition() != RibbonBar::TopPosition);
+    m_pageUI.checkBoxQATOn->setChecked(m_ribbonBar->quickAccessBarPosition() != ARibbonBar::TopPosition);
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::setupPage()
+void ARibbonQuickAccessBarCustomizePagePrivate::setupPage()
 {
-    Q_ASSERT(m_ribbonBar != Q_NULL);
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(m_ribbonBar != nullptr);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     manager->setEditMode(true);
-    m_pageUI.checkBoxQATOn->setChecked(m_ribbonBar->quickAccessBarPosition() != RibbonBar::TopPosition);
+    m_pageUI.checkBoxQATOn->setChecked(m_ribbonBar->quickAccessBarPosition() != ARibbonBar::TopPosition);
     fillActions();
     fillStateCommands();
     setButtons();
 }
 
-static QIcon qtn_createIconStyleWidget(QWidget* widget)
+static QIcon aproch_createIconStyleWidget(QWidget* widget)
 {
     if (qobject_cast<QCheckBox*>(widget) || qobject_cast<QRadioButton*>(widget))
     {
@@ -245,9 +251,9 @@ static QIcon qtn_createIconStyleWidget(QWidget* widget)
     return QIcon();
 }
 
-QIcon RibbonQuickAccessBarCustomizePagePrivate::createIconStyleWidget(QWidget* widget)
+QIcon ARibbonQuickAccessBarCustomizePagePrivate::createIconStyleWidget(QWidget* widget)
 {
-    return qtn_createIconStyleWidget(widget);
+    return aproch_createIconStyleWidget(widget);
 }
 
 class QtnHackToolButton : public QToolButton { public: void init(QStyleOptionToolButton* opt) { initStyleOption(opt); } };
@@ -259,9 +265,9 @@ class QtnHackLineEdit : public QLineEdit { public: void init(QStyleOptionFrame* 
 class QtnHackComboBox : public QComboBox { public: void init(QStyleOptionComboBox* opt) { initStyleOption(opt); } };
 class QtnHackSpinBox : public QSpinBox { public: QLineEdit* getlineEdit() { return lineEdit(); } };
 
-static QPixmap qtn_createIconExStyleWidget(QWidget* widget, int width, int height, bool& iconView)
+static QPixmap aproch_createIconExStyleWidget(QWidget* widget, int width, int height, bool& iconView)
 {
-    if (widget == Q_NULL)
+    if (widget == nullptr)
         return QPixmap();
 
     if (qobject_cast<QToolButton*>(widget))
@@ -321,7 +327,7 @@ static QPixmap qtn_createIconExStyleWidget(QWidget* widget, int width, int heigh
     }
     else if (QSpinBox* wd = qobject_cast<QSpinBox*>(widget))
     {
-        return qtn_createIconExStyleWidget(((QtnHackSpinBox*)wd)->getlineEdit(), width, height, iconView);
+        return aproch_createIconExStyleWidget(((QtnHackSpinBox*)wd)->getlineEdit(), width, height, iconView);
     }
     else if (QComboBox* cb = qobject_cast<QComboBox*>(widget))
     {
@@ -339,12 +345,12 @@ static QPixmap qtn_createIconExStyleWidget(QWidget* widget, int width, int heigh
     return QPixmap();
 }
 
-QPixmap RibbonQuickAccessBarCustomizePagePrivate::createIconExStyleWidget(QWidget* widget, bool& iconView)
+QPixmap ARibbonQuickAccessBarCustomizePagePrivate::createIconExStyleWidget(QWidget* widget, bool& iconView)
 {
-    return qtn_createIconExStyleWidget(widget, m_widthColViewItem, m_heightRowItem, iconView);
+    return aproch_createIconExStyleWidget(widget, m_widthColViewItem, m_heightRowItem, iconView);
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::initListWidgetCommands()
+void ARibbonQuickAccessBarCustomizePagePrivate::initListWidgetCommands()
 {
     QStyleOption opt;
     opt.initFrom(m_pageUI.commandsList);
@@ -354,22 +360,22 @@ void RibbonQuickAccessBarCustomizePagePrivate::initListWidgetCommands()
     m_heightRowItem = qMax(m_heightRowItem, width);
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::fillActions()
+void ARibbonQuickAccessBarCustomizePagePrivate::fillActions()
 {
     m_pageUI.comboBoxSourceCategory->clear();
     m_pageUI.comboBoxSourceCategory->addItems(m_sourceCategories);
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::fillStateCommands()
+void ARibbonQuickAccessBarCustomizePagePrivate::fillStateCommands()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
 
     m_pageUI.quickAccessBarList->clear();
 
     setButtons();
     QListIterator<QAction *> itAction(manager->actions(m_ribbonBar->quickAccessBar()));
-    QListWidgetItem* first = Q_NULL;
+    QListWidgetItem* first = nullptr;
 
     while (itAction.hasNext()) 
     {
@@ -399,7 +405,7 @@ void RibbonQuickAccessBarCustomizePagePrivate::fillStateCommands()
 
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::fillListCategorieCommads(const QList<QAction*>& actions)
+void ARibbonQuickAccessBarCustomizePagePrivate::fillListCategorieCommads(const QList<QAction*>& actions)
 {
     m_pageUI.commandsList->clear();
     m_actionToItem.clear();
@@ -424,9 +430,9 @@ void RibbonQuickAccessBarCustomizePagePrivate::fillListCategorieCommads(const QL
     m_pageUI.commandsList->setCurrentItem(m_currentAction);
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::setButtons()
+void ARibbonQuickAccessBarCustomizePagePrivate::setButtons()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
 
     bool addEnabled = false;
@@ -458,17 +464,17 @@ void RibbonQuickAccessBarCustomizePagePrivate::setButtons()
     m_pageUI.downButton->setEnabled(indexRow < m_pageUI.quickAccessBarList->count()-1);
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::applyClicked()
+void ARibbonQuickAccessBarCustomizePagePrivate::applyClicked()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
     manager->commit();
 
     if (m_ribbonBar->quickAccessBar() && !m_ribbonBar->quickAccessBar()->isHidden())
-        m_ribbonBar->setQuickAccessBarPosition( m_pageUI.checkBoxQATOn->isChecked() ? RibbonBar::BottomPosition : RibbonBar::TopPosition);
+        m_ribbonBar->setQuickAccessBarPosition( m_pageUI.checkBoxQATOn->isChecked() ? ARibbonBar::BottomPosition : ARibbonBar::TopPosition);
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::setCurrentCategoryText(const QString& strCategory)
+void ARibbonQuickAccessBarCustomizePagePrivate::setCurrentCategoryText(const QString& strCategory)
 {
     if (strCategory.isEmpty())
         return;
@@ -484,32 +490,32 @@ void RibbonQuickAccessBarCustomizePagePrivate::setCurrentCategoryText(const QStr
 #endif
         return;
     }
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     QList<QAction*> actions = manager->actionsByCategory(strCategory);
     fillListCategorieCommads(actions);
     m_currentSourceCategory = strCategory;
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::currentCommandChanged(QListWidgetItem* current)
+void ARibbonQuickAccessBarCustomizePagePrivate::currentCommandChanged(QListWidgetItem* current)
 {
     if (m_itemToAction.contains(current))
         m_currentAction = current;
     else
-        m_currentAction = Q_NULL;
+        m_currentAction = nullptr;
     setButtons();
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::currentQTCommandChanged(QListWidgetItem* current)
+void ARibbonQuickAccessBarCustomizePagePrivate::currentQTCommandChanged(QListWidgetItem* current)
 {
     Q_UNUSED(current);
     setButtons();
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::addClicked()
+void ARibbonQuickAccessBarCustomizePagePrivate::addClicked()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
 
     if (!m_currentAction)
@@ -518,7 +524,7 @@ void RibbonQuickAccessBarCustomizePagePrivate::addClicked()
     QListWidgetItem* currentToolBarAction = m_pageUI.quickAccessBarList->currentItem();
 
     QAction* action = m_itemToAction.value(m_currentAction);
-    QListWidgetItem* item = Q_NULL;
+    QListWidgetItem* item = nullptr;
     if (action) 
     {
         if (manager->containsAction(m_ribbonBar->quickAccessBar(), action)) 
@@ -564,9 +570,9 @@ void RibbonQuickAccessBarCustomizePagePrivate::addClicked()
     setButtons();
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::removeClicked()
+void ARibbonQuickAccessBarCustomizePagePrivate::removeClicked()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
 
     QListWidgetItem* currentToolBarAction = m_pageUI.quickAccessBarList->currentItem();
@@ -595,21 +601,21 @@ void RibbonQuickAccessBarCustomizePagePrivate::removeClicked()
     setButtons();
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::resetClicked()
+void ARibbonQuickAccessBarCustomizePagePrivate::resetClicked()
 {
-    if (RibbonQuickAccessBar* quickAccessBar = m_ribbonBar->quickAccessBar())
+    if (ARibbonQuickAccessBar* quickAccessBar = m_ribbonBar->quickAccessBar())
     {
-        RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-        Q_ASSERT(manager != Q_NULL);
+        ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+        Q_ASSERT(manager != nullptr);
         manager->reset(quickAccessBar);
         fillStateCommands();
     }
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::upClicked()
+void ARibbonQuickAccessBarCustomizePagePrivate::upClicked()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     QListWidgetItem* currentToolBarAction = m_pageUI.quickAccessBarList->currentItem();
     if (!currentToolBarAction)
@@ -628,10 +634,10 @@ void RibbonQuickAccessBarCustomizePagePrivate::upClicked()
     setButtons();
 }
 
-void RibbonQuickAccessBarCustomizePagePrivate::downClicked()
+void ARibbonQuickAccessBarCustomizePagePrivate::downClicked()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     QListWidgetItem *currentToolBarAction = m_pageUI.quickAccessBarList->currentItem();
     if (!currentToolBarAction)
@@ -650,38 +656,38 @@ void RibbonQuickAccessBarCustomizePagePrivate::downClicked()
 }
 
 
-/*RibbonQuickAccessBarCustomizePage*/
-RibbonQuickAccessBarCustomizePage::RibbonQuickAccessBarCustomizePage(RibbonBar* ribbonBar)
-    : QWidget(Q_NULL)
+/*ARibbonQuickAccessBarCustomizePage*/
+ARibbonQuickAccessBarCustomizePage::ARibbonQuickAccessBarCustomizePage(ARibbonBar* ribbonBar)
+    : QWidget(nullptr)
 {
-    QTN_INIT_PRIVATE(RibbonQuickAccessBarCustomizePage);
-    QTN_D(RibbonQuickAccessBarCustomizePage)
+    A_INIT_PRIVATE(ARibbonQuickAccessBarCustomizePage);
+    A_D(ARibbonQuickAccessBarCustomizePage);
     d.m_ribbonBar = ribbonBar;
     d.init();
 }
 
-RibbonQuickAccessBarCustomizePage::~RibbonQuickAccessBarCustomizePage()
+ARibbonQuickAccessBarCustomizePage::~ARibbonQuickAccessBarCustomizePage()
 {
-    QTN_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
-RibbonBar* RibbonQuickAccessBarCustomizePage::ribbonBar() const
+ARibbonBar* ARibbonQuickAccessBarCustomizePage::ribbonBar() const
 {
-    QTN_D(const RibbonQuickAccessBarCustomizePage)
+    A_D(const ARibbonQuickAccessBarCustomizePage);
     return d.m_ribbonBar;
 }
 
-void RibbonQuickAccessBarCustomizePage::addCustomCategory(const QString& strCategory)
+void ARibbonQuickAccessBarCustomizePage::addCustomCategory(const QString& strCategory)
 {
-    QTN_D(RibbonQuickAccessBarCustomizePage)
+    A_D(ARibbonQuickAccessBarCustomizePage);
     QString str = strCategory;
     str.remove(QStringLiteral("&"));
     d.m_sourceCategories.append(str);
 }
 
-void RibbonQuickAccessBarCustomizePage::addSeparatorCategory(const QString& strCategory)
+void ARibbonQuickAccessBarCustomizePage::addSeparatorCategory(const QString& strCategory)
 {
-    QTN_D(RibbonQuickAccessBarCustomizePage)
+    A_D(ARibbonQuickAccessBarCustomizePage);
 
     QString separator = strCategory;
     if (separator.isEmpty())
@@ -691,37 +697,37 @@ void RibbonQuickAccessBarCustomizePage::addSeparatorCategory(const QString& strC
     d.m_sourceCategories.append(separator);
 }
 
-void RibbonQuickAccessBarCustomizePage::accepted()
+void ARibbonQuickAccessBarCustomizePage::accepted()
 {
-    QTN_D(RibbonQuickAccessBarCustomizePage)
+    A_D(ARibbonQuickAccessBarCustomizePage);
     if (d.m_wasDisplayed)
         d.applyClicked();
 }
 
-void RibbonQuickAccessBarCustomizePage::showEvent(QShowEvent* event)
+void ARibbonQuickAccessBarCustomizePage::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    QTN_D(RibbonQuickAccessBarCustomizePage)
+    A_D(ARibbonQuickAccessBarCustomizePage);
     d.m_wasDisplayed = true;
     d.setupPage();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/* RibbonBarCustomizePagePrivate */
-RibbonBarCustomizePagePrivate::RibbonBarCustomizePagePrivate()
+/* ARibbonBarCustomizePagePrivate */
+ARibbonBarCustomizePagePrivate::ARibbonBarCustomizePagePrivate()
 {
-    m_ribbonBar = Q_NULL;
-    m_currentSourceItemPage = Q_NULL;
-    m_currentSourceItemGroup = Q_NULL;
-    m_currentSourceAction = Q_NULL;
-    m_currentItemPage = Q_NULL;
-    m_currentItemGroup = Q_NULL;
-    m_currentItemAction = Q_NULL;
-    m_sufNameCustom = QStringLiteral(" (×Ô¶¨Òå)");
+    m_ribbonBar = nullptr;
+    m_currentSourceItemPage = nullptr;
+    m_currentSourceItemGroup = nullptr;
+    m_currentSourceAction = nullptr;
+    m_currentItemPage = nullptr;
+    m_currentItemGroup = nullptr;
+    m_currentItemAction = nullptr;
+    m_sufNameCustom = QStringLiteral(" (è‡ªå®šä¹‰)");
     m_wasDisplayed = false;
 }
 
-RibbonBarCustomizePagePrivate::~RibbonBarCustomizePagePrivate()
+ARibbonBarCustomizePagePrivate::~ARibbonBarCustomizePagePrivate()
 {
 }
 
@@ -729,7 +735,7 @@ RibbonBarCustomizePagePrivate::~RibbonBarCustomizePagePrivate()
 class RibbonCustomizeRibbonStyledItemDelegate : public QStyledItemDelegate
 {
 public:
-    explicit RibbonCustomizeRibbonStyledItemDelegate(QObject* parent = Q_NULL)
+    explicit RibbonCustomizeRibbonStyledItemDelegate(QObject* parent = nullptr)
         : QStyledItemDelegate(parent)
     {
     }
@@ -762,10 +768,10 @@ protected:
     QList<QString> m_lstCaption;
 };
 
-void RibbonBarCustomizePagePrivate::init()
+void ARibbonBarCustomizePagePrivate::init()
 {
-    QTN_P(RibbonBarCustomizePage)
-    Q_ASSERT(m_ribbonBar != Q_NULL);
+    A_P(ARibbonBarCustomizePage);
+    Q_ASSERT(m_ribbonBar != nullptr);
     m_pageUI.setupUi(&p);
 
     m_pageUI.treeCommands->setItemDelegate(new RibbonCustomizeRibbonStyledItemDelegate(m_pageUI.treeCommands));
@@ -773,9 +779,9 @@ void RibbonBarCustomizePagePrivate::init()
     m_pageUI.switchTabsBox->setVisible(false);
 
     QSize sz = QSize(24, 24);
-    QPixmap m_imagesUpSrc = p.style()->standardPixmap(static_cast<QStyle::StandardPixmap>(CommonStyle::SP_RibbonShadedArrowUp), Q_NULL);
+    QPixmap m_imagesUpSrc = p.style()->standardPixmap(static_cast<QStyle::StandardPixmap>(ACommonStyle::SP_RibbonShadedArrowUp), nullptr);
     m_imagesUpSrc = m_imagesUpSrc.scaled(sz, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    QPixmap m_imagesDownSrc = p.style()->standardPixmap(static_cast<QStyle::StandardPixmap>(CommonStyle::SP_RibbonShadedArrowDown), Q_NULL);
+    QPixmap m_imagesDownSrc = p.style()->standardPixmap(static_cast<QStyle::StandardPixmap>(ACommonStyle::SP_RibbonShadedArrowDown), nullptr);
     m_imagesDownSrc = m_imagesDownSrc.scaled(sz, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     m_pageUI.upButton->setText(QString());
@@ -804,11 +810,11 @@ void RibbonBarCustomizePagePrivate::init()
     connect(m_pageUI.treeRibbon,   SIGNAL(itemChanged(QTreeWidgetItem*,int)), this, SLOT(itemPageChanged(QTreeWidgetItem*,int)) );
 }
 
-void RibbonBarCustomizePagePrivate::setupPage()
+void ARibbonBarCustomizePagePrivate::setupPage()
 {
-    Q_ASSERT(m_ribbonBar != Q_NULL);
+    Q_ASSERT(m_ribbonBar != nullptr);
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     if (!manager->isEditMode())
         manager->setEditMode();
     fillSourceCategories();
@@ -816,9 +822,9 @@ void RibbonBarCustomizePagePrivate::setupPage()
     fillStateCategories();
 }
 #if 0
-void RibbonBarCustomizePagePrivate::setCategoryCaptionTree(QTreeWidget* tree, const QString& strCategory)
+void ARibbonBarCustomizePagePrivate::setCategoryCaptionTree(QTreeWidget* tree, const QString& strCategory)
 {
-    QTN_P(RibbonBarCustomizePage)
+    A_P(ARibbonBarCustomizePage)
     if (!strCategory.isEmpty())
     {
         QTreeWidgetItem* item = new QTreeWidgetItem(tree, QStringList(strCategory));
@@ -828,20 +834,20 @@ void RibbonBarCustomizePagePrivate::setCategoryCaptionTree(QTreeWidget* tree, co
         item->setFont(0, font);
         item->setBackground(0, QColor(238, 238, 238));
         RibbonCustomizeRibbonStyledItemDelegate* ribbonStyledItemDelegate = qobject_cast<RibbonCustomizeRibbonStyledItemDelegate*>(tree->itemDelegate());
-        Q_ASSERT(ribbonStyledItemDelegate != Q_NULL);
+        Q_ASSERT(ribbonStyledItemDelegate != nullptr);
         ribbonStyledItemDelegate->addCaption(strCategory);
     }
 }
 #endif
 
-void RibbonBarCustomizePagePrivate::clearCategoryCaptionTree(QTreeWidget* tree)
+void ARibbonBarCustomizePagePrivate::clearCategoryCaptionTree(QTreeWidget* tree)
 {
     RibbonCustomizeRibbonStyledItemDelegate* ribbonStyledItemDelegate = static_cast<RibbonCustomizeRibbonStyledItemDelegate*>(tree->itemDelegate());
-    Q_ASSERT(ribbonStyledItemDelegate != Q_NULL);
+    Q_ASSERT(ribbonStyledItemDelegate != nullptr);
     ribbonStyledItemDelegate->clearCaptions();
 }
 
-void RibbonBarCustomizePagePrivate::fillSourceCategories()
+void ARibbonBarCustomizePagePrivate::fillSourceCategories()
 {
     m_pageUI.comboBoxSourceCategory->clear();
     m_pageUI.comboBoxSourceCategory->addItems(m_sourceCategories);
@@ -849,14 +855,14 @@ void RibbonBarCustomizePagePrivate::fillSourceCategories()
         m_pageUI.comboBoxSourceCategory->setCurrentIndex(0);
 }
 
-void RibbonBarCustomizePagePrivate::fillSourceActions(QList<QAction*>& actions, QTreeWidgetItem* parentItem)
+void ARibbonBarCustomizePagePrivate::fillSourceActions(QList<QAction*>& actions, QTreeWidgetItem* parentItem)
 {
-    QTreeWidgetItem* first = Q_NULL;
+    QTreeWidgetItem* first = nullptr;
     QListIterator<QAction*> itAction(actions);
     while (itAction.hasNext()) 
     {
         QAction* action = itAction.next();
-        if (action == Q_NULL)
+        if (action == nullptr)
             continue;
 
         QString actionName = action->text();
@@ -864,7 +870,7 @@ void RibbonBarCustomizePagePrivate::fillSourceActions(QList<QAction*>& actions, 
 
         if (!actionName.isEmpty())
         {
-            QTreeWidgetItem* item = Q_NULL;
+            QTreeWidgetItem* item = nullptr;
             if (parentItem)
                 item = new QTreeWidgetItem(parentItem, QStringList(actionName));
             else
@@ -880,21 +886,21 @@ void RibbonBarCustomizePagePrivate::fillSourceActions(QList<QAction*>& actions, 
         }
     }
 
-    if (first != Q_NULL)
+    if (first != nullptr)
         m_pageUI.treeCommands->setCurrentItem(first);
 }
 
-void RibbonBarCustomizePagePrivate::fillSourcePages(QList<RibbonPage*>& pages, const QString& strCategory)
+void ARibbonBarCustomizePagePrivate::fillSourcePages(QList<ARibbonPage*>& pages, const QString& strCategory)
 {
     Q_UNUSED(strCategory);
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
-    RibbonBarCustomizeEngine* customizeEngine = manager->qtn_d().m_customizeEngine;
+    ARibbonBarCustomizeEngine* customizeEngine = manager->aproch_d().m_customizeEngine;
 
-    QListIterator<RibbonPage*> itPage(pages);
+    QListIterator<ARibbonPage*> itPage(pages);
     while (itPage.hasNext()) 
     {
-        RibbonPage* page = itPage.next();
+        ARibbonPage* page = itPage.next();
 
         if (!customizeEngine->defaultPageName(page).isEmpty())
         {
@@ -909,14 +915,14 @@ void RibbonBarCustomizePagePrivate::fillSourcePages(QList<RibbonPage*>& pages, c
     }
 }
 
-void RibbonBarCustomizePagePrivate::fillSourceGroups(RibbonPage* page, QTreeWidgetItem* parentItem)
+void ARibbonBarCustomizePagePrivate::fillSourceGroups(ARibbonPage* page, QTreeWidgetItem* parentItem)
 {
-    Q_ASSERT(page != Q_NULL);
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(page != nullptr);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
-    RibbonBarCustomizeEngine* customizeEngine = manager->qtn_d().m_customizeEngine;
+    ARibbonBarCustomizeEngine* customizeEngine = manager->aproch_d().m_customizeEngine;
 
-    QList< RibbonGroup* > listGroup = customizeEngine->pageDefaultGroups(page);
+    QList< ARibbonGroup* > listGroup = customizeEngine->pageDefaultGroups(page);
     for (int i = 0, count = listGroup.count(); count > i; ++i)
     {
         QString groupTitle = customizeEngine->defaultGroupName(listGroup[i]);
@@ -930,10 +936,10 @@ void RibbonBarCustomizePagePrivate::fillSourceGroups(RibbonPage* page, QTreeWidg
     }
 }
 
-void RibbonBarCustomizePagePrivate::fillSourceGroupActions(RibbonGroup* group, QTreeWidgetItem* parentItem)
+void ARibbonBarCustomizePagePrivate::fillSourceGroupActions(ARibbonGroup* group, QTreeWidgetItem* parentItem)
 {
-    Q_ASSERT(group != Q_NULL);
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(group != nullptr);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
 
     QListIterator<QAction *> itAction(manager->actionsGroup(group));
@@ -955,9 +961,9 @@ void RibbonBarCustomizePagePrivate::fillSourceGroupActions(RibbonGroup* group, Q
     }
 }
 
-void RibbonBarCustomizePagePrivate::fillStateCategories()
+void ARibbonBarCustomizePagePrivate::fillStateCategories()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     QStringList listCommands = manager->categories();
 
     QListIterator<QString> itAction(listCommands);
@@ -974,31 +980,31 @@ void RibbonBarCustomizePagePrivate::fillStateCategories()
         m_pageUI.switchTabsBox->setCurrentIndex(0);
 }
 
-void RibbonBarCustomizePagePrivate::fillStateRibbon(const QString& strCategory)
+void ARibbonBarCustomizePagePrivate::fillStateRibbon(const QString& strCategory)
 {
     Q_UNUSED(strCategory);
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     m_pageUI.treeRibbon->clear();
     m_pageToCurrentItem.clear();
     m_currentItemToPage.clear();
     m_currentItemToGroup.clear();
 
-    QList<RibbonPage*> pages = manager->pages();
-    QListIterator<RibbonPage*> itPages(pages);
-    QTreeWidgetItem* first = Q_NULL;
+    QList<ARibbonPage*> pages = manager->pages();
+    QListIterator<ARibbonPage*> itPages(pages);
+    QTreeWidgetItem* first = nullptr;
 
     while (itPages.hasNext()) 
     {
-        if (RibbonPage* page = itPages.next())
+        if (ARibbonPage* page = itPages.next())
         {
             QString pageTitle = !manager->pageName(page).isEmpty() ? manager->pageName(page) : page->title();
             pageTitle.remove(QStringLiteral("&"));
 
             if (!pageTitle.isEmpty())
             {
-                if (page->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Page_Custom"))
+                if (page->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Page_Custom"))
                     pageTitle += m_sufNameCustom;
 
                 QStringList stringsPage;
@@ -1030,24 +1036,24 @@ void RibbonBarCustomizePagePrivate::fillStateRibbon(const QString& strCategory)
     }
 }
 
-void RibbonBarCustomizePagePrivate::fillStateGroups(RibbonPage* page, QTreeWidgetItem* itemParent)
+void ARibbonBarCustomizePagePrivate::fillStateGroups(ARibbonPage* page, QTreeWidgetItem* itemParent)
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
-    QList<RibbonGroup*> groups = manager->pageGroups(page);
-    QListIterator<RibbonGroup*> itGroups(groups);
+    QList<ARibbonGroup*> groups = manager->pageGroups(page);
+    QListIterator<ARibbonGroup*> itGroups(groups);
 
     while (itGroups.hasNext()) 
     {
-        RibbonGroup* group = itGroups.next();
+        ARibbonGroup* group = itGroups.next();
         QString groupTitle = !manager->groupName(group).isEmpty() ? manager->groupName(group) : group->title();
 
         groupTitle.remove(QStringLiteral("&"));
 
         if (!groupTitle.isEmpty())
         {
-            if (group->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Group_Custom"))
+            if (group->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Group_Custom"))
                 groupTitle += m_sufNameCustom;
 
             QStringList stringsGroup;
@@ -1059,11 +1065,11 @@ void RibbonBarCustomizePagePrivate::fillStateGroups(RibbonPage* page, QTreeWidge
     }
 }
 
-void RibbonBarCustomizePagePrivate::fillStateActions(RibbonGroup* group, QTreeWidgetItem* itemParent, bool newGroup)
+void ARibbonBarCustomizePagePrivate::fillStateActions(ARibbonGroup* group, QTreeWidgetItem* itemParent, bool newGroup)
 {
-    Q_ASSERT(group != Q_NULL);
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    Q_ASSERT(group != nullptr);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     for (int i = itemParent->childCount() - 1; i >= 0; --i) 
     {
@@ -1074,7 +1080,7 @@ void RibbonBarCustomizePagePrivate::fillStateActions(RibbonGroup* group, QTreeWi
         delete item;
     }
 
-    bool isCustomGroup = group->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Group_Custom");
+    bool isCustomGroup = group->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Group_Custom");
     QListIterator<QAction *> itAction(newGroup ? group->actions() : manager->actionsGroup(group));
     while (itAction.hasNext()) 
     {
@@ -1110,21 +1116,21 @@ void RibbonBarCustomizePagePrivate::fillStateActions(RibbonGroup* group, QTreeWi
         manager->appendActions(group, manager->actionsGroup(group));
 }
 
-RibbonPage* RibbonBarCustomizePagePrivate::addPageCustom(RibbonPage* srcPage)
+ARibbonPage* ARibbonBarCustomizePagePrivate::addPageCustom(ARibbonPage* srcPage)
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
-    QString strNewPage(RibbonBar::tr_compatible(QtnRibbonNewPageString));
+    QString strNewPage(ARibbonBar::tr_compatible(RibbonNewPageString));
     if (srcPage)
     {
         strNewPage = srcPage->title();
         strNewPage.remove(QLatin1Char('&'));
     }
 
-    RibbonPage* findPage = m_currentItemToPage.value(m_currentItemPage);
+    ARibbonPage* findPage = m_currentItemToPage.value(m_currentItemPage);
     int index = manager->pageIndex(findPage) + 1;
-    RibbonPage* newPage = manager->createPage(strNewPage, index);
+    ARibbonPage* newPage = manager->createPage(strNewPage, index);
 
     QTreeWidgetItem* item = new QTreeWidgetItem(m_pageUI.treeRibbon, m_currentItemPage);
     item->setCheckState(0, Qt::Checked);
@@ -1138,24 +1144,24 @@ RibbonPage* RibbonBarCustomizePagePrivate::addPageCustom(RibbonPage* srcPage)
     return newPage;
 }
 
-void RibbonBarCustomizePagePrivate::addGroupCopy(RibbonPage* srcPage, RibbonPage* copyPage)
+void ARibbonBarCustomizePagePrivate::addGroupCopy(ARibbonPage* srcPage, ARibbonPage* copyPage)
 {
     if (!m_currentItemPage)
         return;
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
-    QList<RibbonGroup*> srcGroups = srcPage->groups();
+    QList<ARibbonGroup*> srcGroups = srcPage->groups();
     for (int i = 0, count = srcGroups.count(); count > i; ++i)
     {
-        RibbonGroup* srcGroup = srcGroups.at(i);
-        if (srcGroup->property(__qtn_Widget_Copy).toString() != QStringLiteral("__qtn_Group_Copy"))
+        ARibbonGroup* srcGroup = srcGroups.at(i);
+        if (srcGroup->property(__aproch_Widget_Copy).toString() != QStringLiteral("__aproch_Group_Copy"))
         {
             QString titleGroup(srcGroup->title());
-            RibbonGroup* newGroup = manager->createGroup(copyPage, titleGroup, i);
+            ARibbonGroup* newGroup = manager->createGroup(copyPage, titleGroup, i);
             newGroup->setIcon(srcGroup->icon());
-            newGroup->setProperty(__qtn_Widget_Copy, QStringLiteral("__qtn_Group_Copy"));
+            newGroup->setProperty(__aproch_Widget_Copy, QStringLiteral("__aproch_Group_Copy"));
 
             titleGroup.remove(QStringLiteral("&"));
             QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(titleGroup));
@@ -1174,17 +1180,17 @@ void RibbonBarCustomizePagePrivate::addGroupCopy(RibbonPage* srcPage, RibbonPage
     }
 }
 
-void RibbonBarCustomizePagePrivate::addActionGroupCustom(RibbonGroup* group, QAction* action, int index)
+void ARibbonBarCustomizePagePrivate::addActionGroupCustom(ARibbonGroup* group, QAction* action, int index)
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     QString actionName = action->text();
     actionName.remove(QStringLiteral("&"));
 
     if (!actionName.isEmpty())
     {
-        QTreeWidgetItem* item = Q_NULL;
+        QTreeWidgetItem* item = nullptr;
         if (index == -1)
             item = new QTreeWidgetItem(m_currentItemGroup, QStringList(actionName));
         else
@@ -1203,18 +1209,18 @@ void RibbonBarCustomizePagePrivate::addActionGroupCustom(RibbonGroup* group, QAc
     }
 }
 
-void RibbonBarCustomizePagePrivate::setButtons()
+void ARibbonBarCustomizePagePrivate::setButtons()
 {
     bool addEnabled = false;
     bool removeEnabled = false;
     bool renameEnabled = false;
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     if (m_currentSourceAction) 
     {
-        if (RibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup))
+        if (ARibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup))
         {
             if (QAction* action = m_currentSourceItemToAction.value(m_currentSourceAction))
                 addEnabled = !manager->containsAction(group, action);
@@ -1224,21 +1230,21 @@ void RibbonBarCustomizePagePrivate::setButtons()
         addEnabled = true;
     else if (m_currentSourceItemGroup)
     {
-        RibbonPage* currentSourcePage = m_currentSourceItemToPage.value(m_currentSourceItemPage);
-        RibbonPage* currentPage = m_currentItemToPage.value(m_currentItemPage);
+        ARibbonPage* currentSourcePage = m_currentSourceItemToPage.value(m_currentSourceItemPage);
+        ARibbonPage* currentPage = m_currentItemToPage.value(m_currentItemPage);
         if (currentSourcePage && currentPage)
         {
             if (currentSourcePage != currentPage)
             {
-                RibbonGroup* group = m_currentSourceItemToGroup.value(m_currentSourceItemGroup);
+                ARibbonGroup* group = m_currentSourceItemToGroup.value(m_currentSourceItemGroup);
                 QList<QAction*> listActions = manager->actionsGroup(group);//group->actions();
 
-                QList<RibbonGroup*> listGroup = manager->pageGroups(currentPage);
-                QListIterator<RibbonGroup*> itGroup(listGroup);
+                QList<ARibbonGroup*> listGroup = manager->pageGroups(currentPage);
+                QListIterator<ARibbonGroup*> itGroup(listGroup);
                 bool find = false;
                 while (itGroup.hasNext()) 
                 {
-                    RibbonGroup* currentGroup = itGroup.next();
+                    ARibbonGroup* currentGroup = itGroup.next();
                     QList<QAction*> currentListActions = currentGroup->actions();
 
                     if (listActions == currentListActions)
@@ -1255,8 +1261,8 @@ void RibbonBarCustomizePagePrivate::setButtons()
 
     if (m_currentItemAction && m_currentItemGroup)
     {
-        RibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup);
-        if (group && group->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Group_Custom"))
+        ARibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup);
+        if (group && group->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Group_Custom"))
             removeEnabled = true;
     }
     else if (m_currentItemGroup)
@@ -1267,8 +1273,8 @@ void RibbonBarCustomizePagePrivate::setButtons()
     else if (m_currentItemPage)
     {
         renameEnabled = _bEnableRenamePage;
-        RibbonPage* currentPage = m_currentItemToPage.value(m_currentItemPage);
-        if (currentPage && currentPage->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Page_Custom"))
+        ARibbonPage* currentPage = m_currentItemToPage.value(m_currentItemPage);
+        if (currentPage && currentPage->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Page_Custom"))
             removeEnabled = true;
     }
 
@@ -1281,12 +1287,12 @@ void RibbonBarCustomizePagePrivate::setButtons()
 
     if (m_currentItemPage && m_currentItemGroup)
     {
-        RibbonPage* currentPage = m_currentItemToPage.value(m_currentItemPage);
-        Q_ASSERT(currentPage != Q_NULL);
-        RibbonGroup* currentGroup =  m_currentItemToGroup.value(m_currentItemGroup);
-        Q_ASSERT(currentGroup != Q_NULL);
+        ARibbonPage* currentPage = m_currentItemToPage.value(m_currentItemPage);
+        Q_ASSERT(currentPage != nullptr);
+        ARibbonGroup* currentGroup =  m_currentItemToGroup.value(m_currentItemGroup);
+        Q_ASSERT(currentGroup != nullptr);
 
-        QList<RibbonGroup*> groups = manager->pageGroups(currentPage);
+        QList<ARibbonGroup*> groups = manager->pageGroups(currentPage);
 
         int index = groups.indexOf(currentGroup);
         upEnabled = index != 0;
@@ -1323,19 +1329,19 @@ void RibbonBarCustomizePagePrivate::setButtons()
     m_pageUI.downButton->setEnabled(downEnabled);
 }
 
-void RibbonBarCustomizePagePrivate::applyClicked()
+void ARibbonBarCustomizePagePrivate::applyClicked()
 {
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
     manager->commit();
 }
 
-void RibbonBarCustomizePagePrivate::cancelClicked()
+void ARibbonBarCustomizePagePrivate::cancelClicked()
 {
     m_ribbonBar->customizeManager()->cancel();
 }
 
-void RibbonBarCustomizePagePrivate::enableVisualizePage(bool bEnable)
+void ARibbonBarCustomizePagePrivate::enableVisualizePage(bool bEnable)
 {
     _bEnableVisualizePage = bEnable;
 
@@ -1362,7 +1368,7 @@ void RibbonBarCustomizePagePrivate::enableVisualizePage(bool bEnable)
     }
 }
 
-void RibbonBarCustomizePagePrivate::enableAddPage(bool bEnable)
+void ARibbonBarCustomizePagePrivate::enableAddPage(bool bEnable)
 {
     if (m_pageUI.newTabButton == nullptr)
         return;
@@ -1370,7 +1376,7 @@ void RibbonBarCustomizePagePrivate::enableAddPage(bool bEnable)
     m_pageUI.newTabButton->setEnabled(bEnable);
 }
 
-void RibbonBarCustomizePagePrivate::enableRenamePage(bool bEnable)
+void ARibbonBarCustomizePagePrivate::enableRenamePage(bool bEnable)
 {
     if (m_pageUI.renameButton == nullptr)
         return;
@@ -1378,19 +1384,19 @@ void RibbonBarCustomizePagePrivate::enableRenamePage(bool bEnable)
     _bEnableRenamePage = bEnable;
 }
 
-void RibbonBarCustomizePagePrivate::enableMovePage(bool bEnable)
+void ARibbonBarCustomizePagePrivate::enableMovePage(bool bEnable)
 {
     _bEnableMove = bEnable;
 }
 
-void RibbonBarCustomizePagePrivate::addClicked()
+void ARibbonBarCustomizePagePrivate::addClicked()
 {
-    QTN_P(RibbonBarCustomizePage)
+    A_P(ARibbonBarCustomizePage);
 
     if (m_currentSourceAction && m_currentItemGroup)
     {
-        RibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup);
-        if (group && group->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Group_Custom"))
+        ARibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup);
+        if (group && group->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Group_Custom"))
         {
             if (QAction* action = m_currentSourceItemToAction.value(m_currentSourceAction))
             {
@@ -1426,39 +1432,39 @@ void RibbonBarCustomizePagePrivate::addClicked()
         }
         else
         {
-            QMessageBox::warning(&p, p.windowTitle(), RibbonBar::tr_compatible(QtnRibbonAddCommandWarningString));
+            QMessageBox::warning(&p, p.windowTitle(), ARibbonBar::tr_compatible(RibbonAddCommandWarningString));
         }
     }
     else if (!m_currentSourceItemGroup)
     {
-        if (RibbonPage* page = m_currentSourceItemToPage.value(m_currentSourceItemPage))
+        if (ARibbonPage* page = m_currentSourceItemToPage.value(m_currentSourceItemPage))
         {
             int index = m_pageUI.treeCommands->indexOfTopLevelItem(m_currentSourceItemPage);
             QTreeWidgetItem* item = m_pageUI.treeCommands->topLevelItem(index + 1);
             item = item ? item : m_currentSourceItemPage;
             m_pageUI.treeCommands->setCurrentItem(item);
 
-            RibbonPage* newPage = addPageCustom(page);
+            ARibbonPage* newPage = addPageCustom(page);
             if (newPage)
                 addGroupCopy(page, newPage);
         }
     }
     else if (m_currentSourceItemGroup)
     {
-        RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-        Q_ASSERT(manager != Q_NULL);
+        ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+        Q_ASSERT(manager != nullptr);
 
-        RibbonGroup* group = m_currentSourceItemToGroup.value(m_currentSourceItemGroup);
-        RibbonPage* page = m_currentItemToPage.value(m_currentItemPage);
+        ARibbonGroup* group = m_currentSourceItemToGroup.value(m_currentSourceItemGroup);
+        ARibbonPage* page = m_currentItemToPage.value(m_currentItemPage);
 
-        if (group != Q_NULL && page != Q_NULL)
+        if (group != nullptr && page != nullptr)
         {
             QTreeWidgetItem* itemParent = m_currentItemPage;
             int index = itemParent->childCount();
             QString titleGroup(group->title());
-            RibbonGroup* newGroup = manager->createGroup(page, titleGroup, index);
+            ARibbonGroup* newGroup = manager->createGroup(page, titleGroup, index);
             newGroup->setIcon(group->icon());
-            newGroup->setProperty(__qtn_Widget_Copy, QStringLiteral("__qtn_Group_Copy"));
+            newGroup->setProperty(__aproch_Widget_Copy, QStringLiteral("__aproch_Group_Copy"));
 
             titleGroup.remove(QStringLiteral("&"));
             QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(titleGroup));
@@ -1484,65 +1490,65 @@ void RibbonBarCustomizePagePrivate::addClicked()
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::newTabClicked()
+void ARibbonBarCustomizePagePrivate::newTabClicked()
 {
     if (!m_currentItemPage)
         return;
 
-    addPageCustom(Q_NULL);
+    addPageCustom(nullptr);
     newGroupClicked();
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::newGroupClicked()
+void ARibbonBarCustomizePagePrivate::newGroupClicked()
 {
     if (!m_currentItemPage)
         return;
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
-    QString strNewGroup(RibbonBar::tr_compatible(QtnRibbonNewGroupString));
-    RibbonPage* currentPage = m_currentItemToPage.value(m_currentItemPage);
-    Q_ASSERT(currentPage != Q_NULL);
+    QString strNewGroup(ARibbonBar::tr_compatible(RibbonNewGroupString));
+    ARibbonPage* currentPage = m_currentItemToPage.value(m_currentItemPage);
+    Q_ASSERT(currentPage != nullptr);
 
     int index = 0;
     if (m_currentItemGroup)
     {
-        RibbonGroup* currentGroup = m_currentItemToGroup.value(m_currentItemGroup);
-        Q_ASSERT(currentGroup != Q_NULL);
+        ARibbonGroup* currentGroup = m_currentItemToGroup.value(m_currentItemGroup);
+        Q_ASSERT(currentGroup != nullptr);
 
-        QList<RibbonGroup*> groups = manager->pageGroups(currentPage);
+        QList<ARibbonGroup*> groups = manager->pageGroups(currentPage);
         index = groups.indexOf(currentGroup) + 1;
     }
 
-    RibbonGroup* newGroup = manager->createGroup(currentPage, strNewGroup, index);
+    ARibbonGroup* newGroup = manager->createGroup(currentPage, strNewGroup, index);
 
     QStringList stringsGroup;
     strNewGroup += m_sufNameCustom;
     stringsGroup.append(strNewGroup);
     QTreeWidgetItem* item = new QTreeWidgetItem(stringsGroup);
     m_currentItemPage->insertChild(index, item);
-    newGroup->setProperty(__qtn_Widget_Custom, QStringLiteral("__qtn_Group_Custom"));
+    newGroup->setProperty(__aproch_Widget_Custom, QStringLiteral("__aproch_Group_Custom"));
     m_currentItemToGroup.insert(item, newGroup);
     m_pageUI.treeRibbon->setCurrentItem(item);
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::removeClicked()
+void ARibbonBarCustomizePagePrivate::removeClicked()
 {
     QTreeWidgetItem* currentItem = m_pageUI.treeRibbon->currentItem();
     if (!currentItem)
         return;
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     if (m_currentItemGroup && m_currentItemAction)
     {
-        if (RibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup))
+        if (ARibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup))
         {
-            if (group && group->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Group_Custom"))
+            if (group && group->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Group_Custom"))
             {
                 QTreeWidgetItem* currentParent = currentItem->parent();
                 int index = currentParent->indexOfChild(currentItem);
@@ -1559,27 +1565,27 @@ void RibbonBarCustomizePagePrivate::removeClicked()
             }
         }
     }
-    else if (RibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup))
+    else if (ARibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup))
     {
         QTreeWidgetItem* currentParent = currentItem->parent();
         int index = currentParent->indexOfChild(currentItem);
         if (index == -1)
             return;
-        RibbonPage* page = m_currentItemToPage.value(m_currentItemPage);
-        Q_ASSERT(page != Q_NULL);
+        ARibbonPage* page = m_currentItemToPage.value(m_currentItemPage);
+        Q_ASSERT(page != nullptr);
 
         manager->clearActions(group);
         manager->deleteGroup(page, index);
         m_currentItemToGroup.remove(currentItem);
         delete currentItem;
     }
-    else if (RibbonPage* page = m_currentItemToPage.value(m_currentItemPage))
+    else if (ARibbonPage* page = m_currentItemToPage.value(m_currentItemPage))
     {
         int index = m_pageUI.treeRibbon->indexOfTopLevelItem(currentItem);
 //        manager->removePage(page);
         manager->deletePage(page);
         m_pageToCurrentItem.remove(page);
-        QListIterator<RibbonGroup*> itGroup(manager->pageGroups(page));
+        QListIterator<ARibbonGroup*> itGroup(manager->pageGroups(page));
         while (itGroup.hasNext()) 
             manager->clearActions(itGroup.next());
 
@@ -1598,11 +1604,11 @@ void RibbonBarCustomizePagePrivate::removeClicked()
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::resetClicked()
+void ARibbonBarCustomizePagePrivate::resetClicked()
 {
     if (m_ribbonBar)
     {
-        RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+        ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
         Q_ASSERT(manager != NULL);
         manager->reset();
         fillStateRibbon(m_pageUI.switchTabsBox->currentText());
@@ -1612,8 +1618,8 @@ void RibbonBarCustomizePagePrivate::resetClicked()
 template<class T>
 QTreeWidgetItem* currentItem(const QMap<QTreeWidgetItem*, T*>& currentItemToObject, QTreeWidgetItem* current)
 {
-    if (current == Q_NULL)
-        return Q_NULL;
+    if (current == nullptr)
+        return nullptr;
 
     if (currentItemToObject.contains(current))
         return current;
@@ -1621,13 +1627,13 @@ QTreeWidgetItem* currentItem(const QMap<QTreeWidgetItem*, T*>& currentItemToObje
     return currentItem(currentItemToObject, current->parent());
 }
 
-void RibbonBarCustomizePagePrivate::upClicked()
+void ARibbonBarCustomizePagePrivate::upClicked()
 {
     QTreeWidgetItem* currentItem = m_pageUI.treeRibbon->currentItem();
     if (!currentItem)
         return;
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
 
     if (m_currentItemGroup && m_currentItemAction)
@@ -1639,12 +1645,12 @@ void RibbonBarCustomizePagePrivate::upClicked()
             currentParent->takeChild(index);
             int newIndex = index - 1;
             currentParent->insertChild(newIndex, currentItem);
-            Q_ASSERT(m_currentItemPage != Q_NULL);
+            Q_ASSERT(m_currentItemPage != nullptr);
             QAction* action = m_currentItemToAction.value(currentItem);
-            Q_ASSERT(action != Q_NULL);
+            Q_ASSERT(action != nullptr);
 
-            RibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup);
-            Q_ASSERT(group != Q_NULL);
+            ARibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup);
+            Q_ASSERT(group != nullptr);
             manager->removeActionAt(group, index);
             manager->insertAction(group, action, newIndex);
 
@@ -1672,9 +1678,9 @@ void RibbonBarCustomizePagePrivate::upClicked()
             currentParent->takeChild(index);
             int newIndex = index - 1;
             currentParent->insertChild(newIndex, currentItem);
-            Q_ASSERT(m_currentItemPage != Q_NULL);
-            RibbonPage* page = m_currentItemToPage.value(m_currentItemPage);
-            Q_ASSERT(page != Q_NULL);
+            Q_ASSERT(m_currentItemPage != nullptr);
+            ARibbonPage* page = m_currentItemToPage.value(m_currentItemPage);
+            Q_ASSERT(page != nullptr);
             manager->moveGroup(page, index, newIndex);
             m_pageUI.treeRibbon->setCurrentItem(currentItem);
         }
@@ -1683,13 +1689,13 @@ void RibbonBarCustomizePagePrivate::upClicked()
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::downClicked()
+void ARibbonBarCustomizePagePrivate::downClicked()
 {
     QTreeWidgetItem* currentItem = m_pageUI.treeRibbon->currentItem();
     if (!currentItem)
         return;
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
 
     if (m_currentItemGroup && m_currentItemAction)
@@ -1701,12 +1707,12 @@ void RibbonBarCustomizePagePrivate::downClicked()
             currentParent->takeChild(index);
             int newIndex = index + 1;
             currentParent->insertChild(newIndex, currentItem);
-            Q_ASSERT(m_currentItemPage != Q_NULL);
+            Q_ASSERT(m_currentItemPage != nullptr);
             QAction* action = m_currentItemToAction.value(currentItem);
-            Q_ASSERT(action != Q_NULL);
+            Q_ASSERT(action != nullptr);
 
-            RibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup);
-            Q_ASSERT(group != Q_NULL);
+            ARibbonGroup* group = m_currentItemToGroup.value(m_currentItemGroup);
+            Q_ASSERT(group != nullptr);
             manager->removeActionAt(group, index);
             manager->insertAction(group, action, newIndex);
         }
@@ -1731,9 +1737,9 @@ void RibbonBarCustomizePagePrivate::downClicked()
             currentParent->takeChild(index);
             int newIndex = index + 1;
             currentParent->insertChild(newIndex, currentItem);
-            Q_ASSERT(m_currentItemPage != Q_NULL);
-            RibbonPage* page = m_currentItemToPage.value(m_currentItemPage);
-            Q_ASSERT(page != Q_NULL);
+            Q_ASSERT(m_currentItemPage != nullptr);
+            ARibbonPage* page = m_currentItemToPage.value(m_currentItemPage);
+            Q_ASSERT(page != nullptr);
             manager->moveGroup(page, index, newIndex);
         }
     }
@@ -1741,9 +1747,9 @@ void RibbonBarCustomizePagePrivate::downClicked()
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::renameClicked()
+void ARibbonBarCustomizePagePrivate::renameClicked()
 {
-    QTN_P(RibbonBarCustomizePage);
+    A_P(ARibbonBarCustomizePage);
     class RenameDialog : public QDialog
     {
     public:
@@ -1761,16 +1767,16 @@ void RibbonBarCustomizePagePrivate::renameClicked()
         Ui::RibbonRenameDialog m_renameDialogUI;
     };
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
     QTreeWidgetItem* currentItem = m_pageUI.treeRibbon->currentItem();
     if (!currentItem)
         return;
 
     QString currentName;
-    RibbonPage* page = m_currentItemToPage.value(currentItem);
-    RibbonGroup* group = m_currentItemToGroup.value(currentItem);
+    ARibbonPage* page = m_currentItemToPage.value(currentItem);
+    ARibbonGroup* group = m_currentItemToGroup.value(currentItem);
     if (page)
     {
         if (!manager->pageName(page).isEmpty())
@@ -1792,19 +1798,19 @@ void RibbonBarCustomizePagePrivate::renameClicked()
         if (renameDialog.exec() == QDialog::Accepted)
         {
             QString currentText = renameDialog.currentName();
-            if (page != Q_NULL )
+            if (page != nullptr )
             {
                 manager->setPageName(page, currentText);
                 currentText.remove(QStringLiteral("&"));
-                if (page->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Page_Custom"))
+                if (page->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Page_Custom"))
                     currentText += m_sufNameCustom;
                 currentItem->setText(0, currentText);
             }
-            else if (group != Q_NULL)
+            else if (group != nullptr)
             {
                 manager->setGroupName(group, currentText);
                 currentText.remove(QStringLiteral("&"));
-                if (group->property(__qtn_Widget_Custom).toString() == QStringLiteral("__qtn_Group_Custom"))
+                if (group->property(__aproch_Widget_Custom).toString() == QStringLiteral("__aproch_Group_Custom"))
                     currentText += m_sufNameCustom;
                 currentItem->setText(0, currentText);
             }
@@ -1812,7 +1818,7 @@ void RibbonBarCustomizePagePrivate::renameClicked()
     }
 }
 
-void RibbonBarCustomizePagePrivate::setCurrentCategoryText(const QString& strCategory)
+void ARibbonBarCustomizePagePrivate::setCurrentCategoryText(const QString& strCategory)
 {
     if (strCategory.isEmpty())
         return;
@@ -1829,7 +1835,7 @@ void RibbonBarCustomizePagePrivate::setCurrentCategoryText(const QString& strCat
         return;
     }
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
     Q_ASSERT(manager != NULL);
 
     m_currentSourceItemToPage.clear();
@@ -1847,7 +1853,7 @@ void RibbonBarCustomizePagePrivate::setCurrentCategoryText(const QString& strCat
     }
     else
     {
-        QList<RibbonPage*> pages = manager->pagesByCategory(strCategory);
+        QList<ARibbonPage*> pages = manager->pagesByCategory(strCategory);
         if (pages.size() > 0)
         {
             m_pageUI.treeCommands->setRootIsDecorated(true);
@@ -1858,14 +1864,14 @@ void RibbonBarCustomizePagePrivate::setCurrentCategoryText(const QString& strCat
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::setCurrentTabsText(const QString& strCategory)
+void ARibbonBarCustomizePagePrivate::setCurrentTabsText(const QString& strCategory)
 {
 //    if (strCategory.isEmpty())
 //        return;
     fillStateRibbon(strCategory);
 }
 
-void RibbonBarCustomizePagePrivate::currentSourceChanged(QTreeWidgetItem* current)
+void ARibbonBarCustomizePagePrivate::currentSourceChanged(QTreeWidgetItem* current)
 {
     m_currentSourceItemPage = ::currentItem(m_currentSourceItemToPage, current);
     m_currentSourceItemGroup = ::currentItem(m_currentSourceItemToGroup, current);
@@ -1873,24 +1879,24 @@ void RibbonBarCustomizePagePrivate::currentSourceChanged(QTreeWidgetItem* curren
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::currentPageChanged(QTreeWidgetItem* current)
+void ARibbonBarCustomizePagePrivate::currentPageChanged(QTreeWidgetItem* current)
 {
     m_currentItemPage = ::currentItem(m_currentItemToPage, current);
     m_currentItemGroup = ::currentItem(m_currentItemToGroup, current);
-    m_currentItemAction = (m_currentItemGroup && m_currentItemGroup != current) ? current : Q_NULL;
+    m_currentItemAction = (m_currentItemGroup && m_currentItemGroup != current) ? current : nullptr;
     setButtons();
 }
 
-void RibbonBarCustomizePagePrivate::itemPageChanged(QTreeWidgetItem* itemPage, int column)
+void ARibbonBarCustomizePagePrivate::itemPageChanged(QTreeWidgetItem* itemPage, int column)
 {
     if (m_currentItemToPage.empty())
         return;
 
-    RibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
-    Q_ASSERT(manager != Q_NULL);
+    ARibbonCustomizeManager* manager = m_ribbonBar->customizeManager();
+    Q_ASSERT(manager != nullptr);
 
-    RibbonPage* page = m_currentItemToPage.value(itemPage);
-    if (page == Q_NULL)
+    ARibbonPage* page = m_currentItemToPage.value(itemPage);
+    if (page == nullptr)
         return;
 
     if (itemPage->checkState(column) == Qt::Checked)
@@ -1905,36 +1911,36 @@ void RibbonBarCustomizePagePrivate::itemPageChanged(QTreeWidgetItem* itemPage, i
     }
 }
 
-/* RibbonBarCustomizePage */
-RibbonBarCustomizePage::RibbonBarCustomizePage(RibbonBar* ribbonBar)
-    : QWidget(Q_NULL)
+/* ARibbonBarCustomizePage */
+ARibbonBarCustomizePage::ARibbonBarCustomizePage(ARibbonBar* ribbonBar)
+    : QWidget(nullptr)
 {
-    QTN_INIT_PRIVATE(RibbonBarCustomizePage);
-    QTN_D(RibbonBarCustomizePage)
+    A_INIT_PRIVATE(ARibbonBarCustomizePage);
+    A_D(ARibbonBarCustomizePage);
     d.m_ribbonBar = ribbonBar;
     d.init();
 }
 
-RibbonBarCustomizePage::~RibbonBarCustomizePage()
+ARibbonBarCustomizePage::~ARibbonBarCustomizePage()
 {
-    QTN_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
-RibbonBar* RibbonBarCustomizePage::ribbonBar() const
+ARibbonBar* ARibbonBarCustomizePage::ribbonBar() const
 {
-    QTN_D(const RibbonBarCustomizePage)
+    A_D(const ARibbonBarCustomizePage);
     return d.m_ribbonBar;
 }
 
-void RibbonBarCustomizePage::addCustomCategory( const QString& strCategory )
+void ARibbonBarCustomizePage::addCustomCategory( const QString& strCategory )
 {
-    QTN_D(RibbonBarCustomizePage)
+    A_D(ARibbonBarCustomizePage);
     d.m_sourceCategories.append(strCategory);
 }
 
-void RibbonBarCustomizePage::addSeparatorCategory(const QString& strCategory)
+void ARibbonBarCustomizePage::addSeparatorCategory(const QString& strCategory)
 {
-    QTN_D(RibbonBarCustomizePage)
+    A_D(ARibbonBarCustomizePage);
     QString separator = strCategory;
     if (separator.isEmpty())
         separator = QStringLiteral("----------");
@@ -1942,37 +1948,39 @@ void RibbonBarCustomizePage::addSeparatorCategory(const QString& strCategory)
     d.m_sourceCategories.append(separator);
 }
 
-void RibbonBarCustomizePage::enableModifyPage(bool bEnable)
+void ARibbonBarCustomizePage::enableModifyPage(bool bEnable)
 {
-	QTN_D(RibbonBarCustomizePage)
+	A_D(ARibbonBarCustomizePage);
 	d.enableVisualizePage(bEnable);
 	d.enableAddPage(bEnable);
 	d.enableRenamePage(bEnable);
 	d.enableMovePage(bEnable);
 }
 
-void RibbonBarCustomizePage::accepted()
+void ARibbonBarCustomizePage::accepted()
 {
-    QTN_D(RibbonBarCustomizePage)
+    A_D(ARibbonBarCustomizePage);
     if (d.m_wasDisplayed)
         d.applyClicked();
 }
 
-void RibbonBarCustomizePage::rejected()
+void ARibbonBarCustomizePage::rejected()
 {
-    QTN_D(RibbonBarCustomizePage)
+    A_D(ARibbonBarCustomizePage);
     d.cancelClicked();
 }
 
-void RibbonBarCustomizePage::showEvent(QShowEvent* event)
+void ARibbonBarCustomizePage::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    QTN_D(RibbonBarCustomizePage)
+    A_D(ARibbonBarCustomizePage);
     d.m_wasDisplayed = true;
     d.setupPage();
 }
 
-void RibbonBarCustomizePage::hideEvent(QHideEvent* event)
+void ARibbonBarCustomizePage::hideEvent(QHideEvent* event)
 {
     QWidget::hideEvent(event);
 }
+
+APROCH_NAMESPACE_END

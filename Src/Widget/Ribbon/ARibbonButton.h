@@ -29,18 +29,24 @@
 #pragma once
 
 #include <QToolButton>
-#include "QtitanDef.h"
 
-QTITAN_BEGIN_NAMESPACE
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
-class RibbonButtonPrivate;
-class APROCH_API RibbonButton : public QToolButton
+APROCH_NAMESPACE_BEGIN
+
+class ARibbonButtonPrivate;
+class APROCH_API ARibbonButton : public QToolButton
 {
     Q_OBJECT
     Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
 public:
-    RibbonButton(QWidget* parent = nullptr);
-    ~RibbonButton() override;
+    ARibbonButton(QWidget* parent = nullptr);
+    ~ARibbonButton() override;
 public:
     bool wordWrap() const;
     void setWordWrap(bool on);
@@ -62,10 +68,8 @@ protected:
     void actionEvent(QActionEvent* event) override;
     void changeEvent(QEvent* event) override;
 private:
-    A_DECLARE_PRIVATE(RibbonButton)
-    Q_DISABLE_COPY(RibbonButton)
+    A_DECLARE_PRIVATE(ARibbonButton)
+    Q_DISABLE_COPY(ARibbonButton)
 };
 
-QTITAN_END_NAMESPACE
-
-#endif // A_RIBBONBUTTON_H
+APROCH_NAMESPACE_END

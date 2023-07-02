@@ -1185,7 +1185,7 @@ public:
         ToggleFilled,
         ToggleThumb,
         TollSolid,
-        ToolTip,
+        AToolTip,
         Touch,
         TouchPointer,
         Touchpad,

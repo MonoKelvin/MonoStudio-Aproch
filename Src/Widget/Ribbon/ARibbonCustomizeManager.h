@@ -37,6 +37,13 @@
 #include "ARibbonGroup.h"
 #include "Common/AXmlAccess.h"
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - ARibbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
 APROCH_NAMESPACE_BEGIN
 
 class ARibbonCustomizeManagerPrivate;
@@ -148,7 +155,7 @@ Q_SIGNALS:
 private:
     friend class ARibbonQuickAccessBar;
     friend class ARibbonBarCustomizePagePrivate;
-    Q_DECLARE_PRIVATE(ARibbonCustomizeManager);
+    A_DECLARE_PRIVATE(ARibbonCustomizeManager);
     Q_DISABLE_COPY(ARibbonCustomizeManager);
 };
 

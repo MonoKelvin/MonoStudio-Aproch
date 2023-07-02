@@ -28,8 +28,13 @@
  *****************************************************************************/
 #pragma once
 #include <QToolBar>
-#include <QMenu>
-#include "ARibbonBar.h"
+
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
 APROCH_NAMESPACE_BEGIN
 

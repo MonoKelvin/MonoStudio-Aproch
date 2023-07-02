@@ -1,58 +1,67 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#ifndef A_RIBBONTITLEBAR_H
-#define A_RIBBONTITLEBAR_H
-
+ * @file    ARibbonTitleBarWidget.h
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#pragma once
 #include <QStyle>
-#include <QWidget>
 #include <QBoxLayout>
 #include <QToolButton>
 #include <QLineEdit>
-#include "ARibbonTabBar.h"
-#include "ARibbonSearchBar.h"
 
-QTITAN_BEGIN_NAMESPACE
+#include "ARibbonBar.h"
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
+APROCH_NAMESPACE_BEGIN
+
+class AContextualTab;
 class ARibbonBar;
-class RibbonButton;
-class WindowTitleBar;
-class TitleBarStyleOption;
+class ARibbonTabBar;
+class ARibbonButton;
+class AWindowTitleBar;
+class ATitleBarStyleOption;
+class ARibbonSearchBar;
 
-class RibbonTitleBarWidget : public QWidget
+class APROCH_API ARibbonTitleBarWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RibbonTitleBarWidget(ARibbonBar* ribbonBar);
-    ~RibbonTitleBarWidget() override;
+    explicit ARibbonTitleBarWidget(ARibbonBar* ribbonBar);
+    ~ARibbonTitleBarWidget() override;
 public:
 public:
     ARibbonBar* ribbonBar() const;
-    RibbonTabBar* ribbonTabBar() const;
-    RibbonSearchBar* searchBar() const;
+    ARibbonTabBar* ribbonTabBar() const;
+    ARibbonSearchBar* searchBar() const;
     void addWidget(QWidget* widget, int stretch = 0);
     void insertWidget(int index, QWidget* widget, int stretch = 0, Qt::Alignment alignment = Qt::Alignment());
     int  indexOf(QWidget* widget);
@@ -62,7 +71,7 @@ public:
     void updateLayout();
     void setVisible(bool visible) override;
     QRect calcContextualAreaRect() const;
-    WindowTitleBar* getWindowTitleBar() const;
+    AWindowTitleBar* getWindowTitleBar() const;
     QAction* addTitleButton(const QIcon& icon, const QString& help);
     void removeTitleButton(QAction* action);
     void setSearchBarAppearance(ARibbonBar::SearchBarAppearance appearance);
@@ -74,8 +83,8 @@ protected:
     QWidget* titleBarWindow() const;
     void updateTextTitle();
     QFont titleFont() const;
-    void initTitleBarOption(TitleBarStyleOption* opt) const;
-    ContextualTab* hitContextHeaders(const QPoint& point) const;
+    void initTitleBarOption(ATitleBarStyleOption* opt) const;
+    AContextualTab* hitContextHeaders(const QPoint& point) const;
     void updateContextualTabs();
     void removeContextualTabs();
     QSize calcMinSize(QWidget* widget) const;
@@ -92,15 +101,13 @@ private:
     QSpacerItem* m_leftItem;
     QSpacerItem* m_rightItem;
     ARibbonBar::SearchBarAppearance m_searchBarAppearance;
-    RibbonSearchBar* m_searchBar;
-    QVector<ContextualTab *> m_contextualTabs;
+    ARibbonSearchBar* m_searchBar;
+    QVector<AContextualTab *> m_contextualTabs;
     QString m_strTitle;
     bool m_dirtyTextTitle;
     QWidget* _pTopWidget = nullptr;
 private:
-    Q_DISABLE_COPY(RibbonTitleBarWidget)
+    Q_DISABLE_COPY(ARibbonTitleBarWidget)
 };
 
-QTITAN_END_NAMESPACE
-
-#endif // A_RIBBONTITLEBAR_H
+APROCH_NAMESPACE_END

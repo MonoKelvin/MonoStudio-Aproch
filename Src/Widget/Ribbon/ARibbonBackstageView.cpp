@@ -1,30 +1,32 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#include <QStyle>
+ * @file    ARibbonBackstageView.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
 #include <QApplication>
 #include <QStyleOption>
 #include <QWidgetAction>
@@ -42,70 +44,74 @@
 
 #include <qevent.h>
 
-#include "QtnStyleHelperPrivate.h"
-#include "QtnCommonStyle.h"
-#include "QtnCommonStylePrivate.h"
-#include "QtnRibbonBackstageView.h"
-#include "QtnRibbonBarPrivate.h"
-#include "QtnRibbonBackstageViewPrivate.h"
-#include "QtnStyleOption.h"
-#include "QtnRibbonBar.h"
-#ifdef QTN_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+#include "Widget/Style/AStyleHelper.h"
+#include "Widget/Style/ACommonStyle.h"
+#include "Widget/Style/ACommonStyle_p.h"
+#include "Widget/Style/AStyleOption.h"
+#include "ARibbonBackstageView.h"
+#include "ARibbonBackstageView_p.h"
+#include "ARibbonBar.h"
+#include "ARibbonBar_p.h"
 
-QTITAN_USE_NAMESPACE
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
+APROCH_NAMESPACE_BEGIN
 
 const int wheelDelta = 120; // Default value for rolling one notch
 const int commandGap = 6;
 const int textGap = 15;
 
-static RibbonBar* qtn_findRibbonBar(const RibbonBackstageView* view)
+static ARibbonBar* aproch_findRibbonBar(const ARibbonBackstageView* view)
 {
-    if (view == Q_NULL || qobject_cast<QMainWindow*>(view->parentWidget()) == Q_NULL)
-        return Q_NULL;
-    RibbonBar* ribbonBar = qobject_cast<RibbonBar*>(static_cast<QMainWindow*>(view->parentWidget())->menuWidget());
-    if (ribbonBar != Q_NULL && ribbonBar->systemButton()->backstage() == view)
+    if (view == nullptr || qobject_cast<QMainWindow*>(view->parentWidget()) == nullptr)
+        return nullptr;
+    ARibbonBar* ribbonBar = qobject_cast<ARibbonBar*>(static_cast<QMainWindow*>(view->parentWidget())->menuWidget());
+    if (ribbonBar != nullptr && ribbonBar->systemButton()->backstage() == view)
         return ribbonBar;
-    return Q_NULL;
+    return nullptr;
 }
 
-static int qtn_backstageViewTop(const RibbonBackstageView* view)
+static int aproch_backstageViewTop(const ARibbonBackstageView* view)
 {
-    RibbonBar* ribbonBar = qtn_findRibbonBar(view);
-    if (ribbonBar != Q_NULL && ribbonBar->isVisible())
-        return RibbonBarPrivate::_get(ribbonBar)->backstageViewTop();
+    ARibbonBar* ribbonBar = aproch_findRibbonBar(view);
+    if (ribbonBar != nullptr && ribbonBar->isVisible())
+        return ARibbonBarPrivate::_get(ribbonBar)->backstageViewTop();
     return 0;
 }
 
-static void qtn_setBackstageViewVisible(const RibbonBackstageView* view, bool visible)
+static void aproch_setBackstageViewVisible(const ARibbonBackstageView* view, bool visible)
 {
-    RibbonBar* ribbonBar = qtn_findRibbonBar(view);
-    if (ribbonBar != Q_NULL)
-        RibbonBarPrivate::_get(ribbonBar)->setBackstageViewVisible(visible);
+    ARibbonBar* ribbonBar = aproch_findRibbonBar(view);
+    if (ribbonBar != nullptr)
+        ARibbonBarPrivate::_get(ribbonBar)->setBackstageViewVisible(visible);
 }
 
-/* RibbonBackstageCloseButton */
-RibbonBackstageCloseButton::RibbonBackstageCloseButton(QWidget* parent)
+/* ARibbonBackstageCloseButton */
+ARibbonBackstageCloseButton::ARibbonBackstageCloseButton(QWidget* parent)
     : QToolButton(parent)
 {
 }
 
 /*! \reimp */
-QSize RibbonBackstageCloseButton::sizeHint() const
+QSize ARibbonBackstageCloseButton::sizeHint() const
 {
     QStyleOptionToolButton opt;
     initStyleOption(&opt);
     QList<QSize> sz = opt.icon.availableSizes();
     Q_ASSERT(sz.size() > 0);
     QSize size = sz[0];
-    size = QSize(static_cast<int>(CommonStylePrivate::dpiScaled(static_cast<qreal>(size.height()), this)),
-                 static_cast<int>(CommonStylePrivate::dpiScaled(static_cast<qreal>(size.width()), this)));
+    size = QSize(static_cast<int>(ACommonStylePrivate::dpiScaled(static_cast<qreal>(size.height()), this)),
+                 static_cast<int>(ACommonStylePrivate::dpiScaled(static_cast<qreal>(size.width()), this)));
     return size;
 }
 
 /*! \reimp */
-void RibbonBackstageCloseButton::paintEvent(QPaintEvent* event)
+void ARibbonBackstageCloseButton::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event)
     QPainter p(this);
@@ -115,24 +121,24 @@ void RibbonBackstageCloseButton::paintEvent(QPaintEvent* event)
 
     QList<QSize> sz = opt.icon.availableSizes();
     opt.iconSize = sz.at(0);
-    opt.iconSize = QSize(static_cast<int>(CommonStylePrivate::dpiScaled(static_cast<qreal>(opt.iconSize.height()), this)),
-                         static_cast<int>(CommonStylePrivate::dpiScaled(static_cast<qreal>(opt.iconSize.width()), this)));
-    style()->drawPrimitive(static_cast<QStyle::PrimitiveElement>(CommonStyle::PE_RibbonBackstageCloseButton), &opt, &p, this);
+    opt.iconSize = QSize(static_cast<int>(ACommonStylePrivate::dpiScaled(static_cast<qreal>(opt.iconSize.height()), this)),
+                         static_cast<int>(ACommonStylePrivate::dpiScaled(static_cast<qreal>(opt.iconSize.width()), this)));
+    style()->drawPrimitive(static_cast<QStyle::PrimitiveElement>(ACommonStyle::PE_RibbonBackstageCloseButton), &opt, &p, this);
 }
 
 /*! \reimp */
-void RibbonBackstageCloseButton::mousePressEvent(QMouseEvent* event)
+void ARibbonBackstageCloseButton::mousePressEvent(QMouseEvent* event)
 {
     if (testAttribute(Qt::WA_UnderMouse))
         QToolButton::mousePressEvent(event);
 }
 
 
-/* RibbonBackstageViewMenu */
-RibbonBackstageViewMenu::RibbonBackstageViewMenu(RibbonBackstageView* backstageView)
+/* ARibbonBackstageViewMenu */
+ARibbonBackstageViewMenu::ARibbonBackstageViewMenu(ARibbonBackstageView* backstageView)
     : QWidget(backstageView)
     , m_backstageView(backstageView)
-    , m_backStageCloseButton(Q_NULL)
+    , m_backStageCloseButton(nullptr)
     , m_totalHeight(0)
     , m_offsetScroll(0)
     , m_mouseDown(false)
@@ -143,20 +149,20 @@ RibbonBackstageViewMenu::RibbonBackstageViewMenu(RibbonBackstageView* backstageV
     setMouseTracking(true);
 }
 
-QSize RibbonBackstageViewMenu::sizeHint() const
+QSize ARibbonBackstageViewMenu::sizeHint() const
 {
     m_itemsDirty = true;
     updateActionRects();
     return QSize(m_menuWidth, m_backstageView->sizeHint().width());
 }
 
-void RibbonBackstageViewMenu::createBackstageCloseButton()
+void ARibbonBackstageViewMenu::createBackstageCloseButton()
 {
-    if (static_cast<bool>(style()->styleHint(static_cast<QStyle::StyleHint>(CommonStyle::SH_RibbonBackstageHideTabs))))
+    if (static_cast<bool>(style()->styleHint(static_cast<QStyle::StyleHint>(ACommonStyle::SH_RibbonBackstageHideTabs))))
     {
-        if (m_backStageCloseButton == Q_NULL)
+        if (m_backStageCloseButton == nullptr)
         {
-            m_backStageCloseButton = new RibbonBackstageCloseButton(this);
+            m_backStageCloseButton = new ARibbonBackstageCloseButton(this);
             QAction* actBackStageCloseButton = new QAction(this);
             actBackStageCloseButton->setIcon(QIcon(QStringLiteral(":/res/ribbonbackstageback_icon.png")));
             m_backStageCloseButton->setDefaultAction(actBackStageCloseButton);
@@ -167,12 +173,12 @@ void RibbonBackstageViewMenu::createBackstageCloseButton()
         }
     }
     else
-        Q_DELETE_AND_NULL(m_backStageCloseButton);
+        A_DELETE_AND_NULL(m_backStageCloseButton);
 
     resetItemsDirty();
 }
 
-QAction* RibbonBackstageViewMenu::actionAt(const QPoint& pt) const
+QAction* ARibbonBackstageViewMenu::actionAt(const QPoint& pt) const
 {
     QList<QAction*> actions = m_backstageView->actions();
     for(int i = 0; i < m_actionRects.count(); ++i) 
@@ -180,10 +186,10 @@ QAction* RibbonBackstageViewMenu::actionAt(const QPoint& pt) const
         if (m_actionRects.at(i).contains(pt))
             return actions.at(i);
     }
-    return Q_NULL;
+    return nullptr;
 }
 
-QRect RibbonBackstageViewMenu::actionRect(QAction* act) const
+QRect ARibbonBackstageViewMenu::actionRect(QAction* act) const
 {
     QList<QAction*> actions = m_backstageView->actions();
     int index = actions.indexOf(act);
@@ -195,13 +201,13 @@ QRect RibbonBackstageViewMenu::actionRect(QAction* act) const
     return m_actionRects.at(index);
 }
 
-void RibbonBackstageViewMenu::resetItemsDirty()
+void ARibbonBackstageViewMenu::resetItemsDirty()
 {
     m_itemsDirty = true;
     update();
 }
 
-void RibbonBackstageViewMenu::setOffsetScroll(int offset)
+void ARibbonBackstageViewMenu::setOffsetScroll(int offset)
 {
     if (m_offsetScroll != offset)
     {
@@ -212,19 +218,19 @@ void RibbonBackstageViewMenu::setOffsetScroll(int offset)
     }
 }
 
-int RibbonBackstageViewMenu::totalHeight() const
+int ARibbonBackstageViewMenu::totalHeight() const
 {
     return m_totalHeight;
 }
 
-void RibbonBackstageViewMenu::initStyleOption(RibbonBackstageStyleOption* opt) const
+void ARibbonBackstageViewMenu::initStyleOption(ARibbonBackstageStyleOption* opt) const
 {
     opt->initFrom(this);
     opt->menuWidth = m_menuWidth;
     opt->rect.adjust(0, 0, -1, -1);
 }
 
-void RibbonBackstageViewMenu::initStyleOption(QStyleOptionMenuItem* option, const QAction* action) const
+void ARibbonBackstageViewMenu::initStyleOption(QStyleOptionMenuItem* option, const QAction* action) const
 {
     if (!option || !action)
         return;
@@ -245,9 +251,9 @@ void RibbonBackstageViewMenu::initStyleOption(QStyleOptionMenuItem* option, cons
         option->palette.setCurrentColorGroup(QPalette::Disabled);
 
     option->font = action->font().resolve(font());
-    option->fontMetrics = QFontMetrics(option->font, const_cast<RibbonBackstageViewMenu*>(this));
+    option->fontMetrics = QFontMetrics(option->font, const_cast<ARibbonBackstageViewMenu*>(this));
 
-    if (m_backstageView->qtn_d().m_currentAction && m_backstageView->qtn_d().m_currentAction == action && !m_backstageView->qtn_d().m_currentAction->isSeparator()) 
+    if (m_backstageView->aproch_d().m_currentAction && m_backstageView->aproch_d().m_currentAction == action && !m_backstageView->aproch_d().m_currentAction->isSeparator()) 
         option->state |= QStyle::State_Selected | (m_mouseDown ? QStyle::State_Sunken : QStyle::State_None);
 
     option->menuItemType = QStyleOptionMenuItem::Normal;
@@ -276,12 +282,12 @@ void RibbonBackstageViewMenu::initStyleOption(QStyleOptionMenuItem* option, cons
     option->menuRect = rect();
 }
 
-void RibbonBackstageViewMenu::updateActionRects() const
+void ARibbonBackstageViewMenu::updateActionRects() const
 {
     if (!m_itemsDirty)
         return;
 
-    RibbonBackstageViewMenu* menuThis = const_cast<RibbonBackstageViewMenu*>(this);
+    ARibbonBackstageViewMenu* menuThis = const_cast<ARibbonBackstageViewMenu*>(this);
     menuThis->m_totalHeight = 0;
 
     ensurePolished();
@@ -340,7 +346,7 @@ void RibbonBackstageViewMenu::updateActionRects() const
         m_menuWidth = qMax(m_menuWidth, width);
     }
 
-    const int vSpacing = style->pixelMetric(QStyle::PM_LayoutVerticalSpacing, Q_NULL, this);
+    const int vSpacing = style->pixelMetric(QStyle::PM_LayoutVerticalSpacing, nullptr, this);
     int top = m_backStageCloseButton ? m_backStageCloseButton->geometry().bottom() + vSpacing : vSpacing / 2;
     top -= m_offsetScroll;
     for (int i = 0, count = actions.count(); i < count; i++)
@@ -366,14 +372,14 @@ void RibbonBackstageViewMenu::updateActionRects() const
         }
     }
 
-    if (m_backstageView->activePage() == Q_NULL)
+    if (m_backstageView->activePage() == nullptr)
     {
-        QWidget* firstPage = Q_NULL;
+        QWidget* firstPage = nullptr;
         for (int i = 0, count = actions.count(); i < count; i++)
         {
             if (QWidgetAction* action = qobject_cast<QWidgetAction*>(actions.at(i)))
             {
-                if (firstPage == Q_NULL)
+                if (firstPage == nullptr)
                     firstPage = action->defaultWidget();
 
                 if (action->isEnabled())
@@ -383,7 +389,7 @@ void RibbonBackstageViewMenu::updateActionRects() const
                 }
             }
         }
-        if (m_backstageView->activePage() == Q_NULL && firstPage != Q_NULL)
+        if (m_backstageView->activePage() == nullptr && firstPage != nullptr)
             m_backstageView->setActivePage(firstPage);
     }
 
@@ -391,7 +397,7 @@ void RibbonBackstageViewMenu::updateActionRects() const
     m_itemsDirty = false;
 }
 
-void RibbonBackstageViewMenu::paintEvent(QPaintEvent* event)
+void ARibbonBackstageViewMenu::paintEvent(QPaintEvent* event)
 {
     updateActionRects();
     QPainter painter(this);
@@ -400,8 +406,8 @@ void RibbonBackstageViewMenu::paintEvent(QPaintEvent* event)
     QRegion emptyArea = QRegion(rc);
     QRegion emptyArea1 = emptyArea;
 
-    RibbonBackstageStyleOption optBackstage;
-    if (m_backStageCloseButton == Q_NULL)
+    ARibbonBackstageStyleOption optBackstage;
+    if (m_backStageCloseButton == nullptr)
     {
         optBackstage.initFrom(m_backstageView);
         optBackstage.menuWidth = m_menuWidth;
@@ -409,7 +415,7 @@ void RibbonBackstageViewMenu::paintEvent(QPaintEvent* event)
     else
         initStyleOption(&optBackstage);
                                                                                                         
-    style()->drawPrimitive(static_cast<QStyle::PrimitiveElement>(CommonStyle::PE_RibbonBackstageFrame), &optBackstage, &painter, m_backstageView);
+    style()->drawPrimitive(static_cast<QStyle::PrimitiveElement>(ACommonStyle::PE_RibbonBackstageFrame), &optBackstage, &painter, m_backstageView);
 
     QRect rectEvent = event->rect();
     QList<QAction*> acts = m_backstageView->actions();
@@ -436,12 +442,12 @@ void RibbonBackstageViewMenu::paintEvent(QPaintEvent* event)
             if (pageAct->defaultWidget() == m_backstageView->activePage())
                 opt.state |= QStyle::State_HasFocus;
         }
-        style()->drawControl(static_cast<QStyle::ControlElement>(CommonStyle::CE_RibbonBackstageMenuItem), &opt, &painter, m_backstageView);
+        style()->drawControl(static_cast<QStyle::ControlElement>(ACommonStyle::CE_RibbonBackstageMenuItem), &opt, &painter, m_backstageView);
     }
 }
 
 /*! \reimp */
-void RibbonBackstageViewMenu::keyPressEvent(QKeyEvent* event)
+void ARibbonBackstageViewMenu::keyPressEvent(QKeyEvent* event)
 {
     QWidget::keyPressEvent(event);
     switch(event->key())
@@ -456,7 +462,7 @@ void RibbonBackstageViewMenu::keyPressEvent(QKeyEvent* event)
 }
 
 /*! \reimp */
-void RibbonBackstageViewMenu::mousePressEvent(QMouseEvent* event)
+void ARibbonBackstageViewMenu::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() != Qt::LeftButton)
         return;
@@ -474,18 +480,18 @@ void RibbonBackstageViewMenu::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void RibbonBackstageViewMenu::mouseMoveEvent(QMouseEvent* event)
+void ARibbonBackstageViewMenu::mouseMoveEvent(QMouseEvent* event)
 {
     if (rect().contains(event->pos()))
     {
         QAction* action = actionAt(event->pos());
-        m_backstageView->qtn_d().setCurrentAction(action ? action : Q_NULL);
+        m_backstageView->aproch_d().setCurrentAction(action ? action : nullptr);
         setFocus();
     }
 }
 
 /*! \reimp */
-void RibbonBackstageViewMenu::mouseReleaseEvent(QMouseEvent* event)
+void ARibbonBackstageViewMenu::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() != Qt::LeftButton)
         return;
@@ -494,10 +500,10 @@ void RibbonBackstageViewMenu::mouseReleaseEvent(QMouseEvent* event)
     {
         QAction* action = actionAt(event->pos());
 
-        if (action && (action->isSeparator() || !action->isEnabled() || m_backstageView->qtn_d().m_widgetItems.contains(action)))
+        if (action && (action->isSeparator() || !action->isEnabled() || m_backstageView->aproch_d().m_widgetItems.contains(action)))
             return;
 
-        if (action && action == m_backstageView->qtn_d().m_currentAction) 
+        if (action && action == m_backstageView->aproch_d().m_currentAction) 
         {
             if (!m_backstageView->isClosePrevented())
                 m_backstageView->close();
@@ -507,14 +513,14 @@ void RibbonBackstageViewMenu::mouseReleaseEvent(QMouseEvent* event)
 }
 
 /*! \reimp */
-void RibbonBackstageViewMenu::leaveEvent(QEvent* event)
+void ARibbonBackstageViewMenu::leaveEvent(QEvent* event)
 {
     QWidget::leaveEvent(event);
-    m_backstageView->qtn_d().setCurrentAction(Q_NULL);
+    m_backstageView->aproch_d().setCurrentAction(nullptr);
 }
 
 /*! \reimp */
-void RibbonBackstageViewMenu::showEvent(QShowEvent* event)
+void ARibbonBackstageViewMenu::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     if (m_backStageCloseButton)
@@ -522,7 +528,7 @@ void RibbonBackstageViewMenu::showEvent(QShowEvent* event)
 }
 
 /*! \reimp */
-void RibbonBackstageViewMenu::hideEvent(QHideEvent* event)
+void ARibbonBackstageViewMenu::hideEvent(QHideEvent* event)
 {
     QWidget::hideEvent(event);
     if (m_backStageCloseButton)
@@ -530,15 +536,15 @@ void RibbonBackstageViewMenu::hideEvent(QHideEvent* event)
 }
 
 /*!
-\class RibbonBackstageSeparator
+\class ARibbonBackstageSeparator
 \inmodule QtitanRibbon
-\brief Class RibbonBackstageSeparator used to display separators for both vertical and horizontal forms in RibbonBackstagePage.
+\brief Class ARibbonBackstageSeparator used to display separators for both vertical and horizontal forms in ARibbonBackstagePage.
 */
 
 /*!
-Constructs RibbonBackstageSeparator object with the given \a parent.
+Constructs ARibbonBackstageSeparator object with the given \a parent.
 */
-RibbonBackstageSeparator::RibbonBackstageSeparator(QWidget* parent)
+ARibbonBackstageSeparator::ARibbonBackstageSeparator(QWidget* parent)
     : QFrame(parent)
 {
     setAttribute(Qt::WA_MouseNoMask); 
@@ -546,16 +552,16 @@ RibbonBackstageSeparator::RibbonBackstageSeparator(QWidget* parent)
 }
 
 /*!
-Destructor of the RibbonBackstageSeparator object.
+Destructor of the ARibbonBackstageSeparator object.
 */
-RibbonBackstageSeparator::~RibbonBackstageSeparator()
+ARibbonBackstageSeparator::~ARibbonBackstageSeparator()
 {
 }
 
 /*!
 Sets the \a orientation of the separator.
 */
-void RibbonBackstageSeparator::setOrientation(Qt::Orientation orient)
+void ARibbonBackstageSeparator::setOrientation(Qt::Orientation orient)
 { 
     setFrameShape(orient == Qt::Horizontal ? HLine : VLine); 
 }
@@ -563,20 +569,18 @@ void RibbonBackstageSeparator::setOrientation(Qt::Orientation orient)
 /*!
 Returns the orientation of the separator.
 */
-Qt::Orientation RibbonBackstageSeparator::orientation() const
+Qt::Orientation ARibbonBackstageSeparator::orientation() const
 { 
     return frameShape() == HLine ? Qt::Horizontal : Qt::Vertical; 
 }
 
-QTITAN_BEGIN_NAMESPACE
-
-class RibbonBackstageButtonPrivate : public QObject
+class ARibbonBackstageButtonPrivate : public QObject
 {
 public:
-    QTN_DECLARE_PUBLIC(RibbonBackstageButton)
+    A_DECLARE_PUBLIC(ARibbonBackstageButton)
 public:
-    explicit RibbonBackstageButtonPrivate();
-    virtual ~RibbonBackstageButtonPrivate();
+    explicit ARibbonBackstageButtonPrivate();
+    virtual ~ARibbonBackstageButtonPrivate();
     void init();
     void ensureTextLayouted();
     int rowCount() const;
@@ -588,29 +592,27 @@ public:
     QTextDocument* m_document;
 };
 
-QTITAN_END_NAMESPACE
-
-RibbonBackstageButtonPrivate::RibbonBackstageButtonPrivate()
+ARibbonBackstageButtonPrivate::ARibbonBackstageButtonPrivate()
     : m_tabStyle(false)
     , m_textLayoutDirty(true)
-    , m_document(Q_NULL)
+    , m_document(nullptr)
 {
 }
 
-RibbonBackstageButtonPrivate::~RibbonBackstageButtonPrivate()
+ARibbonBackstageButtonPrivate::~ARibbonBackstageButtonPrivate()
 {
     delete m_document;
 }
 
-void RibbonBackstageButtonPrivate::init()
+void ARibbonBackstageButtonPrivate::init()
 {
-    QTN_P(RibbonBackstageButton);
+    A_P(ARibbonBackstageButton);
     m_document = new QTextDocument(&p);
 }
 
-void RibbonBackstageButtonPrivate::ensureTextLayouted()
+void ARibbonBackstageButtonPrivate::ensureTextLayouted()
 {
-    QTN_P(RibbonBackstageButton);
+    A_P(ARibbonBackstageButton);
     if (!m_textLayoutDirty)
         return;
 
@@ -639,15 +641,15 @@ void RibbonBackstageButtonPrivate::ensureTextLayouted()
     m_textLayoutDirty = false;
 }
 
-int RibbonBackstageButtonPrivate::rowCount() const
+int ARibbonBackstageButtonPrivate::rowCount() const
 {
-    QTN_P(const RibbonBackstageButton);
+    A_P(const ARibbonBackstageButton);
     QSize sizeWordWrap = m_document->size().toSize();
     QFontMetrics fm(p.font());
     return sizeWordWrap.height() / fm.height();
 }
 
-QSize RibbonBackstageButtonPrivate::sizeWordWrap()
+QSize ARibbonBackstageButtonPrivate::sizeWordWrap()
 {
     ensureTextLayouted();
     return m_document->size().toSize();
@@ -655,59 +657,59 @@ QSize RibbonBackstageButtonPrivate::sizeWordWrap()
 
 
 /*!
-\class RibbonBackstageButton
+\class ARibbonBackstageButton
 \inmodule QtitanRibbon
-\brief Class RibbonBackstageButton used to display buttons onto backstage page. Buttons can be presented as tabs, ordinary buttons or flat buttons. The button has apropriate style and look-and-feel for the backstageview concept.
+\brief Class ARibbonBackstageButton used to display buttons onto backstage page. Buttons can be presented as tabs, ordinary buttons or flat buttons. The button has apropriate style and look-and-feel for the backstageview concept.
 */
 
 /*!
-Constructs RibbonBackstageButton object with the given \a parent.
+Constructs ARibbonBackstageButton object with the given \a parent.
 */
-RibbonBackstageButton::RibbonBackstageButton(QWidget* parent)
+ARibbonBackstageButton::ARibbonBackstageButton(QWidget* parent)
     : QToolButton(parent)
 {
-    QTN_INIT_PRIVATE(RibbonBackstageButton);
-    QTN_D(RibbonBackstageButton);
+    A_INIT_PRIVATE(ARibbonBackstageButton);
+    A_D(ARibbonBackstageButton);
     d.init();
 }
 
 /*!
-Destructor of the RibbonBackstageButton object.
+Destructor of the ARibbonBackstageButton object.
 */
-RibbonBackstageButton::~RibbonBackstageButton()
+ARibbonBackstageButton::~ARibbonBackstageButton()
 { 
-    QTN_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
 /*!
 Returns true if the button is used as a tab.
 */
-bool RibbonBackstageButton::tabStyle() const
+bool ARibbonBackstageButton::tabStyle() const
 {
-    QTN_D(const RibbonBackstageButton);
+    A_D(const ARibbonBackstageButton);
     return d.m_tabStyle;
 }
 
 /*!
 Sets the \a style for a button that allows you to use button as a tab.
 */
-void RibbonBackstageButton::setTabStyle(bool style)
+void ARibbonBackstageButton::setTabStyle(bool style)
 {
-    QTN_D(RibbonBackstageButton);
+    A_D(ARibbonBackstageButton);
     d.m_tabStyle = style;
     update();
 }
 
-QSize RibbonBackstageButton::minimumSizeHint() const
+QSize ARibbonBackstageButton::minimumSizeHint() const
 {
     return sizeHint();
 }
 
 /*! \reimp */
-QSize RibbonBackstageButton::sizeHint() const
+QSize ARibbonBackstageButton::sizeHint() const
 {
-    QTN_D(const RibbonBackstageButton);
-    RibbonBackstageButton* thisButton = const_cast<RibbonBackstageButton*>(this);
+    A_D(const ARibbonBackstageButton);
+    ARibbonBackstageButton* thisButton = const_cast<ARibbonBackstageButton*>(this);
 
     QSize sz;
     QStyleOptionToolButton opt;
@@ -720,7 +722,7 @@ QSize RibbonBackstageButton::sizeHint() const
             if (!opt.icon.isNull())
             {
                 const int actualSize = opt.icon.actualSize(opt.iconSize, QIcon::Normal, QIcon::Off).width();
-                const int ret = CommonStylePrivate::dpiScaled(actualSize, this);
+                const int ret = ACommonStylePrivate::dpiScaled(actualSize, this);
                 sz = QSize(ret, ret);
             }
             else
@@ -729,7 +731,7 @@ QSize RibbonBackstageButton::sizeHint() const
                 sz = QSize(sizeIcon, sizeIcon);
             }
 
-            QSize sizeWordWrap = thisButton->qtn_d().sizeWordWrap();
+            QSize sizeWordWrap = thisButton->aproch_d().sizeWordWrap();
             sizeWordWrap.setHeight(sizeWordWrap.height() * (d.rowCount() == 1 ? 2 : 1));
             sz.setHeight(sz.height() + sizeWordWrap.height() + (opt.fontMetrics.height() / 2));
             sz.setWidth(qMax(sizeWordWrap.width(), sz.width()));
@@ -738,7 +740,7 @@ QSize RibbonBackstageButton::sizeHint() const
         else if (opt.toolButtonStyle == Qt::ToolButtonTextOnly)
         {
             const int sizeIcon = style()->pixelMetric(QStyle::PM_LargeIconSize, &opt, this);
-            QSize sizeWordWrap = thisButton->qtn_d().sizeWordWrap();
+            QSize sizeWordWrap = thisButton->aproch_d().sizeWordWrap();
             sizeWordWrap.setHeight(sizeWordWrap.height() * (d.rowCount() == 1 ? 2 : 1));
             sz.setHeight(sizeIcon + sizeWordWrap.height() + (opt.fontMetrics.height() / 2));
             sz.setWidth(qMax(sizeWordWrap.width(), sz.width()));
@@ -749,9 +751,9 @@ QSize RibbonBackstageButton::sizeHint() const
 }
 
 /*! \reimp */
-bool RibbonBackstageButton::event(QEvent* event)
+bool ARibbonBackstageButton::event(QEvent* event)
 {
-    QTN_D(RibbonBackstageButton);
+    A_D(ARibbonBackstageButton);
     QEvent::Type type = event->type();
     if (type == QEvent::StyleChange || type == QEvent::FontChange || 
         type == QEvent::Show || type == QEvent::Resize)
@@ -760,18 +762,18 @@ bool RibbonBackstageButton::event(QEvent* event)
 }
 
 /*! \reimp */
-void RibbonBackstageButton::paintEvent(QPaintEvent* event)
+void ARibbonBackstageButton::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
-    QTN_D(RibbonBackstageButton);
+    A_D(ARibbonBackstageButton);
     QPainter p(this);
-    BackstageButtonStyleOption option;
+    ABackstageButtonStyleOption option;
     initStyleOption(&option);
 
     if (!option.icon.isNull())
     {
         const int actualSize = option.icon.actualSize(option.iconSize, QIcon::Normal, QIcon::Off).width();
-        const int ret = CommonStylePrivate::dpiScaled(actualSize, this);
+        const int ret = ACommonStylePrivate::dpiScaled(actualSize, this);
         option.iconSize = QSize(ret, ret);
     }
     else
@@ -781,32 +783,32 @@ void RibbonBackstageButton::paintEvent(QPaintEvent* event)
     }
     option.tabStyle = d.m_tabStyle;
     option.document = d.m_document;
-    style()->drawComplexControl(static_cast<QStyle::ComplexControl>(CommonStyle::CC_RibbonBackstageButton), &option, &p, this);
+    style()->drawComplexControl(static_cast<QStyle::ComplexControl>(ACommonStyle::CC_RibbonBackstageButton), &option, &p, this);
 }
 
 /*!
-\class RibbonBackstagePage
+\class ARibbonBackstagePage
 \inmodule QtitanRibbon
-\brief The class RibbonBackstagePage is used for rendering pages for the backstage view concept.
+\brief The class ARibbonBackstagePage is used for rendering pages for the backstage view concept.
 */
 
 /*!
-Constructs RibbonBackstagePage object with the given \a parent.
+Constructs ARibbonBackstagePage object with the given \a parent.
 */
-RibbonBackstagePage::RibbonBackstagePage(QWidget* parent)
+ARibbonBackstagePage::ARibbonBackstagePage(QWidget* parent)
     : QWidget(parent)
 {
 }
 
 /*!
-Destructor of the RibbonBackstagePage object.
+Destructor of the ARibbonBackstagePage object.
 */
-RibbonBackstagePage::~RibbonBackstagePage()
+ARibbonBackstagePage::~ARibbonBackstagePage()
 {
 }
 
 /*! \reimp */
-void RibbonBackstagePage::paintEvent(QPaintEvent* event)
+void ARibbonBackstagePage::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     QPainter p(this);
@@ -816,41 +818,41 @@ void RibbonBackstagePage::paintEvent(QPaintEvent* event)
 }
 
 /*!
-\class RibbonBackstageViewPrivate
+\class ARibbonBackstageViewPrivate
 \internal
 */
-RibbonBackstageViewPrivate::RibbonBackstageViewPrivate()
+ARibbonBackstageViewPrivate::ARibbonBackstageViewPrivate()
     : m_closePrevented(false)
     , m_scrollOffset(0)
     , m_scrollOffsetHorz(0)
     , m_totalHeight(0)
-    , m_scrollBarVert(Q_NULL)
-    , m_scrollBarHorz(Q_NULL)
-    , m_backstageMenu(Q_NULL)
-    , m_activePage(Q_NULL)
-    , m_currentAction(Q_NULL)
+    , m_scrollBarVert(nullptr)
+    , m_scrollBarHorz(nullptr)
+    , m_backstageMenu(nullptr)
+    , m_activePage(nullptr)
+    , m_currentAction(nullptr)
     , m_sizeRightPage(QSize())
 {
 }
 
-RibbonBackstageViewPrivate::~RibbonBackstageViewPrivate()
+ARibbonBackstageViewPrivate::~ARibbonBackstageViewPrivate()
 {
-    QTN_P(RibbonBackstageView);
+    A_P(ARibbonBackstageView);
     QWidget* parent =  p.parentWidget();
-    if (parent != Q_NULL)
+    if (parent != nullptr)
         parent->removeEventFilter(&p);
 }
 
-void RibbonBackstageViewPrivate::init()
+void ARibbonBackstageViewPrivate::init()
 {
-    QTN_P(RibbonBackstageView);
+    A_P(ARibbonBackstageView);
     p.setAttribute(Qt::WA_NoMousePropagation);
 
     QWidget* parent = p.parentWidget();
-    if (parent != Q_NULL)
+    if (parent != nullptr)
         parent->installEventFilter(&p);
 
-    m_backstageMenu = new RibbonBackstageViewMenu(&p);
+    m_backstageMenu = new ARibbonBackstageViewMenu(&p);
     m_backstageMenu->setAttribute(Qt::WA_NoMousePropagation);
     m_scrollBarVert = new QScrollBar(Qt::Vertical, &p);
     m_scrollBarVert->setGeometry(QRect());
@@ -861,7 +863,7 @@ void RibbonBackstageViewPrivate::init()
     p.setVisible(false);
 }
 
-void RibbonBackstageViewPrivate::adjustLocations()
+void ARibbonBackstageViewPrivate::adjustLocations()
 {
     m_backstageMenu->setOffsetScroll(m_scrollOffset);
     updateLayoutInternal();
@@ -869,13 +871,13 @@ void RibbonBackstageViewPrivate::adjustLocations()
     m_scrollBarHorz->raise();
 }
 
-void RibbonBackstageViewPrivate::adjustScrollBars()
+void ARibbonBackstageViewPrivate::adjustScrollBars()
 {
-    QTN_P(RibbonBackstageView);
+    A_P(ARibbonBackstageView);
     int scrollOffsetOld = m_scrollOffset;
     int scrollOffsetHorzOld = m_scrollOffsetHorz;
 
-    const int scrollWidth = p.style()->pixelMetric(QStyle::PM_ScrollBarExtent, Q_NULL, &p);
+    const int scrollWidth = p.style()->pixelMetric(QStyle::PM_ScrollBarExtent, nullptr, &p);
     const int scrollHeight = scrollWidth;
 
     QRect rect = p.rect();
@@ -935,20 +937,20 @@ void RibbonBackstageViewPrivate::adjustScrollBars()
             m_scrollOffsetHorz = totalWidth;
     }
 
-    if (((scrollOffsetOld != m_scrollOffset) || (scrollOffsetHorzOld != m_scrollOffsetHorz)) && m_backstageMenu != Q_NULL)
+    if (((scrollOffsetOld != m_scrollOffset) || (scrollOffsetHorzOld != m_scrollOffsetHorz)) && m_backstageMenu != nullptr)
         adjustLocations();
 }
 
-void RibbonBackstageViewPrivate::updateLayoutInternal()
+void ARibbonBackstageViewPrivate::updateLayoutInternal()
 {
-    QTN_P(RibbonBackstageView);
+    A_P(ARibbonBackstageView);
     int backstageViewTop = 0;
     m_backstageMenu->createBackstageCloseButton();
 
     QRect rect = p.rect();
     
     QWidget* parent = p.parentWidget();
-    if (parent != Q_NULL)
+    if (parent != nullptr)
         rect = parent->rect();
 
     QRect rectMenu = rect;
@@ -962,14 +964,14 @@ void RibbonBackstageViewPrivate::updateLayoutInternal()
 
     rect.setTop(rect.top() + backstageViewTop);
 
-    if (!static_cast<bool>(p.style()->styleHint(static_cast<QStyle::StyleHint>(CommonStyle::SH_RibbonBackstageHideTabs))))
+    if (!static_cast<bool>(p.style()->styleHint(static_cast<QStyle::StyleHint>(ACommonStyle::SH_RibbonBackstageHideTabs))))
     {
-        backstageViewTop = qtn_backstageViewTop(&p);
+        backstageViewTop = aproch_backstageViewTop(&p);
         rect.setTop(rect.top() + backstageViewTop);
     }
 
     rect.setLeft(rect.left() - m_scrollOffsetHorz);
-    if (parent != Q_NULL)
+    if (parent != nullptr)
     {
         p.setGeometry(rect);
         p.raise();
@@ -978,23 +980,23 @@ void RibbonBackstageViewPrivate::updateLayoutInternal()
     m_totalHeight = qMax(m_totalHeight, m_backstageMenu->totalHeight());
 }
 
-void RibbonBackstageViewPrivate::updateLayout()
+void ARibbonBackstageViewPrivate::updateLayout()
 {
     m_backstageMenu->resetItemsDirty();
     updateLayoutInternal();
     adjustScrollBars();
 }
 
-void RibbonBackstageViewPrivate::updateGeometryPage(QWidget* widget)
+void ARibbonBackstageViewPrivate::updateGeometryPage(QWidget* widget)
 {
-    if (widget == Q_NULL)
+    if (widget == nullptr)
         return;
 
-    QTN_P(const RibbonBackstageView);
+    A_P(const ARibbonBackstageView);
     m_totalHeight = 0;
     QSize minimumSize = widget->minimumSize();
-    int top = static_cast<bool>(p.style()->styleHint(static_cast<QStyle::StyleHint>(CommonStyle::SH_RibbonBackstageHideTabs))) ? 
-        qtn_backstageViewTop(&p) : 2;
+    int top = static_cast<bool>(p.style()->styleHint(static_cast<QStyle::StyleHint>(ACommonStyle::SH_RibbonBackstageHideTabs))) ? 
+        aproch_backstageViewTop(&p) : 2;
     int width = m_backstageMenu->sizeHint().width();
     QRect rcContent(QPoint(width, top - m_scrollOffset), QPoint(p.rect().right(), p.rect().bottom()));
     rcContent.setRight(qMax(rcContent.right(), rcContent.left() + minimumSize.width()));
@@ -1004,7 +1006,7 @@ void RibbonBackstageViewPrivate::updateGeometryPage(QWidget* widget)
     m_sizeRightPage = m_mapSize[widget];
 }
 
-void RibbonBackstageViewPrivate::setCurrentAction(QAction* action)
+void ARibbonBackstageViewPrivate::setCurrentAction(QAction* action)
 {
     if (m_currentAction)
         m_backstageMenu->update(m_backstageMenu->actionRect(m_currentAction));
@@ -1018,14 +1020,14 @@ void RibbonBackstageViewPrivate::setCurrentAction(QAction* action)
     }
 }
 
-QAction* RibbonBackstageViewPrivate::currentAction() const
+QAction* ARibbonBackstageViewPrivate::currentAction() const
 {
     return m_currentAction;
 }
 
-QWidgetAction* RibbonBackstageViewPrivate::getAction(QWidget* w) const
+QWidgetAction* ARibbonBackstageViewPrivate::getAction(QWidget* w) const
 {
-    QTN_P(const RibbonBackstageView);
+    A_P(const ARibbonBackstageView);
     QList<QAction*> actions = p.actions();
     for (int i = 0, count = actions.count(); i < count; i++)
     {
@@ -1033,10 +1035,10 @@ QWidgetAction* RibbonBackstageViewPrivate::getAction(QWidget* w) const
         if (action && action->defaultWidget() == w)
             return action;
     }
-    return Q_NULL;
+    return nullptr;
 }
 
-void RibbonBackstageViewPrivate::scrollVertTriggered(int action)
+void ARibbonBackstageViewPrivate::scrollVertTriggered(int action)
 {
     int iOffset = m_scrollOffset;
     int pageStep = m_scrollBarVert->pageStep();
@@ -1070,7 +1072,7 @@ void RibbonBackstageViewPrivate::scrollVertTriggered(int action)
     m_scrollBarVert->setSliderPosition(iOffset);
 }
 
-void RibbonBackstageViewPrivate::scrollHorzTriggered(int action)
+void ARibbonBackstageViewPrivate::scrollHorzTriggered(int action)
 {
     int iOffset = m_scrollOffsetHorz;
     int pageStep = m_scrollBarVert->pageStep();
@@ -1106,50 +1108,50 @@ void RibbonBackstageViewPrivate::scrollHorzTriggered(int action)
 }
 
 /*!
-    \class RibbonBackstageView
+    \class ARibbonBackstageView
     \inmodule QtitanRibbon
     \brief The class for rendering backstage view window in ribbon concept. Can be top level window or placed on other windows.
 */
 
 /*!
-\fn void RibbonBackstageView::aboutToShow();
-Signal is emitted just before the RibbonBackstageView is shown to the user.
+\fn void ARibbonBackstageView::aboutToShow();
+Signal is emitted just before the ARibbonBackstageView is shown to the user.
 */
 
 /*!
-\fn void RibbonBackstageView::aboutToHide();
-Signal is emitted just before the RibbonBackstageView is shown to the user.
+\fn void ARibbonBackstageView::aboutToHide();
+Signal is emitted just before the ARibbonBackstageView is shown to the user.
 */
 
 /*!
-Constructs RibbonBackstageView object with the given \a parent.
+Constructs ARibbonBackstageView object with the given \a parent.
 */
-RibbonBackstageView::RibbonBackstageView(QWidget* parent)
+ARibbonBackstageView::ARibbonBackstageView(QWidget* parent)
     : QWidget(parent)
 {
-    QTN_INIT_PRIVATE(RibbonBackstageView);
-    QTN_D(RibbonBackstageView);
+    A_INIT_PRIVATE(ARibbonBackstageView);
+    A_D(ARibbonBackstageView);
     d.init();
 }
 
 /*!
-Destructor of the RibbonBackstageView object.
+Destructor of the ARibbonBackstageView object.
 */
-RibbonBackstageView::~RibbonBackstageView()
+ARibbonBackstageView::~ARibbonBackstageView()
 {
-    QTN_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
 /*!
 \reimp
 */
-void RibbonBackstageView::showEvent(QShowEvent* event)
+void ARibbonBackstageView::showEvent(QShowEvent* event)
 {
     Q_UNUSED(event);
-    QTN_D(RibbonBackstageView);
+    A_D(ARibbonBackstageView);
 //    d.m_tabBarPosition = d.m_ribbon->tabBarPosition();
-//    d.m_ribbon->setTabBarPosition(RibbonBar::TopPosition);
-    qtn_setBackstageViewVisible(this, true);
+//    d.m_ribbon->setTabBarPosition(ARibbonBar::TopPosition);
+    aproch_setBackstageViewVisible(this, true);
     d.updateLayout();
     setFocus();
     emit aboutToShow();
@@ -1158,22 +1160,22 @@ void RibbonBackstageView::showEvent(QShowEvent* event)
 /*!
 \reimp
 */
-void RibbonBackstageView::hideEvent(QHideEvent * event)
+void ARibbonBackstageView::hideEvent(QHideEvent * event)
 {
     Q_UNUSED(event);
-    qtn_setBackstageViewVisible(this, false);
+    aproch_setBackstageViewVisible(this, false);
     emit aboutToHide();
 }
 
 /*!
 \reimp
 */
-void RibbonBackstageView::wheelEvent(QWheelEvent* event)
+void ARibbonBackstageView::wheelEvent(QWheelEvent* event)
 {
-    QTN_D(RibbonBackstageView);
+    A_D(ARibbonBackstageView);
     if (!d.m_scrollBarVert->isVisible())
         return;
-    if (QApplication::activePopupWidget() != Q_NULL)
+    if (QApplication::activePopupWidget() != nullptr)
         return;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
@@ -1189,22 +1191,22 @@ void RibbonBackstageView::wheelEvent(QWheelEvent* event)
 #endif
 }
 
-bool RibbonBackstageView::isClosePrevented() const
+bool ARibbonBackstageView::isClosePrevented() const
 {
-    QTN_D(const RibbonBackstageView);
+    A_D(const ARibbonBackstageView);
     return d.m_closePrevented;
 }
 
-void RibbonBackstageView::setClosePrevented(bool prevent)
+void ARibbonBackstageView::setClosePrevented(bool prevent)
 {
-    QTN_D(RibbonBackstageView);
+    A_D(ARibbonBackstageView);
     d.m_closePrevented = prevent;
 }
 
 /*!
 Creates a new action with an \a icon and some \a text. The function adds the newly created action to the view's list of actions, and returns it.
 */
-QAction* RibbonBackstageView::addAction(const QIcon& icon, const QString& text)
+QAction* ARibbonBackstageView::addAction(const QIcon& icon, const QString& text)
 {
     QAction* action = new QAction(icon, text, this);
     addAction(action);
@@ -1214,7 +1216,7 @@ QAction* RibbonBackstageView::addAction(const QIcon& icon, const QString& text)
 /*!
 Adds page separator to the ribbon backstage view.
 */
-QAction* RibbonBackstageView::addSeparator()
+QAction* ARibbonBackstageView::addSeparator()
 {
     QAction* action = new QAction(this);
     action->setSeparator(true);
@@ -1227,9 +1229,9 @@ Adding the new page to the view. Parameter \a widget is a pointer to the QWidget
 Adding a page leads to the causing of tab on the left side of the view.
 To set the title of the page please use the fucntion QWidget::setWindowTitle()
 */
-QAction* RibbonBackstageView::addPage(QWidget* widget)
+QAction* ARibbonBackstageView::addPage(QWidget* widget)
 {
-    QTN_D(RibbonBackstageView);
+    A_D(ARibbonBackstageView);
     QWidgetAction* action = new QWidgetAction(this);
     action->setDefaultWidget(widget);
     widget->setFont(font());
@@ -1242,18 +1244,18 @@ QAction* RibbonBackstageView::addPage(QWidget* widget)
 /*!
 Returns an active widget from the current view.
 */
-QWidget* RibbonBackstageView::activePage() const
+QWidget* ARibbonBackstageView::activePage() const
 {
-    QTN_D(const RibbonBackstageView);
+    A_D(const ARibbonBackstageView);
     return d.m_activePage;
 }
 
 /*!
 Sets an active \a widget for the current view.
 */
-void RibbonBackstageView::setActivePage(QWidget* widget)
+void ARibbonBackstageView::setActivePage(QWidget* widget)
 {
-    QTN_D(RibbonBackstageView);
+    A_D(ARibbonBackstageView);
     bool find = false;
     QList<QAction*> acts = actions();
     for (int i = 0, count = acts.count(); i < count && !find; i++)
@@ -1310,32 +1312,32 @@ void RibbonBackstageView::setActivePage(QWidget* widget)
 /*!
 Returns the rectangle that contains the given \a action.
 */
-QRect RibbonBackstageView::actionGeometry(QAction* action) const
+QRect ARibbonBackstageView::actionGeometry(QAction* action) const
 {
-    QTN_D(const RibbonBackstageView);
+    A_D(const ARibbonBackstageView);
     return d.m_backstageMenu->actionRect(action);
 }
 
 /*!
 Returns the rectangle that contains the menu.
 */
-QRect RibbonBackstageView::menuGeometry() const
+QRect ARibbonBackstageView::menuGeometry() const
 {
-    QTN_D(const RibbonBackstageView);
+    A_D(const ARibbonBackstageView);
     return d.m_backstageMenu->geometry();
 }
 
 /*!
 Opens the backstage view window.
 */
-void RibbonBackstageView::open()
+void ARibbonBackstageView::open()
 {
     ensurePolished(); // Get the right font
     setVisible(true);
 }
 
 /*! \reimp */
-bool RibbonBackstageView::event(QEvent* event)
+bool ARibbonBackstageView::event(QEvent* event)
 {
     switch (event->type())
     {
@@ -1365,28 +1367,28 @@ bool RibbonBackstageView::event(QEvent* event)
 }
 
 /*! \reimp */
-void RibbonBackstageView::paintEvent(QPaintEvent* event)
+void ARibbonBackstageView::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     QPainter p(this);
-    RibbonBackstageStyleOption opt;
+    ARibbonBackstageStyleOption opt;
     opt.initFrom(this);
-    style()->drawPrimitive(static_cast<QStyle::PrimitiveElement>(CommonStyle::PE_RibbonBackstageFrame), &opt, &p, this);
+    style()->drawPrimitive(static_cast<QStyle::PrimitiveElement>(ACommonStyle::PE_RibbonBackstageFrame), &opt, &p, this);
 }
 
 /*! \reimp */
-void RibbonBackstageView::resizeEvent(QResizeEvent* event)
+void ARibbonBackstageView::resizeEvent(QResizeEvent* event)
 {
-    QTN_D(RibbonBackstageView);
-    if (parentWidget() == Q_NULL)
+    A_D(ARibbonBackstageView);
+    if (parentWidget() == nullptr)
         d.updateLayout();
     QWidget::resizeEvent(event);
 }
 
 /*! \reimp */
-bool RibbonBackstageView::eventFilter(QObject* object, QEvent* event)
+bool ARibbonBackstageView::eventFilter(QObject* object, QEvent* event)
 {
-    QTN_D(RibbonBackstageView);
+    A_D(ARibbonBackstageView);
     if (parentWidget() == object && isVisible())
     {
         switch (event->type())
@@ -1402,17 +1404,17 @@ bool RibbonBackstageView::eventFilter(QObject* object, QEvent* event)
 }
 
 /*! \reimp */
-void RibbonBackstageView::actionEvent(QActionEvent* event)
+void ARibbonBackstageView::actionEvent(QActionEvent* event)
 {
     QWidget::actionEvent(event);
 
-    QTN_D(RibbonBackstageView);
+    A_D(ARibbonBackstageView);
     if (event->type() == QEvent::ActionAdded)
     {
         if (QWidgetAction* wa = qobject_cast<QWidgetAction*>(event->action())) 
         {
             QWidget* widget = wa->requestWidget(this);
-            if (widget != Q_NULL)
+            if (widget != nullptr)
                 d.m_widgetItems.insert(wa, widget);
         }
     } 
@@ -1458,3 +1460,4 @@ void RibbonBackstageView::actionEvent(QActionEvent* event)
     }
 }
 
+APROCH_NAMESPACE_END

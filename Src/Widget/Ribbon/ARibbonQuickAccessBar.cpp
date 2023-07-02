@@ -38,9 +38,9 @@
 #include <qevent.h>
 
 #include "Widget/Style/ACommonStyle.h"
-#include "ARibbonBar_p.h"
-#include "Widget/Style/AStyleHelper.h"
 #include "Widget/Style/ACommonStyle_p.h"
+#include "Widget/Style/AStyleHelper.h"
+#include "ARibbonBar_p.h"
 #include "ARibbonDef.h"
 
  // 
@@ -120,7 +120,7 @@ void ARibbonQuickAccessBarPrivate::init()
     QObject::connect(m_menu, SIGNAL(aboutToShow()), &p, SLOT(aboutToShowCustomizeMenu()));
     QObject::connect(m_menu, SIGNAL(aboutToHide()), &p, SLOT(aboutToHideCustomizeMenu()));
 
-    m_ribbonToolTipManager = new RibbonToolTipManager(&p);
+    m_ribbonToolTipManager = new ARibbonToolTipManager(&p);
 
     p.addAction(new AQuickAccessActionInvisible(&p, m_customizeGroupAction));
 }
@@ -221,7 +221,7 @@ Destructor of the ARibbonQuickAccessBar object.
 */
 ARibbonQuickAccessBar::~ARibbonQuickAccessBar()
 {
-    A_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
 /*!
@@ -297,7 +297,7 @@ void ARibbonQuickAccessBar::customizeAction(QAction* action)
         setActionVisible(act->m_srcAction, !widgetForAction(act->m_srcAction));
         if (ARibbonBar* ribbonBar = d.ribbonBar())
         {
-            RibbonCustomizeManager* manager = ribbonBar->customizeManager();
+            ARibbonCustomizeManager* manager = ribbonBar->customizeManager();
             manager->setEditMode();
             manager->aproch_d().m_customizeEngine->setQuickAccessBar();
             manager->setEditMode(false);
@@ -316,7 +316,7 @@ void ARibbonQuickAccessBar::aboutToShowCustomizeMenu()
     if (style()->styleHint(QStyle::SH_Menu_SupportsSections))
     {
         d.m_menu->setSeparatorsCollapsible(false);
-        d.m_menu->addSection(ARibbonBar::tr_compatible(ARibbonCustomizeQuickAccessToolBarString));
+        d.m_menu->addSection(ARibbonBar::tr_compatible(RibbonCustomizeQuickAccessToolBarString));
     }
 #else
     d.m_menu->setSeparatorsCollapsible(false);
@@ -374,7 +374,7 @@ void ARibbonQuickAccessBar::actionEvent(QActionEvent* event)
                 bool addActionToMenu = true;
                 if (ARibbonBar* ribbonBar = d.ribbonBar())
                 {
-                    RibbonCustomizeManager* manager = ribbonBar->customizeManager();
+                    ARibbonCustomizeManager* manager = ribbonBar->customizeManager();
                     if (manager->isEditMode())
                     {
                         QList< QAction* > defaultActions = manager->aproch_d().m_customizeEngine->defaultToolBars().value(this);

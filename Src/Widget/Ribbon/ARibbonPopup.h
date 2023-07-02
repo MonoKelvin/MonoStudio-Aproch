@@ -1,31 +1,32 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#ifndef QTN_RIBBONGROUPMENU_H
-#define QTN_RIBBONGROUPMENU_H
+ * @file    ARibbonPopup.h
+ * @date    2023-07-02
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#pragma once
 
 #include <QEvent>
 #include <QMenu>
@@ -35,125 +36,146 @@
 #include <QLabel>
 #include <QWidgetAction>
 
-#include "QtnRibbonButton.h"
-#include "QtnPopupMenu.h"
+#include "ARibbonButton.h"
+#include "Widget/APopupMenu.h"
 
-QTITAN_BEGIN_NAMESPACE
+//
+// The most of the following code is copied from Qtitan.
+//
+// Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+// Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+//
 
-class RibbonGroup;
-class RibbonBar;
+APROCH_NAMESPACE_BEGIN
 
-class RibbonPagePopup : public QWidget
+class ARibbonGroup;
+class ARibbonBar;
+
+class ARibbonPagePopup : public QWidget
 {
     Q_OBJECT
 public:
-    RibbonPagePopup(RibbonBar* ribbonBar);
-    RibbonBar* ribbonBar() const;
-    void popup(const QRect& rect);
+    ARibbonPagePopup(ARibbonBar *ribbonBar);
+    ARibbonBar *ribbonBar() const;
+    void popup(const QRect &rect);
+
 protected:
-    void paintEvent(QPaintEvent* event) override;
-    bool event(QEvent* event) override;
+    void paintEvent(QPaintEvent *event) override;
+    bool event(QEvent *event) override;
+
 private:
-    RibbonBar* m_ribbonBar;
+    ARibbonBar *m_ribbonBar;
 };
 
-class RibbonGroupPopup : public QWidget
+class ARibbonGroupPopup : public QWidget
 {
 public:
-    explicit RibbonGroupPopup(RibbonGroup* group);
-    virtual ~RibbonGroupPopup();
-    void popup(const QPoint& pos);
+    explicit ARibbonGroupPopup(ARibbonGroup *group);
+    virtual ~ARibbonGroupPopup();
+    void popup(const QPoint &pos);
+
 public:
     virtual QSize sizeHint() const override;
+
 protected:
-    void hideEvent(QHideEvent* event) override;
-    void paintEvent(QPaintEvent* event) override;
-    void mousePressEvent(QMouseEvent* event) override;
+    void hideEvent(QHideEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+
 private:
-    RibbonGroup* m_group;
+    ARibbonGroup *m_group;
+
 private:
-    Q_DISABLE_COPY(RibbonGroupPopup)
+    Q_DISABLE_COPY(ARibbonGroupPopup)
 };
 
-class RibbonGroupOption : public QToolButton
+class ARibbonGroupOption : public QToolButton
 {
     Q_OBJECT
 public:
-    explicit RibbonGroupOption(QWidget* parent);
-    virtual ~RibbonGroupOption();
+    explicit ARibbonGroupOption(QWidget *parent);
+    virtual ~ARibbonGroupOption();
+
 public:
     QString text() const;
+
 public:
     virtual QSize sizeHint() const override;
+
 protected:
-    virtual void paintEvent(QPaintEvent* event) override;
-    virtual void actionEvent(QActionEvent* event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
+    virtual void actionEvent(QActionEvent *event) override;
+
 private:
-    Q_DISABLE_COPY(RibbonGroupOption)
+    Q_DISABLE_COPY(ARibbonGroupOption)
 };
 
-class RibbonGroupScrollButton : public QToolButton
+class ARibbonGroupScrollButton : public QToolButton
 {
     Q_OBJECT
 public:
-    explicit RibbonGroupScrollButton(QWidget* parent, bool scrollLeft);
-    virtual ~RibbonGroupScrollButton();
+    explicit ARibbonGroupScrollButton(QWidget *parent, bool scrollLeft);
+    virtual ~ARibbonGroupScrollButton();
 Q_SIGNALS:
     void stopScrollTimer();
+
 protected:
-    virtual void paintEvent(QPaintEvent* event) override;
-    virtual void leaveEvent(QEvent* event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
+    virtual void leaveEvent(QEvent *event) override;
+
 protected:
     bool m_scrollLeft;
+
 private:
-    Q_DISABLE_COPY(RibbonGroupScrollButton)
+    Q_DISABLE_COPY(ARibbonGroupScrollButton)
 };
 
-class RibbonOverflowMenuButton : public RibbonButton
+class ARibbonOverflowMenuButton : public ARibbonButton
 {
 public:
-    RibbonOverflowMenuButton(QWidget* parent);
+    ARibbonOverflowMenuButton(QWidget *parent);
+
 protected:
-    void paintEvent(QPaintEvent* event) override;
-    void mousePressEvent(QMouseEvent* event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+
 private:
-    Q_DISABLE_COPY(RibbonOverflowMenuButton)
+    Q_DISABLE_COPY(ARibbonOverflowMenuButton)
 };
 
-class RibbonOverflowAction : public QWidgetAction
+class ARibbonOverflowAction : public QWidgetAction
 {
 public:
-    RibbonOverflowAction(QWidget* control, QWidget* parent);
-    virtual ~RibbonOverflowAction();
+    ARibbonOverflowAction(QWidget *control, QWidget *parent);
+    virtual ~ARibbonOverflowAction();
+
 public:
-    virtual QWidget* createWidget(QWidget* parent) override;
-    virtual void deleteWidget(QWidget* widget) override;
+    virtual QWidget *createWidget(QWidget *parent) override;
+    virtual void deleteWidget(QWidget *widget) override;
+
 private:
-    QWidget* m_control;
+    QWidget *m_control;
 };
 
-class RibbonOverflowMenu : public PopupMenu
+class ARibbonOverflowMenu : public APopupMenu
 {
     Q_OBJECT
 public:
-    RibbonOverflowMenu(QWidget* parent);
-    virtual ~RibbonOverflowMenu();
+    ARibbonOverflowMenu(QWidget *parent);
+    virtual ~ARibbonOverflowMenu();
+
 public:
     void clearGroups();
-    void addGroup(RibbonGroup* group);
+    void addGroup(ARibbonGroup *group);
     void fillMenu();
     bool isEmpty() const;
+
 protected:
-    virtual void paintMenuItem(QPainter* painter, QStyleOptionMenuItem* option) override;
+    virtual void paintMenuItem(QPainter *painter, QStyleOptionMenuItem *option) override;
+
 private:
-    QList<RibbonGroup*> m_groups;
-    Q_DISABLE_COPY(RibbonOverflowMenu)
+    QList<ARibbonGroup *> m_groups;
+    Q_DISABLE_COPY(ARibbonOverflowMenu)
 };
 
-QTITAN_END_NAMESPACE
-
-#endif //QTN_RIBBONGROUPMENU_H
-
-
-
-
+APROCH_NAMESPACE_END

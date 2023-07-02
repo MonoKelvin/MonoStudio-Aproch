@@ -1,30 +1,32 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
-#include <QPainter>
+ * @file    ARibbonTitleBarWidget.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+#include "stdafx.h"
 #include <QLayout>
 #include <QEvent>
 #include <QStyleOption>
@@ -32,40 +34,46 @@
 #include <QMainWindow>
 #include <QWidgetAction>
 
-#include "QtnPlatform.h"
+#include "ARibbonTitleBarWidget.h"
+#include "Platform/APlatform.h"
 #include "ARibbonBar.h"
-#include "ARibbonBarPrivate.h"
-#include "ARibbonBackstageViewPrivate.h"
-#include "QtnCommonStyle.h"
-#include "QtnCommonStylePrivate.h"
-#include "QtnStyleOption.h"
-#include "QtnToggleSwitch.h"
-#include "QtnStyleHelperPrivate.h"
-#include "ARibbonBarPrivate.h"
+#include "ARibbonBar_p.h"
+#include "ARibbonBackstageView.h"
+#include "ARibbonBackstageView_p.h"
+#include "ARibbonSearchBar.h"
+#include "Widget/Style/ACommonStyle.h"
+#include "Widget/Style/ACommonStyle_p.h"
+#include "Widget/Style/AStyleOption.h"
+#include "Widget/AToggleSwitch.h"
+#include "Widget/Style/AStyleHelper.h"
+#include "ARibbonBar_p.h"
 #include "ARibbonQuickAccessBar.h"
-#include "ARibbonTitleBarWidgetPrivate.h"
 
-#ifdef A_MEMORY_DEBUG
-#include "QtitanMSVSDebug.h"
-#endif
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
+APROCH_NAMESPACE_BEGIN
 
-static RibbonQuickAccessBar* aproch_findQuickAccessBar(QLayout* layout)
+static ARibbonQuickAccessBar* aproch_findQuickAccessBar(QLayout* layout)
 {
     for (int i = 0; i < layout->count(); ++i)
     {
         QLayoutItem* item = layout->itemAt(i);
-        if (RibbonQuickAccessBar* quickAccessBar = qobject_cast<RibbonQuickAccessBar*>(item->widget()))
+        if (ARibbonQuickAccessBar* quickAccessBar = qobject_cast<ARibbonQuickAccessBar*>(item->widget()))
             return quickAccessBar;
     }
     return nullptr;
 }
 
 /*!
-    \class RibbonTitleBarWidget
+    \class ARibbonTitleBarWidget
     \internal
 */
-RibbonTitleBarWidget::RibbonTitleBarWidget(ARibbonBar* ribbonBar)
+ARibbonTitleBarWidget::ARibbonTitleBarWidget(ARibbonBar* ribbonBar)
     : QWidget(ARibbonBarPrivate::_get(ribbonBar)->material())
     , m_ribbonBar(ribbonBar)
     , m_layout(nullptr)
@@ -83,7 +91,7 @@ RibbonTitleBarWidget::RibbonTitleBarWidget(ARibbonBar* ribbonBar)
     }
     ribbonTabBar()->scrollView()->installEventFilter(this);
 
-    m_searchBar = new RibbonSearchBar(ribbonBar);
+    m_searchBar = new ARibbonSearchBar(ribbonBar);
 
     m_layout = new QHBoxLayout(this);
     m_layout->setSpacing(1); 
@@ -100,14 +108,14 @@ RibbonTitleBarWidget::RibbonTitleBarWidget(ARibbonBar* ribbonBar)
     setSearchBarAppearance(ARibbonBar::SearchBarHidden);
 }
 
-RibbonTitleBarWidget::~RibbonTitleBarWidget()
+ARibbonTitleBarWidget::~ARibbonTitleBarWidget()
 {
     topWidget()->removeEventFilter(this);
     ribbonTabBar()->scrollView()->removeEventFilter(this);
     removeContextualTabs();
 }
 
-void RibbonTitleBarWidget::addWidget(QWidget* widget, int stretch)
+void ARibbonTitleBarWidget::addWidget(QWidget* widget, int stretch)
 {
     if (widget == nullptr)
         return;
@@ -116,7 +124,7 @@ void RibbonTitleBarWidget::addWidget(QWidget* widget, int stretch)
     updateLayout();
 }
 
-void RibbonTitleBarWidget::insertWidget(int index, QWidget* widget, int stretch, Qt::Alignment alignment)
+void ARibbonTitleBarWidget::insertWidget(int index, QWidget* widget, int stretch, Qt::Alignment alignment)
 {
 	if (widget == nullptr || m_layout == nullptr)
 		return;
@@ -124,7 +132,7 @@ void RibbonTitleBarWidget::insertWidget(int index, QWidget* widget, int stretch,
 	updateLayout();
 }
 
-int RibbonTitleBarWidget::indexOf(QWidget* widget)
+int ARibbonTitleBarWidget::indexOf(QWidget* widget)
 {
 	if (widget == nullptr || m_layout == nullptr)
 		return -1;
@@ -132,7 +140,7 @@ int RibbonTitleBarWidget::indexOf(QWidget* widget)
     return m_layout->indexOf(widget);
 }
 
-void RibbonTitleBarWidget::addWidgetToRightSide(QWidget* widget, int stretch)
+void ARibbonTitleBarWidget::addWidgetToRightSide(QWidget* widget, int stretch)
 {
     if (widget == nullptr)
         return;
@@ -141,7 +149,7 @@ void RibbonTitleBarWidget::addWidgetToRightSide(QWidget* widget, int stretch)
     updateLayout();
 }
 
-void RibbonTitleBarWidget::removeWidget(QWidget* widget)
+void ARibbonTitleBarWidget::removeWidget(QWidget* widget)
 {
     if (widget == nullptr)
         return;
@@ -149,28 +157,28 @@ void RibbonTitleBarWidget::removeWidget(QWidget* widget)
     updateLayout();
 }
 
-void RibbonTitleBarWidget::adjustSizeTitleBar()
+void ARibbonTitleBarWidget::adjustSizeTitleBar()
 {
 }
 
-ARibbonBar* RibbonTitleBarWidget::ribbonBar() const
+ARibbonBar* ARibbonTitleBarWidget::ribbonBar() const
 {
     return m_ribbonBar;
 }
 
-RibbonTabBar* RibbonTitleBarWidget::ribbonTabBar() const
+ARibbonTabBar* ARibbonTitleBarWidget::ribbonTabBar() const
 {
     return ARibbonBarPrivate::_get(ribbonBar())->m_ribbonTabBar;
 }
 
-RibbonSearchBar* RibbonTitleBarWidget::searchBar() const
+ARibbonSearchBar* ARibbonTitleBarWidget::searchBar() const
 {
     return m_searchBar;
 }
 
-WindowTitleBar* RibbonTitleBarWidget::getWindowTitleBar() const
+AWindowTitleBar* ARibbonTitleBarWidget::getWindowTitleBar() const
 {
-    if (WindowTitleBar* titleBar = ARibbonBarPrivate::_get(m_ribbonBar)->findTitleBar())
+    if (AWindowTitleBar* titleBar = ARibbonBarPrivate::_get(m_ribbonBar)->findTitleBar())
     {
         if (titleBar->widget() == this)
             return titleBar;
@@ -181,7 +189,7 @@ WindowTitleBar* RibbonTitleBarWidget::getWindowTitleBar() const
 class RibbonTitleBarButton : public QToolButton
 {
 public:
-    RibbonTitleBarButton(RibbonTitleBarWidget* titleBarWidget) 
+    RibbonTitleBarButton(ARibbonTitleBarWidget* titleBarWidget) 
         : QToolButton(), m_titleBarWidget(titleBarWidget) {
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         setFocusPolicy(Qt::WheelFocus);
@@ -210,7 +218,7 @@ public:
     }
 
     QSize sizeHint() const override {
-        WindowTitleBar* titleBar = m_titleBarWidget->getWindowTitleBar();
+        AWindowTitleBar* titleBar = m_titleBarWidget->getWindowTitleBar();
         int h = titleBar != nullptr ? titleBar->titleHeight() : height();
         int w = h;
 
@@ -232,17 +240,17 @@ protected:
         QStyleOptionTitleBar option;
         initOption(option);
         QPainter painter(this);
-        style()->drawControl((QStyle::ControlElement)CommonStyle::CE_RibbonTitleBarButton, &option, &painter, this);
+        style()->drawControl((QStyle::ControlElement)ACommonStyle::CE_RibbonTitleBarButton, &option, &painter, this);
     }
 
     void mousePressEvent(QMouseEvent* event) override {
         QToolButton::mousePressEvent(event);
     }
 private:
-    RibbonTitleBarWidget* m_titleBarWidget;
+    ARibbonTitleBarWidget* m_titleBarWidget;
 };
 
-QAction* RibbonTitleBarWidget::addTitleButton(const QIcon& icon, const QString& help)
+QAction* ARibbonTitleBarWidget::addTitleButton(const QIcon& icon, const QString& help)
 {
     QAction* result = new QAction(icon, QString(), nullptr);
     result->setToolTip(help);
@@ -252,7 +260,7 @@ QAction* RibbonTitleBarWidget::addTitleButton(const QIcon& icon, const QString& 
     return result;
 }
 
-void RibbonTitleBarWidget::removeTitleButton(QAction* action)
+void ARibbonTitleBarWidget::removeTitleButton(QAction* action)
 {
     for (int i = 0; i < m_layout->count(); ++i)
     {
@@ -269,7 +277,7 @@ void RibbonTitleBarWidget::removeTitleButton(QAction* action)
     }
 }
 
-void RibbonTitleBarWidget::setSearchBarAppearance(ARibbonBar::SearchBarAppearance appearance)
+void ARibbonTitleBarWidget::setSearchBarAppearance(ARibbonBar::SearchBarAppearance appearance)
 {
     if (m_searchBarAppearance == appearance)
         return;
@@ -294,12 +302,12 @@ void RibbonTitleBarWidget::setSearchBarAppearance(ARibbonBar::SearchBarAppearanc
     layout()->invalidate();
 }
 
-ARibbonBar::SearchBarAppearance RibbonTitleBarWidget::searchBarAppearance() const
+ARibbonBar::SearchBarAppearance ARibbonTitleBarWidget::searchBarAppearance() const
 {
     return m_searchBarAppearance;
 }
 
-QSize RibbonTitleBarWidget::calcMinSize(QWidget* widget) const
+QSize ARibbonTitleBarWidget::calcMinSize(QWidget* widget) const
 {
     const QSize sizeHint = widget->sizeHint();
     const QSize minSizeHint = widget->minimumSizeHint();
@@ -332,7 +340,7 @@ QSize RibbonTitleBarWidget::calcMinSize(QWidget* widget) const
     return size.expandedTo(QSize(0, 0));
 }
 
-QRect RibbonTitleBarWidget::calcTextRect() const
+QRect ARibbonTitleBarWidget::calcTextRect() const
 {
     int left = 0;
     int right = width();
@@ -361,10 +369,10 @@ QRect RibbonTitleBarWidget::calcTextRect() const
     return rcTitleText;
 }
 
-QRect RibbonTitleBarWidget::calcContextualAreaRect() const
+QRect ARibbonTitleBarWidget::calcContextualAreaRect() const
 {
     int offset = 0;
-    if (WindowTitleBar* titleBar = getWindowTitleBar())
+    if (AWindowTitleBar* titleBar = getWindowTitleBar())
         offset = geometry().left() - titleBar->borderThickness();
     int left = offset;
     int right = width();
@@ -373,7 +381,7 @@ QRect RibbonTitleBarWidget::calcContextualAreaRect() const
     return QRect(QPoint(left, 0), QPoint(right, height() - 1));
 }
 
-int RibbonTitleBarWidget::lastLeftWidgetIndex() const
+int ARibbonTitleBarWidget::lastLeftWidgetIndex() const
 {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 12, 0))
     return m_layout->indexOf(m_leftItem);
@@ -385,15 +393,15 @@ int RibbonTitleBarWidget::lastLeftWidgetIndex() const
 #endif
 }
 
-void RibbonTitleBarWidget::setVisible(bool visible)
+void ARibbonTitleBarWidget::setVisible(bool visible)
 {
     QWidget::setVisible(visible);
 }
 
-void RibbonTitleBarWidget::updateLayout()
+void ARibbonTitleBarWidget::updateLayout()
 {
     int spacing = 6;
-    if (RibbonSystemButton* systemButton = m_ribbonBar->systemButton())
+    if (ARibbonSystemButton* systemButton = m_ribbonBar->systemButton())
     {
         if (systemButton->toolButtonStyle() == Qt::ToolButtonIconOnly)
             spacing += systemButton->width();
@@ -413,7 +421,7 @@ void RibbonTitleBarWidget::updateLayout()
 }
 
 /*! \internal */
-QWidget* RibbonTitleBarWidget::titleBarWindow() const
+QWidget* ARibbonTitleBarWidget::titleBarWindow() const
 {
     QWidget* ret = m_ribbonBar->parentWidget();
     if (ret == nullptr)
@@ -427,7 +435,7 @@ QWidget* RibbonTitleBarWidget::titleBarWindow() const
     return nullptr;
 }
 
-QWidget* RibbonTitleBarWidget::topWidget() const
+QWidget* ARibbonTitleBarWidget::topWidget() const
 {
 #ifndef QTITAN_DESIGNER
     if (m_ribbonBar->parentWidget() && m_ribbonBar->parentWidget()->isWindow())
@@ -439,7 +447,7 @@ QWidget* RibbonTitleBarWidget::topWidget() const
 #endif
 }
 
-void RibbonTitleBarWidget::updateTextTitle()
+void ARibbonTitleBarWidget::updateTextTitle()
 {
     if (!m_dirtyTextTitle)
         return;
@@ -453,28 +461,28 @@ void RibbonTitleBarWidget::updateTextTitle()
     m_dirtyTextTitle = false;
 }
 
-void RibbonTitleBarWidget::windowTitleChanged(const QString& text)
+void ARibbonTitleBarWidget::windowTitleChanged(const QString& text)
 {
     m_strTitle = text;
     m_dirtyTextTitle = true;
     updateLayout();
 }
 
-QFont RibbonTitleBarWidget::titleFont() const
+QFont ARibbonTitleBarWidget::titleFont() const
 {
     return QApplication::font("QMdiSubWindowTitleBar");
 }
 
-void RibbonTitleBarWidget::initTitleBarOption(TitleBarStyleOption* opt) const
+void ARibbonTitleBarWidget::initTitleBarOption(ATitleBarStyleOption* opt) const
 {
     opt->initFrom(this);
-    if (RibbonSystemButton* button = m_ribbonBar->systemButton())
+    if (ARibbonSystemButton* button = m_ribbonBar->systemButton())
     {
-        if (const RibbonBackstageView* backstage = qobject_cast<const RibbonBackstageView*>(button->backstage()))
+        if (const ARibbonBackstageView* backstage = qobject_cast<const ARibbonBackstageView*>(button->backstage()))
         {
             opt->isBackstageVisible = !backstage->isHidden();
-            opt->menuWidth = RibbonBackstageViewPrivate::_get(backstage)->m_backstageMenu->width();
-            opt->backstageFrameMenuPalette = RibbonBackstageViewPrivate::_get(backstage)->m_backstageMenu->palette();
+            opt->menuWidth = ARibbonBackstageViewPrivate::_get(backstage)->m_backstageMenu->width();
+            opt->backstageFrameMenuPalette = ARibbonBackstageViewPrivate::_get(backstage)->m_backstageMenu->palette();
         }
     }
 
@@ -484,8 +492,8 @@ void RibbonTitleBarWidget::initTitleBarOption(TitleBarStyleOption* opt) const
         //opt->contextualAreaRect.translate(-opt->contextualAreaRect.left(), 0);
         for (int i = 0, count = m_contextualTabs.count(); i < count; ++i)
         {
-            ContextualTab* contextualTab = m_contextualTabs[i];
-            opt->contextualTabs.append(TitleBarStyleOption::ContextualTabInfo(contextualTab->rect(), contextualTab->title(), contextualTab->color()));
+            AContextualTab* contextualTab = m_contextualTabs[i];
+            opt->contextualTabs.append(ATitleBarStyleOption::ContextualTabInfo(contextualTab->rect(), contextualTab->title(), contextualTab->color()));
         }
     }
 
@@ -498,7 +506,7 @@ void RibbonTitleBarWidget::initTitleBarOption(TitleBarStyleOption* opt) const
     opt->titleRect = calcTextRect();
     opt->contextFont = font();
     opt->titleFont = titleFont();
-    if (RibbonSystemButton* systemButton = m_ribbonBar->systemButton())
+    if (ARibbonSystemButton* systemButton = m_ribbonBar->systemButton())
     {
         if (systemButton->toolButtonStyle() == Qt::ToolButtonIconOnly)
         {
@@ -511,32 +519,32 @@ void RibbonTitleBarWidget::initTitleBarOption(TitleBarStyleOption* opt) const
     }
 }
 
-ContextualTab* RibbonTitleBarWidget::hitContextHeaders(const QPoint& point) const
+AContextualTab* ARibbonTitleBarWidget::hitContextHeaders(const QPoint& point) const
 {
     QRect contextualAreaRect = calcContextualAreaRect();
     for (int i = 0, count = m_contextualTabs.count(); i < count; ++i)
     {
-        ContextualTab* contextualTab = m_contextualTabs[i];
+        AContextualTab* contextualTab = m_contextualTabs[i];
         if (contextualTab->rect().intersected(contextualAreaRect).contains(point))
             return contextualTab;
     }
     return nullptr;
 }
 
-void RibbonTitleBarWidget::updateContextualTabs()
+void ARibbonTitleBarWidget::updateContextualTabs()
 {
     removeContextualTabs();
     if (!ribbonBar()->isContextualTabsVisible())
         return;
-    ContextualTab* prevContextualTab = nullptr;
-    RibbonTabBar* tabBar = ribbonTabBar();
+    AContextualTab* prevContextualTab = nullptr;
+    ARibbonTabBar* tabBar = ribbonTabBar();
     int count = tabBar->count();
     if (count == 0)
         return;
 
     for (int i = 0; i < count; ++i)
     {
-        RibbonTab* tab = tabBar->getTab(i);
+        ARibbonTab* tab = tabBar->getTab(i);
         if (tab->isHidden())
             continue;
 
@@ -555,13 +563,13 @@ void RibbonTitleBarWidget::updateContextualTabs()
         }
         else
         {
-            prevContextualTab = new ContextualTab(ribbonBar(), tab);
+            prevContextualTab = new AContextualTab(ribbonBar(), tab);
             m_contextualTabs.append(prevContextualTab);
         }
     }
 }
 
-void RibbonTitleBarWidget::removeContextualTabs()
+void ARibbonTitleBarWidget::removeContextualTabs()
 {
     for (int i = 0; i < m_contextualTabs.count(); i++)
         delete m_contextualTabs[i];
@@ -569,7 +577,7 @@ void RibbonTitleBarWidget::removeContextualTabs()
 }
 
 /*! \reimp */
-bool RibbonTitleBarWidget::event(QEvent* event)
+bool ARibbonTitleBarWidget::event(QEvent* event)
 {
     switch (event->type())
     {
@@ -597,7 +605,7 @@ bool RibbonTitleBarWidget::event(QEvent* event)
     return QWidget::event(event);
 }
 
-bool RibbonTitleBarWidget::eventFilter(QObject* watched, QEvent* event)
+bool ARibbonTitleBarWidget::eventFilter(QObject* watched, QEvent* event)
 {
     if (watched == ribbonBar() && event->type() == QEvent::ParentChange)
     {
@@ -641,17 +649,17 @@ bool RibbonTitleBarWidget::eventFilter(QObject* watched, QEvent* event)
 }
 
 /*! \reimp */
-void RibbonTitleBarWidget::paintEvent(QPaintEvent* event)
+void ARibbonTitleBarWidget::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     updateTextTitle();
     QPainter painter(this);
 
-    TitleBarStyleOption opt;
+    ATitleBarStyleOption opt;
     initTitleBarOption(&opt);
-    style()->drawComplexControl(static_cast<QStyle::ComplexControl>(CommonStyle::CC_RibbonTitleBarWidget), &opt, &painter, this);
+    style()->drawComplexControl(static_cast<QStyle::ComplexControl>(ACommonStyle::CC_RibbonTitleBarWidget), &opt, &painter, this);
 
-    if (RibbonQuickAccessBar* quickAccessBar = aproch_findQuickAccessBar(m_layout))
+    if (ARibbonQuickAccessBar* quickAccessBar = aproch_findQuickAccessBar(m_layout))
     {
         if (quickAccessBar->visibleCount() > 0)
         {
@@ -660,11 +668,11 @@ void RibbonTitleBarWidget::paintEvent(QPaintEvent* event)
         #if 0 //remove me
             RibbonQuickAccessBarStyleOption opt;
             opt.initFrom(accessBar);
-            const int hor = CommonStylePrivate::dpiScaled(2, accessBar);
-            const int ver = CommonStylePrivate::dpiScaled(1, accessBar);
+            const int hor = ACommonStylePrivate::dpiScaled(2, accessBar);
+            const int ver = ACommonStylePrivate::dpiScaled(1, accessBar);
             opt.rect = accessBar->geometry().adjusted(-hor, -ver, hor, ver);
             opt.quickAccessBarPosition = ARibbonBar::TopPosition;
-            RibbonSystemButton* systemButton = ribbonBar()->systemButton();
+            ARibbonSystemButton* systemButton = ribbonBar()->systemButton();
             opt.roundButton = systemButton && systemButton->toolButtonStyle() == Qt::ToolButtonIconOnly;
             QPalette_setColor(opt.palette, QPalette::Window, accessBar->parentWidget()->palette().color(QPalette::Window));
             style()->drawControl(QStyle::CE_ToolBar, &opt, &painter, accessBar);
@@ -674,11 +682,11 @@ void RibbonTitleBarWidget::paintEvent(QPaintEvent* event)
 }
 
 /*! \reimp */
-void RibbonTitleBarWidget::mousePressEvent(QMouseEvent* event)
+void ARibbonTitleBarWidget::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        if (ContextualTab* contextualTab = hitContextHeaders(event->pos()))
+        if (AContextualTab* contextualTab = hitContextHeaders(event->pos()))
         {
             int index = ribbonTabBar()->tabIndex(contextualTab->firstTab);
             if (index != -1)
@@ -691,3 +699,4 @@ void RibbonTitleBarWidget::mousePressEvent(QMouseEvent* event)
     event->ignore();
 }
 
+APROCH_NAMESPACE_END

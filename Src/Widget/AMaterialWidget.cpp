@@ -413,7 +413,7 @@ AMaterialWidgetEffect::~AMaterialWidgetEffect()
 {
     m_widget = nullptr;
 #ifdef A_OPENGL_ENABLED
-    Q_DELETE_AND_NULL(m_openglEffect);
+    A_DELETE_AND_NULL(m_openglEffect);
 #endif
 }
 

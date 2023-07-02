@@ -1,29 +1,31 @@
 /****************************************************************************
-**
-** Qtitan Library by Developer Machines (Microsoft-Ribbon implementation for Qt.C++)
-** 
-** Copyright (c) 2009-2022 Developer Machines (https://www.devmachines.com)
-**           ALL RIGHTS RESERVED
-** 
-**  The entire contents of this file is protected by copyright law and
-**  international treaties. Unauthorized reproduction, reverse-engineering
-**  and distribution of all or any portion of the code contained in this
-**  file is strictly prohibited and may result in severe civil and 
-**  criminal penalties and will be prosecuted to the maximum extent 
-**  possible under the law.
-**
-**  RESTRICTIONS
-**
-**  THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
-**  FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
-**  COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
-**  AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
-**  AND PERMISSION FROM DEVELOPER MACHINES
-**
-**  CONSULT THE END USER LICENSE AGREEMENT FOR INFORMATION ON
-**  ADDITIONAL RESTRICTIONS.
-**
-****************************************************************************/
+ * @file    ARibbonPage.cpp
+ * @date    2023-07-02 
+ * @author  MonoKelvin
+ * @email   15007083506@qq.com
+ * @github  https://github.com/MonoKelvin
+ * @brief
+ *
+ * This source file is part of Aproch.
+ * Copyright (C) 2020 by MonoKelvin. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 #include "stdafx.h"
 #include <QApplication>
 #include <QPainter>
@@ -50,6 +52,13 @@
 #include <qt_windows.h>
 #endif // Q_OS_WIN
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
 APROCH_NAMESPACE_BEGIN
 
 #ifdef Q_OS_LINUX
@@ -69,7 +78,7 @@ ARibbonPagePrivate::ARibbonPagePrivate()
     , m_scrollRightButton(nullptr)
     , m_associativeTab(nullptr)
     , m_scrollTimer()
-    , m_title(ARibbonBar::tr_compatible(ARibbonUntitledString))
+    , m_title(ARibbonBar::tr_compatible(RibbonUntitledString))
     , m_contextTitle(QString())
     , m_contextGroupName(QString())
     , m_groupsLength(-1)
@@ -85,19 +94,19 @@ ARibbonPagePrivate::ARibbonPagePrivate()
 
 ARibbonPagePrivate::~ARibbonPagePrivate()
 {
-    Q_DELETE_AND_NULL(m_overflowMenu);
+    A_DELETE_AND_NULL(m_overflowMenu);
 }
 
 void ARibbonPagePrivate::init()
 {
     A_P(ARibbonPage);
 //    p.setAutoFillBackground(false);
-    m_overflowMenu = new RibbonOverflowMenu(&p);
+    m_overflowMenu = new ARibbonOverflowMenu(&p);
 }
 
 void ARibbonPagePrivate::setRibbonBar(ARibbonBar* ribbonBar)
 {
-    A_P(ARibbonPage)
+    A_P(ARibbonPage);
     m_ribbonBar = ribbonBar;
     if (m_ribbonBar != nullptr)
         p.setParent(ARibbonBarPrivate::_get(m_ribbonBar)->getPageParent());
@@ -105,7 +114,7 @@ void ARibbonPagePrivate::setRibbonBar(ARibbonBar* ribbonBar)
         p.setParent(nullptr);
 }
 
-void ARibbonPagePrivate::setAssociativeTab(RibbonTab* tab)
+void ARibbonPagePrivate::setAssociativeTab(ARibbonTab* tab)
 {
     if (m_associativeTab == tab)
         return;
@@ -128,7 +137,7 @@ void ARibbonPagePrivate::setAssociativeTab(RibbonTab* tab)
     }
 }
 
-RibbonTab* ARibbonPagePrivate::associativeTab() const
+ARibbonTab* ARibbonPagePrivate::associativeTab() const
 {
     return m_associativeTab;
 }
@@ -153,9 +162,9 @@ bool ARibbonPagePrivate::collapseGroups(int& leftOffset, int actualWidth, ARibbo
             bool adjustNeeded = adjust;
             int oldWidth = group->sizeHint().width();
             if (adjust)
-                adjustNeeded = RibbonGroupPrivate::_get(group)->adjustCurrentSize(false);
+                adjustNeeded = ARibbonGroupPrivate::_get(group)->adjustCurrentSize(false);
             else
-                RibbonGroupPrivate::_get(group)->reduce();
+                ARibbonGroupPrivate::_get(group)->reduce();
 
             int newWidth = group->sizeHint().width();
             int delta = oldWidth - newWidth;
@@ -191,9 +200,9 @@ bool ARibbonPagePrivate::expandGroups(int& leftOffset, int actualWidth, ARibbonC
             bool adjustNeeded = adjust;
             int oldWidth = group->sizeHint().width();
             if (adjust)
-                adjustNeeded = RibbonGroupPrivate::_get(group)->adjustCurrentSize(true);
+                adjustNeeded = ARibbonGroupPrivate::_get(group)->adjustCurrentSize(true);
             else
-                RibbonGroupPrivate::_get(group)->expand();
+                ARibbonGroupPrivate::_get(group)->expand();
 
             int newWidth = group->sizeHint().width();
             int delta = oldWidth - newWidth;
@@ -222,7 +231,7 @@ ARibbonControlSizeDefinition::GroupSize ARibbonPagePrivate::getMinGroupSize() co
         size = qMin(size, group->currentSize());
 /*
         if (simplified)
-            size = qMin(size, RibbonGroupPrivate::_get(group)->minSize());
+            size = qMin(size, ARibbonGroupPrivate::_get(group)->minSize());
         if (size == ARibbonControlSizeDefinition::GroupLarge)
             break;
 */
@@ -243,7 +252,7 @@ ARibbonControlSizeDefinition::GroupSize ARibbonPagePrivate::getMaxGroupSize() co
         size = qMax(size, group->currentSize());
 /*
          if (simplified)
-            size = qMin(size, RibbonGroupPrivate::_get(group)->maxSize());
+            size = qMin(size, ARibbonGroupPrivate::_get(group)->maxSize());
         if (size == ARibbonControlSizeDefinition::GroupPopup)
             break;
 */
@@ -267,7 +276,7 @@ bool ARibbonPagePrivate::canReduce(ARibbonControlSizeDefinition::GroupSize size)
         ARibbonGroup* group = *it;
         if (group->isHidden())
             continue;
-        if (RibbonGroupPrivate::_get(group)->canReduce())
+        if (ARibbonGroupPrivate::_get(group)->canReduce())
             return true;
     }
     return false;
@@ -288,7 +297,7 @@ bool ARibbonPagePrivate::canExpand(ARibbonControlSizeDefinition::GroupSize size)
 
 bool ARibbonPagePrivate::isPopupMode() const
 {
-    A_P(const ARibbonPage)
+    A_P(const ARibbonPage);
     return p.ribbonBar() != nullptr && p.ribbonBar()->isMinimized();
 }
 
@@ -350,7 +359,7 @@ int ARibbonPagePrivate::calculateGroupsWidth()
 
 void ARibbonPagePrivate::updateLayout(bool updateScroll)
 {
-    A_P(ARibbonPage)
+    A_P(ARibbonPage);
     int leftOffset = 0;
     int topOffset = 0;
     int actualWidth = p.width();
@@ -384,7 +393,7 @@ void ARibbonPagePrivate::updateLayout(bool updateScroll)
         if (group->isHidden())
             continue;
 
-        RibbonGroupPrivate* group_private = RibbonGroupPrivate::_get(group);
+        ARibbonGroupPrivate* group_private = ARibbonGroupPrivate::_get(group);
         QWidget* parentWidget = group_private->parentForControls();
         QSize contentSize = group_private->contentSizeHint();
         QSize groupSizeHint = group->sizeHint();
@@ -489,7 +498,7 @@ void ARibbonPagePrivate::setScrollButtonsVisible(bool scrollLeft, bool scrollRig
         QObject::connect(m_scrollRightButton, SIGNAL(stopScrollTimer()), this, SLOT(forcedStopScrollTimer()));
     }
 
-    const int buttonWidth = qMax(CommonStylePrivate::dpiScaled(widthButtonScroll, &p), 
+    const int buttonWidth = qMax(ACommonStylePrivate::dpiScaled(widthButtonScroll, &p), 
         p.style()->pixelMetric(QStyle::PM_MenuButtonIndicator, nullptr, &p));
 
     QRect rcPage(p.geometry());
@@ -536,7 +545,7 @@ void ARibbonPagePrivate::setScrollButtonsVisible(bool scrollLeft, bool scrollRig
 
 void ARibbonPagePrivate::showGroupScroll(bool onlyCalc)
 {
-    A_P(ARibbonPage)
+    A_P(ARibbonPage);
     int totalWidth = calcReducedGroupsWidth();
     if (totalWidth == 0)
     {
@@ -583,7 +592,7 @@ void ARibbonPagePrivate::scrollGroupAnimate()
 
 void ARibbonPagePrivate::startScrollGropsAnimate(int groupScrollPos, int scrollPosTarget)
 {
-    A_P(ARibbonPage)
+    A_P(ARibbonPage);
     m_animation = true;
     m_scrollPosTarget = scrollPosTarget;
     m_groupScrollPos = groupScrollPos;
@@ -622,7 +631,7 @@ static void listPageWidth(int totalWidth, int realWidth, QList<int>& pagesWidth)
 
 void ARibbonPagePrivate::pressLeftScrollButton()
 {
-    A_P(ARibbonPage)
+    A_P(ARibbonPage);
     QList<int> pagesWidth;
     listPageWidth(calcReducedGroupsWidth(), p.width(), pagesWidth);
 
@@ -637,7 +646,7 @@ void ARibbonPagePrivate::pressLeftScrollButton()
 
 void ARibbonPagePrivate::pressRightScrollButton()
 {
-    A_P(ARibbonPage)
+    A_P(ARibbonPage);
     QList<int> pagesWidth;
     listPageWidth(calcReducedGroupsWidth(), p.width(), pagesWidth);
 
@@ -746,7 +755,7 @@ ARibbonPage::~ARibbonPage()
 {
     if (ARibbonBar* _ribbonBar = ribbonBar())
         _ribbonBar->detachPage(this);
-    A_FINI_PRIVATE();
+    A_DELETE_PRIVATE();
 }
 
 /*!
@@ -790,7 +799,7 @@ void ARibbonPage::setVisible(bool visible)
         const bool tabVisible = d.m_associativeTab->tabBar()->isTabVisible(index);
         if (tabVisible != visible)
         {
-            RibbonBarAutoUpdater autoUpdater(ribbonBar());
+            ARibbonBarAutoUpdater autoUpdater(ribbonBar());
             d.m_associativeTab->tabBar()->setTabVisible(index, visible);
         }
         visible = visible && d.m_associativeTab->isCurrent();
@@ -828,7 +837,7 @@ Inserts an existing ribbon \a group with to the position \a index.
 void ARibbonPage::insertGroup(int index, ARibbonGroup* group)
 {
     A_D(ARibbonPage);
-    RibbonBarAutoUpdater autoUpdater(ribbonBar());
+    ARibbonBarAutoUpdater autoUpdater(ribbonBar());
     group->setParent(this);
     if (!d.validateGroupIndex(index)) 
     {
@@ -857,7 +866,7 @@ Creates a new ribbon group with the given \a title, \a icon and inserts it to th
 */
 ARibbonGroup* ARibbonPage::insertGroup(int index, const QIcon& icon, const QString& title)
 {
-    RibbonBarAutoUpdater autoUpdater(ribbonBar());
+    ARibbonBarAutoUpdater autoUpdater(ribbonBar());
 
     if (ARibbonGroup* group = insertGroup(index, title))
     {
@@ -956,9 +965,9 @@ QList<ARibbonGroup*> ARibbonPage::groups() const
 /*!
 Sets the predefined \a color for the contextual page.
  */ 
-void ARibbonPage::setContextColor(Qtitan::ContextColor color)
+void ARibbonPage::setContextColor(EContextColor color)
 {
-    setContextColor(CommonStyle::contextColorToColor(color));
+    setContextColor(ACommonStyle::contextColorToColor(color));
 }
 
 /*!
@@ -1060,7 +1069,7 @@ void ARibbonPage::actionTriggered(QAction* action)
     {
         if (action->menu())
             return;
-        if (RibbonPagePopup* popup = qobject_cast<RibbonPagePopup*>(parentWidget()))
+        if (ARibbonPagePopup* popup = qobject_cast<ARibbonPagePopup*>(parentWidget()))
             popup->close();
     }
 }

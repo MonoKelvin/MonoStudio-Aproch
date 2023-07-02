@@ -38,13 +38,13 @@
  // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
  // 
 
-APROCH_NAMESPACE_BEGIN
-
 inline void initRibbonResource()
 {
-    Q_INIT_RESOURCE(ARibbonResources);
-    Q_INIT_RESOURCE(ARibbonTranslations);
+    Q_INIT_RESOURCE(RC_RibbonResources);
+    Q_INIT_RESOURCE(RC_RibbonTranslations);
 }
+
+APROCH_NAMESPACE_BEGIN
 
 class ARibbonPage;
 class ARibbonBarPrivate;
@@ -277,17 +277,17 @@ private:
     Q_DISABLE_COPY(ARibbonBar);
 };
 
-class RibbonBarAutoUpdater
+class ARibbonBarAutoUpdater
 {
 public:
-    RibbonBarAutoUpdater(ARibbonBar* ribbonBar)
+    ARibbonBarAutoUpdater(ARibbonBar* ribbonBar)
         : m_ribbonBar(ribbonBar)
     {
         if (m_ribbonBar != nullptr)
             m_ribbonBar->beginUpdate();
     }
 
-    ~RibbonBarAutoUpdater()
+    ~ARibbonBarAutoUpdater()
     {
         if (m_ribbonBar != nullptr)
             m_ribbonBar->endUpdate();

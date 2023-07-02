@@ -241,7 +241,7 @@ void ABackstageSharedWindow::finalize()
 {
     if (m_windowProxyWidget != nullptr)
         m_windowProxyWidget->setWidget(nullptr);
-    Q_DELETE_AND_NULL(m_windowProxyWidget);
+    A_DELETE_AND_NULL(m_windowProxyWidget);
 
     Q_ASSERT(isEmpty());
 
@@ -258,7 +258,7 @@ void ABackstageSharedWindow::finalize()
             }
         }
         if (allBackstageWindows->size() == 0)
-            Q_DELETE_AND_NULL(allBackstageWindows);
+            A_DELETE_AND_NULL(allBackstageWindows);
     }
 }
 
@@ -279,7 +279,7 @@ void ABackstageSharedWindow::addWidget(ABackstageWidget* backstageWidget)
     {
         Q_ASSERT(false);
         backstageWidget->m_proxyWidget->setWidget(nullptr);
-        Q_DELETE_AND_NULL(backstageWidget->m_proxyWidget);
+        A_DELETE_AND_NULL(backstageWidget->m_proxyWidget);
     }
     w->setParent(this);
     backstageWidget->m_proxyWidget = m_windowProxyWidget->createProxyForChildWidget(w);
@@ -297,7 +297,7 @@ void ABackstageSharedWindow::removeWidget(ABackstageWidget* backstageWidget)
     if (backstageWidget->m_proxyWidget != nullptr)
     {
         backstageWidget->m_proxyWidget->setWidget(nullptr);
-        Q_DELETE_AND_NULL(backstageWidget->m_proxyWidget);
+        A_DELETE_AND_NULL(backstageWidget->m_proxyWidget);
     }
 
     if (backstageWidget->widget() != nullptr)

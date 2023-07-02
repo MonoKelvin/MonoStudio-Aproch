@@ -33,6 +33,13 @@
 #include "ARibbonTabBar.h"
 #include "ARibbonControls.h"
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
 APROCH_NAMESPACE_BEGIN
 
 /* ARibbonPagePrivate */
@@ -51,8 +58,8 @@ public:
 public:
     void init();
     void setRibbonBar(ARibbonBar* ribbonBar);
-    void setAssociativeTab(RibbonTab* tab);
-    RibbonTab* associativeTab() const;
+    void setAssociativeTab(ARibbonTab* tab);
+    ARibbonTab* associativeTab() const;
     bool validateGroupIndex(int index) const { return index >= 0 && index < m_groupList.count(); }
     void removeGroup(int index, bool deleteGroup);
     int groupIndex(ARibbonGroup* page) const;
@@ -84,12 +91,12 @@ public:
     bool isPopupMode() const;
 public:
     ARibbonBar* m_ribbonBar;
-    RibbonOverflowMenu* m_overflowMenu;
+    ARibbonOverflowMenu* m_overflowMenu;
     ARibbonGroupScrollButton* m_scrollLeftButton;
     ARibbonGroupScrollButton* m_scrollRightButton;
     QList<ARibbonGroup*> m_groupList;
     QList<QAction*> m_shortcutList;
-    RibbonTab* m_associativeTab;
+    ARibbonTab* m_associativeTab;
     QBasicTimer m_scrollTimer;
     QString m_title;
     QString m_contextTitle;

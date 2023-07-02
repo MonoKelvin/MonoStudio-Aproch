@@ -31,17 +31,23 @@
 #include <QToolButton>
 #include <QStringList>
 
-#include "QtitanDef.h"
 #include "ARibbonButton.h"
 
-QTITAN_BEGIN_NAMESPACE
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
 
-class RibbonButtonPrivate : public QObject
+APROCH_NAMESPACE_BEGIN
+
+class ARibbonButtonPrivate : public QObject
 {
 public:
-    A_DECLARE_PUBLIC(RibbonButton)
+    A_DECLARE_PUBLIC(ARibbonButton)
 public:
-    RibbonButtonPrivate();
+    ARibbonButtonPrivate();
 protected:
     void resetWordWrap();
     QSize sizeWordWrap();
@@ -57,8 +63,4 @@ protected:
     QVector<int> m_wordIndexes;
 };
 
-QTITAN_END_NAMESPACE
-
-#endif // A_RIBBONBUTTON_PRIVATE_H
-
-
+APROCH_NAMESPACE_END

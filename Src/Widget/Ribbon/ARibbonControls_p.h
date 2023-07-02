@@ -34,9 +34,16 @@
 #include "ARibbonButtonControls.h"
 #include "ARibbonButton.h"
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
 APROCH_NAMESPACE_BEGIN
 
-/* ARibbonGroupPrivate */   
+/* ARibbonControlSizeDefinitionPrivate */   
 class ARibbonControlSizeDefinitionPrivate : public QObject
 {
     Q_OBJECT
@@ -44,8 +51,8 @@ public:
     A_DECLARE_PUBLIC(ARibbonControlSizeDefinition)
 public:
     explicit ARibbonControlSizeDefinitionPrivate();
-    virtual ~RibbonControlSizeDefinitionPrivate();
-    void init(RibbonControl* parent, ARibbonControlSizeDefinition::GroupSize size);
+    virtual ~ARibbonControlSizeDefinitionPrivate();
+    void init(ARibbonControl* parent, ARibbonControlSizeDefinition::GroupSize size);
     void updateSizeDefinition();
 public:
     ARibbonControl* m_parentControl;
@@ -61,7 +68,7 @@ public:
     int m_minItemCount;
     int m_maxItemCount;
 private:
-    Q_DISABLE_COPY(RibbonControlSizeDefinitionPrivate)
+    Q_DISABLE_COPY(ARibbonControlSizeDefinitionPrivate)
 };
 
 /* ARibbonControlPrivate */   
@@ -69,10 +76,10 @@ class ARibbonControlPrivate : public QObject
 {
     Q_OBJECT
 public:
-    A_DECLARE_PUBLIC(RibbonControl)
+    A_DECLARE_PUBLIC(ARibbonControl)
 public:
     explicit ARibbonControlPrivate();
-    virtual ~RibbonControlPrivate();
+    virtual ~ARibbonControlPrivate();
 public:
     void init(ARibbonGroup* parentGroup);
     void changed();
@@ -82,7 +89,7 @@ public:
     ARibbonControlSizeDefinition::GroupSize m_size;
     QAction* m_action;
 private:
-    Q_DISABLE_COPY(RibbonControlPrivate)
+    Q_DISABLE_COPY(ARibbonControlPrivate)
 };
 
 /* ARibbonWidgetControlPrivate */   
@@ -90,10 +97,10 @@ class ARibbonWidgetControlPrivate : public QObject
 {
     Q_OBJECT
 public:
-    A_DECLARE_PUBLIC(RibbonWidgetControl)
+    A_DECLARE_PUBLIC(ARibbonWidgetControl)
 public:
     explicit ARibbonWidgetControlPrivate();
-    virtual ~RibbonWidgetControlPrivate();
+    virtual ~ARibbonWidgetControlPrivate();
 public:
     void init(bool ignoreActionSettings);
     void initStyleOption(QStyleOptionButton* option) const;
@@ -104,7 +111,7 @@ public:
     bool m_ignoreActionSettings;
     int m_margin;
 private:
-    Q_DISABLE_COPY(RibbonWidgetControlPrivate)
+    Q_DISABLE_COPY(ARibbonWidgetControlPrivate)
 };
 
 
@@ -113,17 +120,17 @@ class ARibbonColumnBreakControlPrivate : public QObject
 {
     Q_OBJECT
 public:
-    A_DECLARE_PUBLIC(RibbonColumnBreakControl)
+    A_DECLARE_PUBLIC(ARibbonColumnBreakControl)
 public:
     explicit ARibbonColumnBreakControlPrivate();
-    virtual ~RibbonColumnBreakControlPrivate();
+    virtual ~ARibbonColumnBreakControlPrivate();
 public:
     void init();
     void initStyleOption(QStyleOptionGroupBox* option) const;
 public:
     Qt::Alignment m_textAlignment;
 private:
-    Q_DISABLE_COPY(RibbonColumnBreakControlPrivate)
+    Q_DISABLE_COPY(ARibbonColumnBreakControlPrivate)
 };
 
 /* ARibbonButtonControlPrivate */   
@@ -131,10 +138,10 @@ class ARibbonButtonControlPrivate : public QObject
 {
     Q_OBJECT
 public:
-    A_DECLARE_PUBLIC(RibbonButtonControl)
+    A_DECLARE_PUBLIC(ARibbonButtonControl)
 public:
     explicit ARibbonButtonControlPrivate();
-    virtual ~RibbonButtonControlPrivate();
+    virtual ~ARibbonButtonControlPrivate();
     void init();
 public:
     ARibbonButton* m_toolButton;
@@ -142,7 +149,7 @@ public:
     QIcon m_smallIcon;
     QString m_label;
 private:
-    Q_DISABLE_COPY(RibbonButtonControlPrivate)
+    Q_DISABLE_COPY(ARibbonButtonControlPrivate)
 };
 
 class ARibbonToolBarSeparator : public QWidget
@@ -155,7 +162,7 @@ public:
 protected:
     virtual void paintEvent(QPaintEvent* event) override;
 private:
-    Q_DISABLE_COPY(RibbonToolBarSeparator)
+    Q_DISABLE_COPY(ARibbonToolBarSeparator)
 };
 
 /* ARibbonToolBarOverflowMenu */
@@ -164,7 +171,7 @@ class ARibbonToolBarOverflowMenu : public APopupMenu
     Q_OBJECT
 public:
     ARibbonToolBarOverflowMenu(ARibbonToolBarControl* parent);
-    virtual ~RibbonToolBarOverflowMenu();
+    virtual ~ARibbonToolBarOverflowMenu();
 public:
     void fillMenu();
     void clearMenu();
@@ -173,12 +180,12 @@ protected:
     virtual void paintMenuItem(QPainter* painter, QStyleOptionMenuItem* option) override
     { APopupMenu::paintMenuItem(painter, option); }
 private:
-    AARibbonToolBarControl* m_parent;
-    Q_DISABLE_COPY(RibbonToolBarOverflowMenu);
+    ARibbonToolBarControl* m_parent;
+    Q_DISABLE_COPY(ARibbonToolBarOverflowMenu);
 };
 
-/* AARibbonToolBarControlPrivate */   
-class AARibbonToolBarControlPrivate : public QObject
+/* ARibbonToolBarControlPrivate */   
+class ARibbonToolBarControlPrivate : public QObject
 {
     Q_OBJECT
 public:
@@ -191,7 +198,7 @@ public:
         ARibbonToolBarActionGroupItem(QAction* act, QWidget* w) : action(act), widget(w) {}
         bool isEmpty() const { return action == nullptr || !action->isVisible();  }
     };
-    typedef QList<RibbonToolBarActionGroupItem> ARibbonToolBarActionGroupItems;
+    typedef QList<ARibbonToolBarActionGroupItem> ARibbonToolBarActionGroupItems;
 
     struct ARibbonToolBarActionsGroup
     {
@@ -201,11 +208,11 @@ public:
         ARibbonToolBarActionGroupItems items;
         ARibbonToolBarActionsGroup() : row(0) {}
     };
-    typedef QList<RibbonToolBarActionsGroup> ARibbonToolBarActionGroupList;
+    typedef QList<ARibbonToolBarActionsGroup> ARibbonToolBarActionGroupList;
 public:
-    explicit AARibbonToolBarControlPrivate();
+    explicit ARibbonToolBarControlPrivate();
     virtual ~ARibbonToolBarControlPrivate();
-    inline static AARibbonToolBarControlPrivate* _get(ARibbonToolBarControl* toolBar)
+    inline static ARibbonToolBarControlPrivate* _get(ARibbonToolBarControl* toolBar)
     { return &toolBar->aproch_d(); }
     void init();
 public:
@@ -214,7 +221,7 @@ public:
     void addActionToGroup(QAction* action, QWidget* widget);
     void removeActionFromGroup(QAction* action);
     void updateGroupsGeometry(const QRect& rect, bool updateWidgets);
-    void updateGroupProperties(RibbonToolBarActionGroupItems& group);
+    void updateGroupProperties(ARibbonToolBarActionGroupItems& group);
     void updateGeometryWidget();
     void updateGroupItems();
     QSize calcGroupSizeHint(const ARibbonToolBarActionGroupItems& group) const;

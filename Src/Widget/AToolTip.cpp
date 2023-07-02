@@ -41,6 +41,13 @@
 #include "Style/ACommonStyle_p.h"
 #include "Style/AStyleHelper.h"
 
+ // 
+ // The most of the following code is copied from Qtitan.
+ // 
+ // Qtitan Library by Developer Machines(Microsoft - Ribbon implementation for Qt.C++)
+ // Copyright (c) 2009 - 2022 Developer Machines (https://www.devmachines.com) ALL RIGHTS RESERVED
+ // 
+
 APROCH_NAMESPACE_BEGIN
 
 /* AToolTipPrivate */
@@ -505,7 +512,7 @@ void AToolTip::paintEvent(QPaintEvent* event)
         {
             drawImageTop = button->toolButtonStyle() != Qt::ToolButtonTextUnderIcon;
             const int sz = style()->pixelMetric(drawImageTop ? QStyle::PM_SmallIconSize : QStyle::PM_LargeIconSize, nullptr, button);
-//            const int dpi = CommonStylePrivate::dpiScaled(1, this) / 100;
+//            const int dpi = ACommonStylePrivate::dpiScaled(1, this) / 100;
 //            szImage = QSize(sz / dpi, sz / dpi);
             szDrvImage = QSize(sz, sz);
         }
@@ -521,7 +528,7 @@ void AToolTip::paintEvent(QPaintEvent* event)
             QPoint ptIcon = rc.topLeft();
             ptIcon.setY(rcTitle.y());
             d.m_icon.paint(&p, QRect(ptIcon, szDrvImage), Qt::AlignCenter, QIcon::Normal, QIcon::On);
-            //QPixmap pm = CommonStylePrivate::preparePixmap(d.m_icon, szDrvImage, QIcon::Normal, QIcon::On, this);
+            //QPixmap pm = ACommonStylePrivate::preparePixmap(d.m_icon, szDrvImage, QIcon::Normal, QIcon::On, this);
             //style()->drawItemPixmap(&p, QRect(ptIcon, szDrvImage), Qt::AlignCenter, pm);
             rcTitle.setLeft(rcTitle.left() + szDrvImage.width() + 1);
             rc.setLeft(rc.left() + szDrvImage.width() + 3);
