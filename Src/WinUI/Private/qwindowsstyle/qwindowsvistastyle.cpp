@@ -37,8 +37,6 @@
 **
 ****************************************************************************/
 #include "stdafx.h"
-#include "Widget/Style/AStyleDefines.h"
-
 #include "qwindowsvistastyle_p.h"
 #include "qwindowsvistastyle_p_p.h"
 #include <qoperatingsystemversion.h>
@@ -50,33 +48,33 @@
 
 QT_BEGIN_NAMESPACE
 
-static const int windowsItemFrame = 2;    // menu item frame width
-static const int windowsItemHMargin = 3;  // menu item hor text margin
-static const int windowsItemVMargin = 4;  // menu item ver text margin
-static const int windowsArrowHMargin = 6; // arrow horizontal margin
-static const int windowsRightBorder = 15; // right border on windows
+static const int windowsItemFrame        =  2; // menu item frame width
+static const int windowsItemHMargin      =  3; // menu item hor text margin
+static const int windowsItemVMargin      =  4; // menu item ver text margin
+static const int windowsArrowHMargin     =  6; // arrow horizontal margin
+static const int windowsRightBorder      = 15; // right border on windows
 
 #ifndef TMT_CONTENTMARGINS
-#define TMT_CONTENTMARGINS 3602
+#  define TMT_CONTENTMARGINS 3602
 #endif
 #ifndef TMT_SIZINGMARGINS
-#define TMT_SIZINGMARGINS 3601
+#  define TMT_SIZINGMARGINS 3601
 #endif
 #ifndef LISS_NORMAL
-#define LISS_NORMAL 1
-#define LISS_HOT 2
-#define LISS_SELECTED 3
-#define LISS_DISABLED 4
-#define LISS_SELECTEDNOTFOCUS 5
-#define LISS_HOTSELECTED 6
+#  define LISS_NORMAL 1
+#  define LISS_HOT 2
+#  define LISS_SELECTED 3
+#  define LISS_DISABLED 4
+#  define LISS_SELECTEDNOTFOCUS 5
+#  define LISS_HOTSELECTED 6
 #endif
 #ifndef BP_COMMANDLINK
-#define BP_COMMANDLINK 6
-#define BP_COMMANDLINKGLYPH 7
-#define CMDLGS_NORMAL 1
-#define CMDLGS_HOT 2
-#define CMDLGS_PRESSED 3
-#define CMDLGS_DISABLED 4
+#  define BP_COMMANDLINK 6
+#  define BP_COMMANDLINKGLYPH 7
+#  define CMDLGS_NORMAL 1
+#  define CMDLGS_HOT 2
+#  define CMDLGS_PRESSED 3
+#  define CMDLGS_DISABLED 4
 #endif
 
 /* \internal
@@ -91,24 +89,23 @@ bool QWindowsVistaStylePrivate::useVista()
 /* \internal
     Checks and returns the style object
 */
-inline QObject *styleObject(const QStyleOption *option)
-{
+inline QObject *styleObject(const QStyleOption *option) {
     return option ? option->styleObject : nullptr;
 }
 
 /* \internal
     Checks if we can animate on a style option
 */
-bool canAnimate(const QStyleOption *option)
-{
-    return option && option->styleObject && !option->styleObject->property("_q_no_animation").toBool();
+bool canAnimate(const QStyleOption *option) {
+    return option
+            && option->styleObject
+            && !option->styleObject->property("_q_no_animation").toBool();
 }
 
 static inline QImage createAnimationBuffer(const QStyleOption *option, const QWidget *widget)
 {
     const qreal devicePixelRatio = widget
-                                       ? widget->devicePixelRatioF()
-                                       : qApp->devicePixelRatio();
+        ? widget->devicePixelRatioF() : qApp->devicePixelRatio();
     QImage result(option->rect.size() * devicePixelRatio, QImage::Format_ARGB32_Premultiplied);
     result.setDevicePixelRatio(devicePixelRatio);
     result.fill(0);
@@ -118,22 +115,21 @@ static inline QImage createAnimationBuffer(const QStyleOption *option, const QWi
 /* \internal
     Used by animations to clone a styleoption and shift its offset
 */
-QStyleOption *clonedAnimationStyleOption(const QStyleOption *option)
-{
+QStyleOption *clonedAnimationStyleOption(const QStyleOption*option) {
     QStyleOption *styleOption = nullptr;
-    if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider *>(option))
+    if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider*>(option))
         styleOption = new QStyleOptionSlider(*slider);
-    else if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox *>(option))
+    else if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox*>(option))
         styleOption = new QStyleOptionSpinBox(*spinbox);
-    else if (const QStyleOptionGroupBox *groupBox = qstyleoption_cast<const QStyleOptionGroupBox *>(option))
+    else if (const QStyleOptionGroupBox *groupBox = qstyleoption_cast<const QStyleOptionGroupBox*>(option))
         styleOption = new QStyleOptionGroupBox(*groupBox);
-    else if (const QStyleOptionComboBox *combo = qstyleoption_cast<const QStyleOptionComboBox *>(option))
+    else if (const QStyleOptionComboBox *combo = qstyleoption_cast<const QStyleOptionComboBox*>(option))
         styleOption = new QStyleOptionComboBox(*combo);
-    else if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option))
+    else if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton*>(option))
         styleOption = new QStyleOptionButton(*button);
     else
         styleOption = new QStyleOption(*option);
-    styleOption->rect = QRect(QPoint(0, 0), option->rect.size());
+    styleOption->rect = QRect(QPoint(0,0), option->rect.size());
     return styleOption;
 }
 
@@ -142,15 +138,15 @@ QStyleOption *clonedAnimationStyleOption(const QStyleOption *option)
 */
 void deleteClonedAnimationStyleOption(const QStyleOption *option)
 {
-    if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider *>(option))
+    if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider*>(option))
         delete slider;
-    else if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox *>(option))
+    else if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox*>(option))
         delete spinbox;
-    else if (const QStyleOptionGroupBox *groupBox = qstyleoption_cast<const QStyleOptionGroupBox *>(option))
+    else if (const QStyleOptionGroupBox *groupBox = qstyleoption_cast<const QStyleOptionGroupBox*>(option))
         delete groupBox;
-    else if (const QStyleOptionComboBox *combo = qstyleoption_cast<const QStyleOptionComboBox *>(option))
+    else if (const QStyleOptionComboBox *combo = qstyleoption_cast<const QStyleOptionComboBox*>(option))
         delete combo;
-    else if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option))
+    else if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton*>(option))
         delete button;
     else
         delete option;
@@ -183,12 +179,11 @@ QWindowsVistaStyle::QWindowsVistaStyle()
 */
 QWindowsVistaStyle::~QWindowsVistaStyle() = default;
 
-// convert Qt state flags to uxtheme button states
+//convert Qt state flags to uxtheme button states
 static int buttonStateId(int flags, int partId)
 {
     int stateId = 0;
-    if (partId == BP_RADIOBUTTON || partId == BP_CHECKBOX)
-    {
+    if (partId == BP_RADIOBUTTON || partId == BP_CHECKBOX) {
         if (!(flags & QStyle::State_Enabled))
             stateId = RBS_UNCHECKEDDISABLED;
         else if (flags & QStyle::State_Sunken)
@@ -199,10 +194,9 @@ static int buttonStateId(int flags, int partId)
             stateId = RBS_UNCHECKEDNORMAL;
 
         if (flags & QStyle::State_On)
-            stateId += RBS_CHECKEDNORMAL - 1;
-    }
-    else if (partId == BP_PUSHBUTTON)
-    {
+            stateId += RBS_CHECKEDNORMAL-1;
+
+    } else if (partId == BP_PUSHBUTTON) {
         if (!(flags & QStyle::State_Enabled))
             stateId = PBS_DISABLED;
         else if (flags & (QStyle::State_Sunken | QStyle::State_On))
@@ -211,9 +205,7 @@ static int buttonStateId(int flags, int partId)
             stateId = PBS_HOT;
         else
             stateId = PBS_NORMAL;
-    }
-    else
-    {
+    } else {
         Q_ASSERT(1);
     }
     return stateId;
@@ -234,8 +226,7 @@ static inline bool supportsStateTransition(QStyle::PrimitiveElement element,
                                            const QWidget *widget)
 {
     bool result = false;
-    switch (element)
-    {
+    switch (element) {
     case QStyle::PE_IndicatorRadioButton:
     case QStyle::PE_IndicatorCheckBox:
         result = true;
@@ -284,23 +275,20 @@ static inline bool supportsStateTransition(QStyle::PrimitiveElement element,
 void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *option,
                                        QPainter *painter, const QWidget *widget) const
 {
-    QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate *>(d_func());
+    QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate*>(d_func());
 
     int state = option->state;
-    if (!QWindowsVistaStylePrivate::useVista())
-    {
+    if (!QWindowsVistaStylePrivate::useVista()) {
         QWindowsStyle::drawPrimitive(element, option, painter, widget);
         return;
     }
 
-    if ((option->state & State_Enabled) && d->transitionsEnabled() && canAnimate(option))
-    {
+    if ((option->state & State_Enabled) && d->transitionsEnabled() && canAnimate(option)) {
         {
             QRect oldRect;
             QRect newRect;
 
-            if (supportsStateTransition(element, option, widget))
-            {
+            if (supportsStateTransition(element, option, widget)) {
                 // Retrieve and update the dynamic properties tracking
                 // the previous state of the widget:
                 QObject *styleObject = option->styleObject;
@@ -313,20 +301,19 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                 styleObject->setProperty("_q_stylerect", option->rect);
 
                 bool doTransition = oldState &&
-                                    ((state & State_Sunken) != (oldState & State_Sunken) ||
-                                     (state & State_On) != (oldState & State_On) ||
-                                     (state & State_MouseOver) != (oldState & State_MouseOver));
+                        ((state & State_Sunken)    != (oldState & State_Sunken) ||
+                        (state & State_On)         != (oldState & State_On)     ||
+                        (state & State_MouseOver)  != (oldState & State_MouseOver));
 
                 if (oldRect != newRect ||
-                    (state & State_Enabled) != (oldState & State_Enabled) ||
-                    (state & State_Active) != (oldState & State_Active))
+                        (state & State_Enabled) != (oldState & State_Enabled) ||
+                        (state & State_Active)  != (oldState & State_Active))
                     d->stopAnimation(styleObject);
 
                 if (option->state & State_ReadOnly && element == PE_FrameLineEdit) // Do not animate read only line edits
                     doTransition = false;
 
-                if (doTransition)
-                {
+                if (doTransition) {
                     QStyleOption *styleOption = clonedAnimationStyleOption(option);
                     styleOption->state = QStyle::State(oldState);
 
@@ -357,6 +344,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                     styleOption->state = option->state;
                     proxy()->drawPrimitive(element, styleOption, &endPainter, widget);
 
+
                     t->setEndImage(endImage);
 
                     HTHEME theme;
@@ -365,9 +353,8 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                     int fromState = 0;
                     int toState = 0;
 
-                    // translate state flags to UXTHEME states :
-                    if (element == PE_FrameLineEdit)
-                    {
+                    //translate state flags to UXTHEME states :
+                    if (element == PE_FrameLineEdit) {
                         theme = OpenThemeData(nullptr, L"Edit");
                         partId = EP_EDITBORDER_NOSCROLL;
 
@@ -384,9 +371,8 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                             toState = ETS_FOCUSED;
                         else
                             toState = ETS_NORMAL;
-                    }
-                    else
-                    {
+
+                    } else {
                         theme = OpenThemeData(nullptr, L"Button");
                         if (element == PE_IndicatorRadioButton)
                             partId = BP_RADIOBUTTON;
@@ -400,9 +386,9 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                     }
 
                     // Retrieve the transition time between the states from the system.
-                    if (theme && SUCCEEDED(GetThemeTransitionDuration(theme, partId, fromState, toState,
-                                                                      TMT_TRANSITIONDURATIONS, &duration)))
-                    {
+                    if (theme
+                        && SUCCEEDED(GetThemeTransitionDuration(theme, partId, fromState, toState,
+                                                                TMT_TRANSITIONDURATIONS, &duration))) {
                         t->setDuration(int(duration));
                     }
                     t->setStartTime(QTime::currentTime());
@@ -418,14 +404,12 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
 
     QRect rect = option->rect;
 
-    switch (element)
-    {
+    switch (element) {
     case PE_IndicatorHeaderArrow:
-        if (const QStyleOptionHeader *header = qstyleoption_cast<const QStyleOptionHeader *>(option))
-        {
+        if (const QStyleOptionHeader *header = qstyleoption_cast<const QStyleOptionHeader *>(option)) {
             int stateId = HSAS_SORTEDDOWN;
             if (header->sortIndicator & QStyleOptionHeader::SortDown)
-                stateId = HSAS_SORTEDUP; // note that the uxtheme sort down indicator is the inverse of ours
+                stateId = HSAS_SORTEDUP; //note that the uxtheme sort down indicator is the inverse of ours
             XPThemeData theme(widget, painter,
                               QWindowsXPStylePrivate::HeaderTheme,
                               HP_HEADERSORTARROW, stateId, option->rect);
@@ -434,37 +418,35 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
         break;
 
     case PE_IndicatorBranch:
-    {
-        XPThemeData theme(widget, painter, QWindowsXPStylePrivate::VistaTreeViewTheme);
-        static int decoration_size = 0;
-        if (!decoration_size && theme.isValid())
         {
-            XPThemeData themeSize = theme;
-            themeSize.partId = TVP_HOTGLYPH;
-            themeSize.stateId = GLPS_OPENED;
-            const QSizeF size = themeSize.size() * QWindowsStylePrivate::nativeMetricScaleFactor(widget);
-            decoration_size = qRound(qMax(size.width(), size.height()));
-        }
-        int mid_h = option->rect.x() + option->rect.width() / 2;
-        int mid_v = option->rect.y() + option->rect.height() / 2;
-        int bef_h = mid_h;
-        int bef_v = mid_v;
-        int aft_h = mid_h;
-        int aft_v = mid_v;
-        if (option->state & State_Children)
-        {
-            int delta = decoration_size / 2;
-            theme.rect = QRect(bef_h - delta, bef_v - delta, decoration_size, decoration_size);
-            theme.partId = option->state & State_MouseOver ? TVP_HOTGLYPH : TVP_GLYPH;
-            theme.stateId = option->state & QStyle::State_Open ? GLPS_OPENED : GLPS_CLOSED;
-            if (option->direction == Qt::RightToLeft)
-                theme.mirrorHorizontally = true;
-            d->drawBackground(theme);
-            bef_h -= delta + 2;
-            bef_v -= delta + 2;
-            aft_h += delta - 2;
-            aft_v += delta - 2;
-        }
+            XPThemeData theme(widget, painter, QWindowsXPStylePrivate::VistaTreeViewTheme);
+            static int decoration_size = 0;
+            if (!decoration_size && theme.isValid()) {
+                XPThemeData themeSize = theme;
+                themeSize.partId = TVP_HOTGLYPH;
+                themeSize.stateId = GLPS_OPENED;
+                const QSizeF size = themeSize.size() * QWindowsStylePrivate::nativeMetricScaleFactor(widget);
+                decoration_size = qRound(qMax(size.width(), size.height()));
+            }
+            int mid_h = option->rect.x() + option->rect.width() / 2;
+            int mid_v = option->rect.y() + option->rect.height() / 2;
+            int bef_h = mid_h;
+            int bef_v = mid_v;
+            int aft_h = mid_h;
+            int aft_v = mid_v;
+            if (option->state & State_Children) {
+                int delta = decoration_size / 2;
+                theme.rect = QRect(bef_h - delta, bef_v - delta, decoration_size, decoration_size);
+                theme.partId = option->state & State_MouseOver ? TVP_HOTGLYPH : TVP_GLYPH;
+                theme.stateId = option->state & QStyle::State_Open ? GLPS_OPENED : GLPS_CLOSED;
+                if (option->direction == Qt::RightToLeft)
+                    theme.mirrorHorizontally = true;
+                d->drawBackground(theme);
+                bef_h -= delta + 2;
+                bef_v -= delta + 2;
+                aft_h += delta - 2;
+                aft_v += delta - 2;
+            }
 #if 0
             QBrush brush(option->palette.dark().color(), Qt::Dense4Pattern);
             if (option->state & State_Item) {
@@ -478,43 +460,39 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
             if (option->state & (State_Open | State_Children | State_Item | State_Sibling) && (bef_v > option->rect.y()))
                 painter->fillRect(mid_h, option->rect.y(), 1, bef_v - option->rect.y(), brush);
 #endif
-    }
-    break;
+        }
+        break;
 
     case PE_PanelButtonBevel:
     case PE_IndicatorCheckBox:
     case PE_IndicatorRadioButton:
-    {
-        if (QWindowsVistaAnimation *a =
-                qobject_cast<QWindowsVistaAnimation *>(d->animation(styleObject(option))))
         {
-            a->paint(painter, option);
+            if (QWindowsVistaAnimation *a =
+                    qobject_cast<QWindowsVistaAnimation *>(d->animation(styleObject(option)))){
+                a->paint(painter, option);
+            } else {
+                QWindowsXPStyle::drawPrimitive(element, option, painter, widget);
+            }
         }
-        else
-        {
-            QWindowsXPStyle::drawPrimitive(element, option, painter, widget);
-        }
-    }
-    break;
+        break;
 
     case PE_FrameMenu:
-    {
-        int stateId = option->state & State_Active ? MB_ACTIVE : MB_INACTIVE;
-        XPThemeData theme(widget, painter,
-                          QWindowsXPStylePrivate::MenuTheme,
-                          MENU_POPUPBORDERS, stateId, option->rect);
-        d->drawBackground(theme);
-    }
-    break;
-    case PE_Frame:
-    {
+        {
+            int stateId = option->state & State_Active ? MB_ACTIVE : MB_INACTIVE;
+            XPThemeData theme(widget, painter,
+                              QWindowsXPStylePrivate::MenuTheme,
+                              MENU_POPUPBORDERS, stateId, option->rect);
+            d->drawBackground(theme);
+        }
+        break;
+    case PE_Frame: {
 #ifndef QT_NO_ACCESSIBILITY
-        if (QStyleHelper::isInstanceOf(option->styleObject, QAccessible::EditableText) || QStyleHelper::isInstanceOf(option->styleObject, QAccessible::StaticText) ||
+        if (QStyleHelper::isInstanceOf(option->styleObject, QAccessible::EditableText)
+                || QStyleHelper::isInstanceOf(option->styleObject, QAccessible::StaticText) ||
 #else
         if (
 #endif
-            (widget && widget->inherits("QTextEdit")))
-        {
+            (widget && widget->inherits("QTextEdit"))) {
             painter->save();
             int stateId = ETS_NORMAL;
             if (!(state & State_Enabled))
@@ -535,24 +513,18 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
             painter->setClipRegion(clipRegion);
             d->drawBackground(theme);
             painter->restore();
-        }
-        else
-        {
+        } else {
             QWindowsXPStyle::drawPrimitive(element, option, painter, widget);
         }
     }
     break;
 
     case PE_PanelLineEdit:
-        if (const QStyleOptionFrame *panel = qstyleoption_cast<const QStyleOptionFrame *>(option))
-        {
+        if (const QStyleOptionFrame *panel = qstyleoption_cast<const QStyleOptionFrame *>(option)) {
             bool isEnabled = option->state & State_Enabled;
-            if (QWindowsXPStylePrivate::isLineEditBaseColorSet(option, widget))
-            {
+            if (QWindowsXPStylePrivate::isLineEditBaseColorSet(option, widget)) {
                 painter->fillRect(panel->rect, panel->palette.brush(QPalette::Base));
-            }
-            else
-            {
+            } else {
                 int partId = EP_BACKGROUND;
                 int stateId = EBS_NORMAL;
                 if (!isEnabled)
@@ -562,29 +534,23 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                 else if (state & State_MouseOver)
                     stateId = EBS_HOT;
 
-                XPThemeData theme(widget, painter, QWindowsXPStylePrivate::EditTheme,
+                XPThemeData theme(nullptr, painter, QWindowsXPStylePrivate::EditTheme,
                                   partId, stateId, rect);
-                if (!theme.isValid())
-                {
+                if (!theme.isValid()) {
                     QWindowsStyle::drawPrimitive(element, option, painter, widget);
                     return;
                 }
                 int bgType;
                 GetThemeEnumValue(theme.handle(), partId, stateId, TMT_BGTYPE, &bgType);
-                if (bgType == BT_IMAGEFILE)
-                {
+                if( bgType == BT_IMAGEFILE ) {
                     d->drawBackground(theme);
-                }
-                else
-                {
+                } else {
                     QBrush fillColor = option->palette.brush(QPalette::Base);
-                    if (!isEnabled)
-                    {
+                    if (!isEnabled) {
                         PROPERTYORIGIN origin = PO_NOTFOUND;
                         GetThemePropertyOrigin(theme.handle(), theme.partId, theme.stateId, TMT_FILLCOLOR, &origin);
                         // Use only if the fill property comes from our part
-                        if ((origin == PO_PART || origin == PO_STATE))
-                        {
+                        if ((origin == PO_PART || origin == PO_STATE)) {
                             COLORREF bgRef;
                             GetThemeColor(theme.handle(), partId, stateId, TMT_FILLCOLOR, &bgRef);
                             fillColor = QBrush(qRgb(GetRValue(bgRef), GetGValue(bgRef), GetBValue(bgRef)));
@@ -600,15 +566,11 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
         break;
 
     case PE_FrameLineEdit:
-        if (QWindowsVistaAnimation *anim = qobject_cast<QWindowsVistaAnimation *>(d->animation(styleObject(option))))
-        {
+        if (QWindowsVistaAnimation *anim = qobject_cast<QWindowsVistaAnimation *>(d->animation(styleObject(option)))) {
             anim->paint(painter, option);
-        }
-        else
-        {
+        } else {
             QPainter *p = painter;
-            if (QWindowsXPStylePrivate::isItemViewDelegateLineEdit(widget))
-            {
+            if (QWindowsXPStylePrivate::isItemViewDelegateLineEdit(widget)) {
                 // we try to check if this lineedit is a delegate on a QAbstractItemView-derived class.
                 QPen oldPen = p->pen();
                 // Inner white border
@@ -643,50 +605,43 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
         break;
 
     case PE_IndicatorToolBarHandle:
-    {
-        XPThemeData theme;
-        QRect rect;
-        if (option->state & State_Horizontal)
         {
-            theme = XPThemeData(widget, painter,
-                                QWindowsXPStylePrivate::RebarTheme,
-                                RP_GRIPPER, ETS_NORMAL, option->rect.adjusted(0, 1, -2, -2));
-            rect = option->rect.adjusted(0, 1, 0, -2);
-            rect.setWidth(4);
+            XPThemeData theme;
+            QRect rect;
+            if (option->state & State_Horizontal) {
+                theme = XPThemeData(widget, painter,
+                                    QWindowsXPStylePrivate::RebarTheme,
+                                    RP_GRIPPER, ETS_NORMAL, option->rect.adjusted(0, 1, -2, -2));
+                rect = option->rect.adjusted(0, 1, 0, -2);
+                rect.setWidth(4);
+            } else {
+                theme = XPThemeData(widget, painter, QWindowsXPStylePrivate::RebarTheme,
+                                    RP_GRIPPERVERT, ETS_NORMAL, option->rect.adjusted(0, 1, -2, -2));
+                rect = option->rect.adjusted(1, 0, -1, 0);
+                rect.setHeight(4);
+            }
+            theme.rect = rect;
+            d->drawBackground(theme);
         }
-        else
-        {
-            theme = XPThemeData(widget, painter, QWindowsXPStylePrivate::RebarTheme,
-                                RP_GRIPPERVERT, ETS_NORMAL, option->rect.adjusted(0, 1, -2, -2));
-            rect = option->rect.adjusted(1, 0, -1, 0);
-            rect.setHeight(4);
-        }
-        theme.rect = rect;
-        d->drawBackground(theme);
-    }
-    break;
+        break;
 
     case PE_IndicatorToolBarSeparator:
-    {
-        QPen pen = painter->pen();
-        int margin = 3;
-        painter->setPen(option->palette.window().color().darker(114));
-        if (option->state & State_Horizontal)
         {
-            int x1 = option->rect.center().x();
-            painter->drawLine(QPoint(x1, option->rect.top() + margin), QPoint(x1, option->rect.bottom() - margin));
+            QPen pen = painter->pen();
+            int margin = 3;
+            painter->setPen(option->palette.window().color().darker(114));
+            if (option->state & State_Horizontal) {
+                int x1 = option->rect.center().x();
+                painter->drawLine(QPoint(x1, option->rect.top() + margin), QPoint(x1, option->rect.bottom() - margin));
+            } else {
+                int y1 = option->rect.center().y();
+                painter->drawLine(QPoint(option->rect.left() + margin, y1), QPoint(option->rect.right() - margin, y1));
+            }
+            painter->setPen(pen);
         }
-        else
-        {
-            int y1 = option->rect.center().y();
-            painter->drawLine(QPoint(option->rect.left() + margin, y1), QPoint(option->rect.right() - margin, y1));
-        }
-        painter->setPen(pen);
-    }
-    break;
+        break;
 
-    case PE_PanelTipLabel:
-    {
+    case PE_PanelTipLabel: {
         XPThemeData theme(widget, painter,
                           QWindowsXPStylePrivate::ToolTipTheme,
                           TTP_STANDARD, TTSS_NORMAL, option->rect);
@@ -695,181 +650,160 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
     }
 
     case PE_PanelItemViewItem:
-    {
-        const QStyleOptionViewItem *vopt;
-        bool newStyle = true;
-        QAbstractItemView::SelectionBehavior selectionBehavior = QAbstractItemView::SelectRows;
-        QAbstractItemView::SelectionMode selectionMode = QAbstractItemView::NoSelection;
-        if (const QAbstractItemView *view = qobject_cast<const QAbstractItemView *>(widget))
         {
-            newStyle = !qobject_cast<const QTableView *>(view);
-            selectionBehavior = view->selectionBehavior();
-            selectionMode = view->selectionMode();
+            const QStyleOptionViewItem *vopt;
+            bool newStyle = true;
+            QAbstractItemView::SelectionBehavior selectionBehavior = QAbstractItemView::SelectRows;
+            QAbstractItemView::SelectionMode selectionMode = QAbstractItemView::NoSelection;
+            if (const QAbstractItemView *view = qobject_cast<const QAbstractItemView *>(widget)) {
+                newStyle = !qobject_cast<const QTableView*>(view);
+                selectionBehavior = view->selectionBehavior();
+                selectionMode = view->selectionMode();
 #ifndef QT_NO_ACCESSIBILITY
-        }
-        else if (!widget)
-        {
-            newStyle = !QStyleHelper::hasAncestor(option->styleObject, QAccessible::MenuItem);
+            } else if (!widget) {
+                newStyle = !QStyleHelper::hasAncestor(option->styleObject, QAccessible::MenuItem) ;
 #endif
-        }
-
-        if (newStyle && (vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option)))
-        {
-            bool selected = vopt->state & QStyle::State_Selected;
-            const bool hover = selectionMode != QAbstractItemView::NoSelection && (vopt->state & QStyle::State_MouseOver);
-            bool active = vopt->state & QStyle::State_Active;
-
-            if (vopt->features & QStyleOptionViewItem::Alternate)
-                painter->fillRect(vopt->rect, vopt->palette.alternateBase());
-
-            QPalette::ColorGroup cg = vopt->state & QStyle::State_Enabled
-                                          ? QPalette::Normal
-                                          : QPalette::Disabled;
-            if (cg == QPalette::Normal && !(vopt->state & QStyle::State_Active))
-                cg = QPalette::Inactive;
-
-            QRect itemRect = subElementRect(QStyle::SE_ItemViewItemFocusRect, option, widget).adjusted(-1, 0, 1, 0);
-            itemRect.setTop(vopt->rect.top());
-            itemRect.setBottom(vopt->rect.bottom());
-
-            QSize sectionSize = itemRect.size();
-            if (vopt->showDecorationSelected)
-                sectionSize = vopt->rect.size();
-
-            if (selectionBehavior == QAbstractItemView::SelectRows)
-                sectionSize.setWidth(vopt->rect.width());
-            QPixmap pixmap;
-
-            if (vopt->backgroundBrush.style() != Qt::NoBrush)
-            {
-                const QPointF oldBrushOrigin = painter->brushOrigin();
-                painter->setBrushOrigin(vopt->rect.topLeft());
-                painter->fillRect(vopt->rect, vopt->backgroundBrush);
-                painter->setBrushOrigin(oldBrushOrigin);
             }
 
-            if (hover || selected)
-            {
-                if (sectionSize.width() > 0 && sectionSize.height() > 0)
-                {
-                    QString key = QString::fromLatin1("qvdelegate-%1-%2-%3-%4-%5").arg(sectionSize.width()).arg(sectionSize.height()).arg(selected).arg(active).arg(hover);
-                    if (!QPixmapCache::find(key, &pixmap))
-                    {
-                        pixmap = QPixmap(sectionSize);
-                        pixmap.fill(Qt::transparent);
+            if (newStyle && (vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option))) {
+                bool selected = vopt->state & QStyle::State_Selected;
+                const bool hover = selectionMode != QAbstractItemView::NoSelection && (vopt->state & QStyle::State_MouseOver);
+                bool active = vopt->state & QStyle::State_Active;
 
-                        int state;
-                        if (selected && hover)
-                            state = LISS_HOTSELECTED;
-                        else if (selected && !active)
-                            state = LISS_SELECTEDNOTFOCUS;
-                        else if (selected)
-                            state = LISS_SELECTED;
-                        else
-                            state = LISS_HOT;
+                if (vopt->features & QStyleOptionViewItem::Alternate)
+                    painter->fillRect(vopt->rect, vopt->palette.alternateBase());
 
-                        QPainter pixmapPainter(&pixmap);
-                        XPThemeData theme(widget, &pixmapPainter,
-                                          QWindowsXPStylePrivate::VistaTreeViewTheme,
-                                          LVP_LISTITEM, state, QRect(0, 0, sectionSize.width(), sectionSize.height()));
-                        if (theme.isValid())
-                        {
-                            d->drawBackground(theme);
-                        }
-                        else
-                        {
-                            QWindowsXPStyle::drawPrimitive(PE_PanelItemViewItem, option, painter, widget);
-                            break;
-                        }
-                        QPixmapCache::insert(key, pixmap);
-                    }
-                }
+                QPalette::ColorGroup cg = vopt->state & QStyle::State_Enabled
+                                          ? QPalette::Normal : QPalette::Disabled;
+                if (cg == QPalette::Normal && !(vopt->state & QStyle::State_Active))
+                    cg = QPalette::Inactive;
 
+                QRect itemRect = subElementRect(QStyle::SE_ItemViewItemFocusRect, option, widget).adjusted(-1, 0, 1, 0);
+                itemRect.setTop(vopt->rect.top());
+                itemRect.setBottom(vopt->rect.bottom());
+
+                QSize sectionSize = itemRect.size();
                 if (vopt->showDecorationSelected)
-                {
-                    const int frame = 2; // Assumes a 2 pixel pixmap border
-                    QRect srcRect = QRect(0, 0, sectionSize.width(), sectionSize.height());
-                    QRect pixmapRect = vopt->rect;
-                    bool reverse = vopt->direction == Qt::RightToLeft;
-                    bool leftSection = vopt->viewItemPosition == QStyleOptionViewItem::Beginning;
-                    bool rightSection = vopt->viewItemPosition == QStyleOptionViewItem::End;
-                    if (vopt->viewItemPosition == QStyleOptionViewItem::OnlyOne || vopt->viewItemPosition == QStyleOptionViewItem::Invalid)
-                        painter->drawPixmap(pixmapRect.topLeft(), pixmap);
-                    else if (reverse ? rightSection : leftSection)
-                    {
-                        painter->drawPixmap(QRect(pixmapRect.topLeft(),
-                                                  QSize(frame, pixmapRect.height())),
-                                            pixmap,
-                                            QRect(QPoint(0, 0), QSize(frame, pixmapRect.height())));
-                        painter->drawPixmap(pixmapRect.adjusted(frame, 0, 0, 0),
-                                            pixmap, srcRect.adjusted(frame, 0, -frame, 0));
-                    }
-                    else if (reverse ? leftSection : rightSection)
-                    {
-                        painter->drawPixmap(QRect(pixmapRect.topRight() - QPoint(frame - 1, 0),
-                                                  QSize(frame, pixmapRect.height())),
-                                            pixmap,
-                                            QRect(QPoint(pixmapRect.width() - frame, 0),
-                                                  QSize(frame, pixmapRect.height())));
-                        painter->drawPixmap(pixmapRect.adjusted(0, 0, -frame, 0),
-                                            pixmap, srcRect.adjusted(frame, 0, -frame, 0));
-                    }
-                    else if (vopt->viewItemPosition == QStyleOptionViewItem::Middle)
-                        painter->drawPixmap(pixmapRect, pixmap,
-                                            srcRect.adjusted(frame, 0, -frame, 0));
-                }
-                else
-                {
-                    if (vopt->text.isEmpty() && vopt->icon.isNull())
-                        break;
-                    painter->drawPixmap(itemRect.topLeft(), pixmap);
-                }
-            }
-        }
-        else
-        {
-            QWindowsXPStyle::drawPrimitive(element, option, painter, widget);
-        }
-        break;
-    }
-    case PE_Widget:
-    {
-#if QT_CONFIG(dialogbuttonbox)
-        const QDialogButtonBox *buttonBox = nullptr;
+                    sectionSize = vopt->rect.size();
 
-        if (qobject_cast<const QMessageBox *>(widget))
-            buttonBox = widget->findChild<const QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
+                if (selectionBehavior == QAbstractItemView::SelectRows)
+                    sectionSize.setWidth(vopt->rect.width());
+                QPixmap pixmap;
+
+                if (vopt->backgroundBrush.style() != Qt::NoBrush) {
+                    const QPointF oldBrushOrigin = painter->brushOrigin();
+                    painter->setBrushOrigin(vopt->rect.topLeft());
+                    painter->fillRect(vopt->rect, vopt->backgroundBrush);
+                    painter->setBrushOrigin(oldBrushOrigin);
+                }
+
+                if (hover || selected) {
+                    if (sectionSize.width() > 0 && sectionSize.height() > 0) {
+                        QString key = QString::fromLatin1("qvdelegate-%1-%2-%3-%4-%5").arg(sectionSize.width())
+                                                            .arg(sectionSize.height()).arg(selected).arg(active).arg(hover);
+                        if (!QPixmapCache::find(key, &pixmap)) {
+                            pixmap = QPixmap(sectionSize);
+                            pixmap.fill(Qt::transparent);
+
+                            int state;
+                            if (selected && hover)
+                                state = LISS_HOTSELECTED;
+                            else if (selected && !active)
+                                state = LISS_SELECTEDNOTFOCUS;
+                            else if (selected)
+                                state = LISS_SELECTED;
+                            else
+                                state = LISS_HOT;
+
+                            QPainter pixmapPainter(&pixmap);
+                            XPThemeData theme(widget, &pixmapPainter,
+                                              QWindowsXPStylePrivate::VistaTreeViewTheme,
+                                LVP_LISTITEM, state, QRect(0, 0, sectionSize.width(), sectionSize.height()));
+                            if (theme.isValid()) {
+                                d->drawBackground(theme);
+                            } else {
+                                QWindowsXPStyle::drawPrimitive(PE_PanelItemViewItem, option, painter, widget);
+                                break;
+                            }
+                            QPixmapCache::insert(key, pixmap);
+                        }
+                    }
+
+                    if (vopt->showDecorationSelected) {
+                        const int frame = 2; //Assumes a 2 pixel pixmap border
+                        QRect srcRect = QRect(0, 0, sectionSize.width(), sectionSize.height());
+                        QRect pixmapRect = vopt->rect;
+                        bool reverse = vopt->direction == Qt::RightToLeft;
+                        bool leftSection = vopt->viewItemPosition == QStyleOptionViewItem::Beginning;
+                        bool rightSection = vopt->viewItemPosition == QStyleOptionViewItem::End;
+                        if (vopt->viewItemPosition == QStyleOptionViewItem::OnlyOne
+                            || vopt->viewItemPosition == QStyleOptionViewItem::Invalid)
+                            painter->drawPixmap(pixmapRect.topLeft(), pixmap);
+                        else if (reverse ? rightSection : leftSection){
+                            painter->drawPixmap(QRect(pixmapRect.topLeft(),
+                                                QSize(frame, pixmapRect.height())), pixmap,
+                                                QRect(QPoint(0, 0), QSize(frame, pixmapRect.height())));
+                            painter->drawPixmap(pixmapRect.adjusted(frame, 0, 0, 0),
+                                                pixmap, srcRect.adjusted(frame, 0, -frame, 0));
+                        } else if (reverse ? leftSection : rightSection) {
+                            painter->drawPixmap(QRect(pixmapRect.topRight() - QPoint(frame - 1, 0),
+                                                QSize(frame, pixmapRect.height())), pixmap,
+                                                QRect(QPoint(pixmapRect.width() - frame, 0),
+                                                QSize(frame, pixmapRect.height())));
+                            painter->drawPixmap(pixmapRect.adjusted(0, 0, -frame, 0),
+                                                pixmap, srcRect.adjusted(frame, 0, -frame, 0));
+                        } else if (vopt->viewItemPosition == QStyleOptionViewItem::Middle)
+                            painter->drawPixmap(pixmapRect, pixmap,
+                                                srcRect.adjusted(frame, 0, -frame, 0));
+                    } else {
+                        if (vopt->text.isEmpty() && vopt->icon.isNull())
+                            break;
+                        painter->drawPixmap(itemRect.topLeft(), pixmap);
+                    }
+                }
+            } else {
+                QWindowsXPStyle::drawPrimitive(element, option, painter, widget);
+            }
+            break;
+        }
+    case PE_Widget:
+        {
+#if QT_CONFIG(dialogbuttonbox)
+            const QDialogButtonBox *buttonBox = nullptr;
+
+            if (qobject_cast<const QMessageBox *> (widget))
+                buttonBox = widget->findChild<const QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
 #if QT_CONFIG(inputdialog)
-        else if (qobject_cast<const QInputDialog *>(widget))
-            buttonBox = widget->findChild<const QDialogButtonBox *>(QLatin1String("qt_inputdlg_buttonbox"));
+            else if (qobject_cast<const QInputDialog *> (widget))
+                buttonBox = widget->findChild<const QDialogButtonBox *>(QLatin1String("qt_inputdlg_buttonbox"));
 #endif // QT_CONFIG(inputdialog)
 
-        if (buttonBox)
-        {
-            // draw white panel part
-            XPThemeData theme(widget, painter,
-                              QWindowsXPStylePrivate::TaskDialogTheme,
-                              TDLG_PRIMARYPANEL, 0, option->rect);
-            QRect toprect = option->rect;
-            toprect.setBottom(buttonBox->geometry().top());
-            theme.rect = toprect;
-            d->drawBackground(theme);
+            if (buttonBox) {
+                //draw white panel part
+                XPThemeData theme(widget, painter,
+                                  QWindowsXPStylePrivate::TaskDialogTheme,
+                                  TDLG_PRIMARYPANEL, 0, option->rect);
+                QRect toprect = option->rect;
+                toprect.setBottom(buttonBox->geometry().top());
+                theme.rect = toprect;
+                d->drawBackground(theme);
 
-            // draw bottom panel part
-            QRect buttonRect = option->rect;
-            buttonRect.setTop(buttonBox->geometry().top());
-            theme.rect = buttonRect;
-            theme.partId = TDLG_SECONDARYPANEL;
-            d->drawBackground(theme);
-        }
+                //draw bottom panel part
+                QRect buttonRect = option->rect;
+                buttonRect.setTop(buttonBox->geometry().top());
+                theme.rect = buttonRect;
+                theme.partId = TDLG_SECONDARYPANEL;
+                d->drawBackground(theme);
+            }
 #endif
-    }
-    break;
+        }
+        break;
     default:
         QWindowsXPStyle::drawPrimitive(element, option, painter, widget);
         break;
     }
 }
+
 
 /*!
  \internal
@@ -877,12 +811,11 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
  see drawPrimitive for comments on the animation support
  */
 void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption *option,
-                                     QPainter *painter, const QWidget *widget) const
+                                  QPainter *painter, const QWidget *widget) const
 {
-    QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate *>(d_func());
+    QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate*>(d_func());
 
-    if (!QWindowsVistaStylePrivate::useVista())
-    {
+    if (!QWindowsVistaStylePrivate::useVista()) {
         QWindowsStyle::drawControl(element, option, painter, widget);
         return;
     }
@@ -892,7 +825,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
     bool disabled = !(option->state & State_Enabled);
 
     int state = option->state;
-    int themeNumber = -1;
+    int themeNumber  = -1;
 
     QRect rect(option->rect);
     State flags = option->state;
@@ -901,8 +834,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
 
     if (d->transitionsEnabled() && canAnimate(option))
     {
-        if (element == CE_PushButtonBevel)
-        {
+        if (element == CE_PushButtonBevel) {
             QRect oldRect;
             QRect newRect;
 
@@ -916,25 +848,22 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
 
             bool wasDefault = false;
             bool isDefault = false;
-            if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option))
-            {
+            if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
                 wasDefault = styleObject->property("_q_isdefault").toBool();
                 isDefault = button->features & QStyleOptionButton::DefaultButton;
                 styleObject->setProperty("_q_isdefault", isDefault);
             }
 
-            bool doTransition = ((state & State_Sunken) != (oldState & State_Sunken) ||
-                                 (state & State_On) != (oldState & State_On) ||
-                                 (state & State_MouseOver) != (oldState & State_MouseOver));
+            bool doTransition = ((state & State_Sunken)     != (oldState & State_Sunken) ||
+                    (state & State_On)         != (oldState & State_On)     ||
+                    (state & State_MouseOver)  != (oldState & State_MouseOver));
 
-            if (oldRect != newRect || (wasDefault && !isDefault))
-            {
+            if (oldRect != newRect || (wasDefault && !isDefault)) {
                 doTransition = false;
                 d->stopAnimation(styleObject);
             }
 
-            if (doTransition)
-            {
+            if (doTransition) {
                 styleObject->setProperty("_q_no_animation", true);
 
                 QWindowsVistaTransition *t = new QWindowsVistaTransition(styleObject);
@@ -946,12 +875,9 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 QPainter startPainter(&startImage);
 
                 // Use current state of existing animation if already one is running
-                if (!anim)
-                {
+                if (!anim) {
                     proxy()->drawControl(element, styleOption, &startPainter, widget);
-                }
-                else
-                {
+                } else {
                     anim->paint(&startPainter, styleOption);
                     d->stopAnimation(styleObject);
                 }
@@ -962,6 +888,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 styleOption->state = option->state;
                 proxy()->drawControl(element, styleOption, &endPainter, widget);
                 t->setEndImage(endImage);
+
 
                 DWORD duration = 0;
                 const HTHEME theme = OpenThemeData(nullptr, L"Button");
@@ -980,15 +907,14 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             }
 
             QWindowsVistaAnimation *anim = qobject_cast<QWindowsVistaAnimation *>(d->animation(styleObject));
-            if (anim)
-            {
+            if (anim) {
                 anim->paint(painter, option);
                 return;
             }
+
         }
     }
-    switch (element)
-    {
+    switch (element) {
     case CE_PushButtonBevel:
         if (const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(option))
         {
@@ -996,7 +922,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             partId = BP_PUSHBUTTON;
             if (btn->features & QStyleOptionButton::CommandLinkButton)
                 partId = BP_COMMANDLINK;
-            bool justFlat = (btn->features & QStyleOptionButton::Flat) && !(flags & (State_On | State_Sunken));
+            bool justFlat = (btn->features & QStyleOptionButton::Flat) && !(flags & (State_On|State_Sunken));
             if (!(flags & State_Enabled) && !(btn->features & QStyleOptionButton::Flat))
                 stateId = PBS_DISABLED;
             else if (justFlat)
@@ -1010,17 +936,15 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             else
                 stateId = PBS_NORMAL;
 
-            if (!justFlat)
-            {
+            if (!justFlat) {
 
                 if (d->transitionsEnabled() && (btn->features & QStyleOptionButton::DefaultButton) &&
-                    !(state & (State_Sunken | State_On)) && !(state & State_MouseOver) &&
-                    (state & State_Enabled) && (state & State_Active))
+                        !(state & (State_Sunken | State_On)) && !(state & State_MouseOver) &&
+                        (state & State_Enabled) && (state & State_Active))
                 {
                     QWindowsVistaAnimation *anim = qobject_cast<QWindowsVistaAnimation *>(d->animation(styleObject(option)));
 
-                    if (!anim)
-                    {
+                    if (!anim) {
                         QImage startImage = createAnimationBuffer(option, widget);
                         QImage alternateImage = createAnimationBuffer(option, widget);
 
@@ -1045,29 +969,24 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
 
                     if (anim)
                         anim->paint(painter, option);
-                    else
-                    {
+                    else {
                         XPThemeData theme(widget, painter, themeNumber, partId, stateId, rect);
                         d->drawBackground(theme);
                     }
                 }
-                else
-                {
+                else {
                     XPThemeData theme(widget, painter, themeNumber, partId, stateId, rect);
                     d->drawBackground(theme);
                 }
             }
 
-            if (btn->features & QStyleOptionButton::HasMenu)
-            {
+            if (btn->features & QStyleOptionButton::HasMenu) {
                 int mbiw = 0, mbih = 0;
                 XPThemeData theme(widget, nullptr, QWindowsXPStylePrivate::ToolBarTheme,
                                   TP_DROPDOWNBUTTON);
-                if (theme.isValid())
-                {
+                if (theme.isValid()) {
                     const QSizeF size = theme.size() * QStyleHelper::dpiScaled(1, option);
-                    if (!size.isEmpty())
-                    {
+                    if (!size.isEmpty()) {
                         mbiw = qRound(size.width());
                         mbih = qRound(size.height());
                     }
@@ -1075,9 +994,9 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 QRect ir = subElementRect(SE_PushButtonContents, option, nullptr);
                 QStyleOptionButton newBtn = *btn;
                 newBtn.rect = QStyle::visualRect(option->direction, option->rect,
-                                                 QRect(ir.right() - mbiw - 2,
-                                                       option->rect.top() + (option->rect.height() / 2) - (mbih / 2),
-                                                       mbiw + 1, mbih + 1));
+                                                QRect(ir.right() - mbiw - 2,
+                                                      option->rect.top() + (option->rect.height()/2) - (mbih/2),
+                                                      mbiw + 1, mbih + 1));
                 proxy()->drawPrimitive(PE_IndicatorArrowDown, &newBtn, painter, widget);
             }
             return;
@@ -1085,19 +1004,16 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         break;
 
     case CE_ProgressBarContents:
-        if (const QStyleOptionProgressBar *bar = qstyleoption_cast<const QStyleOptionProgressBar *>(option))
-        {
+        if (const QStyleOptionProgressBar *bar
+                = qstyleoption_cast<const QStyleOptionProgressBar *>(option)) {
             bool isIndeterminate = (bar->minimum == 0 && bar->maximum == 0);
             const bool vertical = bar->orientation == Qt::Vertical;
             const bool inverted = bar->invertedAppearance;
 
-            if (isIndeterminate || (bar->progress > 0 && (bar->progress < bar->maximum) && d->transitionsEnabled()))
-            {
+            if (isIndeterminate || (bar->progress > 0 && (bar->progress < bar->maximum) && d->transitionsEnabled())) {
                 if (!d->animation(styleObject(option)))
                     d->startAnimation(new QProgressStyleAnimation(d->animationFps, styleObject(option)));
-            }
-            else
-            {
+            } else {
                 d->stopAnimation(styleObject(option));
             }
 
@@ -1108,10 +1024,8 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             bool reverse = (bar->direction == Qt::LeftToRight && inverted) || (bar->direction == Qt::RightToLeft && !inverted);
             QTime current = QTime::currentTime();
 
-            if (isIndeterminate)
-            {
-                if (QProgressStyleAnimation *a = qobject_cast<QProgressStyleAnimation *>(d->animation(styleObject(option))))
-                {
+            if (isIndeterminate) {
+                if (QProgressStyleAnimation *a = qobject_cast<QProgressStyleAnimation *>(d->animation(styleObject(option)))) {
                     int glowSize = 120;
                     int animationWidth = glowSize * 2 + (vertical ? theme.rect.height() : theme.rect.width());
                     int animOffset = a->startTime().msecsTo(current) / 4;
@@ -1121,31 +1035,28 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     painter->setClipRect(theme.rect);
                     QRect animRect;
                     QSize pixmapSize(14, 14);
-                    if (vertical)
-                    {
+                    if (vertical) {
                         animRect = QRect(theme.rect.left(),
-                                         inverted ? rect.top() - glowSize + animOffset : rect.bottom() + glowSize - animOffset,
+                                         inverted ? rect.top() - glowSize + animOffset :
+                                                    rect.bottom() + glowSize - animOffset,
                                          rect.width(), glowSize);
-                        pixmapSize.setHeight(animRect.height());
-                    }
-                    else
-                    {
+                         pixmapSize.setHeight(animRect.height());
+                    } else {
                         animRect = QRect(rect.left() - glowSize + animOffset,
                                          rect.top(), glowSize, rect.height());
                         animRect = QStyle::visualRect(reverse ? Qt::RightToLeft : Qt::LeftToRight,
-                                                      option->rect, animRect);
+                                                                option->rect, animRect);
                         pixmapSize.setWidth(animRect.width());
                     }
                     QString name = QString::fromLatin1("qiprogress-%1-%2").arg(pixmapSize.width()).arg(pixmapSize.height());
                     QPixmap pixmap;
-                    if (!QPixmapCache::find(name, &pixmap))
-                    {
+                    if (!QPixmapCache::find(name, &pixmap)) {
                         QImage image(pixmapSize, QImage::Format_ARGB32);
                         image.fill(Qt::transparent);
                         QPainter imagePainter(&image);
                         theme.painter = &imagePainter;
                         theme.partId = vertical ? PP_FILLVERT : PP_FILL;
-                        theme.rect = QRect(QPoint(0, 0), animRect.size());
+                        theme.rect = QRect(QPoint(0,0), animRect.size());
                         QLinearGradient alphaGradient(0, 0, vertical ? 0 : image.width(),
                                                       vertical ? image.height() : 0);
                         alphaGradient.setColorAt(0, QColor(0, 0, 0, 0));
@@ -1162,57 +1073,49 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     painter->restore();
                 }
             }
-            else
-            {
+            else {
                 qint64 progress = qMax<qint64>(bar->progress, bar->minimum); // workaround for bug in QProgressBar
 
-                if (vertical)
-                {
+                if (vertical) {
                     int maxHeight = option->rect.height();
                     int minHeight = 0;
                     double vc6_workaround = ((progress - qint64(bar->minimum)) / qMax(double(1.0), double(qint64(bar->maximum) - qint64(bar->minimum))) * maxHeight);
-                    int height = isIndeterminate ? maxHeight : qMax(int(vc6_workaround), minHeight);
+                    int height = isIndeterminate ? maxHeight: qMax(int(vc6_workaround), minHeight);
                     theme.rect.setHeight(height);
                     if (!inverted)
                         theme.rect.moveTop(rect.height() - theme.rect.height());
-                }
-                else
-                {
+                } else {
                     int maxWidth = option->rect.width();
                     int minWidth = 0;
                     double vc6_workaround = ((progress - qint64(bar->minimum)) / qMax(double(1.0), double(qint64(bar->maximum) - qint64(bar->minimum))) * maxWidth);
                     int width = isIndeterminate ? maxWidth : qMax(int(vc6_workaround), minWidth);
                     theme.rect.setWidth(width);
                     theme.rect = QStyle::visualRect(reverse ? Qt::RightToLeft : Qt::LeftToRight,
-                                                    option->rect, theme.rect);
+                                                              option->rect, theme.rect);
                 }
                 d->drawBackground(theme);
 
-                if (QProgressStyleAnimation *a = qobject_cast<QProgressStyleAnimation *>(d->animation(styleObject(option))))
-                {
+                if (QProgressStyleAnimation *a = qobject_cast<QProgressStyleAnimation *>(d->animation(styleObject(option)))) {
                     int glowSize = 140;
                     int animationWidth = glowSize * 2 + (vertical ? theme.rect.height() : theme.rect.width());
                     int animOffset = a->startTime().msecsTo(current) / 4;
                     theme.partId = vertical ? PP_MOVEOVERLAYVERT : PP_MOVEOVERLAY;
-                    if (animOffset > animationWidth)
-                    {
+                    if (animOffset > animationWidth) {
                         if (bar->progress < bar->maximum)
                             a->setStartTime(QTime::currentTime());
                         else
-                            d->stopAnimation(styleObject(option)); // we stop the glow motion only after it has
-                                                                   // moved out of view
+                            d->stopAnimation(styleObject(option)); //we stop the glow motion only after it has
+                                                                   //moved out of view
                     }
                     painter->save();
                     painter->setClipRect(theme.rect);
-                    if (vertical)
-                    {
+                    if (vertical) {
                         theme.rect = QRect(theme.rect.left(),
-                                           inverted ? rect.top() - glowSize + animOffset : rect.bottom() + glowSize - animOffset,
+                                           inverted ? rect.top() - glowSize + animOffset :
+                                                      rect.bottom() + glowSize - animOffset,
                                            rect.width(), glowSize);
-                    }
-                    else
-                    {
-                        theme.rect = QRect(rect.left() - glowSize + animOffset, rect.top(), glowSize, rect.height());
+                    } else {
+                        theme.rect = QRect(rect.left() - glowSize + animOffset,rect.top(), glowSize, rect.height());
                         theme.rect = QStyle::visualRect(reverse ? Qt::RightToLeft : Qt::LeftToRight, option->rect, theme.rect);
                     }
                     d->drawBackground(theme);
@@ -1223,7 +1126,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         break;
 
     case CE_MenuBarItem:
-    {
+        {
 
         if (const QStyleOptionMenuItem *mbi = qstyleoption_cast<const QStyleOptionMenuItem *>(option))
         {
@@ -1237,9 +1140,8 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             if (!proxy()->styleHint(SH_UnderlineShortcut, mbi, widget))
                 alignment |= Qt::TextHideMnemonic;
 
-            if (widget && mbi->palette.color(QPalette::Window) != Qt::transparent)
-            { // Not needed for QtQuick Controls
-                // The rect adjustment is a workaround for the menu not really filling its background.
+            if (widget && mbi->palette.color(QPalette::Window) != Qt::transparent) { // Not needed for QtQuick Controls
+                //The rect adjustment is a workaround for the menu not really filling its background.
                 XPThemeData theme(widget, painter,
                                   QWindowsXPStylePrivate::MenuTheme,
                                   MENU_BARBACKGROUND, 0, option->rect.adjusted(-1, 0, 2, 1));
@@ -1268,8 +1170,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
     break;
 #if QT_CONFIG(menu)
     case CE_MenuItem:
-        if (const QStyleOptionMenuItem *menuitem = qstyleoption_cast<const QStyleOptionMenuItem *>(option))
-        {
+        if (const QStyleOptionMenuItem *menuitem = qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
             // windows always has a check column, regardless whether we have an icon or not
             const qreal factor = QWindowsXPStylePrivate::nativeMetricScaleFactor(widget);
             int checkcol = qRound(qreal(25) * factor);
@@ -1286,7 +1187,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             }
             QRect rect = option->rect;
 
-            // draw vertical menu line
+            //draw vertical menu line
             if (option->direction == Qt::LeftToRight)
                 checkcol += rect.x();
             QPoint p1 = QStyle::visualPos(option->direction, menuitem->rect, QPoint(checkcol, rect.top()));
@@ -1301,20 +1202,18 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             int tab = menuitem->tabWidth;
             bool dis = !(menuitem->state & State_Enabled);
             bool checked = menuitem->checkType != QStyleOptionMenuItem::NotCheckable
-                               ? menuitem->checked
-                               : false;
+                            ? menuitem->checked : false;
             bool act = menuitem->state & State_Selected;
 
-            if (menuitem->menuItemType == QStyleOptionMenuItem::Separator)
-            {
-                int yoff = y - 2 + h / 2;
+            if (menuitem->menuItemType == QStyleOptionMenuItem::Separator) {
+                int yoff = y-2 + h / 2;
                 const int separatorSize = qRound(qreal(6) * QWindowsStylePrivate::nativeMetricScaleFactor(widget));
                 QPoint p1 = QPoint(x + checkcol, yoff);
                 QPoint p2 = QPoint(x + w + separatorSize, yoff);
                 stateId = MBI_HOT;
                 QRect subRect(p1.x() + (gutterWidth - menuitem->rect.x()), p1.y(),
                               p2.x() - p1.x(), separatorSize);
-                subRect = QStyle::visualRect(option->direction, option->rect, subRect);
+                subRect  = QStyle::visualRect(option->direction, option->rect, subRect );
                 XPThemeData theme2(widget, painter,
                                    QWindowsXPStylePrivate::MenuTheme,
                                    MENU_POPUPSEPARATOR, stateId, subRect);
@@ -1322,10 +1221,10 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 return;
             }
 
-            QRect vCheckRect = visualRect(option->direction, menuitem->rect, QRect(menuitem->rect.x(), menuitem->rect.y(), checkcol - (gutterWidth + menuitem->rect.x()), menuitem->rect.height()));
+            QRect vCheckRect = visualRect(option->direction, menuitem->rect, QRect(menuitem->rect.x(),
+                                          menuitem->rect.y(), checkcol - (gutterWidth + menuitem->rect.x()), menuitem->rect.height()));
 
-            if (act)
-            {
+            if (act) {
                 stateId = dis ? MBI_DISABLED : MBI_HOT;
                 XPThemeData theme2(widget, painter,
                                    QWindowsXPStylePrivate::MenuTheme,
@@ -1333,8 +1232,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 d->drawBackground(theme2);
             }
 
-            if (checked)
-            {
+            if (checked) {
                 XPThemeData theme(widget, painter,
                                   QWindowsXPStylePrivate::MenuTheme,
                                   MENU_POPUPCHECKBACKGROUND,
@@ -1351,8 +1249,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
 
                 d->drawBackground(theme);
 
-                if (menuitem->icon.isNull())
-                {
+                if (menuitem->icon.isNull()) {
                     checkRect = QRect(QPoint(0, 0), size.toSize());
                     checkRect.moveCenter(theme.rect.center());
                     theme.rect = checkRect;
@@ -1360,15 +1257,14 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     theme.partId = MENU_POPUPCHECK;
                     bool bullet = menuitem->checkType & QStyleOptionMenuItem::Exclusive;
                     if (dis)
-                        theme.stateId = bullet ? MC_BULLETDISABLED : MC_CHECKMARKDISABLED;
+                        theme.stateId = bullet ? MC_BULLETDISABLED: MC_CHECKMARKDISABLED;
                     else
-                        theme.stateId = bullet ? MC_BULLETNORMAL : MC_CHECKMARKNORMAL;
+                        theme.stateId = bullet ? MC_BULLETNORMAL: MC_CHECKMARKNORMAL;
                     d->drawBackground(theme);
                 }
             }
 
-            if (!menuitem->icon.isNull())
-            {
+            if (!menuitem->icon.isNull()) {
                 QIcon::Mode mode = dis ? QIcon::Disabled : QIcon::Normal;
                 if (act && !dis)
                     mode = QIcon::Active;
@@ -1396,18 +1292,16 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             QRect textRect(xpos, y + windowsItemVMargin, w - xm - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
             QRect vTextRect = visualRect(option->direction, menuitem->rect, textRect);
             QString s = menuitem->text;
-            if (!s.isEmpty())
-            { // draw text
+            if (!s.isEmpty()) {    // draw text
                 painter->save();
                 int t = s.indexOf(QLatin1Char('\t'));
                 int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
                 if (!proxy()->styleHint(SH_UnderlineShortcut, menuitem, widget))
                     text_flags |= Qt::TextHideMnemonic;
                 text_flags |= Qt::AlignLeft;
-                if (t >= 0)
-                {
+                if (t >= 0) {
                     QRect vShortcutRect = visualRect(option->direction, menuitem->rect,
-                                                     QRect(textRect.topRight(), QPoint(menuitem->rect.right(), textRect.bottom())));
+                    QRect(textRect.topRight(), QPoint(menuitem->rect.right(), textRect.bottom())));
                     painter->drawText(vShortcutRect, text_flags, s.mid(t + 1));
                     s = s.left(t);
                 }
@@ -1419,13 +1313,12 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 painter->drawText(vTextRect, text_flags, s.left(t));
                 painter->restore();
             }
-            if (menuitem->menuItemType == QStyleOptionMenuItem::SubMenu)
-            { // draw sub menu arrow
+            if (menuitem->menuItemType == QStyleOptionMenuItem::SubMenu) {// draw sub menu arrow
                 int dim = (h - 2 * windowsItemFrame) / 2;
                 PrimitiveElement arrow;
                 arrow = (option->direction == Qt::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
                 xpos = x + w - windowsArrowHMargin - windowsItemFrame - dim;
-                QRect vSubMenuRect = visualRect(option->direction, menuitem->rect, QRect(xpos, y + h / 2 - dim / 2, dim, dim));
+                QRect  vSubMenuRect = visualRect(option->direction, menuitem->rect, QRect(xpos, y + h / 2 - dim / 2, dim, dim));
                 QStyleOptionMenuItem newMI = *menuitem;
                 newMI.rect = vSubMenuRect;
                 newMI.state = dis ? State_None : State_Enabled;
@@ -1435,8 +1328,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         break;
 #endif // QT_CONFIG(menu)
     case CE_HeaderSection:
-        if (const QStyleOptionHeader *header = qstyleoption_cast<const QStyleOptionHeader *>(option))
-        {
+        if (const QStyleOptionHeader *header = qstyleoption_cast<const QStyleOptionHeader *>(option)) {
             partId = HP_HEADERITEM;
             if (flags & State_Sunken)
                 stateId = HIS_PRESSED;
@@ -1455,19 +1347,18 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         }
         break;
     case CE_MenuBarEmptyArea:
-    {
-        stateId = MBI_NORMAL;
-        if (!(state & State_Enabled))
-            stateId = MBI_DISABLED;
-        XPThemeData theme(widget, painter,
-                          QWindowsXPStylePrivate::MenuTheme,
-                          MENU_BARBACKGROUND, stateId, option->rect);
-        d->drawBackground(theme);
-    }
-    break;
-    case CE_ToolBar:
-        if (const QStyleOptionToolBar *toolbar = qstyleoption_cast<const QStyleOptionToolBar *>(option))
         {
+            stateId = MBI_NORMAL;
+            if (!(state & State_Enabled))
+                stateId = MBI_DISABLED;
+            XPThemeData theme(widget, painter,
+                              QWindowsXPStylePrivate::MenuTheme,
+                              MENU_BARBACKGROUND, stateId, option->rect);
+            d->drawBackground(theme);
+        }
+        break;
+    case CE_ToolBar:
+        if (const QStyleOptionToolBar *toolbar = qstyleoption_cast<const QStyleOptionToolBar *>(option)) {
             QPalette pal = option->palette;
             pal.setColor(QPalette::Dark, option->palette.window().color().darker(130));
             QStyleOptionToolBar copyOpt = *toolbar;
@@ -1477,20 +1368,17 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         break;
 #if QT_CONFIG(dockwidget)
     case CE_DockWidgetTitle:
-        if (const QStyleOptionDockWidget *dwOpt = qstyleoption_cast<const QStyleOptionDockWidget *>(option))
-        {
+        if (const QStyleOptionDockWidget *dwOpt = qstyleoption_cast<const QStyleOptionDockWidget *>(option)) {
             const QDockWidget *dockWidget = qobject_cast<const QDockWidget *>(widget);
             QRect rect = option->rect;
-            if (dockWidget && dockWidget->isFloating())
-            {
+            if (dockWidget && dockWidget->isFloating()) {
                 QWindowsXPStyle::drawControl(element, option, painter, widget);
-                break; // otherwise fall through
+                break; //otherwise fall through
             }
 
             const bool verticalTitleBar = dwOpt->verticalTitleBar;
 
-            if (verticalTitleBar)
-            {
+            if (verticalTitleBar) {
                 rect = rect.transposed();
 
                 painter->translate(rect.left() - 1, rect.top() + rect.width());
@@ -1511,26 +1399,21 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             QRect r = option->rect.adjusted(0, 2, -1, -3);
             QRect titleRect = r;
 
-            if (dwOpt->closable)
-            {
+            if (dwOpt->closable) {
                 QSize sz = proxy()->standardIcon(QStyle::SP_TitleBarCloseButton, dwOpt, widget).actualSize(QSize(10, 10));
                 titleRect.adjust(0, 0, -sz.width() - mw - buttonMargin, 0);
             }
 
-            if (dwOpt->floatable)
-            {
+            if (dwOpt->floatable) {
                 QSize sz = proxy()->standardIcon(QStyle::SP_TitleBarMaxButton, dwOpt, widget).actualSize(QSize(10, 10));
                 titleRect.adjust(0, 0, -sz.width() - mw - buttonMargin, 0);
             }
 
-            if (isFloating)
-            {
+            if (isFloating) {
                 titleRect.adjust(0, -fw, 0, 0);
                 if (widget && widget->windowIcon().cacheKey() != QApplication::windowIcon().cacheKey())
                     titleRect.adjust(titleRect.height() + mw, 0, 0, 0);
-            }
-            else
-            {
+            } else {
                 titleRect.adjust(mw, 0, 0, 0);
                 if (!dwOpt->floatable && !dwOpt->closable)
                     titleRect.adjust(0, 0, -mw, 0);
@@ -1538,57 +1421,54 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             if (!verticalTitleBar)
                 titleRect = visualRect(dwOpt->direction, r, titleRect);
 
-            if (!dwOpt->title.isEmpty())
-            {
+            if (!dwOpt->title.isEmpty()) {
                 QString titleText = painter->fontMetrics().elidedText(dwOpt->title, Qt::ElideRight,
                                                                       verticalTitleBar ? titleRect.height() : titleRect.width());
                 const int indent = 4;
                 drawItemText(painter, rect.adjusted(indent + 1, 1, -indent - 1, -1),
-                             Qt::AlignLeft | Qt::AlignVCenter | Qt::TextShowMnemonic,
-                             dwOpt->palette,
-                             dwOpt->state & State_Enabled, titleText,
-                             QPalette::WindowText);
+                                Qt::AlignLeft | Qt::AlignVCenter | Qt::TextShowMnemonic,
+                                dwOpt->palette,
+                                dwOpt->state & State_Enabled, titleText,
+                                QPalette::WindowText);
+                }
             }
-        }
-        break;
+            break;
 #endif // QT_CONFIG(dockwidget)
 #if QT_CONFIG(itemviews)
     case CE_ItemViewItem:
-    {
-        const QStyleOptionViewItem *vopt;
-
-        const QAbstractItemView *view = qobject_cast<const QAbstractItemView *>(widget);
-        bool newStyle = true;
-
-        if (qobject_cast<const QTableView *>(widget))
-            newStyle = false;
-
-        if (newStyle && view && (vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option)))
         {
-            /*
-            // We cannot currently get the correct selection color for "explorer style" views
-            COLORREF cref = 0;
-            XPThemeData theme(d->treeViewHelper(), 0, QLatin1String("LISTVIEW"), 0, 0);
-            unsigned int res = GetThemeColor(theme.handle(), LVP_LISTITEM, LISS_SELECTED, TMT_TEXTCOLOR, &cref);
-            QColor textColor(GetRValue(cref), GetGValue(cref), GetBValue(cref));
-            */
-            QPalette palette = vopt->palette;
-            palette.setColor(QPalette::All, QPalette::HighlightedText, palette.color(QPalette::Active, QPalette::Text));
-            // Note that setting a saturated color here results in ugly XOR colors in the focus rect
-            palette.setColor(QPalette::All, QPalette::Highlight, palette.base().color().darker(108));
-            QStyleOptionViewItem adjustedOption = *vopt;
-            adjustedOption.palette = palette;
-            // We hide the  focusrect in singleselection as it is not required
-            if ((view->selectionMode() == QAbstractItemView::SingleSelection) && !(vopt->state & State_KeyboardFocusChange))
+            const QStyleOptionViewItem *vopt;
+
+            const QAbstractItemView *view = qobject_cast<const QAbstractItemView *>(widget);
+            bool newStyle = true;
+
+            if (qobject_cast<const QTableView*>(widget))
+                newStyle = false;
+
+            if (newStyle && view && (vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option))) {
+                /*
+                // We cannot currently get the correct selection color for "explorer style" views
+                COLORREF cref = 0;
+                XPThemeData theme(d->treeViewHelper(), 0, QLatin1String("LISTVIEW"), 0, 0);
+                unsigned int res = GetThemeColor(theme.handle(), LVP_LISTITEM, LISS_SELECTED, TMT_TEXTCOLOR, &cref);
+                QColor textColor(GetRValue(cref), GetGValue(cref), GetBValue(cref));
+                */
+                QPalette palette = vopt->palette;
+                palette.setColor(QPalette::All, QPalette::HighlightedText, palette.color(QPalette::Active, QPalette::Text));
+                // Note that setting a saturated color here results in ugly XOR colors in the focus rect
+                palette.setColor(QPalette::All, QPalette::Highlight, palette.base().color().darker(108));
+                QStyleOptionViewItem adjustedOption = *vopt;
+                adjustedOption.palette = palette;
+                // We hide the  focusrect in singleselection as it is not required
+                if ((view->selectionMode() == QAbstractItemView::SingleSelection)
+                    && !(vopt->state & State_KeyboardFocusChange))
                 adjustedOption.state &= ~State_HasFocus;
-            QWindowsXPStyle::drawControl(element, &adjustedOption, painter, widget);
+                QWindowsXPStyle::drawControl(element, &adjustedOption, painter, widget);
+            } else {
+                QWindowsXPStyle::drawControl(element, option, painter, widget);
+            }
+            break;
         }
-        else
-        {
-            QWindowsXPStyle::drawControl(element, option, painter, widget);
-        }
-        break;
-    }
 #endif // QT_CONFIG(itemviews)
 #if QT_CONFIG(combobox)
     case CE_ComboBoxLabel:
@@ -1608,11 +1488,10 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
 
  */
 void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyleOptionComplex *option,
-                                            QPainter *painter, const QWidget *widget) const
+                                         QPainter *painter, const QWidget *widget) const
 {
-    QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate *>(d_func());
-    if (!QWindowsVistaStylePrivate::useVista())
-    {
+    QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate*>(d_func());
+    if (!QWindowsVistaStylePrivate::useVista()) {
         QWindowsStyle::drawComplexControl(control, option, painter, widget);
         return;
     }
@@ -1631,8 +1510,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
     if (d->transitionsEnabled() && canAnimate(option))
     {
 
-        if (control == CC_ScrollBar || control == CC_SpinBox || control == CC_ComboBox)
-        {
+        if (control == CC_ScrollBar || control == CC_SpinBox || control == CC_ComboBox) {
 
             QObject *styleObject = option->styleObject; // Can be widget or qquickitem
 
@@ -1644,37 +1522,31 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
             styleObject->setProperty("_q_stylecontrols", int(option->activeSubControls));
             styleObject->setProperty("_q_stylerect", option->rect);
 
-            bool doTransition = ((state & State_Sunken) != (oldState & State_Sunken) ||
-                                 (state & State_On) != (oldState & State_On) ||
-                                 (state & State_MouseOver) != (oldState & State_MouseOver) ||
-                                 oldActiveControls != int(option->activeSubControls));
+            bool doTransition = ((state & State_Sunken)     != (oldState & State_Sunken)    ||
+                                 (state & State_On)         != (oldState & State_On)        ||
+                                 (state & State_MouseOver)  != (oldState & State_MouseOver) ||
+                                  oldActiveControls         != int(option->activeSubControls));
 
-            if (qstyleoption_cast<const QStyleOptionSlider *>(option))
-            {
+            if (qstyleoption_cast<const QStyleOptionSlider *>(option)) {
                 QRect oldSliderPos = styleObject->property("_q_stylesliderpos").toRect();
                 QRect currentPos = proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarSlider, widget);
                 styleObject->setProperty("_q_stylesliderpos", currentPos);
-                if (oldSliderPos != currentPos)
-                {
+                if (oldSliderPos != currentPos) {
                     doTransition = false;
                     d->stopAnimation(styleObject);
                 }
-            }
-            else if (control == CC_SpinBox)
-            {
-                // spinboxes have a transition when focus changes
+            } else if (control == CC_SpinBox) {
+                //spinboxes have a transition when focus changes
                 if (!doTransition)
                     doTransition = (state & State_HasFocus) != (oldState & State_HasFocus);
             }
 
-            if (oldRect != option->rect)
-            {
+            if (oldRect != option->rect) {
                 doTransition = false;
                 d->stopAnimation(styleObject);
             }
 
-            if (doTransition)
-            {
+            if (doTransition) {
                 QImage startImage = createAnimationBuffer(option, widget);
                 QPainter startPainter(&startImage);
 
@@ -1685,19 +1557,16 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 QWindowsVistaTransition *t = new QWindowsVistaTransition(styleObject);
 
                 // Draw the image that ends the animation by using the current styleoption
-                QStyleOptionComplex *styleOption = qstyleoption_cast<QStyleOptionComplex *>(clonedAnimationStyleOption(option));
+                QStyleOptionComplex *styleOption = qstyleoption_cast<QStyleOptionComplex*>(clonedAnimationStyleOption(option));
 
                 styleObject->setProperty("_q_no_animation", true);
 
                 // Draw transition source
-                if (!anim)
-                {
+                if (!anim) {
                     styleOption->state = QStyle::State(oldState);
                     styleOption->activeSubControls = QStyle::SubControl(oldActiveControls);
                     proxy()->drawComplexControl(control, styleOption, &startPainter, widget);
-                }
-                else
-                {
+                } else {
                     anim->paint(&startPainter, option);
                 }
                 t->setStartImage(startImage);
@@ -1720,23 +1589,19 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 deleteClonedAnimationStyleOption(styleOption);
                 d->startAnimation(t);
             }
-            if (QWindowsVistaAnimation *anim = qobject_cast<QWindowsVistaAnimation *>(d->animation(styleObject)))
-            {
+            if (QWindowsVistaAnimation *anim = qobject_cast<QWindowsVistaAnimation *>(d->animation(styleObject))) {
                 anim->paint(painter, option);
                 return;
             }
         }
     }
 
-    switch (control)
-    {
+    switch (control) {
     case CC_ComboBox:
         if (const QStyleOptionComboBox *cmb = qstyleoption_cast<const QStyleOptionComboBox *>(option))
         {
-            if (cmb->editable)
-            {
-                if (sub & SC_ComboBoxEditField)
-                {
+            if (cmb->editable) {
+                if (sub & SC_ComboBoxEditField) {
                     partId = EP_EDITBORDER_NOSCROLL;
                     if (!(flags & State_Enabled))
                         stateId = ETS_DISABLED;
@@ -1753,8 +1618,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
 
                     d->drawBackground(theme);
                 }
-                if (sub & SC_ComboBoxArrow)
-                {
+                if (sub & SC_ComboBoxArrow) {
                     QRect subRect = proxy()->subControlRect(CC_ComboBox, option, SC_ComboBoxArrow, widget);
                     XPThemeData theme(widget, painter, QWindowsXPStylePrivate::ComboboxTheme);
                     theme.rect = subRect;
@@ -1773,11 +1637,9 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                     theme.stateId = stateId;
                     d->drawBackground(theme);
                 }
-            }
-            else
-            {
-                if (sub & SC_ComboBoxFrame)
-                {
+
+            } else {
+                if (sub & SC_ComboBoxFrame) {
                     XPThemeData theme(widget, painter, QWindowsXPStylePrivate::ComboboxTheme);
                     theme.rect = option->rect;
                     theme.partId = CP_READONLY;
@@ -1791,8 +1653,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                         theme.stateId = CBXS_NORMAL;
                     d->drawBackground(theme);
                 }
-                if (sub & SC_ComboBoxArrow)
-                {
+                if (sub & SC_ComboBoxArrow) {
                     XPThemeData theme(widget, painter, QWindowsXPStylePrivate::ComboboxTheme);
                     theme.rect = proxy()->subControlRect(CC_ComboBox, option, SC_ComboBoxArrow, widget);
                     theme.partId = option->direction == Qt::RightToLeft ? CP_DROPDOWNBUTTONLEFT : CP_DROPDOWNBUTTONRIGHT;
@@ -1802,8 +1663,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                         theme.stateId = CBXS_NORMAL;
                     d->drawBackground(theme);
                 }
-                if ((sub & SC_ComboBoxEditField) && (flags & State_HasFocus))
-                {
+                if ((sub & SC_ComboBoxEditField) && (flags & State_HasFocus)) {
                     QStyleOptionFocusRect fropt;
                     fropt.QStyleOption::operator=(*cmb);
                     fropt.rect = proxy()->subControlRect(CC_ComboBox, option, SC_ComboBoxEditField, widget);
@@ -1821,9 +1681,8 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 flags &= ~State_Enabled;
 
             bool isHorz = flags & State_Horizontal;
-            bool isRTL = option->direction == Qt::RightToLeft;
-            if (sub & SC_ScrollBarAddLine)
-            {
+            bool isRTL  = option->direction == Qt::RightToLeft;
+            if (sub & SC_ScrollBarAddLine) {
                 theme.rect = proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarAddLine, widget);
                 partId = SBP_ARROWBTN;
                 if (!(flags & State_Enabled))
@@ -1840,8 +1699,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 theme.stateId = stateId;
                 d->drawBackground(theme);
             }
-            if (sub & SC_ScrollBarSubLine)
-            {
+            if (sub & SC_ScrollBarSubLine) {
                 theme.rect = proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarSubLine, widget);
                 partId = SBP_ARROWBTN;
                 if (!(flags & State_Enabled))
@@ -1858,8 +1716,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 theme.stateId = stateId;
                 d->drawBackground(theme);
             }
-            if (maxedOut)
-            {
+            if (maxedOut) {
                 theme.rect = proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarSlider, widget);
                 theme.rect = theme.rect.united(proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarSubPage, widget));
                 theme.rect = theme.rect.united(proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarAddPage, widget));
@@ -1868,11 +1725,8 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 theme.partId = partId;
                 theme.stateId = stateId;
                 d->drawBackground(theme);
-            }
-            else
-            {
-                if (sub & SC_ScrollBarSubPage)
-                {
+            } else {
+                if (sub & SC_ScrollBarSubPage) {
                     theme.rect = proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarSubPage, widget);
                     partId = flags & State_Horizontal ? SBP_UPPERTRACKHORZ : SBP_UPPERTRACKVERT;
                     if (!(flags & State_Enabled))
@@ -1887,8 +1741,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                     theme.stateId = stateId;
                     d->drawBackground(theme);
                 }
-                if (sub & SC_ScrollBarAddPage)
-                {
+                if (sub & SC_ScrollBarAddPage) {
                     theme.rect = proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarAddPage, widget);
                     partId = flags & State_Horizontal ? SBP_LOWERTRACKHORZ : SBP_LOWERTRACKVERT;
                     if (!(flags & State_Enabled))
@@ -1903,8 +1756,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                     theme.stateId = stateId;
                     d->drawBackground(theme);
                 }
-                if (sub & SC_ScrollBarSlider)
-                {
+                if (sub & SC_ScrollBarSlider) {
                     theme.rect = proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarSlider, widget);
                     if (!(flags & State_Enabled))
                         stateId = SCRBS_DISABLED;
@@ -1922,19 +1774,17 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                     theme.stateId = stateId;
                     d->drawBackground(theme);
 
-                    if (QOperatingSystemVersion::current() < QOperatingSystemVersion::Windows8)
-                    {
+                    if (QOperatingSystemVersion::current() < QOperatingSystemVersion::Windows8) {
                         const QRect gripperBounds = QWindowsXPStylePrivate::scrollBarGripperBounds(flags, widget, &theme);
                         // Draw gripper if there is enough space
-                        if (!gripperBounds.isEmpty() && flags & State_Enabled)
-                        {
+                        if (!gripperBounds.isEmpty() && flags & State_Enabled) {
                             painter->save();
                             XPThemeData grippBackground = theme;
                             grippBackground.partId = flags & State_Horizontal ? SBP_LOWERTRACKHORZ : SBP_LOWERTRACKVERT;
                             theme.rect = gripperBounds;
-                            painter->setClipRegion(d->region(theme)); // Only change inside the region of the gripper
-                            d->drawBackground(grippBackground);       // The gutter is the grippers background
-                            d->drawBackground(theme);                 // Transparent gripper ontop of background
+                            painter->setClipRegion(d->region(theme));// Only change inside the region of the gripper
+                            d->drawBackground(grippBackground);// The gutter is the grippers background
+                            d->drawBackground(theme);          // Transparent gripper ontop of background
                             painter->restore();
                         }
                     }
@@ -1947,8 +1797,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
         if (const QStyleOptionSpinBox *sb = qstyleoption_cast<const QStyleOptionSpinBox *>(option))
         {
             XPThemeData theme(widget, painter, QWindowsXPStylePrivate::SpinTheme);
-            if (sb->frame && (sub & SC_SpinBoxFrame))
-            {
+            if (sb->frame && (sub & SC_SpinBoxFrame)) {
                 partId = EP_EDITBORDER_NOSCROLL;
                 if (!(flags & State_Enabled))
                     stateId = ETS_DISABLED;
@@ -1969,8 +1818,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 ftheme.noContent = (widget != nullptr);
                 d->drawBackground(ftheme);
             }
-            if (sub & SC_SpinBoxUp)
-            {
+            if (sub & SC_SpinBoxUp) {
                 theme.rect = proxy()->subControlRect(CC_SpinBox, option, SC_SpinBoxUp, widget).adjusted(0, 0, 0, 1);
                 partId = SPNP_UP;
                 if (!(sb->stepEnabled & QAbstractSpinBox::StepUpEnabled) || !(flags & State_Enabled))
@@ -1985,8 +1833,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 theme.stateId = stateId;
                 d->drawBackground(theme);
             }
-            if (sub & SC_SpinBoxDown)
-            {
+            if (sub & SC_SpinBoxDown) {
                 theme.rect = proxy()->subControlRect(CC_SpinBox, option, SC_SpinBoxDown, widget);
                 partId = SPNP_DOWN;
                 if (!(sb->stepEnabled & QAbstractSpinBox::StepDownEnabled) || !(flags & State_Enabled))
@@ -2014,14 +1861,13 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
  \internal
  */
 QSize QWindowsVistaStyle::sizeFromContents(ContentsType type, const QStyleOption *option,
-                                           const QSize &size, const QWidget *widget) const
+                                        const QSize &size, const QWidget *widget) const
 {
     if (!QWindowsVistaStylePrivate::useVista())
         return QWindowsStyle::sizeFromContents(type, option, size, widget);
 
     QSize sz(size);
-    switch (type)
-    {
+    switch (type) {
     case CT_MenuItem:
         sz = QWindowsXPStyle::sizeFromContents(type, option, size, widget);
         int minimumHeight;
@@ -2038,8 +1884,7 @@ QSize QWindowsVistaStyle::sizeFromContents(ContentsType type, const QStyleOption
             sz.rwidth() += qRound(size.width() + margins.left() + margins.right());
         }
 
-        if (const QStyleOptionMenuItem *menuitem = qstyleoption_cast<const QStyleOptionMenuItem *>(option))
-        {
+        if (const QStyleOptionMenuItem *menuitem = qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
             if (menuitem->menuItemType != QStyleOptionMenuItem::Separator)
                 sz.setHeight(minimumHeight);
         }
@@ -2055,27 +1900,26 @@ QSize QWindowsVistaStyle::sizeFromContents(ContentsType type, const QStyleOption
         sz.rheight() += 2;
         return sz;
     case CT_SpinBox:
-    {
-        // Spinbox adds frame twice
-        sz = QWindowsStyle::sizeFromContents(type, option, size, widget);
-        int border = proxy()->pixelMetric(PM_SpinBoxFrameWidth, option, widget);
-        sz -= QSize(2 * border, 2 * border);
-    }
+        {
+            //Spinbox adds frame twice
+            sz = QWindowsStyle::sizeFromContents(type, option, size, widget);
+            int border = proxy()->pixelMetric(PM_SpinBoxFrameWidth, option, widget);
+            sz -= QSize(2*border, 2*border);
+        }
         return sz;
     case CT_HeaderSection:
-    {
-        // When there is a sort indicator it adds to the width but it is shown
-        // above the text natively and not on the side
-        if (QStyleOptionHeader *hdr = qstyleoption_cast<QStyleOptionHeader *>(const_cast<QStyleOption *>(option)))
         {
-            QStyleOptionHeader::SortIndicator sortInd = hdr->sortIndicator;
-            hdr->sortIndicator = QStyleOptionHeader::None;
-            sz = QWindowsXPStyle::sizeFromContents(type, hdr, size, widget);
-            hdr->sortIndicator = sortInd;
-            return sz;
+            // When there is a sort indicator it adds to the width but it is shown
+            // above the text natively and not on the side
+            if (QStyleOptionHeader *hdr = qstyleoption_cast<QStyleOptionHeader *>(const_cast<QStyleOption *>(option))) {
+                QStyleOptionHeader::SortIndicator sortInd = hdr->sortIndicator;
+                hdr->sortIndicator = QStyleOptionHeader::None;
+                sz = QWindowsXPStyle::sizeFromContents(type, hdr, size, widget);
+                hdr->sortIndicator = sortInd;
+                return sz;
+            }
+            break;
         }
-        break;
-    }
     default:
         break;
     }
@@ -2087,20 +1931,17 @@ QSize QWindowsVistaStyle::sizeFromContents(ContentsType type, const QStyleOption
  */
 QRect QWindowsVistaStyle::subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const
 {
-    if (!QWindowsVistaStylePrivate::useVista())
+   if (!QWindowsVistaStylePrivate::useVista())
         return QWindowsStyle::subElementRect(element, option, widget);
 
-    QRect rect = QWindowsXPStyle::subElementRect(element, option, widget);
-    switch (element)
-    {
+   QRect rect = QWindowsXPStyle::subElementRect(element, option, widget);
+    switch (element) {
 
     case SE_PushButtonContents:
-        if (const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(option))
-        {
+        if (const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(option)) {
             MARGINS borderSize;
             const HTHEME theme = OpenThemeData(widget ? QWindowsVistaStylePrivate::winId(widget) : nullptr, L"Button");
-            if (theme)
-            {
+            if (theme) {
                 int stateId = PBS_NORMAL;
                 if (!(option->state & State_Enabled))
                     stateId = PBS_DISABLED;
@@ -2114,8 +1955,7 @@ QRect QWindowsVistaStyle::subElementRect(SubElement element, const QStyleOption 
                 int border = proxy()->pixelMetric(PM_DefaultFrameWidth, btn, widget);
                 rect = option->rect.adjusted(border, border, -border, -border);
 
-                if (SUCCEEDED(GetThemeMargins(theme, nullptr, BP_PUSHBUTTON, stateId, TMT_CONTENTMARGINS, nullptr, &borderSize)))
-                {
+                if (SUCCEEDED(GetThemeMargins(theme, nullptr, BP_PUSHBUTTON, stateId, TMT_CONTENTMARGINS, nullptr, &borderSize))) {
                     rect.adjust(borderSize.cxLeftWidth, borderSize.cyTopHeight,
                                 -borderSize.cxRightWidth, -borderSize.cyBottomHeight);
                     rect = visualRect(option->direction, option->rect, rect);
@@ -2125,61 +1965,54 @@ QRect QWindowsVistaStyle::subElementRect(SubElement element, const QStyleOption 
         break;
 
     case SE_HeaderArrow:
-    {
-        QRect r = rect;
-        int h = option->rect.height();
-        int w = option->rect.width();
-        int x = option->rect.x();
-        int y = option->rect.y();
-        int margin = proxy()->pixelMetric(QStyle::PM_HeaderMargin, option, widget);
-
-        XPThemeData theme(widget, nullptr,
-                          QWindowsXPStylePrivate::HeaderTheme,
-                          HP_HEADERSORTARROW, HSAS_SORTEDDOWN, option->rect);
-
-        int arrowWidth = 13;
-        int arrowHeight = 5;
-        if (theme.isValid())
         {
-            const QSizeF size = theme.size() * QWindowsStylePrivate::nativeMetricScaleFactor(widget);
-            if (!size.isEmpty())
-            {
-                arrowWidth = qRound(size.width());
-                arrowHeight = qRound(size.height());
+            QRect r = rect;
+            int h = option->rect.height();
+            int w = option->rect.width();
+            int x = option->rect.x();
+            int y = option->rect.y();
+            int margin = proxy()->pixelMetric(QStyle::PM_HeaderMargin, option, widget);
+
+            XPThemeData theme(widget, nullptr,
+                              QWindowsXPStylePrivate::HeaderTheme,
+                              HP_HEADERSORTARROW, HSAS_SORTEDDOWN, option->rect);
+
+            int arrowWidth = 13;
+            int arrowHeight = 5;
+            if (theme.isValid()) {
+                const QSizeF size = theme.size() * QWindowsStylePrivate::nativeMetricScaleFactor(widget);
+                if (!size.isEmpty()) {
+                    arrowWidth = qRound(size.width());
+                    arrowHeight = qRound(size.height());
+                }
             }
+            if (option->state & State_Horizontal) {
+                r.setRect(x + w/2 - arrowWidth/2, y , arrowWidth, arrowHeight);
+            } else {
+                int vert_size = w / 2;
+                r.setRect(x + 5, y + h - margin * 2 - vert_size,
+                          w - margin * 2 - 5, vert_size);
+            }
+            rect = visualRect(option->direction, option->rect, r);
         }
-        if (option->state & State_Horizontal)
-        {
-            r.setRect(x + w / 2 - arrowWidth / 2, y, arrowWidth, arrowHeight);
-        }
-        else
-        {
-            int vert_size = w / 2;
-            r.setRect(x + 5, y + h - margin * 2 - vert_size,
-                      w - margin * 2 - 5, vert_size);
-        }
-        rect = visualRect(option->direction, option->rect, r);
-    }
-    break;
+        break;
 
     case SE_HeaderLabel:
-    {
-        int margin = proxy()->pixelMetric(QStyle::PM_HeaderMargin, option, widget);
-        QRect r = option->rect;
-        r.setRect(option->rect.x() + margin, option->rect.y() + margin,
-                  option->rect.width() - margin * 2, option->rect.height() - margin * 2);
-        if (const QStyleOptionHeader *header = qstyleoption_cast<const QStyleOptionHeader *>(option))
         {
-            // Subtract width needed for arrow, if there is one
-            if (header->sortIndicator != QStyleOptionHeader::None)
-            {
-                if (!(option->state & State_Horizontal)) // horizontal arrows are positioned on top
-                    r.setHeight(r.height() - (option->rect.width() / 2) - (margin * 2));
+            int margin = proxy()->pixelMetric(QStyle::PM_HeaderMargin, option, widget);
+            QRect r = option->rect;
+            r.setRect(option->rect.x() + margin, option->rect.y() + margin,
+                      option->rect.width() - margin * 2, option->rect.height() - margin * 2);
+            if (const QStyleOptionHeader *header = qstyleoption_cast<const QStyleOptionHeader *>(option)) {
+                // Subtract width needed for arrow, if there is one
+                if (header->sortIndicator != QStyleOptionHeader::None) {
+                    if (!(option->state & State_Horizontal)) //horizontal arrows are positioned on top
+                        r.setHeight(r.height() - (option->rect.width() / 2) - (margin * 2));
+                }
             }
+            rect = visualRect(option->direction, option->rect, r);
         }
-        rect = visualRect(option->direction, option->rect, r);
-    }
-    break;
+        break;
     case SE_ProgressBarContents:
         rect = QCommonStyle::subElementRect(SE_ProgressBarGroove, option, widget);
         break;
@@ -2188,8 +2021,7 @@ QRect QWindowsVistaStyle::subElementRect(SubElement element, const QStyleOption 
             rect.adjust(-2, 0, 2, 0);
         break;
     case SE_ItemViewItemFocusRect:
-        if (const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option))
-        {
+        if (const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option)) {
             QRect textRect = subElementRect(QStyle::SE_ItemViewItemText, option, widget);
             QRect displayRect = subElementRect(QStyle::SE_ItemViewItemDecoration, option, widget);
             if (!vopt->icon.isNull())
@@ -2205,19 +2037,18 @@ QRect QWindowsVistaStyle::subElementRect(SubElement element, const QStyleOption 
     return rect;
 }
 
+
 /*
   This function is used by subControlRect to check if a button
   should be drawn for the given subControl given a set of window flags.
 */
-static bool buttonVisible(const QStyle::SubControl sc, const QStyleOptionTitleBar *tb)
-{
+static bool buttonVisible(const QStyle::SubControl sc, const QStyleOptionTitleBar *tb){
 
     bool isMinimized = tb->titleBarState & Qt::WindowMinimized;
     bool isMaximized = tb->titleBarState & Qt::WindowMaximized;
     const auto flags = tb->titleBarFlags;
     bool retVal = false;
-    switch (sc)
-    {
+    switch (sc) {
     case QStyle::SC_TitleBarContextHelpButton:
         if (flags & Qt::WindowContextHelpButtonHint)
             retVal = true;
@@ -2237,7 +2068,7 @@ static bool buttonVisible(const QStyle::SubControl sc, const QStyleOptionTitleBa
             retVal = true;
         break;
     case QStyle::SC_TitleBarShadeButton:
-        if (!isMinimized && flags & Qt::WindowShadeButtonHint)
+        if (!isMinimized &&  flags & Qt::WindowShadeButtonHint)
             retVal = true;
         break;
     case QStyle::SC_TitleBarUnshadeButton:
@@ -2252,28 +2083,26 @@ static bool buttonVisible(const QStyle::SubControl sc, const QStyleOptionTitleBa
         if (flags & Qt::WindowSystemMenuHint)
             retVal = true;
         break;
-    default:
+    default :
         retVal = true;
     }
     return retVal;
 }
 
+
 /*! \internal */
 int QWindowsVistaStyle::styleHint(StyleHint hint, const QStyleOption *option, const QWidget *widget,
-                                  QStyleHintReturn *returnData) const
+                             QStyleHintReturn *returnData) const
 {
-    QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate *>(d_func());
+    QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate*>(d_func());
     int ret = 0;
-    switch (hint)
-    {
+    switch (hint) {
     case SH_MessageBox_CenterButtons:
         ret = false;
         break;
     case SH_ToolTip_Mask:
-        if (option)
-        {
-            if (QStyleHintReturnMask *mask = qstyleoption_cast<QStyleHintReturnMask *>(returnData))
-            {
+        if (option) {
+            if (QStyleHintReturnMask *mask = qstyleoption_cast<QStyleHintReturnMask*>(returnData)) {
                 ret = true;
                 XPThemeData themeData(widget, nullptr,
                                       QWindowsXPStylePrivate::ToolTipTheme,
@@ -2282,7 +2111,7 @@ int QWindowsVistaStyle::styleHint(StyleHint hint, const QStyleOption *option, co
             }
         }
         break;
-    case SH_Table_GridLineColor:
+     case SH_Table_GridLineColor:
         if (option)
             ret = int(option->palette.color(QPalette::Base).darker(118).rgba());
         else
@@ -2298,22 +2127,21 @@ int QWindowsVistaStyle::styleHint(StyleHint hint, const QStyleOption *option, co
     return ret;
 }
 
+
 /*!
  \internal
  */
 QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOptionComplex *option,
-                                         SubControl subControl, const QWidget *widget) const
+                                  SubControl subControl, const QWidget *widget) const
 {
-    if (!QWindowsVistaStylePrivate::useVista())
+   if (!QWindowsVistaStylePrivate::useVista())
         return QWindowsStyle::subControlRect(control, option, subControl, widget);
 
     QRect rect = QWindowsXPStyle::subControlRect(control, option, subControl, widget);
-    switch (control)
-    {
+    switch (control) {
 #if QT_CONFIG(combobox)
     case CC_ComboBox:
-        if (const QStyleOptionComboBox *cb = qstyleoption_cast<const QStyleOptionComboBox *>(option))
-        {
+        if (const QStyleOptionComboBox *cb = qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
             const int x = cb->rect.x(), y = cb->rect.y(), wi = cb->rect.width(), he = cb->rect.height();
             const int margin = cb->frame ? 3 : 0;
             const int bmarg = cb->frame ? 2 : 0;
@@ -2321,13 +2149,12 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
             const int arrowButtonWidth = bmarg + arrowWidth;
             const int xpos = x + wi - arrowButtonWidth;
 
-            switch (subControl)
-            {
+            switch (subControl) {
             case SC_ComboBoxFrame:
                 rect = cb->rect;
                 break;
             case SC_ComboBoxArrow:
-                rect.setRect(xpos, y, arrowButtonWidth, he);
+                rect.setRect(xpos, y , arrowButtonWidth, he);
                 break;
             case SC_ComboBoxEditField:
                 rect.setRect(x + margin, y + margin, wi - 2 * margin - arrowWidth, he - 2 * margin);
@@ -2344,8 +2171,7 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
         break;
 #endif // QT_CONFIG(combobox)
     case CC_TitleBar:
-        if (const QStyleOptionTitleBar *tb = qstyleoption_cast<const QStyleOptionTitleBar *>(option))
-        {
+        if (const QStyleOptionTitleBar *tb = qstyleoption_cast<const QStyleOptionTitleBar *>(option)) {
             if (!buttonVisible(subControl, tb))
                 return rect;
             const qreal factor = QWindowsStylePrivate::nativeMetricScaleFactor(widget);
@@ -2356,29 +2182,23 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
                 qRound(qreal(GetSystemMetrics(SM_CXSIZE)) * factor - QStyleHelper::dpiScaled(4, option));
 
             const int frameWidth = proxy()->pixelMetric(PM_MdiSubWindowFrameWidth, option, widget);
-            const bool sysmenuHint = (tb->titleBarFlags & Qt::WindowSystemMenuHint) != 0;
+            const bool sysmenuHint  = (tb->titleBarFlags & Qt::WindowSystemMenuHint) != 0;
             const bool minimizeHint = (tb->titleBarFlags & Qt::WindowMinimizeButtonHint) != 0;
             const bool maximizeHint = (tb->titleBarFlags & Qt::WindowMaximizeButtonHint) != 0;
             const bool contextHint = (tb->titleBarFlags & Qt::WindowContextHelpButtonHint) != 0;
             const bool shadeHint = (tb->titleBarFlags & Qt::WindowShadeButtonHint) != 0;
 
-            switch (subControl)
-            {
+            switch (subControl) {
             case SC_TitleBarLabel:
                 rect = QRect(frameWidth, 0, width - (buttonWidth + frameWidth + 10), height);
-                if (isToolTitle)
-                {
-                    if (sysmenuHint)
-                    {
+                if (isToolTitle) {
+                    if (sysmenuHint) {
                         rect.adjust(0, 0, int(-buttonWidth - 3 * factor), 0);
                     }
                     if (minimizeHint || maximizeHint)
                         rect.adjust(0, 0, int(-buttonWidth - 2 * factor), 0);
-                }
-                else
-                {
-                    if (sysmenuHint)
-                    {
+                } else {
+                    if (sysmenuHint) {
                         const int leftOffset = int(height - 8 * factor);
                         rect.adjust(leftOffset, 0, 0, int(4 * factor));
                     }
@@ -2395,20 +2215,20 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
                 rect = visualRect(option->direction, option->rect, rect);
                 break;
             case SC_TitleBarSysMenu:
-            {
-                const int controlTop = int(6 * factor);
-                const int controlHeight = int(height - controlTop - 3 * factor);
-                int iconExtent = proxy()->pixelMetric(PM_SmallIconSize, option);
-                QSize iconSize = tb->icon.actualSize(QSize(iconExtent, iconExtent));
-                if (tb->icon.isNull())
-                    iconSize = QSize(controlHeight, controlHeight);
-                int hPad = (controlHeight - iconSize.height()) / 2;
-                int vPad = (controlHeight - iconSize.width()) / 2;
-                rect = QRect(frameWidth + hPad, controlTop + vPad, iconSize.width(), iconSize.height());
-                rect.translate(0, int(3 * factor));
-                rect = visualRect(option->direction, option->rect, rect);
-            }
-            break;
+                {
+                    const int controlTop = int(6 * factor);
+                    const int controlHeight = int(height - controlTop - 3 * factor);
+                    int iconExtent = proxy()->pixelMetric(PM_SmallIconSize, option);
+                    QSize iconSize = tb->icon.actualSize(QSize(iconExtent, iconExtent));
+                    if (tb->icon.isNull())
+                        iconSize = QSize(controlHeight, controlHeight);
+                    int hPad = (controlHeight - iconSize.height())/2;
+                    int vPad = (controlHeight - iconSize.width())/2;
+                    rect = QRect(frameWidth + hPad, controlTop + vPad, iconSize.width(), iconSize.height());
+                    rect.translate(0, int(3 * factor));
+                    rect = visualRect(option->direction, option->rect, rect);
+                }
+                break;
             default:
                 break;
             }
@@ -2424,10 +2244,9 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
  \internal
  */
 QStyle::SubControl QWindowsVistaStyle::hitTestComplexControl(ComplexControl control, const QStyleOptionComplex *option,
-                                                             const QPoint &pos, const QWidget *widget) const
+                                                          const QPoint &pos, const QWidget *widget) const
 {
-    if (!QWindowsVistaStylePrivate::useVista())
-    {
+    if (!QWindowsVistaStylePrivate::useVista()) {
         return QWindowsStyle::hitTestComplexControl(control, option, pos, widget);
     }
     return QWindowsXPStyle::hitTestComplexControl(control, option, pos, widget);
@@ -2435,8 +2254,7 @@ QStyle::SubControl QWindowsVistaStyle::hitTestComplexControl(ComplexControl cont
 
 int QWindowsVistaStylePrivate::fixedPixelMetric(QStyle::PixelMetric pm)
 {
-    switch (pm)
-    {
+    switch (pm) {
     case QStyle::PM_DockWidgetTitleBarButtonMargin:
         return 5;
     case QStyle::PM_ScrollBarSliderMin:
@@ -2490,63 +2308,55 @@ void QWindowsVistaStyle::polish(QWidget *widget)
 {
     QWindowsXPStyle::polish(widget);
 #if QT_CONFIG(lineedit)
-    if (qobject_cast<QLineEdit *>(widget))
+    if (qobject_cast<QLineEdit*>(widget))
         widget->setAttribute(Qt::WA_Hover);
     else
 #endif // QT_CONFIG(lineedit)
-        if (qobject_cast<QGroupBox *>(widget))
-            widget->setAttribute(Qt::WA_Hover);
+    if (qobject_cast<QGroupBox*>(widget))
+        widget->setAttribute(Qt::WA_Hover);
 #if QT_CONFIG(commandlinkbutton)
-        else if (qobject_cast<QCommandLinkButton *>(widget))
-        {
-            QFont buttonFont = widget->font();
-            buttonFont.setFamily(QLatin1String("Segoe UI"));
-            widget->setFont(buttonFont);
-        }
+    else if (qobject_cast<QCommandLinkButton*>(widget)) {
+        QFont buttonFont = widget->font();
+        buttonFont.setFamily(QLatin1String("Segoe UI"));
+        widget->setFont(buttonFont);
+    }
 #endif // QT_CONFIG(commandlinkbutton)
-        else if (widget->inherits("QTipLabel"))
-        {
-            // note that since tooltips are not reused
-            // we do not have to care about unpolishing
-            widget->setContentsMargins(3, 0, 4, 0);
-            COLORREF bgRef;
-            HTHEME theme = OpenThemeData(widget ? QWindowsVistaStylePrivate::winId(widget) : nullptr, L"TOOLTIP");
-            if (theme && SUCCEEDED(GetThemeColor(theme, TTP_STANDARD, TTSS_NORMAL, TMT_TEXTCOLOR, &bgRef)))
-            {
-                QColor textColor = QColor::fromRgb(bgRef);
-                QPalette pal;
-                pal.setColor(QPalette::All, QPalette::ToolTipText, textColor);
-                widget->setPalette(pal);
-            }
+    else if (widget->inherits("QTipLabel")){
+        //note that since tooltips are not reused
+        //we do not have to care about unpolishing
+        widget->setContentsMargins(3, 0, 4, 0);
+        COLORREF bgRef;
+        HTHEME theme = OpenThemeData(widget ? QWindowsVistaStylePrivate::winId(widget) : nullptr, L"TOOLTIP");
+        if (theme && SUCCEEDED(GetThemeColor(theme, TTP_STANDARD, TTSS_NORMAL, TMT_TEXTCOLOR, &bgRef))) {
+            QColor textColor = QColor::fromRgb(bgRef);
+            QPalette pal;
+            pal.setColor(QPalette::All, QPalette::ToolTipText, textColor);
+            widget->setPalette(pal);
         }
-        else if (qobject_cast<QMessageBox *>(widget))
-        {
-            widget->setAttribute(Qt::WA_StyledBackground);
+    } else if (qobject_cast<QMessageBox *> (widget)) {
+        widget->setAttribute(Qt::WA_StyledBackground);
 #if QT_CONFIG(dialogbuttonbox)
-            QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
-            if (buttonBox)
-                buttonBox->setContentsMargins(0, 9, 0, 0);
+        QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
+        if (buttonBox)
+            buttonBox->setContentsMargins(0, 9, 0, 0);
 #endif
-        }
+    }
 #if QT_CONFIG(inputdialog)
-        else if (qobject_cast<QInputDialog *>(widget))
-        {
-            widget->setAttribute(Qt::WA_StyledBackground);
+    else if (qobject_cast<QInputDialog *> (widget)) {
+        widget->setAttribute(Qt::WA_StyledBackground);
 #if QT_CONFIG(dialogbuttonbox)
-            QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_inputdlg_buttonbox"));
-            if (buttonBox)
-                buttonBox->setContentsMargins(0, 9, 0, 0);
+        QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_inputdlg_buttonbox"));
+        if (buttonBox)
+            buttonBox->setContentsMargins(0, 9, 0, 0);
 #endif
-        }
+    }
 #endif // QT_CONFIG(inputdialog)
-        else if (QTreeView *tree = qobject_cast<QTreeView *>(widget))
-        {
-            tree->viewport()->setAttribute(Qt::WA_Hover);
-        }
-        else if (QListView *list = qobject_cast<QListView *>(widget))
-        {
-            list->viewport()->setAttribute(Qt::WA_Hover);
-        }
+    else if (QTreeView *tree = qobject_cast<QTreeView *> (widget)) {
+        tree->viewport()->setAttribute(Qt::WA_Hover);
+    }
+    else if (QListView *list = qobject_cast<QListView *> (widget)) {
+        list->viewport()->setAttribute(Qt::WA_Hover);
+    }
 }
 
 /*!
@@ -2561,46 +2371,43 @@ void QWindowsVistaStyle::unpolish(QWidget *widget)
     d->stopAnimation(widget);
 
 #if QT_CONFIG(lineedit)
-    if (qobject_cast<QLineEdit *>(widget))
+    if (qobject_cast<QLineEdit*>(widget))
         widget->setAttribute(Qt::WA_Hover, false);
     else
 #endif // QT_CONFIG(lineedit)
-        if (qobject_cast<QGroupBox *>(widget))
-            widget->setAttribute(Qt::WA_Hover, false);
-        else if (qobject_cast<QMessageBox *>(widget))
-        {
-            widget->setAttribute(Qt::WA_StyledBackground, false);
+    if (qobject_cast<QGroupBox*>(widget))
+        widget->setAttribute(Qt::WA_Hover, false);
+    else if (qobject_cast<QMessageBox *> (widget)) {
+        widget->setAttribute(Qt::WA_StyledBackground, false);
 #if QT_CONFIG(dialogbuttonbox)
-            QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
-            if (buttonBox)
-                buttonBox->setContentsMargins(0, 0, 0, 0);
+        QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
+        if (buttonBox)
+            buttonBox->setContentsMargins(0, 0, 0, 0);
 #endif
-        }
+    }
 #if QT_CONFIG(inputdialog)
-        else if (qobject_cast<QInputDialog *>(widget))
-        {
-            widget->setAttribute(Qt::WA_StyledBackground, false);
+    else if (qobject_cast<QInputDialog *> (widget)) {
+        widget->setAttribute(Qt::WA_StyledBackground, false);
 #if QT_CONFIG(dialogbuttonbox)
-            QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_inputdlg_buttonbox"));
-            if (buttonBox)
-                buttonBox->setContentsMargins(0, 0, 0, 0);
+        QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_inputdlg_buttonbox"));
+        if (buttonBox)
+            buttonBox->setContentsMargins(0, 0, 0, 0);
 #endif
-        }
+    }
 #endif // QT_CONFIG(inputdialog)
-        else if (QTreeView *tree = qobject_cast<QTreeView *>(widget))
-        {
-            tree->viewport()->setAttribute(Qt::WA_Hover, false);
-        }
+    else if (QTreeView *tree = qobject_cast<QTreeView *> (widget)) {
+        tree->viewport()->setAttribute(Qt::WA_Hover, false);
+    }
 #if QT_CONFIG(commandlinkbutton)
-        else if (qobject_cast<QCommandLinkButton *>(widget))
-        {
-            QFont font = QApplication::font("QCommandLinkButton");
-            QFont widgetFont = widget->font();
-            widgetFont.setFamily(font.family()); // Only family set by polish
-            widget->setFont(widgetFont);
-        }
+    else if (qobject_cast<QCommandLinkButton*>(widget)) {
+        QFont font = QApplication::font("QCommandLinkButton");
+        QFont widgetFont = widget->font();
+        widgetFont.setFamily(font.family()); //Only family set by polish
+        widget->setFont(widgetFont);
+    }
 #endif // QT_CONFIG(commandlinkbutton)
 }
+
 
 /*!
  \internal
@@ -2623,16 +2430,16 @@ void QWindowsVistaStyle::polish(QPalette &pal)
  \internal
  */
 QPixmap QWindowsVistaStyle::standardPixmap(StandardPixmap standardPixmap, const QStyleOption *option,
-                                           const QWidget *widget) const
+                                      const QWidget *widget) const
 {
-    if (!QWindowsVistaStylePrivate::useVista())
-    {
+    if (!QWindowsVistaStylePrivate::useVista()) {
         return QWindowsStyle::standardPixmap(standardPixmap, option, widget);
     }
     return QWindowsXPStyle::standardPixmap(standardPixmap, option, widget);
 }
 
-QWindowsVistaStylePrivate::QWindowsVistaStylePrivate() : QWindowsXPStylePrivate()
+QWindowsVistaStylePrivate::QWindowsVistaStylePrivate() :
+    QWindowsXPStylePrivate()
 {
 }
 
@@ -2654,49 +2461,46 @@ QIcon QWindowsVistaStyle::standardIcon(StandardPixmap standardIcon,
                                        const QStyleOption *option,
                                        const QWidget *widget) const
 {
-    if (!QWindowsVistaStylePrivate::useVista())
-    {
+    if (!QWindowsVistaStylePrivate::useVista()) {
         return QWindowsStyle::standardIcon(standardIcon, option, widget);
     }
 
     QWindowsVistaStylePrivate *d = const_cast<QWindowsVistaStylePrivate *>(d_func());
-    switch (standardIcon)
-    {
+    switch(standardIcon) {
     case SP_CommandLink:
-    {
-        XPThemeData theme(nullptr, nullptr,
-                          QWindowsXPStylePrivate::ButtonTheme,
-                          BP_COMMANDLINKGLYPH, CMDLGS_NORMAL);
-        if (theme.isValid())
         {
-            const QSize size = theme.size().toSize();
-            QIcon linkGlyph;
-            QPixmap pm(size);
-            pm.fill(Qt::transparent);
-            QPainter p(&pm);
-            theme.painter = &p;
-            theme.rect = QRect(QPoint(0, 0), size);
-            d->drawBackground(theme);
-            linkGlyph.addPixmap(pm, QIcon::Normal, QIcon::Off); // Normal
-            pm.fill(Qt::transparent);
+            XPThemeData theme(nullptr, nullptr,
+                              QWindowsXPStylePrivate::ButtonTheme,
+                              BP_COMMANDLINKGLYPH, CMDLGS_NORMAL);
+            if (theme.isValid()) {
+                const QSize size = theme.size().toSize();
+                QIcon linkGlyph;
+                QPixmap pm(size);
+                pm.fill(Qt::transparent);
+                QPainter p(&pm);
+                theme.painter = &p;
+                theme.rect = QRect(QPoint(0, 0), size);
+                d->drawBackground(theme);
+                linkGlyph.addPixmap(pm, QIcon::Normal, QIcon::Off);    // Normal
+                pm.fill(Qt::transparent);
 
-            theme.stateId = CMDLGS_PRESSED;
-            d->drawBackground(theme);
-            linkGlyph.addPixmap(pm, QIcon::Normal, QIcon::On); // Pressed
-            pm.fill(Qt::transparent);
+                theme.stateId = CMDLGS_PRESSED;
+                d->drawBackground(theme);
+                linkGlyph.addPixmap(pm, QIcon::Normal, QIcon::On);     // Pressed
+                pm.fill(Qt::transparent);
 
-            theme.stateId = CMDLGS_HOT;
-            d->drawBackground(theme);
-            linkGlyph.addPixmap(pm, QIcon::Active, QIcon::Off); // Hover
-            pm.fill(Qt::transparent);
+                theme.stateId = CMDLGS_HOT;
+                d->drawBackground(theme);
+                linkGlyph.addPixmap(pm, QIcon::Active, QIcon::Off);    // Hover
+                pm.fill(Qt::transparent);
 
-            theme.stateId = CMDLGS_DISABLED;
-            d->drawBackground(theme);
-            linkGlyph.addPixmap(pm, QIcon::Disabled, QIcon::Off); // Disabled
-            return linkGlyph;
+                theme.stateId = CMDLGS_DISABLED;
+                d->drawBackground(theme);
+                linkGlyph.addPixmap(pm, QIcon::Disabled, QIcon::Off);  // Disabled
+                return linkGlyph;
+            }
         }
-    }
-    break;
+        break;
     default:
         break;
     }

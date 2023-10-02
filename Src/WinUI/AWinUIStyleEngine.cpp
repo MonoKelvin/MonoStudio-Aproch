@@ -59,11 +59,13 @@ void AWinUIStyleEngine::initStyleTheme(const QString& styleFile)
         return;
 
     // Application
+    d->appPalette.setColor(QPalette::Base, QColor(50, 50, 50));
     d->appPalette.setColor(QPalette::Background, QColor(32, 32, 32));
     d->appPalette.setColor(QPalette::Text, Qt::white);
     d->appPalette.setColor(QPalette::WindowText, Qt::white);
     d->appPalette.setColor(QPalette::ButtonText, Qt::white);
     d->appPalette.setColor(QPalette::PlaceholderText, QColor(143, 143, 143));
+
     QApplication::setPalette(d->appPalette);
     
     // ATextBox

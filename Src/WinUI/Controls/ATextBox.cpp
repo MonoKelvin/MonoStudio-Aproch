@@ -56,7 +56,6 @@ ATextBox::ATextBox(QWidget* parent)
     : QLineEdit(parent)
 {
     setClearButtonEnabled(true);
-    setFixedHeight(40);
 
     bindStyleObject(this);
 }
@@ -71,8 +70,14 @@ ATextBox::~ATextBox()
 {
 }
 
+QSize ATextBox::sizeHint() const
+{
+    return QSize(QLineEdit::sizeHint().width(), 40);
+}
+
 void ATextBox::paintEvent(QPaintEvent* event)
 {
+    return __super::paintEvent(event);
     Q_D(ATextBox);
 
     QPainter p(this);

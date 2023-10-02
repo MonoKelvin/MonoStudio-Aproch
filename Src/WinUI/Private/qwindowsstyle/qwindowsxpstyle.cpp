@@ -37,10 +37,6 @@
 **
 ****************************************************************************/
 #include "stdafx.h"
-#include "Widget/Style/AStyleDefines.h"
-#include "Common/AGraphicsToolkit.h"
-#include "../../Style/AWinUIStyleObjects.h"
-
 #include "qwindowsxpstyle_p.h"
 #include "qwindowsxpstyle_p_p.h"
 
@@ -715,9 +711,9 @@ bool QWindowsXPStylePrivate::drawBackground(XPThemeData &themeData, qreal correc
     }
 
     const HDC dc = canDrawDirectly ? hdcForWidgetBackingStore(themeData.widget) : nullptr;
-    const bool result = /*dc && qFuzzyCompare(correctionFactor, qreal(1))
+    const bool result = dc && qFuzzyCompare(correctionFactor, qreal(1))
         ? drawBackgroundDirectly(dc, themeData, aditionalDevicePixelRatio)
-        : */drawBackgroundThruNativeBuffer(themeData, aditionalDevicePixelRatio, correctionFactor);
+        : drawBackgroundThruNativeBuffer(themeData, aditionalDevicePixelRatio, correctionFactor);
     painter->restore();
     return result;
 }
@@ -1028,21 +1024,10 @@ bool QWindowsXPStylePrivate::drawBackgroundThruNativeBuffer(XPThemeData &themeDa
         painter->setClipRegion(scaleRegion(extraClip, 1.0 / additionalDevicePixelRatio), Qt::IntersectClip);
 
     if (!themeData.mirrorHorizontally && !themeData.mirrorVertically && !themeData.rotate) {
-        SCornerF borderRadius = themeData.getStyleValue<SCornerF>(AUIStyleObject::BorderRadius);
-        if (aIsCornerValid(borderRadius))
-        {
-            if (!haveCachedPixmap)
-                AGraphicsToolkit::fillet(img, borderRadius, QRectF(themeData.rect), painter);
-            else
-                AGraphicsToolkit::fillet(cachedPixmap, borderRadius, QRectF(), painter);
-        }
+        if (!haveCachedPixmap)
+            painter->drawImage(themeData.rect, img, rect);
         else
-        {
-            if (!haveCachedPixmap)
-                painter->drawImage(themeData.rect, img, rect);
-            else
-                painter->drawPixmap(themeData.rect, cachedPixmap);
-        }
+            painter->drawPixmap(themeData.rect, cachedPixmap);
     } else {
         // This is _slow_!
         // Make a copy containing only the necessary data, and mirror
@@ -3901,7 +3886,7 @@ QWindowsXPStyle::QWindowsXPStyle(QWindowsXPStylePrivate &dd) : QWindowsStyle(dd)
 }
 
 #ifndef QT_NO_DEBUG_STREAM
-QDebug operator<<(QDebug d, const XPThemeData& t)
+QDebug operator<<(QDebug d, const XPThemeData &t)
 {
     QDebugStateSaver saver(d);
     d.nospace();
@@ -3913,7 +3898,7 @@ QDebug operator<<(QDebug d, const XPThemeData& t)
     return d;
 }
 
-QDebug operator<<(QDebug d, const ThemeMapKey& k)
+QDebug operator<<(QDebug d, const ThemeMapKey &k)
 {
     QDebugStateSaver saver(d);
     d.nospace();
@@ -3923,14 +3908,14 @@ QDebug operator<<(QDebug d, const ThemeMapKey& k)
     return d;
 }
 
-QDebug operator<<(QDebug d, const ThemeMapData& td)
+QDebug operator<<(QDebug d, const ThemeMapData &td)
 {
     QDebugStateSaver saver(d);
     d.nospace();
     d << "ThemeMapData(alphaType=" << td.alphaType
-        << ", dataValid=" << td.dataValid << ", partIsTransparent=" << td.partIsTransparent
-        << ", hasAlphaChannel=" << td.hasAlphaChannel << ", wasAlphaSwapped=" << td.wasAlphaSwapped
-        << ", hadInvalidAlpha=" << td.hadInvalidAlpha << ')';
+      << ", dataValid=" << td.dataValid << ", partIsTransparent=" << td.partIsTransparent
+      << ", hasAlphaChannel=" << td.hasAlphaChannel << ", wasAlphaSwapped=" << td.wasAlphaSwapped
+      << ", hadInvalidAlpha=" << td.hadInvalidAlpha << ')';
     return d;
 }
 #endif // QT_NO_DEBUG_STREAM
@@ -4210,5 +4195,6 @@ void QWindowsXPStylePrivate::showProperties(XPThemeData &themeData)
 }
 #endif
 // Debugging code -----------------------------------------------------------------------[ END ]---
+
 
 QT_END_NAMESPACE

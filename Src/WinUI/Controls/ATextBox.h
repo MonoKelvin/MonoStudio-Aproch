@@ -41,6 +41,8 @@ public:
     explicit ATextBox(const QString& content, QWidget* parent = nullptr);
     ~ATextBox();
 
+    QSize sizeHint() const override;
+
 protected:
     void paintEvent(QPaintEvent* event) override;
 

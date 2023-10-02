@@ -50,8 +50,9 @@
 //
 // We mean it.
 //
+
 #include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "qwindowsxpstyle_p_p.h"
+#include "qwindowsxpstyle_p.h"
 #include <QtWidgets/private/qwindowsstyle_p_p.h>
 #include <qmap.h>
 #include <qt_windows.h>
@@ -96,7 +97,6 @@ class QDebug;
 // #define DEBUG_XP_STYLE
 
 // Declarations -----------------------------------------------------------------------------------
-
 class XPThemeData
 {
 public:
@@ -105,8 +105,7 @@ public:
         : widget(w), painter(p), theme(themeIn), partId(part), stateId(state),
           mirrorHorizontally(false), mirrorVertically(false), noBorder(false),
           noContent(false), rect(r)
-    {
-    }
+    {}
 
     HRGN mask(QWidget *widget);
     HTHEME handle();
@@ -123,16 +122,6 @@ public:
                                   int part = 0, int state = 0, int propId = TMT_CONTENTMARGINS);
     static QMarginsF themeMargins(const QWidget *w = nullptr, QPainter *p = nullptr, int themeIn = -1,
                                   int part = 0, int state = 0, int propId = TMT_CONTENTMARGINS);
-
-    template<typename T>
-    T getStyleValue(const char* name, const QWidget *w = nullptr)
-    {
-        if (w)
-            return w->property(name).value<T>();
-        if (widget)
-            return widget->property(name).value<T>();
-        return T();
-    }
 
     const QWidget *widget;
     QPainter *painter;

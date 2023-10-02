@@ -5,17 +5,13 @@
 
 #include "AprochAPI.h"
 
-class WinUIWindow : public ARibbonMainWindow
+class WinUIWindow : public QWidget
 {
     Q_OBJECT
 
 public:
     WinUIWindow(QWidget *parent = nullptr);
     ~WinUIWindow();
-
-private:
-    void createRibbonBar();
-    void createGroupClipboard(ARibbonPage* page);
 
 private:
     Ui::WinUIWindowClass ui;
