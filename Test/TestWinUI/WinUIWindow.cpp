@@ -10,7 +10,9 @@
 
 #include <QApplication>
 #include <QClipboard>
-//#include <QProcess>
+#include <QTextEdit>
+
+using namespace aproch;
 
 WinUIWindow::WinUIWindow(QWidget *parent)
     : QWidget(parent)
@@ -25,7 +27,14 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     tb111->setPlaceholderText(AStr("placeholder text"));
     layout()->addWidget(tb111);
 
-    if (0)
+    QPushButton* pb111 = new QPushButton(AStr("按钮QPushButton001"), this);
+    layout()->addWidget(pb111);
+
+    /*QTextEdit* te001 = new QTextEdit(this);
+    te001->setPlaceholderText(AStr("placeholder text"));
+    layout()->addWidget(te001);*/
+
+    if (1)
     {
         new QBoxLayout(QBoxLayout::TopToBottom, this);
         ATextBlock* newBlock = new ATextBlock(AStr("I am a Text"), this);
@@ -39,11 +48,10 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         layout()->addWidget(textBox);
 
         ATextBox* textBox2 = new ATextBox(this);
-        textBox2->setStyleSheet(AStr("border-radius: 7px; border-bottom:4px solid red outset;"));
         layout()->addWidget(textBox2);
     }
 
-    if(0){
+    if(1){
         AIntDataManager* IntDM = new AIntDataManager(this);
         AData* intData = IntDM->addData(AStr("name"));
         IntDM->setValue(intData, 10);
@@ -69,7 +77,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox005, QString(), EDataBindType::TwoWay));
     }
 
-    if(0)
+    if(1)
     {
         ADoubleDataManager* DoubleDM = new ADoubleDataManager(this);
         AData* dblData = DoubleDM->addData(AStr("name"));
@@ -96,7 +104,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox005, QString(), EDataBindType::TwoWay));
     }
     
-    if(0)
+    if(1)
     {
         AStringDataManager* StringDM = new AStringDataManager(this);
         AData* dt = StringDM->addData(AStr("name"));
@@ -122,7 +130,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
     }
 
-    if (0)
+    if (1)
     {
         ABoolDataManager* BoolDM = new ABoolDataManager(this);
         AData* dt = BoolDM->addData(AStr("name"));
@@ -148,7 +156,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
     }
 
-    if (0)
+    if (1)
     {
         ABoolDataManager* BoolDM = new ABoolDataManager(this);
         AData* dt = BoolDM->addData(AStr("name"));
@@ -174,7 +182,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
     }
 
-    if (0)
+    if (1)
     {
         AIntDataManager* IntDM = new AIntDataManager(this);
         AStringListDataManager* StringListDM = new AStringListDataManager(this);

@@ -6,3 +6,4 @@
 #include "Controls/ATextBox.h"
 
 #include "Style/AWinUIStyleObjects.h"
+#include "Style/AWinUITheme.h"

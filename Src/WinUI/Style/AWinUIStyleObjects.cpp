@@ -9,7 +9,6 @@ APROCH_NAMESPACE_BEGIN
 
 const SCornerF FrameDefaultBorderRadius{ 8 };
 const SCornerF TextBoxDefaultBorderRadius = FrameDefaultBorderRadius;
-const QMargins TextBoxDefaultContentMargins(15, 10, 15, 10);
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -39,7 +38,6 @@ void ATextBoxStyleObject::initProperties(QWidget* widget)
     AWinUIFrameStyleObject::initProperties(widget);
 
     addStyle(BorderRadius, TextBoxDefaultBorderRadius);
-    addStyle(Margins, TextBoxDefaultContentMargins);
 
     applyStyle(widget);
 }

@@ -57,19 +57,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IntDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\$(ProjectName)</IntDir>
-    <OutDir>$(SolutionDir)Build\$(Platform)-$(Configuration)\Test\$(ProjectName)</OutDir>
+    <IntDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Platform)-$(Configuration)\Test\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IntDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\$(ProjectName)</IntDir>
-    <OutDir>$(SolutionDir)Build\$(Platform)-$(Configuration)\Test\$(ProjectName)</OutDir>
+    <IntDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Platform)-$(Configuration)\Test\$(ProjectName)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Src\WinUI;$(SolutionDir)Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>APROCH_WINUI;APROCH_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
       <Command>$(QtInstallDir)\bin\windeployqt.exe $(OutDir)$(TargetName)$(TargetExt)
@@ -81,6 +82,7 @@ xcopy /y $(OutDir)..\..\Bin\Aprochd.dll $(OutDir)</Command>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Src\WinUI;$(SolutionDir)Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>APROCH_WINUI;APROCH_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
       <Command>$(QtInstallDir)\bin\windeployqt.exe $(OutDir)$(TargetName)$(TargetExt)

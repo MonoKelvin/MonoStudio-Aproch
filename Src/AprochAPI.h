@@ -35,13 +35,8 @@
  *****************************************************************************/
 #pragma once
 
-#define APROCH_NAMESPACE
-
+#define APROCH_USE_NAMESPACE
 #include "AprochGlobal.h"
-
- // platform
-#include "Platform/APlatform.h"
-#include "Platform/APlatform_win.h"
 
 // service
 #include "Common/IService.h"
@@ -102,21 +97,15 @@
 #include "APluginManager.h"
 
 // widgets
-#include "Widget/AWindowTitleBarGlow_win.h"
 #include "Widget/AAbstractColorPicker.h"
 #include "Widget/AAvatar.h"
-#include "Widget/ABackstageWidget.h"
 #include "Widget/ABorderlessWidget.h"
 #include "Widget/ACaptionBar.h"
 #include "Widget/AColorPickerIndicator.h"
 #include "Widget/AColorSliderControl.h"
 #include "Widget/AFlowLayout.h"
-#include "Widget/AMaterialWidget.h"
 #include "Widget/ANavigationBar.h"
-#include "Widget/APopupMenu.h"
 #include "Widget/APromptWidget.h"
-#include "Widget/AScrollWidgetBar.h"
-#include "Widget/AToggleSwitch.h"
 #include "Widget/AToolBar.h"
 #include "Widget/AToolTip.h"
 #include "Widget/AVerticalLabel.h"
@@ -124,15 +113,6 @@
 #include "Widget/AWheelColorPickerWidget.h"
 #include "Widget/AWidgetFactory.h"
 #include "Widget/AWindow.h"
-#include "Widget/AWindowTitleBar.h"
-#include "Widget/AWindowTitleBar_win.h"
-
-#include "Widget/Ribbon/ARibbonDef.h"
-#include "Widget/Ribbon/ARibbonMainWindow.h"
-#include <Widget/Ribbon/ARibbonBar.h>
-#include "Widget/Ribbon/ARibbonButton.h"
-#include "Widget/Ribbon/ARibbonPage.h"
-#include "Widget/Ribbon/ARibbonGroup.h"
 
 #include "Data/header.inc"
 

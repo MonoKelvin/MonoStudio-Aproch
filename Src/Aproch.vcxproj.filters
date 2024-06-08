@@ -48,12 +48,6 @@
     <Filter Include="WinUI\Controls">
       <UniqueIdentifier>{77c7bae3-9cd6-4388-b00a-427e92d5b3b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WinUI\Private">
-      <UniqueIdentifier>{377254ad-3e30-412c-8887-67ed26ed91b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="WinUI\Private\qwindowsstyle">
-      <UniqueIdentifier>{1acbde6d-c26e-4b44-904c-e0a4b93bddba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Defines">
       <UniqueIdentifier>{a369c330-de66-4c06-b9b4-312fac600fc2}</UniqueIdentifier>
     </Filter>
@@ -75,20 +69,11 @@
     <Filter Include="WinUI\Style">
       <UniqueIdentifier>{ad98d920-c39b-47b3-9969-f6ca8407e2d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Widget\Ribbon">
-      <UniqueIdentifier>{3f47ba0e-c4c7-4a7e-af2d-d41ef33d927f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Platform">
-      <UniqueIdentifier>{17bca0ff-cc3f-418b-83cb-2bd4e7e51373}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Widget\Widget">
       <UniqueIdentifier>{5e2f0503-cf9f-4eba-b964-ea939fef9fe7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Widget\RC">
-      <UniqueIdentifier>{202fc43d-500a-4e0c-ab9b-f86c37f110e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Widget\Ribbon\res">
-      <UniqueIdentifier>{863d80b3-f5b1-458c-880f-57a545cf5402}</UniqueIdentifier>
+    <Filter Include="WinUI\Controls\Private">
+      <UniqueIdentifier>{bbb3744c-859c-4893-8cbd-84fc2b8181d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -172,9 +157,6 @@
     </ClInclude>
     <ClInclude Include="FUIElement.h">
       <Filter>FUI\Element</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p_p.h">
-      <Filter>WinUI\Private\qwindowsstyle</Filter>
     </ClInclude>
     <ClInclude Include="Common\AStringToolkit.h">
       <Filter>Common\Toolkit</Filter>
@@ -272,44 +254,17 @@
     <ClInclude Include="Common\AUnorderedPair.h">
       <Filter>Common\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Platform\APlatform.h">
-      <Filter>Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform\APlatform_win.h">
-      <Filter>Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\Style\ASegoeMDL2Assets.h">
-      <Filter>Widget\Style</Filter>
-    </ClInclude>
     <ClInclude Include="Widget\Style\AStyleHelper.h">
-      <Filter>Widget\Style</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\Style\AStyleOption.h">
       <Filter>Widget\Style</Filter>
     </ClInclude>
     <ClInclude Include="Widget\Style\AWindowsColor.h">
       <Filter>Widget\Style</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\AWindowTitleBar_win.h">
-      <Filter>Widget\Widget</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\AWindowTitleBarGlow_win.h">
-      <Filter>Widget\Widget</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\Ribbon\ARibbonDef.h">
-      <Filter>Widget\Ribbon</Filter>
-    </ClInclude>
     <ClInclude Include="Common\AXmlAccess.h">
       <Filter>Common\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\Ribbon\ARibbonButton_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\Ribbon\ARibbonInputControls.h">
-      <Filter>Widget\Ribbon</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\Ribbon\ARibbonSearchBar_p.h">
-      <Filter>Widget\Ribbon</Filter>
+    <ClInclude Include="WinUI\Style\AWinUITheme.h">
+      <Filter>WinUI\Style</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -430,15 +385,6 @@
     <ClCompile Include="WinUI\AWinUIStyleEngine.cpp">
       <Filter>WinUI</Filter>
     </ClCompile>
-    <ClCompile Include="WinUI\Private\AWinUIStyle.cpp">
-      <Filter>WinUI\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle.cpp">
-      <Filter>WinUI\Private\qwindowsstyle</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle.cpp">
-      <Filter>WinUI\Private\qwindowsstyle</Filter>
-    </ClCompile>
     <ClCompile Include="Common\AStringToolkit.cpp">
       <Filter>Common\Toolkit</Filter>
     </ClCompile>
@@ -502,131 +448,17 @@
     <ClCompile Include="Widget\AWidgetFactory.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
-    <ClCompile Include="Platform\APlatform.cpp">
-      <Filter>Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform\APlatform_win.cpp">
-      <Filter>Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Style\ACommonStyle.cpp">
-      <Filter>Widget\Style</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Style\ACommonStyle_p.cpp">
-      <Filter>Widget\Style</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Style\ASegoeMDL2Assets.cpp">
-      <Filter>Widget\Style</Filter>
-    </ClCompile>
     <ClCompile Include="Widget\Style\AStyleHelper.cpp">
-      <Filter>Widget\Style</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Style\AStyleOption.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
     <ClCompile Include="Widget\Style\AWindowsColor.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonBar.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\ABackstageWidget.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AMaterialWidget.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\APopupMenu.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AScrollWidgetBar.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AToggleSwitch.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
     <ClCompile Include="Widget\AToolTip.cpp">
       <Filter>Widget\Widget</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\AWindowTitleBar.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AWindowTitleBar_win.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AWindowTitleBarGlow_win.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonMainWindow.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonSystemMenu.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonDef.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonQuickAccessBar.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonTitleBarWidget.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonCustomizeManager.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonGroup.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonPage.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonControls.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonButtonControls.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonPopup.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonButton.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonGallery.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonBackstageView.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonCustomizeDialog.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonCustomizePage.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonGalleryControls.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonInputControls.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonKeyTip.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonTabBar.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonSliderPane.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AAbstractTabBar.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\ARibbonSearchBar.cpp">
-      <Filter>Widget\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\Ribbon\AOfficePopupMenu.cpp">
-      <Filter>Widget\Ribbon</Filter>
+    <ClCompile Include="WinUI\Style\AWinUITheme.cpp">
+      <Filter>WinUI\Style</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -690,18 +522,6 @@
     <QtMoc Include="WinUI\AWinUIStyleEngine.h">
       <Filter>WinUI</Filter>
     </QtMoc>
-    <QtMoc Include="WinUI\Private\AWinUIStyle.h">
-      <Filter>WinUI\Private</Filter>
-    </QtMoc>
-    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h">
-      <Filter>WinUI\Private\qwindowsstyle</Filter>
-    </QtMoc>
-    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p_p.h">
-      <Filter>WinUI\Private\qwindowsstyle</Filter>
-    </QtMoc>
-    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p.h">
-      <Filter>WinUI\Private\qwindowsstyle</Filter>
-    </QtMoc>
     <QtMoc Include="Common\ADoubleValidator.h">
       <Filter>Common\Validator</Filter>
     </QtMoc>
@@ -720,154 +540,13 @@
     <QtMoc Include="Data\ADWBindMethods.h">
       <Filter>Data</Filter>
     </QtMoc>
-    <QtMoc Include="Widget\Style\ACommonStyle.h">
-      <Filter>Widget\Style</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Style\ACommonStyle_p.h">
-      <Filter>Widget\Style</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonBar.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonBar_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\ABackstageWidget.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AMaterialWidget.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\APopupMenu.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\APopupMenu_p.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AScrollWidgetBar.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AToggleSwitch.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
     <QtMoc Include="Widget\AToolTip.h">
       <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AWindowTitleBar.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AWindowTitleBar_p.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonMainWindow.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonSystemMenu.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonSystemMenu_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonQuickAccessBar.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonTitleBarWidget.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonQuickAccessBar_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeManager.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeManager_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonGroup.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonGroup_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonPage.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonPage_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonControls.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonControls_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonButton.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonButtonControls.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonPopup.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonGallery.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonGallery_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonBackstageView.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonBackstageView_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeDialog.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeDialog_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizePage.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonGalleryControls.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonKeyTip.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonTabBar.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonSliderPane.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonSliderPane_p.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AAbstractTabBar.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\ARibbonSearchBar.h">
-      <Filter>Widget\Ribbon</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\Ribbon\AOfficePopupMenu.h">
-      <Filter>Widget\Ribbon</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">
       <Filter>Resource Files</Filter>
-    </QtRcc>
-    <QtRcc Include="Widget\RC_BaseResources.qrc">
-      <Filter>Widget\RC</Filter>
-    </QtRcc>
-    <QtRcc Include="Widget\Ribbon\RC_RibbonResources.qrc">
-      <Filter>Widget\Ribbon\res</Filter>
-    </QtRcc>
-    <QtRcc Include="Widget\Ribbon\RC_RibbonTranslations.qrc">
-      <Filter>Widget\Ribbon\res</Filter>
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
@@ -877,16 +556,5 @@
     <None Include="Data\header.inc">
       <Filter>Data</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="Widget\Ribbon\UI_RibbonBarCustomizePage.ui">
-      <Filter>Widget\Ribbon\res</Filter>
-    </QtUic>
-    <QtUic Include="Widget\Ribbon\UI_RibbonQuickAccessBarCustomizePage.ui">
-      <Filter>Widget\Ribbon\res</Filter>
-    </QtUic>
-    <QtUic Include="Widget\Ribbon\UI_RibbonRenameDialog.ui">
-      <Filter>Widget\Ribbon\res</Filter>
-    </QtUic>
   </ItemGroup>
 </Project>

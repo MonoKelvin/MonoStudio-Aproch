@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_DontUseNativeMenuBar);
     a.setOrganizationName(QStringLiteral("Mono Studio"));
 
-    AWinUIStyleEngine::instance()->initStyleTheme();
+    //aproch::AWinUIStyleEngine::instance()->initStyleTheme();
 
     /*QPalette pt;
     pt.setColor(QPalette::Background, QColor(4, 159, 241));

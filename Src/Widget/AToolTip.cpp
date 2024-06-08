@@ -38,7 +38,6 @@
 #include <QMouseEvent>
 #include <QToolButton>
 
-#include "Style/ACommonStyle_p.h"
 #include "Style/AStyleHelper.h"
 
  // 
@@ -130,7 +129,7 @@ void AToolTipPrivate::updateTool()
     A_P(AToolTip);
     if (m_label)
     {
-        m_label->setText(::removeMnemonics(m_text));
+        m_label->setText(removeMnemonics(m_text));
         m_label->setWordWrap(/*Qt::mightBeRichText(m_text)*/true);
         m_label->adjustSize();
     }
@@ -549,7 +548,7 @@ void AToolTip::paintEvent(QPaintEvent* event)
     if (drawImage && !drawImageTop)
     {
         QPoint ptIcon = rc.topLeft();
-        QPixmap pm = ACommonStylePrivate::preparePixmap(d.m_icon, szDrvImage, QIcon::Normal, QIcon::On, this);
+        QPixmap pm = AStyleHelper::preparePixmap(d.m_icon, szDrvImage, QIcon::Normal, QIcon::On, this);
         style()->drawItemPixmap(&p, QRect(ptIcon, szDrvImage), Qt::AlignCenter, pm);
         rc.setLeft(rc.left() + szDrvImage.width() + 4);
     }

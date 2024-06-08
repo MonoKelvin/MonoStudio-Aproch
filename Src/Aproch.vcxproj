@@ -149,6 +149,8 @@
     <ClCompile Include="Common\ATimeToolkit.cpp" />
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
+    <ClCompile Include="WinUI\Style\AWinUITheme.cpp" />
+    <ClInclude Include="WinUI\Style\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
@@ -158,27 +160,19 @@
     <ClCompile Include="Data\ADataWidgetBindMethod.cpp" />
     <ClCompile Include="Data\ADWBindMethods.cpp" />
     <ClCompile Include="FUI\Element\FUIElement.cpp" />
-    <ClCompile Include="Platform\APlatform.cpp" />
-    <ClCompile Include="Platform\APlatform_win.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Widget\AAbstractColorPicker.cpp" />
-    <ClCompile Include="Widget\AAbstractTabBar.cpp" />
     <ClCompile Include="Widget\AAvatar.cpp" />
-    <ClCompile Include="Widget\ABackstageWidget.cpp" />
     <ClCompile Include="Widget\ABorderlessWidget.cpp" />
     <ClCompile Include="Widget\ACaptionBar.cpp" />
     <ClCompile Include="Widget\AColorPickerIndicator.cpp" />
     <ClCompile Include="Widget\AColorSliderControl.cpp" />
     <ClCompile Include="Widget\AFlowLayout.cpp" />
-    <ClCompile Include="Widget\AMaterialWidget.cpp" />
     <ClCompile Include="Widget\ANavigationBar.cpp" />
-    <ClCompile Include="Widget\APopupMenu.cpp" />
     <ClCompile Include="Widget\APromptWidget.cpp" />
-    <ClCompile Include="Widget\AScrollWidgetBar.cpp" />
-    <ClCompile Include="Widget\AToggleSwitch.cpp" />
     <ClCompile Include="Widget\AToolBar.cpp" />
     <ClCompile Include="Widget\AToolTip.cpp" />
     <ClCompile Include="Widget\AVerticalLabel.cpp" />
@@ -186,44 +180,10 @@
     <ClCompile Include="Widget\AWheelColorPickerWidget.cpp" />
     <ClCompile Include="Widget\AWidgetFactory.cpp" />
     <ClCompile Include="Widget\AWindow.cpp" />
-    <ClCompile Include="Widget\AWindowTitleBar.cpp" />
-    <ClCompile Include="Widget\AWindowTitleBarGlow_win.cpp" />
-    <ClCompile Include="Widget\AWindowTitleBar_win.cpp" />
-    <ClCompile Include="Widget\Ribbon\AOfficePopupMenu.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonBackstageView.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonBar.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonButton.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonButtonControls.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonControls.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonCustomizeDialog.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonCustomizeManager.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonCustomizePage.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonDef.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonGallery.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonGalleryControls.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonGroup.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonInputControls.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonKeyTip.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonMainWindow.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonPage.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonPopup.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonQuickAccessBar.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonSearchBar.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonSliderPane.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonSystemMenu.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonTabBar.cpp" />
-    <ClCompile Include="Widget\Ribbon\ARibbonTitleBarWidget.cpp" />
-    <ClCompile Include="Widget\Style\ACommonStyle.cpp" />
-    <ClCompile Include="Widget\Style\ACommonStyle_p.cpp" />
-    <ClCompile Include="Widget\Style\ASegoeMDL2Assets.cpp" />
     <ClCompile Include="Widget\Style\AStyleDefines.cpp" />
     <ClCompile Include="Widget\Style\AStyleHelper.cpp" />
-    <ClCompile Include="Widget\Style\AStyleOption.cpp" />
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp" />
     <ClCompile Include="Widget\Style\AWindowsColor.cpp" />
-    <ClCompile Include="WinUI\Private\AWinUIStyle.cpp" />
-    <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle.cpp" />
-    <ClCompile Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle.cpp" />
     <ClCompile Include="WinUI\Style\AWinUIStyleObjects.cpp" />
     <QtMoc Include="WinUI\AWinUIStyleEngine.h" />
     <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp" />
@@ -246,70 +206,11 @@
     <QtMoc Include="Data\ADataManager.h" />
     <QtMoc Include="Data\ADataWidgetBindMethod.h" />
     <QtMoc Include="Data\ADWBindMethods.h" />
-    <ClInclude Include="Platform\APlatform.h" />
-    <ClInclude Include="Platform\APlatform_win.h" />
-    <QtMoc Include="Widget\ABackstageWidget.h" />
-    <QtMoc Include="Widget\AMaterialWidget.h" />
-    <QtMoc Include="Widget\APopupMenu.h" />
-    <QtMoc Include="Widget\APopupMenu_p.h" />
-    <QtMoc Include="Widget\AScrollWidgetBar.h" />
-    <QtMoc Include="Widget\AToggleSwitch.h" />
     <QtMoc Include="Widget\AToolTip.h" />
-    <QtMoc Include="Widget\AAbstractTabBar.h" />
     <ClInclude Include="Widget\AWidgetFactory.h" />
-    <QtMoc Include="Widget\Style\ACommonStyle.h" />
-    <QtMoc Include="Widget\Style\ACommonStyle_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonBar.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonBar_p.h" />
-    <QtMoc Include="Widget\AWindowTitleBar.h" />
-    <QtMoc Include="Widget\AWindowTitleBar_p.h" />
-    <ClInclude Include="Widget\AWindowTitleBarGlow_win.h" />
-    <ClInclude Include="Widget\AWindowTitleBar_win.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonMainWindow.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonSystemMenu.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonSystemMenu_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeManager.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeManager_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonControls.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonControls_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonButton.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonButtonControls.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonBackstageView.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonBackstageView_p.h" />
-    <QtMoc Include="Widget\Ribbon\AOfficePopupMenu.h" />
-    <ClInclude Include="Widget\Ribbon\ARibbonButton_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeDialog.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizeDialog_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonCustomizePage.h" />
-    <ClInclude Include="Widget\Ribbon\ARibbonDef.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonQuickAccessBar.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonQuickAccessBar_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonTitleBarWidget.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonGroup.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonGroup_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonPage.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonPage_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonPopup.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonGallery.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonGallery_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonGalleryControls.h" />
-    <ClInclude Include="Widget\Ribbon\ARibbonInputControls.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonKeyTip.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonTabBar.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonSliderPane.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonSliderPane_p.h" />
-    <QtMoc Include="Widget\Ribbon\ARibbonSearchBar.h" />
-    <ClInclude Include="Widget\Ribbon\ARibbonSearchBar_p.h" />
-    <ClInclude Include="Widget\Style\ASegoeMDL2Assets.h" />
     <ClInclude Include="Widget\Style\AStyleHelper.h" />
-    <ClInclude Include="Widget\Style\AStyleOption.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
-    <QtMoc Include="WinUI\Private\AWinUIStyle.h" />
-    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p.h" />
-    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsvistastyle_p_p.h" />
-    <QtMoc Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p.h" />
     <ClInclude Include="Widget\Style\AWindowsColor.h" />
-    <ClInclude Include="WinUI\Private\qwindowsstyle\qwindowsxpstyle_p_p.h" />
     <ClInclude Include="WinUI\Style\AWinUIStyleObjects.h" />
     <QtMoc Include="AAction.h" />
     <QtMoc Include="AActionManager.h" />
@@ -395,18 +296,10 @@
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc" />
-    <QtRcc Include="Widget\RC_BaseResources.qrc" />
-    <QtRcc Include="Widget\Ribbon\RC_RibbonResources.qrc" />
-    <QtRcc Include="Widget\Ribbon\RC_RibbonTranslations.qrc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\header.inc" />
     <None Include="WinUI\include.inc" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="Widget\Ribbon\UI_RibbonBarCustomizePage.ui" />
-    <QtUic Include="Widget\Ribbon\UI_RibbonQuickAccessBarCustomizePage.ui" />
-    <QtUic Include="Widget\Ribbon\UI_RibbonRenameDialog.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

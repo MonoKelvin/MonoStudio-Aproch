@@ -47,21 +47,19 @@
 #define A_FALLTHROUGH()
 #endif
 
-#if defined(APROCH_NAMESPACE)
+#if defined(APROCH_USE_NAMESPACE)
 #define APROCH_NAMESPACE aproch
 #endif
 
 #if !defined(APROCH_NAMESPACE)
 #define APROCH_NAMESPACE_BEGIN
 #define APROCH_NAMESPACE_END
-#define APROCH_USE_NAMESPACE
 #define APROCH_CLASSNAME(classname) classname
 #define APROCH_PRE_NAMESPACE(classname) classname
 #define APROCH_META_CLASSNAME(classname) classname
 #else
 #define APROCH_NAMESPACE_BEGIN namespace APROCH_NAMESPACE {
 #define APROCH_NAMESPACE_END }
-#define APROCH_USE_NAMESPACE using namespace APROCH_NAMESPACE;
 #define APROCH_CLASSNAME(classname) APROCH_NAMESPACE::classname
 #define APROCH_PRE_NAMESPACE(classname) APROCH_NAMESPACE::classname
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
@@ -70,13 +68,6 @@
 #define APROCH_META_CLASSNAME(classname) classname
 #endif
 #endif
-
-
-/** 定义接口类型宏 */
-#ifdef interface
-#undef interface
-#endif
-#define interface struct
 
 /** 定义实现接口宏 */
 #ifdef implement
@@ -454,5 +445,3 @@ enum class EDataBindType
 extern APROCH_API QVariant GetDefaultValueByType(const QString& typeName);
 
 APROCH_NAMESPACE_END
-
-APROCH_USE_NAMESPACE

@@ -42,7 +42,7 @@
 APROCH_NAMESPACE_BEGIN
 
 AWindow::AWindow(QWidget *parent, Qt::WindowType type)
-    : QWidget(parent, type), mCentralWidget(nullptr), mEventLoop(nullptr), mIsResizable(true), mIsMovable(true), mIsEnableMaximized(true)
+    : QWindow(parent, type), mCentralWidget(nullptr), mEventLoop(nullptr), mIsResizable(true), mIsMovable(true), mIsEnableMaximized(true)
 {
     setMaximumSize(QGuiApplication::primaryScreen()->size());
     // setMouseTracking(true);

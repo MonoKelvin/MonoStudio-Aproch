@@ -41,10 +41,8 @@ public:
     explicit ATextBox(const QString& content, QWidget* parent = nullptr);
     ~ATextBox();
 
-    QSize sizeHint() const override;
-
-protected:
-    void paintEvent(QPaintEvent* event) override;
+    virtual QSize sizeHint() const override;
+    virtual QSize minimumSizeHint() const override;
 
 private:
     Q_DISABLE_COPY_MOVE(ATextBox)

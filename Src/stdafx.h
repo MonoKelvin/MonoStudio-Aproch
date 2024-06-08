@@ -83,3 +83,4 @@
 #include <QParallelAnimationGroup>
 
 #include "AprochAPI.h"
+using namespace APROCH_NAMESPACE;

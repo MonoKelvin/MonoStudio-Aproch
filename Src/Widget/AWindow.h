@@ -28,7 +28,7 @@
  *****************************************************************************/
 #pragma once
 
-#include <QWidget>
+#include <QWindow>
 
 class QEventLoop;
 
@@ -51,7 +51,7 @@ struct SWindowStyle
 /**
  * @brief 自定义窗口组件
  */
-class APROCH_API AWindow : public QWidget
+class APROCH_API AWindow : public QWindow
 {
     Q_OBJECT
 public:

@@ -28,7 +28,6 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AWinUIStyleEngine.h"
-#include "Private/AWinUIStyle.h"
 
 #include <QApplication>
 
@@ -43,7 +42,7 @@ public:
     QMap<QByteArray, QPalette> paletteMap;
     QPalette appPalette;
     QString themeFile;
-    AWinUIStyleEngine::ThemeType themeType = AWinUIStyleEngine::BySystem;
+    AWinUIStyleEngine::ThemeType themeType = AWinUIStyleEngine::System;
 };
 
 AWinUIStyleEngine::AWinUIStyleEngine(QObject* parent)
@@ -59,7 +58,7 @@ void AWinUIStyleEngine::initStyleTheme(const QString& styleFile)
         return;
 
     // Application
-    d->appPalette.setColor(QPalette::Base, QColor(50, 50, 50));
+    d->appPalette.setColor(QPalette::Base, AWinUITheme::SystemBaseHighColor);
     d->appPalette.setColor(QPalette::Background, QColor(32, 32, 32));
     d->appPalette.setColor(QPalette::Text, Qt::white);
     d->appPalette.setColor(QPalette::WindowText, Qt::white);
@@ -70,7 +69,6 @@ void AWinUIStyleEngine::initStyleTheme(const QString& styleFile)
     
     // ATextBox
 
-    QApplication::setStyle(create(QString::fromLatin1("winui")));
     QApplication::setFont(QFont(QString::fromLatin1("Microsoft Yahei"), 10));
 }
 
@@ -131,14 +129,6 @@ QPalette& AWinUIStyleEngine::getPalette(const char* name)
 QPalette& AWinUIStyleEngine::getPalette(QWidget* widget)
 {
     return getPalette(widget->metaObject()->className());
-}
-
-QStyle* AWinUIStyleEngine::create(const QString& key)
-{
-    if (key.compare(QLatin1String("winui"), Qt::CaseInsensitive) == 0)
-        return new AWinUIStyle();
-
-    return nullptr;
 }
 
 AWinUIStyleEngine* AWinUIStyleEngine::instance()

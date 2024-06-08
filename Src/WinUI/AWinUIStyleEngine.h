@@ -44,11 +44,10 @@ public:
     {
         Dark,
         Light,
-        BySystem,
+        System,
         Custom,
     };
 
-    QStyle* create(const QString& key) /*override*/;
     static AWinUIStyleEngine* instance();
 
     /** @brief 初始化WinUI样式主题 */

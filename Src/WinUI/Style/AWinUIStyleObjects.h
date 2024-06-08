@@ -57,7 +57,6 @@ protected:
 extern APROCH_API const SCornerF FrameDefaultBorderRadius;
 
 extern APROCH_API const SCornerF TextBoxDefaultBorderRadius;
-extern APROCH_API const QMargins TextBoxDefaultContentMargins;
 
 
 APROCH_NAMESPACE_END

@@ -84,13 +84,9 @@ struct SPluginInfo
 
 APROCH_NAMESPACE_END
 
-/** @brief 插件声明 */
-#define APROCH_PLUGIN_NAME "Aproch.Plugin.v1.0.0"
-Q_DECLARE_INTERFACE(APROCH_CLASSNAME(IPlugin), APROCH_PLUGIN_NAME)
-
 /** @brief 继承自<IPlugin>的插件类需要声明的宏 */
-#define APROCH_PLUGIN()                                                \
-    Q_PLUGIN_METADATA(IID APROCH_PLUGIN_NAME FILE "AprochPlugin.json") \
+#define APROCH_PLUGIN(_Plugin_IID_) \
+    Q_PLUGIN_METADATA(IID _Plugin_IID_ FILE "AprochPlugin.json") \
     Q_INTERFACES(APROCH_CLASSNAME(IPlugin))
 
 /** @brief 导出插件方法声明，写在.h文件中 */
