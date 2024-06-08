@@ -66,8 +66,8 @@
     <Filter Include="Widget\Widget">
       <UniqueIdentifier>{5e2f0503-cf9f-4eba-b964-ea939fef9fe7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WinUI\Controls\Private">
-      <UniqueIdentifier>{bbb3744c-859c-4893-8cbd-84fc2b8181d7}</UniqueIdentifier>
+    <Filter Include="WinUI\QML">
+      <UniqueIdentifier>{2e5d7cd7-db07-4e5c-953f-17d0e6f66f1c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +215,6 @@
     <ClInclude Include="Widget\Style\AUIStyleObject.h">
       <Filter>Widget\Style</Filter>
     </ClInclude>
-    <ClInclude Include="WinUI\Style\AWinUIStyleObjects.h">
-      <Filter>WinUI\Style</Filter>
-    </ClInclude>
     <ClInclude Include="Common\ITextTranslatable.h">
       <Filter>Common\Interface</Filter>
     </ClInclude>
@@ -254,8 +251,8 @@
     <ClInclude Include="Common\AXmlAccess.h">
       <Filter>Common\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="WinUI\Style\AWinUITheme.h">
-      <Filter>WinUI\Style</Filter>
+    <ClInclude Include="WinUI\AWinUITheme.h">
+      <Filter>WinUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -364,12 +361,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Defines</Filter>
     </ClCompile>
-    <ClCompile Include="WinUI\Controls\ATextBlock.cpp">
-      <Filter>WinUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUI\Controls\ATextBox.cpp">
-      <Filter>WinUI\Controls</Filter>
-    </ClCompile>
     <ClCompile Include="Common\AStringToolkit.cpp">
       <Filter>Common\Toolkit</Filter>
     </ClCompile>
@@ -399,9 +390,6 @@
     </ClCompile>
     <ClCompile Include="Common\AGraphicsToolkit.cpp">
       <Filter>Common\Toolkit</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUI\Style\AWinUIStyleObjects.cpp">
-      <Filter>WinUI\Style</Filter>
     </ClCompile>
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp">
       <Filter>Widget\Style</Filter>
@@ -442,13 +430,10 @@
     <ClCompile Include="Widget\AToolTip.cpp">
       <Filter>Widget\Widget</Filter>
     </ClCompile>
-    <ClCompile Include="WinUI\Style\AWinUITheme.cpp">
-      <Filter>WinUI\Style</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUI\AWinUIStyleEngine.cpp">
+    <ClCompile Include="WinUI\AWinUIPlugin.cpp">
       <Filter>WinUI</Filter>
     </ClCompile>
-    <ClCompile Include="WinUI\AWinUIPlugin.cpp">
+    <ClCompile Include="WinUI\AWinUITheme.cpp">
       <Filter>WinUI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -503,15 +488,6 @@
     </QtMoc>
     <QtMoc Include="AActionManager.h">
       <Filter>Application\Action</Filter>
-    </QtMoc>
-    <QtMoc Include="WinUI\Controls\ATextBlock.h">
-      <Filter>WinUI\Controls</Filter>
-    </QtMoc>
-    <QtMoc Include="WinUI\Controls\ATextBox.h">
-      <Filter>WinUI\Controls</Filter>
-    </QtMoc>
-    <QtMoc Include="WinUI\AWinUIStyleEngine.h">
-      <Filter>WinUI</Filter>
     </QtMoc>
     <QtMoc Include="Common\ADoubleValidator.h">
       <Filter>Common\Validator</Filter>

@@ -33,6 +33,8 @@
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
   </Target>
   <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <ImportGroup Label="Shared" />
   <PropertyGroup Label="UserMacros" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
@@ -155,8 +157,7 @@
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
-    <ClCompile Include="WinUI\Style\AWinUITheme.cpp" />
-    <ClInclude Include="WinUI\Style\AWinUITheme.h" />
+    <ClInclude Include="WinUI\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
@@ -189,19 +190,8 @@
     <ClCompile Include="Widget\Style\AStyleHelper.cpp" />
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp" />
     <ClCompile Include="Widget\Style\AWindowsColor.cpp" />
-    <ClCompile Include="WinUI\Style\AWinUIStyleObjects.cpp" />
-    <QtMoc Include="WinUI\AWinUIStyleEngine.h" />
     <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp" />
-    <ClCompile Include="WinUI\AWinUIStyleEngine.cpp">
-      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
-      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
-      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
-      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
-    </ClCompile>
-    <ClCompile Include="WinUI\Controls\ATextBlock.cpp" />
-    <ClCompile Include="WinUI\Controls\ATextBox.cpp" />
-    <QtMoc Include="WinUI\Controls\ATextBlock.h" />
-    <QtMoc Include="WinUI\Controls\ATextBox.h" />
+    <ClCompile Include="WinUI\AWinUITheme.cpp" />
     <ClInclude Include="Common\AContextContainter.h" />
     <ClInclude Include="Common\ACursorDatabase.h" />
     <ClInclude Include="Common\AGraphicsToolkit.h" />
@@ -221,7 +211,6 @@
     <ClInclude Include="Widget\Style\AStyleHelper.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
     <ClInclude Include="Widget\Style\AWindowsColor.h" />
-    <ClInclude Include="WinUI\Style\AWinUIStyleObjects.h" />
     <QtMoc Include="AAction.h" />
     <QtMoc Include="AActionManager.h" />
     <ClInclude Include="AAppConfigService.h" />

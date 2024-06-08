@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    AWinUIStyleEngine.h
- * @date    2023-04-07 
+ * @file    AWinUITheme.h
+ * @date    2024-06-08 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -26,20 +26,20 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
-#ifndef AWINUISTYLEENGINE_H
-#define AWINUISTYLEENGINE_H
-#include <QtQml/qqmlextensionplugin.h>
+#pragma once
 
 APROCH_NAMESPACE_BEGIN
 
-class AWinUIStyleEnginePrivate;
-class APROCH_API AWinUIStyleEngine : public QObject
+class AWinUIThemePrivate;
+
+/**
+ * @brief winui主题
+ */
+class APROCH_API AWinUITheme
 {
-    Q_OBJECT
-    //Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "AWinUIStyle.json")
+    APROCH_SINGLETON(AWinUITheme);
 public:
-    explicit AWinUIStyleEngine(QObject* parent = nullptr);
-    ~AWinUIStyleEngine();
+    ~AWinUITheme();
 
     enum ThemeType
     {
@@ -49,37 +49,12 @@ public:
         Custom,
     };
 
-    static AWinUIStyleEngine* instance();
-
-    /** @brief 初始化WinUI样式主题 */
-    void initStyleTheme(const QString& styleFile = QString());
-
-    ThemeType getTheme() const;
-    QString getThemeFile() const;
-    void setTheme(ThemeType type);
-    bool setTheme(const QString& themeFile);
-
-    /** @brief 获取软件的调色板 */
-    QPalette& getAppPalette();
-
-    /** @brief 获取指定类型控件的调色板 */
-    QPalette& getPalette(const char* name);
-    QPalette& getPalette(QWidget* widget);
-
-    template<class ClassType>
-    QPalette& getPalette()
-    {
-        return getPalette(ClassType::staticMetaObject.className());
-    }
+private:
+    AWinUITheme();
 
 private:
-    Q_DISABLE_COPY_MOVE(AWinUIStyleEngine);
-    Q_DECLARE_PRIVATE(AWinUIStyleEngine);
-
-private:
-    QScopedPointer<AWinUIStyleEnginePrivate> d_ptr;
+    Q_DISABLE_COPY_MOVE(AWinUITheme);
+    QScopedPointer<AWinUIThemePrivate> d;
 };
 
 APROCH_NAMESPACE_END
-
-#endif // !AWINUISTYLEENGINE_H

@@ -50,10 +50,12 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(QtMsBuild)\Qt.props" />
+    <Import Project="..\..\ThirdParty\ThirdPartyProps.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(QtMsBuild)\Qt.props" />
+    <Import Project="..\..\ThirdParty\ThirdPartyProps.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -76,6 +78,9 @@
       <Command>$(QtInstallDir)\bin\windeployqt.exe $(OutDir)$(TargetName)$(TargetExt)
 xcopy /y $(OutDir)..\..\Bin\Aprochd.dll $(OutDir)</Command>
     </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>QWKCored.lib;QWKQuickd.lib;QWKWidgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -88,6 +93,9 @@ xcopy /y $(OutDir)..\..\Bin\Aprochd.dll $(OutDir)</Command>
       <Command>$(QtInstallDir)\bin\windeployqt.exe $(OutDir)$(TargetName)$(TargetExt)
 xcopy /y $(OutDir)..\..\Bin\Aproch.dll $(OutDir)</Command>
     </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>QWKCore.lib;QWKQuick.lib;QWKWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>

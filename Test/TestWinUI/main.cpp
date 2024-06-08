@@ -3,6 +3,7 @@
 #include <QQmlApplicationEngine>
 #include <QtQuick/QQuickWindow>
 //#include "AprochAPI.h"
+#include "QWindowKit/QWKQuick/qwkquickglobal.h"
 
 int main(int argc, char* argv[])
 {
@@ -29,6 +30,8 @@ int main(int argc, char* argv[])
     QGuiApplication::setApplicationName("Mono Dream");
     QGuiApplication::setApplicationDisplayName(QStringLiteral("梦游记"));
     QGuiApplication::setApplicationVersion("1.0.0.0");
+    QGuiApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+
     //QGuiApplication::setQuitOnLastWindowClosed(false);
     /*SettingsHelper::getInstance()->init(argv);
     Log::setup(argv, uri);*/
@@ -45,6 +48,8 @@ int main(int argc, char* argv[])
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
+
+    QWK::registerTypes(&engine);
 
     const QUrl url(QStringLiteral("qrc:/qml/App.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject* obj, const QUrl& objUrl) {

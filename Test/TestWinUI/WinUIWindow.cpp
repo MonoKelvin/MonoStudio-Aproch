@@ -11,6 +11,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QTextEdit>
+#include <QLineEdit>
 
 using namespace aproch;
 
@@ -19,13 +20,13 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 {
     ui.setupUi(this);
 
-    QLineEdit* le111 = new QLineEdit(this);
+    /*QLineEdit* le111 = new QLineEdit(this);
     le111->setPlaceholderText(AStr("placeholder text"));
     layout()->addWidget(le111);
 
     ATextBox* tb111 = new ATextBox(this);
     tb111->setPlaceholderText(AStr("placeholder text"));
-    layout()->addWidget(tb111);
+    layout()->addWidget(tb111);*/
 
     QPushButton* pb111 = new QPushButton(AStr("按钮QPushButton001"), this);
     layout()->addWidget(pb111);
@@ -34,9 +35,9 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     te001->setPlaceholderText(AStr("placeholder text"));
     layout()->addWidget(te001);*/
 
-    if (1)
+    if (0)
     {
-        new QBoxLayout(QBoxLayout::TopToBottom, this);
+        /*new QBoxLayout(QBoxLayout::TopToBottom, this);
         ATextBlock* newBlock = new ATextBlock(AStr("I am a Text"), this);
         layout()->addWidget(newBlock);
 
@@ -48,7 +49,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         layout()->addWidget(textBox);
 
         ATextBox* textBox2 = new ATextBox(this);
-        layout()->addWidget(textBox2);
+        layout()->addWidget(textBox2);*/
     }
 
     if(1){
