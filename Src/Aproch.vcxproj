@@ -78,13 +78,13 @@
     </Link>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>5.15.2_msvc2019_64</QtInstall>
-    <QtModules>core;xml;sql;opengl;gui;widgets;gui-private;widgets-private</QtModules>
+    <QtInstall>6.6.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>5.15.2_msvc2019_64</QtInstall>
-    <QtModules>core;xml;sql;opengl;gui;widgets;gui-private;widgets-private</QtModules>
+    <QtInstall>6.6.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -149,6 +149,12 @@
     <ClCompile Include="Common\ATimeToolkit.cpp" />
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
+    <ClCompile Include="WinUI\AWinUIPlugin.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="WinUI\Style\AWinUITheme.cpp" />
     <ClInclude Include="WinUI\Style\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
@@ -159,7 +165,6 @@
     </QtMoc>
     <ClCompile Include="Data\ADataWidgetBindMethod.cpp" />
     <ClCompile Include="Data\ADWBindMethods.cpp" />
-    <ClCompile Include="FUI\Element\FUIElement.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -187,7 +192,12 @@
     <ClCompile Include="WinUI\Style\AWinUIStyleObjects.cpp" />
     <QtMoc Include="WinUI\AWinUIStyleEngine.h" />
     <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp" />
-    <ClCompile Include="WinUI\AWinUIStyleEngine.cpp" />
+    <ClCompile Include="WinUI\AWinUIStyleEngine.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="WinUI\Controls\ATextBlock.cpp" />
     <ClCompile Include="WinUI\Controls\ATextBox.cpp" />
     <QtMoc Include="WinUI\Controls\ATextBlock.h" />
@@ -244,7 +254,6 @@
     <ClInclude Include="Common\IPlugin.h" />
     <ClInclude Include="Common\IService.h" />
     <ClInclude Include="Common\IStringSerializable.h" />
-    <ClInclude Include="FUIElement.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Widget\ABorderlessWidget.h" />
     <ClInclude Include="Widget\AFlowLayout.h" />

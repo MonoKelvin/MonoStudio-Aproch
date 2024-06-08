@@ -96,7 +96,7 @@ QSize APromptWidget::adjustText(int maxWidth, const QFont &font, QString &text)
     QString strText = text;
 
     QFontMetrics fm(font);
-    int width = fm.width(strText);
+    int width = fm.horizontalAdvance(strText);
     int height = fm.height();
 
     int leadingHeight = fm.leading();
@@ -117,7 +117,7 @@ QSize APromptWidget::adjustText(int maxWidth, const QFont &font, QString &text)
                 newLine++;
             }
 
-            newLineWidthCount = newLineWidthCount + fm.width(curChar);
+            newLineWidthCount = newLineWidthCount + fm.horizontalAdvance(curChar);
             if (newLineWidthCount > maxWidth)
             {
                 newLineWidthCount = 0;
@@ -137,7 +137,7 @@ void APromptWidget::buildUI(const QString &prompt)
     mContentLabel = new QLabel(prompt, this);
     QHBoxLayout *hbLayout = new QHBoxLayout(this);
     hbLayout->setSpacing(0);
-    hbLayout->setMargin(0);
+    hbLayout->setContentsMargins(0, 0, 0, 0);
 
     mContentLabel->setAlignment(Qt::AlignVCenter);
     mContentLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

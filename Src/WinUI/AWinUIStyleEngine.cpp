@@ -28,16 +28,12 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AWinUIStyleEngine.h"
-
 #include <QApplication>
-
-#include <private/qobject_p.h>
 
 APROCH_NAMESPACE_BEGIN
 
-class AWinUIStyleEnginePrivate : public QObjectPrivate
+class AWinUIStyleEnginePrivate
 {
-    Q_DECLARE_PUBLIC(AWinUIStyleEngine);
 public:
     QMap<QByteArray, QPalette> paletteMap;
     QPalette appPalette;
@@ -46,9 +42,13 @@ public:
 };
 
 AWinUIStyleEngine::AWinUIStyleEngine(QObject* parent)
-    : QObject(*(new AWinUIStyleEnginePrivate), parent)
+    : QObject(parent)
+    , d_ptr(new AWinUIStyleEnginePrivate)
 {
-    //d_ptr.reset(new AWinUIStyleEnginePrivate);
+}
+
+AWinUIStyleEngine::~AWinUIStyleEngine()
+{
 }
 
 void AWinUIStyleEngine::initStyleTheme(const QString& styleFile)
@@ -59,7 +59,6 @@ void AWinUIStyleEngine::initStyleTheme(const QString& styleFile)
 
     // Application
     d->appPalette.setColor(QPalette::Base, AWinUITheme::SystemBaseHighColor);
-    d->appPalette.setColor(QPalette::Background, QColor(32, 32, 32));
     d->appPalette.setColor(QPalette::Text, Qt::white);
     d->appPalette.setColor(QPalette::WindowText, Qt::white);
     d->appPalette.setColor(QPalette::ButtonText, Qt::white);

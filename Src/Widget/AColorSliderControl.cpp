@@ -202,7 +202,7 @@ void AColorSliderControl::init(const QColor &baseColor, EColorChannel channel, f
     mInput = new QLineEdit(this);
 
     // Layout
-    mLayout->setMargin(0);
+    mLayout->setContentsMargins(0, 0, 0, 0);
     mLayout->setSpacing(10);
     mLayout->addWidget(mLabel);
     mLayout->addWidget(mSlider);
@@ -244,8 +244,8 @@ void AColorSliderControl::updateWidgetsData()
     mValue = _fvalue(mSlider->value());
     if (mChannel <= Alpha && mFormat == Hex)
     {
-        QRegExpValidator *validator = new QRegExpValidator(mInput);
-        validator->setRegExp(QRegExp(AStr("[\\dA-F]+"), Qt::CaseInsensitive));
+        QRegularExpressionValidator*validator = new QRegularExpressionValidator(mInput);
+        validator->setRegularExpression(QRegularExpression(AStr("[\\dA-F]+"), QRegularExpression::CaseInsensitiveOption));
         mInput->setValidator(validator);
         mInput->setMaxLength(2);
         mInput->setText(_hstring(mValue));
@@ -283,7 +283,7 @@ void AColorSliderControl::setOrientation(Qt::Orientation ori, const char *orderF
     widgetsList.push_back(QPair<int, QWidget *>(sIndex, mSlider));
     widgetsList.push_back(QPair<int, QWidget *>(eIndex, mInput));
 
-    qSort(widgetsList);
+    std::sort(widgetsList.begin(), widgetsList.end());
 
     mLayout->removeWidget(mLabel);
     mLayout->removeWidget(mSlider);

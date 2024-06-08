@@ -13,6 +13,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>qml;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="qml">
+      <UniqueIdentifier>{e60a8c66-49d4-421c-b489-8154e886e780}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="WinUIWindow.qrc">
@@ -34,5 +37,10 @@
     <QtMoc Include="WinUIWindow.h">
       <Filter>src</Filter>
     </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="qml\App.qml">
+      <Filter>qml</Filter>
+    </None>
   </ItemGroup>
 </Project>

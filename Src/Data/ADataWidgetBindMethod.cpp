@@ -29,8 +29,6 @@
 #include "stdafx.h"
 #include "ADataWidgetBindMethod.h"
 
-#include <private/qobject_p.h>
-
 APROCH_NAMESPACE_BEGIN
 
 class ADWBMethodMap
@@ -59,11 +57,9 @@ public:
 
 Q_GLOBAL_STATIC(ADWBMethodMap, globalBindMethodMap);
 
-class ADataWidgetBindMethodPrivate : public QObjectPrivate
+class ADataWidgetBindMethodPrivate
 {
 public:
-    Q_DECLARE_PUBLIC(ADataWidgetBindMethod);
-
     bool hasBind(AData* data, QWidget* widget, const QString& propName = QString(), bool isContainsEmpty = true) const
     {
         if (propName.isEmpty() && !isContainsEmpty)
@@ -128,7 +124,8 @@ public:
 // ----------------------------------------------------------------------------------------------------
 
 ADataWidgetBindMethod::ADataWidgetBindMethod(QObject* parent)
-    : QObject(*(new ADataWidgetBindMethodPrivate()), parent)
+    : QObject(parent)
+    , d_ptr(new ADataWidgetBindMethodPrivate())
 {
 }
 

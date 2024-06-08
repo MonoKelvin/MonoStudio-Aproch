@@ -28,7 +28,7 @@
  *****************************************************************************/
 #ifndef AWINUISTYLEENGINE_H
 #define AWINUISTYLEENGINE_H
-#include <QtWidgets/QStylePlugin>
+#include <QtQml/qqmlextensionplugin.h>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -39,6 +39,7 @@ class APROCH_API AWinUIStyleEngine : public QObject
     //Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "AWinUIStyle.json")
 public:
     explicit AWinUIStyleEngine(QObject* parent = nullptr);
+    ~AWinUIStyleEngine();
 
     enum ThemeType
     {
@@ -74,6 +75,9 @@ public:
 private:
     Q_DISABLE_COPY_MOVE(AWinUIStyleEngine);
     Q_DECLARE_PRIVATE(AWinUIStyleEngine);
+
+private:
+    QScopedPointer<AWinUIStyleEnginePrivate> d_ptr;
 };
 
 APROCH_NAMESPACE_END

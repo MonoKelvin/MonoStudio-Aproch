@@ -28,7 +28,7 @@
  *****************************************************************************/
 #pragma once
 
-#include <QWindow>
+#include <QWidget>
 
 class QEventLoop;
 
@@ -51,7 +51,7 @@ struct SWindowStyle
 /**
  * @brief 自定义窗口组件
  */
-class APROCH_API AWindow : public QWindow
+class APROCH_API AWindow : public QWidget
 {
     Q_OBJECT
 public:
@@ -179,7 +179,7 @@ public Q_SLOTS:
     void setCaptionIcon(const QIcon &icon);
 
 protected:
-    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+    virtual bool nativeEvent(const QByteArray& eventType, void* message, qintptr* result) override;
     virtual void paintEvent(QPaintEvent *ev) override;
     virtual void closeEvent(QCloseEvent *ev) override;
 

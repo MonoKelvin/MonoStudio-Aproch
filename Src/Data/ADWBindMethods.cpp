@@ -247,11 +247,11 @@ void ALineEditBindMethod::onDataChanged(const AData* data, QWidget* widget, cons
     QLineEdit* editor = qobject_cast<QLineEdit*>(widget);
     if (editor)
     {
-        const QRegExp regExp = mgr->regExp(data);
+        const QRegularExpression regExp = mgr->regExp(data);
         const QValidator* oldValidator = editor->validator();
         QValidator* newValidator = nullptr;
         if (regExp.isValid())
-            newValidator = new QRegExpValidator(regExp, editor);
+            newValidator = new QRegularExpressionValidator(regExp, editor);
         editor->setValidator(newValidator);
         if (oldValidator)
             delete oldValidator;

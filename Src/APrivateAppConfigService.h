@@ -33,7 +33,7 @@
 APROCH_NAMESPACE_BEGIN
 
 /**
- * @brief Ó¦ÓÃ³ÌĞòË½ÓĞÅäÖÃ·şÎñ
+ * @brief åº”ç”¨ç¨‹åºç§æœ‰é…ç½®æœåŠ¡
  */
 class APROCH_API APrivateAppConfigService : public IAppConfigService
 {
@@ -41,37 +41,37 @@ public:
     APrivateAppConfigService();
 
     /**
-     * @brief ÉèÖÃÎÄ¼şÅäÖÃÂ·¾¶
-     * @param filename Â·¾¶
+     * @brief è®¾ç½®æ–‡ä»¶é…ç½®è·¯å¾„
+     * @param filename è·¯å¾„
      */
     virtual void setFileName(const QString &filename) override;
 
     /**
-     * @brief ÉèÖÃ¼üÖµ
-     * @param key ¼ü
+     * @brief è®¾ç½®é”®å€¼
+     * @param key é”®
      * @see setDefault
-     * @param value Öµ
+     * @param value å€¼
      */
     virtual void setValue(const QString &key, const QVariant &value) override;
 
     /**
-     * @brief ÉèÖÃÄ¬ÈÏÖµ
-     * @param key ¼ü
-     * @param value Ä¬ÈÏÖµ
+     * @brief è®¾ç½®é»˜è®¤å€¼
+     * @param key é”®
+     * @param value é»˜è®¤å€¼
      */
     virtual void setDefault(const QString &, const QVariant &) override {}
 
     /**
-     * @brief »ñÈ¡¼ü¶ÔÓ¦µÄÖµ
-     * @param key ¼ü
-     * @return Öµ¡£Èç¹ûÃ»ÓĞ½«·µ»ØÎŞĞ§µÄ¿ÕÖµ
+     * @brief è·å–é”®å¯¹åº”çš„å€¼
+     * @param key é”®
+     * @return å€¼ã€‚å¦‚æœæ²¡æœ‰å°†è¿”å›æ— æ•ˆçš„ç©ºå€¼
      */
     virtual QVariant getValue(const QString &key) const override;
 
     /**
-     * @brief »ñÈ¡¼ü¶ÔÓ¦µÄÄ¬ÈÏÖµ
-     * @param key ¼ü
-     * @return Ä¬ÈÏÖµ¡£Èç¹ûÃ»ÓĞ½«·µ»ØÎŞĞ§µÄ¿ÕÖµ
+     * @brief è·å–é”®å¯¹åº”çš„é»˜è®¤å€¼
+     * @param key é”®
+     * @return é»˜è®¤å€¼ã€‚å¦‚æœæ²¡æœ‰å°†è¿”å›æ— æ•ˆçš„ç©ºå€¼
      */
     virtual QVariant getDefault(const QString &key) const override;
 
@@ -80,7 +80,7 @@ public:
     virtual bool has(const QString &key) const override;
 
 private:
-    /** @brief ÅäÖÃ±í */
+    /** @brief é…ç½®è¡¨ */
     QVariantMap mConfigMap;
 };
 

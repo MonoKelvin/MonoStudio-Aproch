@@ -41,7 +41,7 @@ APROCH_NAMESPACE_BEGIN
  * @brief 无边框窗口控件
  */
 template <class BaseType>
-class ABorderlessWidgetT : public BaseType
+class ABorderlessWidgetT : public QWidget
 {
 public:
     explicit ABorderlessWidgetT(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags())

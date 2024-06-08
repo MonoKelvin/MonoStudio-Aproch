@@ -35,7 +35,7 @@
 
 APROCH_NAMESPACE_BEGIN
 /**
- * @brief ²å¼ş½Ó¿Ú
+ * @brief æ’ä»¶æ¥å£
  */
 class IPlugin
 {
@@ -43,18 +43,18 @@ public:
     virtual ~IPlugin() = default;
 
     /**
-     * @brief ²å¼ş¼ÓÔØ³É¹¦²¢Æô¶¯Ê±
-     * @return ÊÇ·ñ¿ÉÒÔ¼ÓÔØ²å¼ş
+     * @brief æ’ä»¶åŠ è½½æˆåŠŸå¹¶å¯åŠ¨æ—¶
+     * @return æ˜¯å¦å¯ä»¥åŠ è½½æ’ä»¶
      */
     virtual bool start() = 0;
 
     /**
-     * @brief µ±²å¼ş´ÓÏµÍ³Ğ¶ÔØÊ±
+     * @brief å½“æ’ä»¶ä»ç³»ç»Ÿå¸è½½æ—¶
      */
     virtual void end() = 0;
 
     /**
-     * @brief ËùÓĞÄ¬ÈÏÏµÍ³²å¼ş¼ÓÔØÍê±Ï£¬²¢ÇÒ¿ÉÒÔÔËĞĞÊ±µ÷ÓÃ
+     * @brief æ‰€æœ‰é»˜è®¤ç³»ç»Ÿæ’ä»¶åŠ è½½å®Œæ¯•ï¼Œå¹¶ä¸”å¯ä»¥è¿è¡Œæ—¶è°ƒç”¨
      */
     virtual void run()
     {
@@ -62,39 +62,39 @@ public:
 };
 
 /**
- * @brief ²å¼şĞÅÏ¢
+ * @brief æ’ä»¶ä¿¡æ¯
  */
 struct SPluginInfo
 {
-    /** @brief ×÷Õß */
+    /** @brief ä½œè€… */
     QString author;
 
-    /** @brief ×éÖ¯ */
+    /** @brief ç»„ç»‡ */
     QString organization;
 
-    /** @brief °æ±¾ */
+    /** @brief ç‰ˆæœ¬ */
     QString version;
 
-    /** @brief ÃèÊö */
+    /** @brief æè¿° */
     QString description;
 
-    /** @brief ÆäËûÅäÖÃÊı¾İ */
+    /** @brief å…¶ä»–é…ç½®æ•°æ® */
     QVariantMap config;
 };
 
 APROCH_NAMESPACE_END
 
-/** @brief ¼Ì³Ğ×Ô<IPlugin>µÄ²å¼şÀàĞèÒªÉùÃ÷µÄºê */
+/** @brief ç»§æ‰¿è‡ª<IPlugin>çš„æ’ä»¶ç±»éœ€è¦å£°æ˜çš„å® */
 #define APROCH_PLUGIN(_Plugin_IID_) \
     Q_PLUGIN_METADATA(IID _Plugin_IID_ FILE "AprochPlugin.json") \
     Q_INTERFACES(APROCH_CLASSNAME(IPlugin))
 
-/** @brief µ¼³ö²å¼ş·½·¨ÉùÃ÷£¬Ğ´ÔÚ.hÎÄ¼şÖĞ */
+/** @brief å¯¼å‡ºæ’ä»¶æ–¹æ³•å£°æ˜ï¼Œå†™åœ¨.hæ–‡ä»¶ä¸­ */
 #define APROCH_EXPORT_PLUGIN_DECLARE(_ExportAPIName_)                                       \
     extern "C" _ExportAPIName_ APROCH_CLASSNAME(IPlugin) *AprochCreatePluginInstance(void); \
     extern "C" _ExportAPIName_ QVariantMap AprochGetPluginConfigInfo(void);
 
-/** @brief µ¼³ö²å¼ş·½·¨¶¨Òå£¬Ğ´ÔÚ.cppÎÄ¼şÖĞ */
+/** @brief å¯¼å‡ºæ’ä»¶æ–¹æ³•å®šä¹‰ï¼Œå†™åœ¨.cppæ–‡ä»¶ä¸­ */
 #define APROCH_EXPORT_PLUGIN_DEFINE(_PluginName_)                          \
     APROCH_CLASSNAME(IPlugin) *AprochCreatePluginInstance(void)            \
     {                                                                      \

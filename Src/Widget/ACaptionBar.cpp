@@ -147,7 +147,7 @@ void ACaptionBar::init(const FWindowCaptionWidgets &widgets)
 
     // 空闲布局
     mDefaultWidgets.AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-    mDefaultWidgets.AppendixLayout->setMargin(0);
+    mDefaultWidgets.AppendixLayout->setContentsMargins(0, 0, 0, 0);
     // mDefaultWidgets.AppendixLayout->setSpacing(AppUIStyle.HorizontalSpacing);
     mainHLayout->addLayout(mDefaultWidgets.AppendixLayout);
 
@@ -159,7 +159,7 @@ void ACaptionBar::init(const FWindowCaptionWidgets &widgets)
 
     // 控制按钮的布局
     mDefaultWidgets.CtrlBtnLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-    mDefaultWidgets.CtrlBtnLayout->setMargin(0);
+    mDefaultWidgets.CtrlBtnLayout->setContentsMargins(0, 0, 0, 0);
     mDefaultWidgets.CtrlBtnLayout->setSpacing(0);
     mDefaultWidgets.CtrlBtnLayout->addWidget(mDefaultWidgets.BtnHelp);
     mDefaultWidgets.CtrlBtnLayout->addWidget(mDefaultWidgets.BtnMinimize);
@@ -167,7 +167,7 @@ void ACaptionBar::init(const FWindowCaptionWidgets &widgets)
     mDefaultWidgets.CtrlBtnLayout->addWidget(mDefaultWidgets.BtnClose);
 
     mainHLayout->addLayout(mDefaultWidgets.CtrlBtnLayout);
-    mainHLayout->setMargin(0);
+    mainHLayout->setContentsMargins(0, 0, 0, 0);
 
     // 设置显示隐藏
     setWidgetsVisibility(~widgets, WVS_Hide);

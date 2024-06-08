@@ -215,7 +215,7 @@ int ANavigationBar::getSpacing() const
 
 void ANavigationBar::setMargins(int margins)
 {
-    mLayout->setMargin(margins);
+    mLayout->setContentsMargins(margins, margins, margins, margins);
 }
 
 void ANavigationBar::setMargins(int left, int top, int right, int bottom)
@@ -445,7 +445,7 @@ void ANavigationBar::_init(Qt::Orientation ori)
     }
 
     mLayout->setSpacing(0);
-    mLayout->setMargin(0);
+    mLayout->setContentsMargins(0, 0, 0, 0);
     mLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     mContent->installEventFilter(this);

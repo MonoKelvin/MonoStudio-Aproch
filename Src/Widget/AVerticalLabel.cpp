@@ -48,7 +48,7 @@ void AVerticalLabel::init(const QString &text, const EOption option)
     setAttribute(Qt::WA_StyledBackground, true);
 
     mHLayout = new QBoxLayout(QBoxLayout::RightToLeft, this);
-    mHLayout->setMargin(0);
+    mHLayout->setContentsMargins(0, 0, 0, 0);
     mHLayout->setSpacing(0);
     mSpacerLeft = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
     mSpacerRight = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -190,7 +190,7 @@ QList<QLabel *> AVerticalLabel::createLabel(const QString &label, Qt::Alignment 
         newLabel = AStringToolkit::TrimLeft(label);
     if (option & TrimmedLast)
         newLabel = AStringToolkit::TrimRight(newLabel);
-    const auto &strList = label.split(AKey_NewLine, option & MergeLineBreaks ? QString::SkipEmptyParts : QString::KeepEmptyParts);
+    const auto &strList = label.split(AKey_NewLine, option & MergeLineBreaks ? Qt::SkipEmptyParts : Qt::KeepEmptyParts);
 
     QList<QLabel *> labels;
     for (const auto &str : strList)

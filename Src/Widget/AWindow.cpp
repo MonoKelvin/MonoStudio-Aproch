@@ -42,7 +42,7 @@
 APROCH_NAMESPACE_BEGIN
 
 AWindow::AWindow(QWidget *parent, Qt::WindowType type)
-    : QWindow(parent, type), mCentralWidget(nullptr), mEventLoop(nullptr), mIsResizable(true), mIsMovable(true), mIsEnableMaximized(true)
+    : QWidget(parent, type), mCentralWidget(nullptr), mEventLoop(nullptr), mIsResizable(true), mIsMovable(true), mIsEnableMaximized(true)
 {
     setMaximumSize(QGuiApplication::primaryScreen()->size());
     // setMouseTracking(true);
@@ -55,7 +55,7 @@ AWindow::AWindow(QWidget *parent, Qt::WindowType type)
     // 主布局
     mMainLayout = new QBoxLayout(QBoxLayout::TopToBottom, this);
     mMainLayout->setSpacing(0);
-    mMainLayout->setMargin(0);
+    mMainLayout->setContentsMargins(0, 0, 0, 0);
 
     // 标题栏
     mCaptionBar = new ACaptionBar(this);
@@ -229,7 +229,7 @@ void AWindow::setCaptionIcon(const QIcon &icon)
     mCaptionBar->getTitle()->setPixmap(icon.pixmap(0));
 }
 
-bool AWindow::nativeEvent(const QByteArray &eventType, void *message, long *result)
+bool AWindow::nativeEvent(const QByteArray& eventType, void* message, qintptr* result)
 {
     if (nullptr == message || nullptr == result)
         return false;

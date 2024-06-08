@@ -256,6 +256,9 @@ private:
     friend class ADataWidgetBinding;
     Q_DISABLE_COPY_MOVE(ADataWidgetBindMethod);
     Q_DECLARE_PRIVATE(ADataWidgetBindMethod);
+
+private:
+    QScopedPointer<ADataWidgetBindMethodPrivate> d_ptr;
 };
 
 APROCH_NAMESPACE_END

@@ -95,7 +95,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(FCopyOptions)
  */
 class APrototype
 {
-    Q_DISABLE_MOVE(APrototype)
+    // 禁止移动拷贝
+    APrototype(APrototype&&) = delete;
+    APrototype& operator=(APrototype&&) = delete;
 public:
     APrototype()
         : m_id(AID::Identity())

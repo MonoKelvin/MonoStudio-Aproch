@@ -35,45 +35,45 @@
 APROCH_NAMESPACE_BEGIN
 
 /**
- * @brief WindowsÑùÊ½¹ÜÀíÆ÷¡£Ö»ÓĞWindowsÏµÍ³²Å¿ÉÒÔÊ¹ÓÃ¸÷ÖÖÑùÊ½ÉèÖÃ
+ * @brief Windowsæ ·å¼ç®¡ç†å™¨ã€‚åªæœ‰Windowsç³»ç»Ÿæ‰å¯ä»¥ä½¿ç”¨å„ç§æ ·å¼è®¾ç½®
  *
  */
 class APROCH_API AWindowsStyleManager
 {
 public:
     /**
-     * @brief Ö÷ÌâÀàĞÍ
+     * @brief ä¸»é¢˜ç±»å‹
      */
     enum EThemeType
     {
-        Dark,   // ÉîÉ«
-        Light,  // Ç³É«
-        System, // ¸úËæÏµÍ³
-        Custom, // ×Ô¶¨Òå
+        Dark,   // æ·±è‰²
+        Light,  // æµ…è‰²
+        System, // è·Ÿéšç³»ç»Ÿ
+        Custom, // è‡ªå®šä¹‰
     };
 
     /**
-     * @brief WindowsÖ÷ÌâÑÕÉ«ÅäÖÃ
+     * @brief Windowsä¸»é¢˜é¢œè‰²é…ç½®
      */
     struct SWindowsThemeConfig
     {
-        bool appsUseLightTheme;    // Ó¦ÓÃÖ÷ÌâÊÇ·ñÊÇÁÁÉ«Ö÷Ìâ£¬·ñÔòÎªÉîÉ«
-        bool enableTransparency;   // ÊÇ·ñ¿ªÆôÍ¸Ã÷¶È
-        bool systemUsesLightTheme; // ÏµÍ³Ö÷ÌâÊÇ·ñÊÇÁÁÉ«Ö÷Ìâ£¬·ñÔòÎªÉîÉ«
+        bool appsUseLightTheme;    // åº”ç”¨ä¸»é¢˜æ˜¯å¦æ˜¯äº®è‰²ä¸»é¢˜ï¼Œå¦åˆ™ä¸ºæ·±è‰²
+        bool enableTransparency;   // æ˜¯å¦å¼€å¯é€æ˜åº¦
+        bool systemUsesLightTheme; // ç³»ç»Ÿä¸»é¢˜æ˜¯å¦æ˜¯äº®è‰²ä¸»é¢˜ï¼Œå¦åˆ™ä¸ºæ·±è‰²
     };
 
-    /** @brief Windows´°¿ÚÑùÊ½ÅäÖÃ */
+    /** @brief Windowsçª—å£æ ·å¼é…ç½® */
     struct SStyleOption
     {
-        /** @brief Ö÷ÌâÀàĞÍ */
+        /** @brief ä¸»é¢˜ç±»å‹ */
         EThemeType themeType;
 
-        /** @brief ×Ô¶¨ÒåÑÕÉ«ÀàĞÍ£¨Ö§³ÖÍ¸Ã÷¶È£©£¬Ö»ÓĞ<ThemeType>Îª<EThemeType::Custom>Ê±²ÅÆğ×÷ÓÃ,
-         * Èç¹ûÏµÍ³¹Ø±ÕÁËÍ¸Ã÷¶È£¬Ôò×Ô¶¨ÒåµÄÑÕÉ«ÉèÖÃÍ¸Ã÷¶È»áÊ§Ğ§
+        /** @brief è‡ªå®šä¹‰é¢œè‰²ç±»å‹ï¼ˆæ”¯æŒé€æ˜åº¦ï¼‰ï¼Œåªæœ‰<ThemeType>ä¸º<EThemeType::Custom>æ—¶æ‰èµ·ä½œç”¨,
+         * å¦‚æœç³»ç»Ÿå…³é—­äº†é€æ˜åº¦ï¼Œåˆ™è‡ªå®šä¹‰çš„é¢œè‰²è®¾ç½®é€æ˜åº¦ä¼šå¤±æ•ˆ
          */
         QColor color;
 
-        /** @brief ÉèÖÃÑùÊ½µÄÊ±ºòÊÇ·ñÓ°Ïì´°¿ÚÒõÓ° */
+        /** @brief è®¾ç½®æ ·å¼çš„æ—¶å€™æ˜¯å¦å½±å“çª—å£é˜´å½± */
         bool isEffectShadow;
 
         SStyleOption() noexcept
@@ -83,11 +83,11 @@ public:
     };
 
     /**
-     * @brief Îª¿Ø¼şÉèÖÃÑÇ¿ËÁ¦Ğ§¹û
-     * @note Ê¹ÓÃÊ±¾¡Á¿¶ÔÒ»Ğ©¾²Ì¬µÄ¡¢ÄÚ²¿Ã»ÓĞÎÄ×ÖµÈµÄ×Ó¿Ø¼şµÄ¿Ø¼şÊ¹ÓÃ£¬ÒòÎª½çÃæË¢ĞÂºó±ØĞëµ÷Õû³ß´ç²ÅÄÜ¸üĞÂ±³¾°É«£¬
-     *       ¶øÇÒ»á³öÏÖË¢ĞÂÇ°ºóÖØµşµÄÓ°Ïñ¡£
-     * @param widget ¿Ø¼ş
-     * @param option Ñ¡Ïî
+     * @brief ä¸ºæ§ä»¶è®¾ç½®äºšå…‹åŠ›æ•ˆæœ
+     * @note ä½¿ç”¨æ—¶å°½é‡å¯¹ä¸€äº›é™æ€çš„ã€å†…éƒ¨æ²¡æœ‰æ–‡å­—ç­‰çš„å­æ§ä»¶çš„æ§ä»¶ä½¿ç”¨ï¼Œå› ä¸ºç•Œé¢åˆ·æ–°åå¿…é¡»è°ƒæ•´å°ºå¯¸æ‰èƒ½æ›´æ–°èƒŒæ™¯è‰²ï¼Œ
+     *       è€Œä¸”ä¼šå‡ºç°åˆ·æ–°å‰åé‡å çš„å½±åƒã€‚
+     * @param widget æ§ä»¶
+     * @param option é€‰é¡¹
      * @example
      *
      * QWidget widget;
@@ -103,32 +103,32 @@ public:
     static void ApplyAcrylic(QWidget *widget, const SStyleOption &option = SStyleOption());
 
     /**
-     * @brief Îª´°¿Ú¾ä±úÉèÖÃÑÇ¿ËÁ¦Ğ§¹û
-     * @param hwnd ´°¿Ú¾ä±ú
-     * @param option Ñ¡Ïî
+     * @brief ä¸ºçª—å£å¥æŸ„è®¾ç½®äºšå…‹åŠ›æ•ˆæœ
+     * @param hwnd çª—å£å¥æŸ„
+     * @param option é€‰é¡¹
      * @return
      */
     static void ApplyAcrylic(HWND hwnd, const SStyleOption &option = SStyleOption());
 
     /**
-     * @brief Îª´°¿ÚÉèÖÃAreoÃ«²£Á§Ğ§¹û
-     * @param widget ¿Ø¼ş
-     * @param option Ñ¡Ïî
+     * @brief ä¸ºçª—å£è®¾ç½®Areoæ¯›ç»ç’ƒæ•ˆæœ
+     * @param widget æ§ä»¶
+     * @param option é€‰é¡¹
      * @return
      */
     static void ApplyAero(QWidget *widget, const SStyleOption &option = SStyleOption());
 
     /**
-     * @brief Îª´°¿Ú¾ä±úÉèÖÃAreoÃ«²£Á§Ğ§¹û
-     * @param hwnd ´°¿Ú¾ä±ú
-     * @param option Ñ¡Ïî
+     * @brief ä¸ºçª—å£å¥æŸ„è®¾ç½®Areoæ¯›ç»ç’ƒæ•ˆæœ
+     * @param hwnd çª—å£å¥æŸ„
+     * @param option é€‰é¡¹
      * @return
      */
     static void ApplyAero(HWND hwnd, const SStyleOption &option = SStyleOption());
 
     /**
-     * @brief »ñÈ¡WindowsÖ÷ÌâÅäÖÃ
-     * @return Ö÷ÌâÅäÖÃ
+     * @brief è·å–Windowsä¸»é¢˜é…ç½®
+     * @return ä¸»é¢˜é…ç½®
      */
     static SWindowsThemeConfig GetWindowsThemeConfig();
 

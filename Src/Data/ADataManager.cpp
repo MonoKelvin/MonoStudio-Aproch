@@ -840,11 +840,11 @@ class AStringDataManagerPrivate
 public:
     struct Data
     {
-        Data() : regExp(QString(QLatin1Char('*')), Qt::CaseSensitive, QRegExp::Wildcard)
+        Data() : regExp(QString(QLatin1Char('*')), QRegularExpression::CaseInsensitiveOption)
         {
         }
         QString val;
-        QRegExp regExp;
+        QRegularExpression regExp;
     };
 
     typedef QMap<const AData*, Data> DataValueMap;
@@ -866,9 +866,9 @@ QString AStringDataManager::value(const AData* data) const
     return getValue<QString>(d_ptr->m_values, data);
 }
 
-QRegExp AStringDataManager::regExp(const AData* data) const
+QRegularExpression AStringDataManager::regExp(const AData* data) const
 {
-    return getData<QRegExp>(d_ptr->m_values, &AStringDataManagerPrivate::Data::regExp, data, QRegExp());
+    return getData<QRegularExpression>(d_ptr->m_values, &AStringDataManagerPrivate::Data::regExp, data, QRegularExpression());
 }
 
 QString AStringDataManager::toString(const AData* data) const
@@ -890,7 +890,7 @@ void AStringDataManager::setValue(AData* data, const QString& val)
     if (metaData.val == val)
         return;
 
-    if (metaData.regExp.isValid() && !metaData.regExp.exactMatch(val))
+    if (metaData.regExp.isValid() && !metaData.regExp.match(val).hasMatch())
         return;
 
     metaData.val = val;
@@ -901,7 +901,7 @@ void AStringDataManager::setValue(AData* data, const QString& val)
     emit valueChanged(data, metaData.val);
 }
 
-void AStringDataManager::setRegExp(AData* data, const QRegExp& regExp)
+void AStringDataManager::setRegExp(AData* data, const QRegularExpression& regExp)
 {
     const AStringDataManagerPrivate::DataValueMap::iterator it = d_ptr->m_values.find(data);
     if (it == d_ptr->m_values.end())
@@ -970,7 +970,7 @@ QString AStringListDataManager::toString(const AData* data) const
 
     QString str('(');
     for (int i = 0; i < val.size() - 1; ++i)
-        str += val.at(i) + ', ';
+        str += val.at(i) + AStr(", ");
     
     str += val.back() + ')';
 
@@ -3834,7 +3834,7 @@ void AFontDataManager::setValue(AData* data, const QFont& val)
         return;
 
     const QFont oldVal = it.value();
-    if (oldVal == val && oldVal.resolve() == val.resolve())
+    if (oldVal == val && oldVal.resolve(oldVal) == val.resolve(val))
         return;
 
     it.value() = val;

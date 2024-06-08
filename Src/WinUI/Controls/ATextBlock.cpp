@@ -81,7 +81,7 @@ void ATextBlock::setText(const QString& content, Qt::TextElideMode mode, bool is
 
 	QString elidedText = content;
     QFontMetrics metrics = fontMetrics();
-	if (metrics.width(elidedText) > width())
+	if (metrics.horizontalAdvance(elidedText) > width())
     {
         elidedText = metrics.elidedText(elidedText, mode, width());
         if (elidedText != d_ptr->m_text && isShowSrcTextTooltip)

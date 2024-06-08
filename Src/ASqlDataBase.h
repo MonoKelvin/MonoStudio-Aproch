@@ -34,7 +34,7 @@ class QRecursiveMutex;
 APROCH_NAMESPACE_BEGIN
 
 /**
- * @brief ·â×°QtSqlDataBaseµÄÊı¾İ¿â·şÎñ
+ * @brief å°è£…QtSqlDataBaseçš„æ•°æ®åº“æœåŠ¡
  */
 class APROCH_API ASqlDataBase : public IDataBaseService
 {
@@ -43,68 +43,68 @@ public:
     virtual ~ASqlDataBase();
 
     /**
-     * @brief Ìí¼ÓÊı¾İ¿â
-     * @param url Êı¾İÂ·µØÖ·
-     * @param username ÕË»§Ãû
-     * @param password ÃÜÂë
-     * @param connectionName Á¬½ÓÃû³Æ¡£Á¬½ÓÃû³Æ²»ÄÜºÍÏÖÓĞÁ¬½ÓµÄÊı¾İ¿âÁ¬½ÓÃû³ÆÖØ¸´
-     * @return bool ÊÇ·ñÌí¼Ó³É¹¦
+     * @brief æ·»åŠ æ•°æ®åº“
+     * @param url æ•°æ®è·¯åœ°å€
+     * @param username è´¦æˆ·å
+     * @param password å¯†ç 
+     * @param connectionName è¿æ¥åç§°ã€‚è¿æ¥åç§°ä¸èƒ½å’Œç°æœ‰è¿æ¥çš„æ•°æ®åº“è¿æ¥åç§°é‡å¤
+     * @return bool æ˜¯å¦æ·»åŠ æˆåŠŸ
      */
     virtual bool addDatabase(const QString &url, const QString &username, const QString &password, const QString &connectionName) override;
 
     /**
-     * @brief ÒÆ³ıÁ¬½ÓµÄÊı¾İ¿â
-     * @param connectionName Á¬½ÓÃû³Æ
+     * @brief ç§»é™¤è¿æ¥çš„æ•°æ®åº“
+     * @param connectionName è¿æ¥åç§°
      */
     virtual void removeDatabase(const QString &connectionName) override;
 
     /**
-     * @brief ´ò¿ªÖ¸¶¨Á¬½ÓÃû³ÆµÄÊı¾İ¿â
-     * @param connectionName Á¬½ÓÃû³Æ£¬Èç¹ûÎª¿ÕÔò´ò¿ªµ±Ç°ÕıÁ¬½ÓµÄÊı¾İ¿â
-     * @return ÊÇ·ñ´ò¿ª³É¹¦
+     * @brief æ‰“å¼€æŒ‡å®šè¿æ¥åç§°çš„æ•°æ®åº“
+     * @param connectionName è¿æ¥åç§°ï¼Œå¦‚æœä¸ºç©ºåˆ™æ‰“å¼€å½“å‰æ­£è¿æ¥çš„æ•°æ®åº“
+     * @return æ˜¯å¦æ‰“å¼€æˆåŠŸ
      */
     virtual bool open(const QString &connectionName = ANull_String) override;
 
     /**
-     * @brief ´ò¿ªÖ¸¶¨Á¬½ÓÃû³ÆµÄÊı¾İ¿â
-     * @param username ÕË»§Ãû
-     * @param password ÃÜÂë
-     * @param connectionName Á¬½ÓÃû³Æ£¬Èç¹ûÎª¿ÕÔò´ò¿ªµ±Ç°ÕıÁ¬½ÓµÄÊı¾İ¿â
-     * @return ÊÇ·ñ´ò¿ª³É¹¦
+     * @brief æ‰“å¼€æŒ‡å®šè¿æ¥åç§°çš„æ•°æ®åº“
+     * @param username è´¦æˆ·å
+     * @param password å¯†ç 
+     * @param connectionName è¿æ¥åç§°ï¼Œå¦‚æœä¸ºç©ºåˆ™æ‰“å¼€å½“å‰æ­£è¿æ¥çš„æ•°æ®åº“
+     * @return æ˜¯å¦æ‰“å¼€æˆåŠŸ
      */
     virtual bool open(const QString &username, const QString &password, const QString &connectionName = ANull_String) override;
 
     /**
-     * @brief ¹Ø±ÕÊı¾İ¿â
-     * @param connectionName Á¬½ÓÃû³Æ£¬Èç¹ûÎª¿ÕÔò¹Ø±Õµ±Ç°ÕıÁ¬½ÓµÄÊı¾İ¿â
+     * @brief å…³é—­æ•°æ®åº“
+     * @param connectionName è¿æ¥åç§°ï¼Œå¦‚æœä¸ºç©ºåˆ™å…³é—­å½“å‰æ­£è¿æ¥çš„æ•°æ®åº“
      */
     virtual void close(const QString &connectionName = ANull_String) override;
 
     /**
-     * @brief Ö´ĞĞÓï¾ä
-     * @param query sqlÓï¾ä
-     * @return ´íÎó½á¹û
+     * @brief æ‰§è¡Œè¯­å¥
+     * @param query sqlè¯­å¥
+     * @return é”™è¯¯ç»“æœ
      */
     virtual QSqlError exec(const QString &query) override;
 
     /**
-     * @brief Ö´ĞĞ²éÑ¯Óï¾ä
-     * @param sqlQuery ²éÑ¯Óï¾ä
-     * @return ²éÑ¯½á¹û
+     * @brief æ‰§è¡ŒæŸ¥è¯¢è¯­å¥
+     * @param sqlQuery æŸ¥è¯¢è¯­å¥
+     * @return æŸ¥è¯¢ç»“æœ
      */
     virtual QSqlQuery query(const QString &sqlQuery) override;
 
     /**
-     * @brief »ñÈ¡µ±Ç°¿ª´òµÄÊı¾İ¿â
-     * @return SQLÊı¾İ¿â
+     * @brief è·å–å½“å‰å¼€æ‰“çš„æ•°æ®åº“
+     * @return SQLæ•°æ®åº“
      */
     virtual QSqlDatabase &dataBase() override;
 
 protected:
-    /** @brief µ±Ç°Êı¾İ¿â¶ÔÏó */
+    /** @brief å½“å‰æ•°æ®åº“å¯¹è±¡ */
     QSharedPointer<QSqlDatabase> mSqlDB;
 
-    /** @brief »¥³âËø */
+    /** @brief äº’æ–¥é” */
     QRecursiveMutex *mMutex;
 };
 

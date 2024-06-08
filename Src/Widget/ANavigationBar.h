@@ -505,8 +505,7 @@ private:
     int mPrevIndex;
 
 private:
-    Q_DISABLE_MOVE(ANavigationBar)
-    Q_DISABLE_COPY(ANavigationBar)
+    Q_DISABLE_COPY_MOVE(ANavigationBar)
 };
 
 APROCH_NAMESPACE_END

@@ -86,7 +86,7 @@ void AWindowsStyleManager::WindowsBlurHelper(HWND hwnd, ACCENT_STATE state, cons
     if (!setWindowCompositionAttribute)
         return;
 
-    // »ñÈ¡ÏµÍ³Ö÷Ìâ
+    // è·å–ç³»ç»Ÿä¸»é¢˜
     EThemeType themeType = option.themeType;
     const SWindowsThemeConfig config = GetWindowsThemeConfig();
     if (option.themeType == System)
@@ -97,7 +97,7 @@ void AWindowsStyleManager::WindowsBlurHelper(HWND hwnd, ACCENT_STATE state, cons
             themeType = Dark;
     }
 
-    // Ö÷ÌâÉ«
+    // ä¸»é¢˜è‰²
     QColor color;
     switch (themeType)
     {
@@ -114,13 +114,13 @@ void AWindowsStyleManager::WindowsBlurHelper(HWND hwnd, ACCENT_STATE state, cons
         break;
     }
 
-    // Í¸Ã÷¶È
+    // é€æ˜åº¦
     if (!config.enableTransparency)
         color.setAlphaF(1.0);
     else if (themeType != Custom)
         color.setAlphaF(0.92);
 
-    // Ä£ºıµÄÀàĞÍ
+    // æ¨¡ç³Šçš„ç±»å‹
     DWORD AccentFlags = 1;
     switch (state)
     {

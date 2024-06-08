@@ -100,8 +100,8 @@ bool AKeyExpressionService::has(const QString &key) const
 
 bool AKeyExpressionService::isKeyValid(const QString &key) const
 {
-    const QRegExp reg(AStr("^[a-z|_]+[\d\a-z_]*$"), Qt::CaseInsensitive);
-    return reg.exactMatch(key);
+    const QRegularExpression reg(AStr("^[a-z|_]+[\d\a-z_]*$"), QRegularExpression::CaseInsensitiveOption);
+    return reg.match(key).hasMatch();
 }
 
 bool AKeyExpressionService::isSymbolValid(const QString &symbol) const
@@ -115,7 +115,7 @@ bool AKeyExpressionService::parse(const QString &expr)
     const auto &symbols = AKeyExpressionManager::getInstance()->getAllSymbols();
     const QString theExpr = AStringToolkit::WrapSymbolsWithChars(expr, symbols, " ");
 
-    QStringList currentExpr = theExpr.trimmed().split(' ', QString::SkipEmptyParts);
+    QStringList currentExpr = theExpr.trimmed().split(' ', Qt::SkipEmptyParts);
     qDebug() << "Expression Splitted:" << currentExpr;
 
     if (!convertToPostfixExpression(currentExpr))

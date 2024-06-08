@@ -35,6 +35,8 @@
 
 class QLabel;
 class QPushButton;
+class QMenuBar;
+class QBoxLayout;
 
 APROCH_NAMESPACE_BEGIN
 

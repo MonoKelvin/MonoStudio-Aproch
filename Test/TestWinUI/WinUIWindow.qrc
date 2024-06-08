@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="WinUIWindow">
+    <qresource prefix="/">
+        <file>qml/App.qml</file>
     </qresource>
 </RCC>

@@ -59,7 +59,7 @@ bool ASqlDataBase::addDatabase(const QString &url, const QString &username, cons
 {
     QMutexLocker locker(mMutex);
 
-    // ÊÇ·ñÒÑ¾­´æÔÚÁ¬½ÓÃû
+    // æ˜¯å¦å·²ç»å­˜åœ¨è¿æ¥å
     if (QSqlDatabase::connectionNames().contains(connectionName))
         return false;
 

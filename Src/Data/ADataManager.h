@@ -312,7 +312,7 @@ public:
     ~AStringDataManager();
 
     QString value(const AData* data) const;
-    QRegExp regExp(const AData* data) const;
+    QRegularExpression regExp(const AData* data) const;
     int getType() const override
     {
         return QMetaType::QString;
@@ -320,11 +320,11 @@ public:
 
 public Q_SLOTS:
     void setValue(AData* data, const QString& val);
-    void setRegExp(AData* data, const QRegExp& regExp);
+    void setRegExp(AData* data, const QRegularExpression& regExp);
 
 Q_SIGNALS:
     void valueChanged(AData* data, const QString& val);
-    void regExpChanged(AData* data, const QRegExp& regExp);
+    void regExpChanged(AData* data, const QRegularExpression& regExp);
 
 protected:
     QString toString(const AData* data) const;

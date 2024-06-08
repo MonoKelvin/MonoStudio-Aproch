@@ -109,7 +109,7 @@ void AAvatar::drawAvatar(QPainter *painter, const QRect &rect, const QPixmap &pi
     painter->setPen(Qt::NoPen);
 
     painter->save();
-    painter->setBrush(QBrush(palette().background().color()));
+    painter->setBrush(QBrush(palette().color(QPalette::Window)));
     painter->setClipPath(path);
 
     // 当没有图片时绘制背景色

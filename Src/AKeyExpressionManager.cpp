@@ -70,15 +70,19 @@ QSharedPointer<AAbstractKeyExpression> AKeyExpressionManager::getKeyExpr(const Q
 
 QStringList AKeyExpressionManager::getAllSymbols() const
 {
-    QSet<QString> symbolSet;
-    symbolSet.insert(AKey_LeftBracket);
-    symbolSet.insert(AKey_RightBracket);
+    QStringList stringList;
+    stringList.push_back(AKey_LeftBracket);
+    stringList.push_back(AKey_RightBracket);
 
     const auto &keys = mKeyExprMap.keys();
-    for (const auto &key : keys)
-        symbolSet.insert(key);
+    for (const auto& key : keys)
+    {
+        if (stringList.contains(key))
+            continue;
+        stringList.push_back(key);
+    }
 
-    return symbolSet.toList();
+    return stringList;
 }
 
 APROCH_NAMESPACE_END

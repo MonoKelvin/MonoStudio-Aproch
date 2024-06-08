@@ -66,7 +66,7 @@ QString AStringToolkit::NormalizeCategory(const QString &category, bool withName
     QString cat = category;
 
     // 替换所有连续的"\\"或者"/"符号为"/"
-    cat.replace(QRegExp("((/|\\)[(.)\1]*(/|\\)*)"), "/");
+    cat.replace(QRegularExpression("((/|\\)[(.)\1]*(/|\\)*)"), "/");
 
     if (cat.front() != '/')
         cat.push_front('/');
@@ -81,10 +81,10 @@ QList<QString> AStringToolkit::GetCategoryLevels(const QString &category)
 {
     QList<QString> result;
 
-    int i = category.indexOf("/");
+    qsizetype i = category.indexOf("/");
     while (i >= 0 && i < category.size())
     {
-        int j = category.indexOf("/", i + 1);
+        qsizetype j = category.indexOf("/", i + 1);
         if (j == -1)
             break;
 
@@ -98,7 +98,7 @@ QList<QString> AStringToolkit::GetCategoryLevels(const QString &category)
 QString AStringToolkit::ReplacToSlash(const QString &source)
 {
     QString result = source;
-    result.replace(QRegExp("((/|\\)[(.)\1]*(/|\\)*)"), "/");
+    result.replace(QRegularExpression("((/|\\)[(.)\1]*(/|\\)*)"), "/");
     return result;
 }
 
@@ -188,7 +188,7 @@ bool AStringToolkit::TrimCompare(const QString &str1, const QString &str2, Qt::C
 QString AStringToolkit::ReplaceContinuousString(const QString &str, const QString &rpStr)
 {
     QString result = str;
-    result.replace(QRegExp("(.)(\1)+"), rpStr);
+    result.replace(QRegularExpression("(.)(\1)+"), rpStr);
     return result;
 }
 
@@ -197,8 +197,8 @@ QString AStringToolkit::ReplaceContinuousString(const QString &str, const QStrin
     // 将元字符添加'\'符号
     QString regTar = target;
     QList<QChar> metaChars;
-    metaChars << '.' << '*' << '+' << '(' << ')' << '$' << '/' << '\\' << ' ? ' << '['
-              << ']' << ' ^ ' << '{' << '}' << ' - ' << '!' << '<' << '>';
+    metaChars << '.' << '*' << '+' << '(' << ')' << '$' << '/' << '\\' << '?' << '['
+              << ']' << '^' << '{' << '}' << '-' << '!' << '<' << '>';
     for (int i = 0; i < regTar.size();)
     {
         if (metaChars.contains(regTar.at(i)))
@@ -213,7 +213,7 @@ QString AStringToolkit::ReplaceContinuousString(const QString &str, const QStrin
     }
 
     QString result = str;
-    result.replace(QRegExp("(" + regTar + ")(\1)+"), rpStr);
+    result.replace(QRegularExpression("(" + regTar + ")(\1)+"), rpStr);
     return result;
 }
 

@@ -59,16 +59,16 @@ void AWheelColorPicker::setIndicatorPos(int x, int y)
 
 QPoint AWheelColorPicker::getColorPixel(const QColor &color) const
 {
-    qreal h, s, v;
+    float h, s, v;
     color.getHsvF(&h, &s, &v);
 
     // 极坐标转笛卡尔坐标
-    qreal X = 0.0, Y = s;
-    if (qFuzzyCompare(h, 0.25))
+    float X = 0.0, Y = s;
+    if (qFuzzyCompare(h, 0.25f))
     {
         Y = -s;
     }
-    else if (!qFuzzyCompare(h, 0.75))
+    else if (!qFuzzyCompare(h, 0.75f))
     {
         const qreal K = tan(h * M_2PI);
         X = s / sqrt(1 + K * K);
