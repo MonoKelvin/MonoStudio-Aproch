@@ -172,7 +172,6 @@
     </ClCompile>
     <ClCompile Include="Widget\AAbstractColorPicker.cpp" />
     <ClCompile Include="Widget\AAvatar.cpp" />
-    <ClCompile Include="Widget\ABorderlessWidget.cpp" />
     <ClCompile Include="Widget\ACaptionBar.cpp" />
     <ClCompile Include="Widget\AColorPickerIndicator.cpp" />
     <ClCompile Include="Widget\AColorSliderControl.cpp" />
@@ -244,7 +243,6 @@
     <ClInclude Include="Common\IService.h" />
     <ClInclude Include="Common\IStringSerializable.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Widget\ABorderlessWidget.h" />
     <ClInclude Include="Widget\AFlowLayout.h" />
     <ClInclude Include="Widget\Style\AStyleDefines.h" />
     <ClInclude Include="Widget\Style\AWindowsStyleManager.h" />

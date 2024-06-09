@@ -99,7 +99,6 @@
 // widgets
 #include "Widget/AAbstractColorPicker.h"
 #include "Widget/AAvatar.h"
-#include "Widget/ABorderlessWidget.h"
 #include "Widget/ACaptionBar.h"
 #include "Widget/AColorPickerIndicator.h"
 #include "Widget/AColorSliderControl.h"

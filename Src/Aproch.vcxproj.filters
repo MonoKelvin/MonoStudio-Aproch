@@ -113,9 +113,6 @@
     <ClInclude Include="AprochAPI.h">
       <Filter>Defines</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\ABorderlessWidget.h">
-      <Filter>Widget\Widget</Filter>
-    </ClInclude>
     <ClInclude Include="Widget\AFlowLayout.h">
       <Filter>Widget\Widget</Filter>
     </ClInclude>
@@ -305,9 +302,6 @@
       <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AAvatar.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\ABorderlessWidget.cpp">
       <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\ACaptionBar.cpp">

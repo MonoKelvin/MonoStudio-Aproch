@@ -239,7 +239,7 @@ extern APROCH_API const char* APropValue_Panel;     // 面板
 
 /** @brief 获取服务 */
 #define APROCH_SERVICE(_ServiceInterface_, _ServiceName_) \
-    qSharedPointerCast<_ServiceInterface_, IService>(AApplicationContext::getInstance()->getService(_ServiceName_))
+    qSharedPointerCast<_ServiceInterface_, APROCH_CLASSNAME(IService)>(APROCH_CLASSNAME(AApplicationContext)::getInstance()->getService(_ServiceName_))
 
 /** @brief 判断两个类是否有继承关系，并且继承自<_BaseName_>的类需要Q_GADGET或者Q_OBJECT的元对象声明宏 */
 #define APROCH_ASSERT_IS_DERIVED_BY_METAOBJECT(_BaseName_, _DerivedName_) \
