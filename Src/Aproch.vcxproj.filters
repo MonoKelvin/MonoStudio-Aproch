@@ -69,6 +69,9 @@
     <Filter Include="WinUI\QML">
       <UniqueIdentifier>{2e5d7cd7-db07-4e5c-953f-17d0e6f66f1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\HotKey">
+      <UniqueIdentifier>{4ca25406-ec94-43a1-9920-f91793ca67c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainWindow.h">
@@ -430,6 +433,15 @@
     <ClCompile Include="WinUI\AWinUITheme.cpp">
       <Filter>WinUI</Filter>
     </ClCompile>
+    <ClCompile Include="WinUI\AWinUIApplication.cpp">
+      <Filter>WinUI</Filter>
+    </ClCompile>
+    <ClCompile Include="AHotKey.cpp">
+      <Filter>Application\HotKey</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\AHotKey_win.cpp">
+      <Filter>Application\HotKey</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -504,6 +516,18 @@
     <QtMoc Include="Widget\AToolTip.h">
       <Filter>Widget\Widget</Filter>
     </QtMoc>
+    <QtMoc Include="WinUI\AWinUIApplication.h">
+      <Filter>WinUI</Filter>
+    </QtMoc>
+    <QtMoc Include="Private\AHotKey_p.h">
+      <Filter>Application\HotKey</Filter>
+    </QtMoc>
+    <QtMoc Include="AHotKey.h">
+      <Filter>Application\HotKey</Filter>
+    </QtMoc>
+    <QtMoc Include="WinUI\AWinUIPlugin.h">
+      <Filter>WinUI</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">
@@ -516,6 +540,9 @@
     </None>
     <None Include="Data\header.inc">
       <Filter>Data</Filter>
+    </None>
+    <None Include="WinUI\QML\AApplication.qml">
+      <Filter>WinUI\QML</Filter>
     </None>
   </ItemGroup>
 </Project>

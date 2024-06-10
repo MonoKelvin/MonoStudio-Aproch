@@ -59,12 +59,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IntDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)_temp\$(Platform)-$(Configuration)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)Build\$(Platform)-$(Configuration)\Test\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IntDir>$(SolutionDir)Output\$(Platform)-$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)_temp\$(Platform)-$(Configuration)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)Build\$(Platform)-$(Configuration)\Test\$(ProjectName)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -75,8 +75,7 @@
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
-      <Command>$(QtInstallDir)\bin\windeployqt.exe $(OutDir)$(TargetName)$(TargetExt)
-xcopy /y $(OutDir)..\..\Bin\Aprochd.dll $(OutDir)</Command>
+      <Command>"$(SolutionDir)Test/CopyLib.bat" $(SolutionDir) $(Platform) $(Configuration) $(OutDir) $(QMake_QT_INSTALL_PREFIX_)</Command>
     </PostBuildEvent>
     <Link>
       <AdditionalDependencies>QWKCored.lib;QWKQuickd.lib;QWKWidgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -90,8 +89,7 @@ xcopy /y $(OutDir)..\..\Bin\Aprochd.dll $(OutDir)</Command>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
-      <Command>$(QtInstallDir)\bin\windeployqt.exe $(OutDir)$(TargetName)$(TargetExt)
-xcopy /y $(OutDir)..\..\Bin\Aproch.dll $(OutDir)</Command>
+      <Command>"$(SolutionDir)Test/CopyLib.bat" $(SolutionDir) $(Platform) $(Configuration) $(OutDir) $(QMake_QT_INSTALL_PREFIX_)</Command>
     </PostBuildEvent>
     <Link>
       <AdditionalDependencies>QWKCore.lib;QWKQuick.lib;QWKWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>

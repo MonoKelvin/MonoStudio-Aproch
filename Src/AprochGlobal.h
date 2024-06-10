@@ -261,14 +261,65 @@ public:                                                                         
         if (A_M_VAR(_Var_) != _arg)                                                                         \
         {                                                                                                   \
             A_M_VAR(_Var_) = _arg;                                                                          \
-            emit A_CHANGED_SIGNAL_FUNC(_Var_)(A_M_VAR(_Var_));                                              \
+            Q_EMIT A_CHANGED_SIGNAL_FUNC(_Var_)(A_M_VAR(_Var_));                                            \
         }                                                                                                   \
     }                                                                                                       \
 Q_SIGNALS:                                                                                                  \
     void A_CHANGED_SIGNAL_FUNC(_Var_)(const _Type_ &);                                                      \
-                                                                                                            \
 private:                                                                                                    \
     Q_PROPERTY(_Type_ _Var_ READ get##_FuncName_ WRITE set##_FuncName_ NOTIFY A_CHANGED_SIGNAL_FUNC(_Var_)) \
+    _Type_ A_M_VAR(_Var_)
+
+/** @brief Qt指针类型属性的声明和定义，带有修改信号 */
+#define A_DEFINE_PROPERTY_PTR(_Type_, _Var_, _FuncName_)                                                    \
+public:                                                                                                     \
+    inline _Type_ get##_FuncName_(void) const noexcept { return A_M_VAR(_Var_); }                           \
+    inline void set##_FuncName_(_Type_ _arg)                                                                \
+    {                                                                                                       \
+        if (A_M_VAR(_Var_) != _arg)                                                                         \
+        {                                                                                                   \
+            A_M_VAR(_Var_) = _arg;                                                                          \
+            Q_EMIT A_CHANGED_SIGNAL_FUNC(_Var_)(A_M_VAR(_Var_));                                            \
+        }                                                                                                   \
+    }                                                                                                       \
+Q_SIGNALS:                                                                                                  \
+    void A_CHANGED_SIGNAL_FUNC(_Var_)(_Type_);                                                              \
+private:                                                                                                    \
+    Q_PROPERTY(_Type_ _Var_ READ get##_FuncName_ WRITE set##_FuncName_ NOTIFY A_CHANGED_SIGNAL_FUNC(_Var_)) \
+    _Type_ A_M_VAR(_Var_)
+
+/** @brief Qt成员属性，主要针对QML中的自定义属性 */
+#define A_DEFINE_MEMBER(_Type_, _Var_)                                              \
+Q_PROPERTY(_Type_ _Var_ MEMBER A_M_VAR(_Var_) NOTIFY A_CHANGED_SIGNAL_FUNC(_Var_))  \
+public:                                                                             \
+Q_SIGNAL void A_CHANGED_SIGNAL_FUNC(_Var_)();                                       \
+void _Var_(const _Type_& in_##_Var_)                                                \
+{                                                                                   \
+    if (A_M_VAR(_Var_) != in_##_Var_)                                               \
+    {                                                                               \
+        A_M_VAR(_Var_) = in_##_Var_;                                                \
+        Q_EMIT A_CHANGED_SIGNAL_FUNC(_Var_)();                                      \
+    }                                                                               \
+}                                                                                   \
+_Type_ _Var_() { return A_M_VAR(_Var_); }                                           \
+private:                                                                            \
+    _Type_ A_M_VAR(_Var_)
+
+/** @brief Qt成员指针属性，主要针对QML中的自定义属性 */
+#define A_DEFINE_MEMBER_PTR(_Type_, _Var_)                                          \
+Q_PROPERTY(_Type_ _Var_ MEMBER A_M_VAR(_Var_) NOTIFY A_CHANGED_SIGNAL_FUNC(_Var_))  \
+public:                                                                             \
+Q_SIGNAL void A_CHANGED_SIGNAL_FUNC(_Var_)();                                       \
+void _Var_(_Type_ in_##_Var_)                                                       \
+{                                                                                   \
+    if (A_M_VAR(_Var_) != in_##_Var_)                                               \
+    {                                                                               \
+        A_M_VAR(_Var_) = in_##_Var_;                                                \
+        Q_EMIT A_CHANGED_SIGNAL_FUNC(_Var_)();                                      \
+    }                                                                               \
+}                                                                                   \
+_Type_ _Var_() { return A_M_VAR(_Var_); }                                           \
+private:                                                                            \
     _Type_ A_M_VAR(_Var_)
 
 /** @brief Qt属性的声明和定义，不带修改信号  */

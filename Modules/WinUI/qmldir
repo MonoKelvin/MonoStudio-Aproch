@@ -1,0 +1,7 @@
+module Aproch.WinUI
+plugin AprochWinUI
+
+ATestButton 1.0 ATestButton.qml
+singleton AWinUIApplication 1.0 AWinUIApplication.qml
+
+designersupported

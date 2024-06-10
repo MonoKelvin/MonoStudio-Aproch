@@ -13,7 +13,8 @@
 **/.vs/*
 *.Debug
 *.Release
-*.user
+_temp/
+temp/
 **/.vscode/*
 **/bin/*
 Makefile

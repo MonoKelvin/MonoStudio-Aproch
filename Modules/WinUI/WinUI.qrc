@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/AWinUIApplication.qml</file>
+        <file>qmldir</file>
+        <file>qml/ATestButton.qml</file>
+    </qresource>
+</RCC>
