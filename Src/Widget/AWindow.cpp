@@ -32,6 +32,8 @@
 #include <QGuiApplication>
 #include <QScreen>
 
+#include <QWindowKit/QWKWidgets/widgetwindowagent.h>
+
 #ifdef Q_OS_WIN
 // #include <windows.h>
 #include <windowsx.h>
@@ -41,40 +43,81 @@
 
 APROCH_NAMESPACE_BEGIN
 
-AWindow::AWindow(QWidget *parent, Qt::WindowType type)
-    : QWidget(parent, type), mCentralWidget(nullptr), mEventLoop(nullptr), mIsResizable(true), mIsMovable(true), mIsEnableMaximized(true)
+static inline void emulateLeaveEvent(QWidget* widget)
 {
-    setMaximumSize(QGuiApplication::primaryScreen()->size());
-    // setMouseTracking(true);
-
-#ifdef Q_OS_WIN
-    const MARGINS shadow = {0, 0, 0, 1};
-    ::DwmExtendFrameIntoClientArea((HWND)winId(), &shadow);
+    Q_ASSERT(widget);
+    if (!widget)
+        return;
+    
+    QTimer::singleShot(0, widget, [widget]() {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        const QScreen* screen = widget->screen();
+#else
+        const QScreen* screen = widget->windowHandle()->screen();
 #endif
+        const QPoint globalPos = QCursor::pos(screen);
+        if (!QRect(widget->mapToGlobal(QPoint{ 0, 0 }), widget->size()).contains(globalPos))
+        {
+            QCoreApplication::postEvent(widget, new QEvent(QEvent::Leave));
+            if (widget->testAttribute(Qt::WA_Hover))
+            {
+                const QPoint localPos = widget->mapFromGlobal(globalPos);
+                const QPoint scenePos = widget->window()->mapFromGlobal(globalPos);
+                static constexpr const auto oldPos = QPoint{};
+                const Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers();
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 4, 0))
+                const auto event =
+                    new QHoverEvent(QEvent::HoverLeave, scenePos, globalPos, oldPos, modifiers);
+                Q_UNUSED(localPos);
+#elif (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+                const auto event = new QHoverEvent(QEvent::HoverLeave, localPos, globalPos, oldPos, modifiers);
+                Q_UNUSED(scenePos);
+#else
+                const auto event = new QHoverEvent(QEvent::HoverLeave, localPos, oldPos, modifiers);
+                Q_UNUSED(scenePos);
+#endif
+                QCoreApplication::postEvent(widget, event);
+            }
+        }
+    });
+}
 
-    // 主布局
-    mMainLayout = new QBoxLayout(QBoxLayout::TopToBottom, this);
-    mMainLayout->setSpacing(0);
-    mMainLayout->setContentsMargins(0, 0, 0, 0);
+AWindow::AWindow(QWidget *parent, Qt::WindowType type)
+    : QWidget(parent, type)
+    , mEventLoop(nullptr)
+{
+    mWinAgent = new QWK::WidgetWindowAgent(this);
+    mWinAgent->setup(this);
 
     // 标题栏
     mCaptionBar = new ACaptionBar(this);
-    mMainLayout->setMenuBar(mCaptionBar);
+    mCaptionBar->resize(900, 48);
+    mCaptionBar->setHostWidget(this);
 
-    // 调整显示层次
-    mCaptionBar->raise();
+#ifndef Q_OS_MAC
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::WindowIcon, mCaptionBar->getIcon());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Help, mCaptionBar->getHelpButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Minimize, mCaptionBar->getMinButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Maximize, mCaptionBar->getMaxButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Close, mCaptionBar->getMaxButton());
+#endif
+    mWinAgent->setTitleBar(mCaptionBar);
+    mWinAgent->setHitTestVisible(mCaptionBar, true);
+    mWinAgent->centralize();
 
-    // 默认的窗口初始化数据
-    mWindowStyle.ResizerThickness = 8;
-    appendDragRegionWidget(mCaptionBar);
-    setResizable(mIsResizable);
+    connect(mCaptionBar, &ACaptionBar::minimizeRequested, this, &QWidget::showMinimized);
+    connect(mCaptionBar, &ACaptionBar::maximizeRequested, this, [this](bool max) {
+        if (max)
+            showMaximized();
+        else
+            showNormal();
 
-    // 窗口控制按钮
-    connect(mCaptionBar->getMinimizeButton(), &QPushButton::clicked, this, &AWindow::showMinimized);
-    connect(mCaptionBar->getMaxRestoreButton(), &QPushButton::clicked, this, &AWindow::switchMaxOrOriginalSize);
-    connect(mCaptionBar->getCloseButton(), &QPushButton::clicked, this, &AWindow::close);
-
-    connect(this, &AWindow::windowIconChanged, this, &AWindow::setCaptionIcon);
+        // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
+        // the button remains to be hovered until the mouse move. As a result, we need to
+        // manually send leave events to the button.
+        emulateLeaveEvent(mCaptionBar->getMaxButton());
+    });
+    connect(mCaptionBar, &ACaptionBar::closeRequested, this, &QWidget::close);
 }
 
 AWindow::~AWindow()
@@ -102,226 +145,34 @@ int AWindow::showModality()
     return result;
 }
 
-void AWindow::setResizable(bool resizable) noexcept
+bool AWindow::event(QEvent* evt)
 {
-    if (!resizable)
+    switch (evt->type())
     {
-        if (nullptr != mCaptionBar->getMaxRestoreButton())
-            mCaptionBar->getMaxRestoreButton()->setEnabled(false);
-
-#ifdef Q_OS_WIN
-        const HWND theHwnd = (HWND)winId();
-        const LONG style = GetWindowLong(theHwnd, GWL_STYLE);
-        SetWindowLong(theHwnd, GWL_STYLE, style & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX);
-    }
-    else
-    {
-
-        const HWND theHwnd = (HWND)winId();
-        const LONG style = GetWindowLong(theHwnd, GWL_STYLE);
-        SetWindowLong(theHwnd, GWL_STYLE, style | WS_THICKFRAME | WS_BORDER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
-#endif
-    }
-
-    mIsResizable = resizable;
-}
-
-void AWindow::setEnableMaximized(bool enable) noexcept
-{
-    mIsEnableMaximized = enable;
-
-#ifdef Q_OS_WIN
-    LONG styleValue = ::GetWindowLong(HWND(winId()), GWL_STYLE);
-    if (mIsEnableMaximized)
-    {
-        styleValue |= WS_MAXIMIZEBOX;
-        ::SetWindowLong(HWND(winId()), GWL_STYLE, styleValue);
-    }
-    else
-    {
-        styleValue &= ~WS_MAXIMIZEBOX;
-        ::SetWindowLong(HWND(winId()), GWL_STYLE, styleValue);
-    }
-#endif
-
-    if (nullptr != mCaptionBar)
-    {
-        mCaptionBar->setWidgetsVisibility(WindowMaximizeButton,
-                                          mIsEnableMaximized ? WVS_Show : WVS_Invisible);
-    }
-}
-
-void AWindow::setWindowStyle(const SWindowStyle &windowStyleOp)
-{
-    mWindowStyle = windowStyleOp;
-}
-
-void AWindow::setCentralWidget(QWidget *widget)
-{
-    if (mCentralWidget == widget)
-    {
-        return;
-    }
-
-    if (nullptr != mCentralWidget)
-    {
-        mCentralWidget->deleteLater();
-        mCentralWidget = nullptr;
-    }
-
-    if (nullptr != widget)
-    {
-        mCentralWidget = widget;
-        if (mCentralWidget->parentWidget() != this)
+    case QEvent::WindowActivate: {
+        auto captionBar = getCaptionBar();
+        if (captionBar)
         {
-            mCentralWidget->setParent(this);
-        }
-
-        mMainLayout->insertWidget(0, mCentralWidget);
-
-        mCentralWidget->installEventFilter(this);
-        mCentralWidget->lower();
-    }
-}
-
-void AWindow::switchMaxOrOriginalSize()
-{
-    if (!mIsResizable)
-        return;
-
-    if (isFullScreen() || isMinimized())
-    {
-        return;
-    }
-
-    if (isMaximized())
-    {
-        showNormal();
-    }
-    else if (mIsEnableMaximized)
-    {
-        showMaximized();
-    }
-}
-
-void AWindow::appendDragRegionWidget(QWidget *regionWidget)
-{
-    if (!mDragRegionWidgets.contains(regionWidget))
-        mDragRegionWidgets.append(regionWidget);
-}
-
-bool AWindow::isPointInDragRegion(const QPoint &point) const
-{
-    for (const auto &regionWidget : mDragRegionWidgets)
-    {
-        if (childAt(point) == regionWidget)
-            return true;
-    }
-
-    return false;
-}
-
-void AWindow::setCaptionIcon(const QIcon &icon)
-{
-    if (nullptr == mCaptionBar || nullptr == mCaptionBar->getTitle())
-        return;
-
-    mCaptionBar->getTitle()->setPixmap(icon.pixmap(0));
-}
-
-bool AWindow::nativeEvent(const QByteArray& eventType, void* message, qintptr* result)
-{
-    if (nullptr == message || nullptr == result)
-        return false;
-
-#ifdef Q_OS_WIN
-    if (eventType != "windows_generic_MSG")
-        return false;
-
-    const MSG *msg = static_cast<MSG *>(message);
-    QWidget *theWidget = QWidget::find(reinterpret_cast<WId>(msg->hwnd));
-    if (!theWidget)
-        return false;
-
-    const int nX = GET_X_LPARAM(msg->lParam) - geometry().x();
-    const int nY = GET_Y_LPARAM(msg->lParam) - geometry().y();
-
-    switch (msg->message)
-    {
-    case WM_NCLBUTTONDBLCLK:
-    {
-        if ((!mIsEnableMaximized || !mIsResizable) && msg->wParam == HTCAPTION)
-        {
-            *result = 0;
-            return false;
+            captionBar->setProperty("bar-active", true);
+            style()->polish(captionBar);
         }
         break;
     }
-    case WM_GETMINMAXINFO:
-    {
-        if (::IsZoomed(msg->hwnd))
-        {
-            RECT frame = {0, 0, 0, 0};
-            AdjustWindowRectEx(&frame, WS_OVERLAPPEDWINDOW, FALSE, 0);
-            frame.left = abs(frame.left);
-            frame.top = abs(frame.bottom);
-            theWidget->setContentsMargins(frame.left, frame.top, frame.right, frame.bottom);
-        }
-        else
-        {
-            theWidget->setContentsMargins(0, 0, 0, 0);
-        }
 
-        *result = ::DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
-        return true;
-    }
-    case WM_NCCALCSIZE:
-    {
-        *result = 0; // 去除标题栏
-        return true;
-    }
-    case WM_NCHITTEST:
-    {
-        if (mIsResizable)
+    case QEvent::WindowDeactivate: {
+        auto captionBar = getCaptionBar();
+        if (captionBar)
         {
-            // 鼠标区域位于窗体边框，进行缩放
-            if ((nX > 0) && (nX < mWindowStyle.ResizerThickness))
-                *result = HTLEFT;
-            if ((nX > this->width() - mWindowStyle.ResizerThickness) && (nX < this->width()))
-                *result = HTRIGHT;
-            if ((nY > 0) && (nY < mWindowStyle.ResizerThickness))
-                *result = HTTOP;
-            if ((nY > this->height() - mWindowStyle.ResizerThickness) && (nY < this->height()))
-                *result = HTBOTTOM;
-            if ((nX > 0) && (nX < mWindowStyle.ResizerThickness) && (nY > 0) && (nY < mWindowStyle.ResizerThickness))
-                *result = HTTOPLEFT;
-            if ((nX > this->width() - mWindowStyle.ResizerThickness) && (nX < this->width()) && (nY > 0) && (nY < mWindowStyle.ResizerThickness))
-                *result = HTTOPRIGHT;
-            if ((nX > 0) && (nX < mWindowStyle.ResizerThickness) && (nY > this->height() - mWindowStyle.ResizerThickness) && (nY < this->height()))
-                *result = HTBOTTOMLEFT;
-            if ((nX > this->width() - mWindowStyle.ResizerThickness) && (nX < this->width()) && (nY > this->height() - mWindowStyle.ResizerThickness) && (nY < this->height()))
-                *result = HTBOTTOMRIGHT;
+            captionBar->setProperty("bar-active", false);
+            style()->polish(captionBar);
         }
-
-        // 如果正在缩放，则直接返回
-        if (*result != 0)
-            return true;
-
-        if (mIsMovable && isPointInDragRegion(QPoint(nX, nY)))
-        {
-            *result = HTCAPTION;
-            return true;
-        }
-
         break;
     }
+
     default:
         break;
     }
-
-#endif // Q_OS_WIN
-
-    return QWidget::nativeEvent(eventType, message, result);
+    return QWidget::event(evt);
 }
 
 void AWindow::paintEvent(QPaintEvent *ev)
@@ -334,11 +185,6 @@ void AWindow::paintEvent(QPaintEvent *ev)
 
 void AWindow::closeEvent(QCloseEvent *ev)
 {
-    if (mEventLoop != nullptr)
-    {
-        mEventLoop->exit();
-        mEventLoop = nullptr;
-    }
     ev->accept();
 }
 

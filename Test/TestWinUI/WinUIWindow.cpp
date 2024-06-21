@@ -16,7 +16,7 @@
 using namespace aproch;
 
 WinUIWindow::WinUIWindow(QWidget *parent)
-    : QWidget(parent)
+    : aproch::AWindow(parent)
 {
     ui.setupUi(this);
 

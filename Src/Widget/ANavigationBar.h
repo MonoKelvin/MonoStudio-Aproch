@@ -34,6 +34,7 @@
 #define AOBJNAME_NAVBAR_TRACKBAR AStr("aproch_navbar_trackbar")
 #define AOBJNAME_NAVBAR_GROUP AStr("aproch_navbar_group")
 
+class QPushButton;
 class QButtonGroup;
 
 APROCH_NAMESPACE_BEGIN

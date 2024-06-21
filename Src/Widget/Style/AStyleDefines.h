@@ -219,18 +219,18 @@ enum EWidgetVisiblityState
 /** @brief 窗口标题控件选项 */
 enum EWindowCaptionWidget
 {
-    WindowTitle = Qt::WindowTitleHint,
-    WindowSystemMenu = Qt::WindowSystemMenuHint,
-    WindowMinimizeButton = Qt::WindowMinimizeButtonHint,
-    WindowMaximizeButton = Qt::WindowMaximizeButtonHint,
-    WindowMinMaxButtons = WindowMinimizeButton | WindowMaximizeButton,
-    WindowContextHelpButton = Qt::WindowContextHelpButtonHint,
-    WindowStaysOnTop = Qt::WindowStaysOnTopHint,
+    WindowIcon = 0x00000001,
+    WindowTitle = 0x00000002,
+    WindowMenu = 0x00000004,
+    WindowAppendixLayout = 0x00000008,
+    WindowHelpButton = 0x00000010,
+    WindowMinimizeButton = 0x00000020,
+    WindowMaximizeButton = 0x00000040,
+    WindowCloseButton = 0x00000080,
 
-    CustomizeWindow = Qt::CustomizeWindowHint,
-    WindowStaysOnBottom = Qt::WindowStaysOnBottomHint,
-    WindowCloseButton = Qt::WindowCloseButtonHint,
-    WindowControllerButtons = WindowMinMaxButtons | WindowCloseButton,
+    WindowControllerButtons = WindowMinimizeButton | WindowMaximizeButton | WindowCloseButton,
+    DialogWidgets = WindowIcon | WindowTitle | WindowAppendixLayout | WindowHelpButton | WindowCloseButton,
+    WindowWidgets = WindowIcon | WindowTitle | WindowAppendixLayout | WindowControllerButtons,
 };
 Q_DECLARE_FLAGS(FWindowCaptionWidgets, EWindowCaptionWidget)
 Q_DECLARE_OPERATORS_FOR_FLAGS(FWindowCaptionWidgets)

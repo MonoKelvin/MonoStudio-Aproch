@@ -28,264 +28,503 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "ACaptionBar.h"
+#include "Private/ACaptionBar_p.h"
+
+namespace {
+    QAbstractButton* createDefaultIcon(QWidget* parent)
+    {
+        auto iconBtn = new QPushButton(parent);
+        iconBtn->setObjectName(AStr("aproch-captionbar-icon"));
+        return iconBtn;
+    }
+
+    QLabel* createDefaultTitle(QWidget* parent)
+    {
+        auto titleLabel = new QLabel(parent);
+        titleLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+        titleLabel->setAlignment(Qt::AlignCenter);
+        titleLabel->setObjectName(AStr("aproch-captionbar-title"));
+        //titleLabel->setContentsMargins(10, 4, 10, 4);
+        return titleLabel;
+    }
+
+    QMenuBar* createDefaultMenuBar(QWidget* parent)
+    {
+        QMenuBar* menuBar = new QMenuBar(parent);
+        menuBar->setObjectName("aproch-captionbar-menubar");
+        menuBar->setAttribute(Qt::WA_TranslucentBackground, true);
+        menuBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        return menuBar;
+    }
+
+    QPushButton* createDefaultWinBtn(EWindowCaptionWidget type, QWidget* parent)
+    {
+        QString objName;
+        QPixmap iconPixmap;
+        QPushButton* winBtn = new QPushButton(parent);
+
+        switch (type)
+        {
+        case EWindowCaptionWidget::WindowHelpButton:
+            iconPixmap = parent->style()->standardPixmap(QStyle::SP_TitleBarContextHelpButton);
+            objName = AStr("aproch-captionbar-help");
+            break;
+        case EWindowCaptionWidget::WindowMinimizeButton:
+            iconPixmap = parent->style()->standardPixmap(QStyle::SP_TitleBarMinButton);
+            objName = AStr("aproch-captionbar-min");
+            break;
+        case EWindowCaptionWidget::WindowMaximizeButton:
+            iconPixmap = parent->style()->standardPixmap(QStyle::SP_TitleBarMaxButton);
+            winBtn->setCheckable(true);
+            objName = AStr("aproch-captionbar-max");
+            break;
+        case EWindowCaptionWidget::WindowCloseButton:
+            iconPixmap = parent->style()->standardPixmap(QStyle::SP_TitleBarCloseButton);
+            objName = AStr("aproch-captionbar-close");
+            break;
+        default:
+            break;
+        }
+
+        winBtn->setIcon(iconPixmap);
+        winBtn->setProperty("aproch-system-button", true);
+        winBtn->setObjectName(objName.toLatin1());
+        winBtn->setFixedWidth(48);
+        winBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+
+        return winBtn;
+    }
+
+}
 
 APROCH_NAMESPACE_BEGIN
 
-ACaptionBar::ACaptionBar(QWidget *parent /*= nullptr*/)
-    : QWidget(parent)
+void ACaptionBarPrivate::init(const FWindowCaptionWidgets& widgets)
 {
-    init(WindowTitle | WindowSystemMenu | WindowControllerButtons);
+    mainLayout = new QHBoxLayout();
+    if (QLocale::system().textDirection() == Qt::RightToLeft)
+        mainLayout->setDirection(QBoxLayout::RightToLeft);
+
+    mainLayout->setContentsMargins(QMargins());
+    mainLayout->setSpacing(0);
+
+    // 初始化占位符
+    for (int i = _widget2Index(EWindowCaptionWidget::WindowIcon); 
+         i <= _widget2Index(EWindowCaptionWidget::WindowCloseButton);
+         ++i)
+        insertDefaultSpace(i);
+
+    // init widgets
+    {
+        //q_ptr->setMouseTracking(true);
+
+        if (widgets & EWindowCaptionWidget::WindowIcon)
+            q_ptr->setIcon(createDefaultIcon(q_ptr));
+        if (widgets & EWindowCaptionWidget::WindowTitle)
+            q_ptr->setTitle(createDefaultTitle(q_ptr));
+        if (widgets & EWindowCaptionWidget::WindowMenu)
+            q_ptr->setMenuBar(createDefaultMenuBar(q_ptr));
+
+        if (widgets & EWindowCaptionWidget::WindowAppendixLayout)
+        {
+            auto AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+            AppendixLayout->setContentsMargins(QMargins());
+            AppendixLayout->setSpacing(0);
+            q_ptr->setAppendixLayout(AppendixLayout);
+        }
+
+        // 控制按钮
+        if (widgets & EWindowCaptionWidget::WindowHelpButton)
+            q_ptr->setHelpButton(createDefaultWinBtn(EWindowCaptionWidget::WindowHelpButton, q_ptr));
+        if (widgets & EWindowCaptionWidget::WindowMinimizeButton)
+            q_ptr->setMinButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMinimizeButton, q_ptr));
+        if (widgets & EWindowCaptionWidget::WindowMaximizeButton)
+            q_ptr->setMaxButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMaximizeButton, q_ptr));
+        if (widgets & EWindowCaptionWidget::WindowCloseButton)
+            q_ptr->setCloseButton(createDefaultWinBtn(EWindowCaptionWidget::WindowCloseButton, q_ptr));
+    }
+
+    q_ptr->setLayout(mainLayout);
 }
 
-ACaptionBar::ACaptionBar(const FWindowCaptionWidgets &widgets, QWidget *parent /*= nullptr*/)
-    : QWidget(parent)
+void ACaptionBarPrivate::setWidgetAt(EWindowCaptionWidget type, QWidget* widget)
 {
-    init(widgets);
+    int index = _widget2Index(type);
+    auto item = mainLayout->takeAt(index);
+    auto orgWidget = item->widget();
+    if (orgWidget)
+        orgWidget->deleteLater();
+
+    delete item;
+    if (!widget)
+    {
+        insertDefaultSpace(index);
+    }
+    else
+    {
+        mainLayout->insertWidget(index, widget);
+    }
+}
+
+QWidget* ACaptionBarPrivate::takeWidgetAt(EWindowCaptionWidget type)
+{
+    int index = _widget2Index(type);
+    auto item = mainLayout->itemAt(index);
+    auto orgWidget = item->widget();
+    if (orgWidget)
+    {
+        item = mainLayout->takeAt(index);
+        delete item;
+        insertDefaultSpace(index);
+    }
+    return orgWidget;
+}
+
+void ACaptionBarPrivate::setAppendixLayout(QLayout* layout)
+{
+    constexpr int index = _widget2Index(EWindowCaptionWidget::WindowAppendixLayout);
+    auto item = mainLayout->takeAt(index);
+    auto orgLayout = item->layout();
+    if (orgLayout)
+        orgLayout->deleteLater();
+
+    delete item;
+    if (!layout)
+    {
+        insertDefaultSpace(index);
+    }
+    else
+    {
+        mainLayout->insertLayout(index, layout);
+    }
+}
+
+QLayout* ACaptionBarPrivate::takeAppendixLayout()
+{
+    constexpr int index = _widget2Index(EWindowCaptionWidget::WindowAppendixLayout);
+    auto item = mainLayout->itemAt(index);
+    auto orgLayout = item->layout();
+    if (orgLayout)
+    {
+        item = mainLayout->takeAt(index);
+        delete item;
+        insertDefaultSpace(index);
+    }
+    return orgLayout;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ACaptionBar::ACaptionBar(QWidget* parent)
+    : ACaptionBar(new ACaptionBarPrivate(), parent)
+{
+}
+
+ACaptionBar::ACaptionBar(const FWindowCaptionWidgets& captionWidgets, QWidget* parent)
+    : ACaptionBar(new ACaptionBarPrivate(), parent)
+{
+}
+
+ACaptionBar::ACaptionBar(ACaptionBarPrivate* d, QWidget* parent, const FWindowCaptionWidgets& captionWidgets)
+    : QFrame(parent), d_ptr(d)
+{
+    d_ptr->q_ptr = this;
+    d_ptr->init(captionWidgets);
 }
 
 ACaptionBar::~ACaptionBar(void)
 {
 }
 
-void ACaptionBar::setWidgetsVisibility(const FWindowCaptionWidgets &widgets, EWidgetVisiblityState type)
+QAbstractButton* ACaptionBar::getIcon() const
 {
-    QBoxLayout *theLayout = qobject_cast<QBoxLayout *>(layout());
+    return qobject_cast<QAbstractButton*>(d_ptr->widgetAt(EWindowCaptionWidget::WindowIcon));
+}
 
-    if (widgets & WindowTitle)
+QLabel* ACaptionBar::getTitle() const
+{
+    return qobject_cast<QLabel*>(d_ptr->widgetAt(EWindowCaptionWidget::WindowTitle));
+}
+
+QMenuBar* ACaptionBar::getMenuBar() const
+{
+    return qobject_cast<QMenuBar*>(d_ptr->widgetAt(EWindowCaptionWidget::WindowMenu));
+}
+
+QLayout* ACaptionBar::getAppendixLayout() const
+{
+    return d_ptr->appendixLayout();
+}
+
+QAbstractButton* ACaptionBar::getHelpButton() const
+{
+    return qobject_cast<QAbstractButton*>(d_ptr->widgetAt(EWindowCaptionWidget::WindowHelpButton));
+}
+
+QAbstractButton* ACaptionBar::getMinButton() const
+{
+    return qobject_cast<QAbstractButton*>(d_ptr->widgetAt(EWindowCaptionWidget::WindowMinimizeButton));
+}
+
+QAbstractButton* ACaptionBar::getMaxButton() const
+{
+    return qobject_cast<QAbstractButton*>(d_ptr->widgetAt(EWindowCaptionWidget::WindowMaximizeButton));
+}
+
+QAbstractButton* ACaptionBar::getCloseButton() const
+{
+    return qobject_cast<QAbstractButton*>(d_ptr->widgetAt(EWindowCaptionWidget::WindowCloseButton));
+}
+
+void ACaptionBar::setIcon(QAbstractButton* icon)
+{
+    auto org = takeIcon();
+    if (org)
+        org->deleteLater();
+    if (!icon)
+        return;
+    d_ptr->setWidgetAt(EWindowCaptionWidget::WindowIcon, icon);
+    if (d_ptr->isAutoIcon && d_ptr->hostWidget)
+        icon->setIcon(d_ptr->hostWidget->windowIcon());
+    icon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+}
+
+void ACaptionBar::setTitle(QLabel* label)
+{
+    auto org = takeTitle();
+    if (org)
+        org->deleteLater();
+    if (!label)
+        return;
+    d_ptr->setWidgetAt(EWindowCaptionWidget::WindowTitle, label);
+    if (d_ptr->isAutoTitle && d_ptr->hostWidget)
+        label->setText(d_ptr->hostWidget->windowTitle());
+    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+}
+
+void ACaptionBar::setMenuBar(QMenuBar* menuBar)
+{
+    auto org = takeMenuBar();
+    if (org)
+        org->deleteLater();
+    if (!menuBar)
+        return;
+    d_ptr->setWidgetAt(EWindowCaptionWidget::WindowMenu, menuBar);
+    menuBar->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+}
+
+void ACaptionBar::setAppendixLayout(QLayout* layout)
+{
+    auto org = takeAppendixLayout();
+    if (org)
+        org->deleteLater();
+
+    if (!layout)
+        return;
+    d_ptr->setAppendixLayout(layout);
+}
+
+void ACaptionBar::setHelpButton(QAbstractButton* btn)
+{
+    auto org = takeCloseButton();
+    if (org)
+        org->deleteLater();
+    if (!btn)
+        return;
+    d_ptr->setWidgetAt(EWindowCaptionWidget::WindowHelpButton, btn);
+    connect(btn, &QAbstractButton::clicked, this, &ACaptionBar::helpRequested);
+}
+
+void ACaptionBar::setMinButton(QAbstractButton* btn)
+{
+    auto org = takeMinButton();
+    if (org)
+        org->deleteLater();
+    if (!btn)
+        return;
+    d_ptr->setWidgetAt(EWindowCaptionWidget::WindowMinimizeButton, btn);
+    connect(btn, &QAbstractButton::clicked, this, &ACaptionBar::minimizeRequested);
+}
+
+void ACaptionBar::setMaxButton(QAbstractButton* btn)
+{
+    auto org = takeMaxButton();
+    if (org)
+        org->deleteLater();
+    if (!btn)
+        return;
+    d_ptr->setWidgetAt(EWindowCaptionWidget::WindowMaximizeButton, btn);
+    connect(btn, &QAbstractButton::clicked, this, &ACaptionBar::maximizeRequested);
+}
+
+void ACaptionBar::setCloseButton(QAbstractButton* btn)
+{
+    auto org = takeCloseButton();
+    if (org)
+        org->deleteLater();
+    if (!btn)
+        return;
+    d_ptr->setWidgetAt(EWindowCaptionWidget::WindowCloseButton, btn);
+    connect(btn, &QAbstractButton::clicked, this, &ACaptionBar::closeRequested);
+}
+
+QAbstractButton* ACaptionBar::takeIcon()
+{
+    return static_cast<QAbstractButton*>(d_ptr->takeWidgetAt(EWindowCaptionWidget::WindowIcon));
+}
+
+QLabel* ACaptionBar::takeTitle()
+{
+    return static_cast<QLabel*>(d_ptr->takeWidgetAt(EWindowCaptionWidget::WindowTitle));
+}
+
+QMenuBar* ACaptionBar::takeMenuBar()
+{
+    return static_cast<QMenuBar*>(d_ptr->takeWidgetAt(EWindowCaptionWidget::WindowMenu));
+}
+
+QLayout* ACaptionBar::takeAppendixLayout() const
+{
+    return d_ptr->takeAppendixLayout();
+}
+
+QAbstractButton* ACaptionBar::takeHelpButton()
+{
+    auto btn = static_cast<QAbstractButton*>(d_ptr->takeWidgetAt(EWindowCaptionWidget::WindowHelpButton));
+    if (!btn)
     {
-        if (setWidgetState(mDefaultWidgets.Title, type))
-        {
-            mDefaultWidgets.Title = createDefaultTitle();
-            theLayout->insertWidget(0, mDefaultWidgets.Title);
-        }
+        return nullptr;
     }
+    disconnect(btn, &QAbstractButton::clicked, this, &ACaptionBar::helpRequested);
+    return btn;
+}
 
-    if (widgets & WindowSystemMenu)
+QAbstractButton* ACaptionBar::takeMinButton()
+{
+    auto btn = static_cast<QAbstractButton*>(d_ptr->takeWidgetAt(EWindowCaptionWidget::WindowMinimizeButton));
+    if (!btn)
     {
-        if (setWidgetState(mDefaultWidgets.MenuBar, type))
-        {
-            mDefaultWidgets.MenuBar = createDefaultMenuBar();
-            theLayout->insertWidget((nullptr == mDefaultWidgets.Title) ? 0 : 1, mDefaultWidgets.MenuBar);
-        }
+        return nullptr;
     }
+    disconnect(btn, &QAbstractButton::clicked, this, &ACaptionBar::minimizeRequested);
+    return btn;
+}
 
-    if (widgets & WindowContextHelpButton)
+QAbstractButton* ACaptionBar::takeMaxButton()
+{
+    auto btn = static_cast<QAbstractButton*>(d_ptr->takeWidgetAt(EWindowCaptionWidget::WindowMaximizeButton));
+    if (!btn)
     {
-        if (setWidgetState(mDefaultWidgets.BtnHelp, type))
-        {
-            mDefaultWidgets.BtnHelp = createDefaultWinBtn(0);
-            if (nullptr != mDefaultWidgets.MenuBar)
-                theLayout->insertWidget(theLayout->indexOf(mDefaultWidgets.MenuBar) + 1, mDefaultWidgets.BtnHelp);
-            else if (nullptr != mDefaultWidgets.Title)
-                theLayout->insertWidget(1, mDefaultWidgets.BtnHelp);
-            else
-                theLayout->insertWidget(0, mDefaultWidgets.BtnHelp);
-        }
+        return nullptr;
     }
+    disconnect(btn, &QAbstractButton::clicked, this, &ACaptionBar::maximizeRequested);
+    return btn;
+}
 
-    if (widgets & WindowMinimizeButton)
+QAbstractButton* ACaptionBar::takeCloseButton()
+{
+    auto btn = static_cast<QAbstractButton*>(d_ptr->takeWidgetAt(EWindowCaptionWidget::WindowCloseButton));
+    if (!btn)
     {
-        if (setWidgetState(mDefaultWidgets.BtnMinimize, type))
-        {
-            mDefaultWidgets.BtnMinimize = createDefaultWinBtn(1);
-            if (nullptr != mDefaultWidgets.BtnMaxRestore)
-                theLayout->insertWidget(theLayout->indexOf(mDefaultWidgets.BtnMaxRestore), mDefaultWidgets.BtnMinimize);
-            else if (nullptr != mDefaultWidgets.BtnClose)
-                theLayout->insertWidget(theLayout->indexOf(mDefaultWidgets.BtnClose), mDefaultWidgets.BtnMinimize);
-            else
-                theLayout->addWidget(mDefaultWidgets.BtnMinimize);
-        }
+        return nullptr;
     }
+    disconnect(btn, &QAbstractButton::clicked, this, &ACaptionBar::closeRequested);
+    return btn;
+}
 
-    if (widgets & WindowMaximizeButton)
+QWidget* ACaptionBar::getHostWidget() const
+{
+    return d_ptr->hostWidget;
+}
+
+void ACaptionBar::setHostWidget(QWidget* w)
+{
+    QWidget* org = d_ptr->hostWidget;
+    if (org)
     {
-        if (setWidgetState(mDefaultWidgets.BtnMaxRestore, type))
-        {
-            mDefaultWidgets.BtnMinimize = createDefaultWinBtn(2);
-            if (nullptr != mDefaultWidgets.BtnClose)
-                theLayout->insertWidget(theLayout->indexOf(mDefaultWidgets.BtnClose), mDefaultWidgets.BtnMinimize);
-            else
-                theLayout->addWidget(mDefaultWidgets.BtnMinimize);
-        }
+        org->removeEventFilter(this);
     }
-
-    if (widgets & WindowCloseButton)
+    d_ptr->hostWidget = w;
+    if (w)
     {
-        if (setWidgetState(mDefaultWidgets.BtnClose, type))
-        {
-            mDefaultWidgets.BtnClose = createDefaultWinBtn(3);
-            theLayout->addWidget(mDefaultWidgets.BtnMinimize);
-        }
+        w->installEventFilter(this);
     }
 }
 
-void ACaptionBar::paintEvent(QPaintEvent *event)
+void ACaptionBar::setTitleFollowHostWidget(bool on)
 {
-    APROCH_USE_STYLE_SHEET();
+    d_ptr->isAutoTitle = on;
 
-    return __super::paintEvent(event);
+    if (on && getTitle() && d_ptr->hostWidget)
+        getTitle()->setText(d_ptr->hostWidget->windowTitle());
 }
 
-void ACaptionBar::init(const FWindowCaptionWidgets &widgets)
+bool ACaptionBar::isTitleFollowHostWidget() const
 {
-    setMouseTracking(true);
-
-    // 主要的水平布局
-    QBoxLayout *mainHLayout = new QBoxLayout(QBoxLayout::LeftToRight, this);
-    mainHLayout->setSpacing(0);
-
-    // 标题
-    mDefaultWidgets.Title = createDefaultTitle();
-    mainHLayout->addWidget(mDefaultWidgets.Title);
-
-    // 菜单栏
-    mDefaultWidgets.MenuBar = createDefaultMenuBar();
-    mainHLayout->addWidget(mDefaultWidgets.MenuBar);
-
-    QSpacerItem *spacerItem = new QSpacerItem(40, 20, QSizePolicy::Expanding);
-    mainHLayout->addSpacerItem(spacerItem);
-
-    // 空闲布局
-    mDefaultWidgets.AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-    mDefaultWidgets.AppendixLayout->setContentsMargins(0, 0, 0, 0);
-    // mDefaultWidgets.AppendixLayout->setSpacing(AppUIStyle.HorizontalSpacing);
-    mainHLayout->addLayout(mDefaultWidgets.AppendixLayout);
-
-    // 控制按钮
-    mDefaultWidgets.BtnHelp = createDefaultWinBtn(0);
-    mDefaultWidgets.BtnMinimize = createDefaultWinBtn(1);
-    mDefaultWidgets.BtnMaxRestore = createDefaultWinBtn(2);
-    mDefaultWidgets.BtnClose = createDefaultWinBtn(3);
-
-    // 控制按钮的布局
-    mDefaultWidgets.CtrlBtnLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-    mDefaultWidgets.CtrlBtnLayout->setContentsMargins(0, 0, 0, 0);
-    mDefaultWidgets.CtrlBtnLayout->setSpacing(0);
-    mDefaultWidgets.CtrlBtnLayout->addWidget(mDefaultWidgets.BtnHelp);
-    mDefaultWidgets.CtrlBtnLayout->addWidget(mDefaultWidgets.BtnMinimize);
-    mDefaultWidgets.CtrlBtnLayout->addWidget(mDefaultWidgets.BtnMaxRestore);
-    mDefaultWidgets.CtrlBtnLayout->addWidget(mDefaultWidgets.BtnClose);
-
-    mainHLayout->addLayout(mDefaultWidgets.CtrlBtnLayout);
-    mainHLayout->setContentsMargins(0, 0, 0, 0);
-
-    // 设置显示隐藏
-    setWidgetsVisibility(~widgets, WVS_Hide);
+    return d_ptr->isAutoTitle;
 }
 
-QLabel *ACaptionBar::createDefaultTitle()
+void ACaptionBar::setIconFollowHostWidget(bool on)
 {
-    if (nullptr != mDefaultWidgets.Title)
+    d_ptr->isAutoIcon = on;
+
+    if (on && getIcon() && d_ptr->hostWidget)
+        getIcon()->setIcon(d_ptr->hostWidget->windowIcon());
+}
+
+bool ACaptionBar::isIconFollowWindow() const
+{
+    return d_ptr->isAutoIcon;
+}
+
+bool ACaptionBar::eventFilter(QObject* obj, QEvent* event)
+{
+    auto w = d_ptr->hostWidget;
+    if (obj == w)
     {
-        mDefaultWidgets.Title->deleteLater();
-        mDefaultWidgets.Title = nullptr;
-    }
-
-    QLabel *lbTitle = new QLabel(this);
-    lbTitle->setAttribute(Qt::WA_TransparentForMouseEvents);
-    lbTitle->setPixmap(QPixmap(":/Img/AppIcon/png/aproch_24x24.png"));
-    lbTitle->setContentsMargins(10, 4, 10, 4);
-    lbTitle->setObjectName(AOBJNAME_WINDOWS_TITLE);
-    lbTitle->setAlignment(Qt::AlignCenter);
-    return lbTitle;
-}
-
-QMenuBar *ACaptionBar::createDefaultMenuBar()
-{
-    if (nullptr != mDefaultWidgets.MenuBar)
-    {
-        mDefaultWidgets.MenuBar->deleteLater();
-        mDefaultWidgets.MenuBar = nullptr;
-    }
-
-    QMenuBar *menuBar = new QMenuBar(this);
-    menuBar->setObjectName(AOBJNAME_WINDOWS_MENUBAR);
-    menuBar->setAttribute(Qt::WA_TranslucentBackground, true);
-    menuBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    return menuBar;
-}
-
-QPushButton *ACaptionBar::createDefaultWinBtn(int nOp)
-{
-    QString propValue = AOBJNAME_BTN_CONTROLLER;
-    QPixmap iconPixmap;
-
-    switch (nOp)
-    {
-    case 0:
-        iconPixmap = style()->standardPixmap(QStyle::SP_TitleBarContextHelpButton);
-        propValue = AOBJNAME_BTN_HELP;
-        if (nullptr != mDefaultWidgets.BtnHelp)
+        QAbstractButton* iconBtn = getIcon();
+        QLabel* label = getTitle();
+        QAbstractButton* maxBtn = getMaxButton();
+        switch (event->type())
         {
-            mDefaultWidgets.BtnHelp->deleteLater();
-            mDefaultWidgets.BtnHelp = nullptr;
+        case QEvent::WindowIconChange: {
+            if (d_ptr->isAutoIcon && iconBtn)
+            {
+                iconBtn->setIcon(w->windowIcon());
+                iconChanged(w->windowIcon());
+            }
+            break;
         }
-        break;
-    case 1:
-        iconPixmap = QPixmap(":/icon/windowbtn_minimize");
-        if (nullptr != mDefaultWidgets.BtnMinimize)
-        {
-            mDefaultWidgets.BtnMinimize->deleteLater();
-            mDefaultWidgets.BtnMinimize = nullptr;
+        case QEvent::WindowTitleChange: {
+            if (d_ptr->isAutoTitle && label)
+            {
+                label->setText(w->windowTitle());
+                titleChanged(w->windowTitle());
+            }
+            break;
         }
-        break;
-    case 2:
-        iconPixmap = QPixmap(":/icon/windowbtn_maximize");
-        if (nullptr != mDefaultWidgets.BtnMaxRestore)
-        {
-            mDefaultWidgets.BtnMaxRestore->deleteLater();
-            mDefaultWidgets.BtnMaxRestore = nullptr;
+        case QEvent::WindowStateChange: {
+            if (maxBtn)
+            {
+                maxBtn->setChecked(w->isMaximized());
+            }
+            break;
         }
-        break;
-    case 3:
-        iconPixmap = QPixmap(":/icon/windowbtn_close");
-        if (nullptr != mDefaultWidgets.BtnClose)
-        {
-            mDefaultWidgets.BtnClose->deleteLater();
-            mDefaultWidgets.BtnClose = nullptr;
+        default:
+            break;
         }
-        break;
-    default:
-        break;
     }
-
-    // 控制按钮
-    QPushButton *winBtn = new QPushButton(this);
-    winBtn->setIcon(iconPixmap);
-    // winBtn->setFixedSize(AppUIStyle.WindowControllerSize);
-    winBtn->setProperty(APropName_BtnType, propValue);
-
-    return winBtn;
+    return QWidget::eventFilter(obj, event);
 }
 
-bool ACaptionBar::setWidgetState(QWidget *widget, EWidgetVisiblityState type)
+void ACaptionBar::titleChanged(const QString& text)
 {
-    if (nullptr == widget)
-    {
-        if (type == EWidgetVisiblityState::WVS_Show)
-            return true;
-        return false;
-    }
+    Q_UNUSED(text)
+}
 
-    switch (type)
-    {
-    case WVS_Show:
-        widget->setHidden(false);
-        widget->show();
-        break;
-    case WVS_Hide:
-        widget->setHidden(true);
-        break;
-    case WVS_Invisible:
-        // TODO
-        widget->setHidden(true);
-        break;
-    default:
-        break;
-    }
-
-    widget->updateGeometry();
-    return false;
+void ACaptionBar::iconChanged(const QIcon& icon)
+{
+    Q_UNUSED(icon)
 }
 
 APROCH_NAMESPACE_END

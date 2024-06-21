@@ -72,6 +72,9 @@
     <Filter Include="Application\HotKey">
       <UniqueIdentifier>{4ca25406-ec94-43a1-9920-f91793ca67c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Widget\Private">
+      <UniqueIdentifier>{791604b4-00e7-4f39-8f3b-179c6f7dc3cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainWindow.h">
@@ -253,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="WinUI\AWinUITheme.h">
       <Filter>WinUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Private\ACaptionBar_p.h">
+      <Filter>Widget\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

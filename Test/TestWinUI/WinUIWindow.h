@@ -5,7 +5,7 @@
 
 #include "AprochAPI.h"
 
-class WinUIWindow : public QWidget
+class WinUIWindow : public aproch::AWindow
 {
     Q_OBJECT
 
