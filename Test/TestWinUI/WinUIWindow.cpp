@@ -12,6 +12,10 @@
 #include <QClipboard>
 #include <QTextEdit>
 #include <QLineEdit>
+#include <QMenuBar>
+#include <QActionGroup>
+
+#include <QWindowKit/QWKWidgets/widgetwindowagent.h>
 
 using namespace aproch;
 
@@ -19,6 +23,80 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     : aproch::AWindow(parent)
 {
     ui.setupUi(this);
+    {
+        auto menuBar = [this]() {
+            auto menuBar = new QMenuBar();
+
+            // Virtual menu
+            auto file = new QMenu(tr("File(&F)"), menuBar);
+            file->addAction(new QAction(tr("New(&N)"), menuBar));
+            file->addAction(new QAction(tr("Open(&O)"), menuBar));
+            file->addSeparator();
+
+            auto edit = new QMenu(tr("Edit(&E)"), menuBar);
+            edit->addAction(new QAction(tr("Undo(&U)"), menuBar));
+            edit->addAction(new QAction(tr("Redo(&R)"), menuBar));
+
+#ifdef Q_OS_WIN
+            auto dwmBlurAction = new QAction(tr("Enable DWM blur"), menuBar);
+            dwmBlurAction->setCheckable(true);
+            connect(dwmBlurAction, &QAction::toggled, this, [this](bool checked) {
+                setBackgroundMaterial(EWinBackgroundMaterial::DWMBlur, checked);
+            });
+
+            auto acrylicAction = new QAction(tr("Enable acrylic material"), menuBar);
+            acrylicAction->setCheckable(true);
+            connect(acrylicAction, &QAction::toggled, this, [this](bool checked) {
+                setBackgroundMaterial(EWinBackgroundMaterial::Acrylic, checked);
+            });
+
+            auto micaAction = new QAction(tr("Enable mica"), menuBar);
+            micaAction->setCheckable(true);
+            connect(micaAction, &QAction::toggled, this, [this](bool checked) {
+                setBackgroundMaterial(EWinBackgroundMaterial::Mica, checked);
+            });
+
+            auto micaAltAction = new QAction(tr("Enable mica alt"), menuBar);
+            micaAltAction->setCheckable(true);
+            connect(micaAltAction, &QAction::toggled, this, [this](bool checked) {
+                setBackgroundMaterial(EWinBackgroundMaterial::MicaAlt, checked);
+            });
+
+            QActionGroup* actionGroup = new QActionGroup(menuBar);
+            actionGroup->addAction(dwmBlurAction);
+            actionGroup->addAction(acrylicAction);
+            actionGroup->addAction(micaAction);
+            actionGroup->addAction(micaAltAction);
+#endif
+
+            // Real menu
+            auto settings = new QMenu(tr("Settings(&S)"), menuBar);
+
+#ifdef Q_OS_WIN
+            settings->addSeparator();
+            settings->addAction(dwmBlurAction);
+            settings->addAction(acrylicAction);
+            settings->addAction(micaAction);
+            settings->addAction(micaAltAction);
+#elif defined(Q_OS_MAC)
+            settings->addAction(darkBlurAction);
+            settings->addAction(lightBlurAction);
+            settings->addAction(noBlurAction);
+#endif
+
+            menuBar->addMenu(file);
+            menuBar->addMenu(edit);
+            menuBar->addMenu(settings);
+            return menuBar;
+        }();
+        menuBar->setObjectName(QStringLiteral("win-menu-bar"));
+
+        getCaptionBar()->setMenuBar(menuBar);
+
+        mWinAgent->setHitTestVisible(menuBar, true);
+
+    }
+    return;
 
     /*QLineEdit* le111 = new QLineEdit(this);
     le111->setPlaceholderText(AStr("placeholder text"));
@@ -193,6 +271,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         AData* currentIndexDt = IntDM->addData(AStr("currentIndex"));
 
         QPushButton* changeItemsBtn = new QPushButton(tr("ChangeItems"), this);
+        changeItemsBtn->move((width() - changeItemsBtn->width()) / 2, height() - changeItemsBtn->height() - 10);
         connect(changeItemsBtn, &QPushButton::clicked, [=](bool) {
             QStringList strlist = StringListDM->value(dt);
             if (strlist.empty())

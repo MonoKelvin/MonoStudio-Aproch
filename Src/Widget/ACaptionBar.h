@@ -51,7 +51,7 @@ class ACaptionBarPrivate;
  *
  * 其布局如下：
  *
- * [ I - T - M ----- A ----- H - Mi - Mx - C ]
+ * [ I - M - T ----- A ----- H - Mi - Mx - C ]
  *
  */
 class APROCH_API ACaptionBar : public QFrame
@@ -63,8 +63,8 @@ public:
     ~ACaptionBar(void);
 
     QAbstractButton* getIcon() const;
-    QLabel* getTitle() const;
     QMenuBar* getMenuBar() const;
+    QLabel* getTitle() const;
     QLayout* getAppendixLayout() const;
     QAbstractButton* getHelpButton() const;
     QAbstractButton* getMinButton() const;
@@ -72,8 +72,8 @@ public:
     QAbstractButton* getCloseButton() const;
 
     void setIcon(QAbstractButton* icon);
-    void setTitle(QLabel* label);
     void setMenuBar(QMenuBar* menuBar);
+    void setTitle(QLabel* label);
     void setAppendixLayout(QLayout* layout);
     void setHelpButton(QAbstractButton* btn);
     void setMinButton(QAbstractButton* btn);
@@ -81,8 +81,8 @@ public:
     void setCloseButton(QAbstractButton* btn);
 
     QAbstractButton* takeIcon();
-    QLabel* takeTitle();
     QMenuBar* takeMenuBar();
+    QLabel* takeTitle();
     QLayout* takeAppendixLayout() const;
     QAbstractButton* takeHelpButton();
     QAbstractButton* takeMinButton();

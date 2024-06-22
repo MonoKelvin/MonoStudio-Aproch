@@ -35,6 +35,7 @@ namespace {
     {
         auto iconBtn = new QPushButton(parent);
         iconBtn->setObjectName(AStr("aproch-captionbar-icon"));
+        iconBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         return iconBtn;
     }
 
@@ -44,7 +45,6 @@ namespace {
         titleLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
         titleLabel->setAlignment(Qt::AlignCenter);
         titleLabel->setObjectName(AStr("aproch-captionbar-title"));
-        //titleLabel->setContentsMargins(10, 4, 10, 4);
         return titleLabel;
     }
 
@@ -89,8 +89,7 @@ namespace {
         winBtn->setIcon(iconPixmap);
         winBtn->setProperty("aproch-system-button", true);
         winBtn->setObjectName(objName.toLatin1());
-        winBtn->setFixedWidth(48);
-        winBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        winBtn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
         return winBtn;
     }
@@ -116,14 +115,12 @@ void ACaptionBarPrivate::init(const FWindowCaptionWidgets& widgets)
 
     // init widgets
     {
-        //q_ptr->setMouseTracking(true);
-
         if (widgets & EWindowCaptionWidget::WindowIcon)
             q_ptr->setIcon(createDefaultIcon(q_ptr));
-        if (widgets & EWindowCaptionWidget::WindowTitle)
-            q_ptr->setTitle(createDefaultTitle(q_ptr));
         if (widgets & EWindowCaptionWidget::WindowMenu)
             q_ptr->setMenuBar(createDefaultMenuBar(q_ptr));
+        if (widgets & EWindowCaptionWidget::WindowTitle)
+            q_ptr->setTitle(createDefaultTitle(q_ptr));
 
         if (widgets & EWindowCaptionWidget::WindowAppendixLayout)
         {
@@ -228,6 +225,8 @@ ACaptionBar::ACaptionBar(const FWindowCaptionWidgets& captionWidgets, QWidget* p
 ACaptionBar::ACaptionBar(ACaptionBarPrivate* d, QWidget* parent, const FWindowCaptionWidgets& captionWidgets)
     : QFrame(parent), d_ptr(d)
 {
+    setObjectName(AStr("aproch-captionbar"));
+
     d_ptr->q_ptr = this;
     d_ptr->init(captionWidgets);
 }
@@ -299,7 +298,7 @@ void ACaptionBar::setTitle(QLabel* label)
     d_ptr->setWidgetAt(EWindowCaptionWidget::WindowTitle, label);
     if (d_ptr->isAutoTitle && d_ptr->hostWidget)
         label->setText(d_ptr->hostWidget->windowTitle());
-    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 }
 
 void ACaptionBar::setMenuBar(QMenuBar* menuBar)

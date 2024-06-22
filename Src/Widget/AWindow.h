@@ -27,10 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-
-#include <QWidget>
-
-class QEventLoop;
+#include <QMainWindow>
 
 namespace QWK
 {
@@ -42,29 +39,36 @@ APROCH_NAMESPACE_BEGIN
 class ACaptionBar;
 
 /**
- * @brief 自定义窗口组件
+ * @brief 窗口
  */
-class APROCH_API AWindow : public QWidget
+class APROCH_API AWindow : public QMainWindow
 {
     Q_OBJECT
 public:
     explicit AWindow(QWidget *parent = nullptr, Qt::WindowType type = Qt::Window);
     virtual ~AWindow();
 
-    /**
-     * @brief 以模态窗口的方式显示
-     * @note 关闭后会删除该控件
-     */
-    int showModality();
+    /** @brief 获取标题栏 */
+    ACaptionBar* getCaptionBar(void) const;
 
+#ifdef Q_OS_WIN
     /**
-     * 获取标题栏
-     * @return AMenuBar* 标题栏控件
+     * @brief 设置窗口背景材质
+     * @note 要支持windows背景材质，qss样式表中需要添加：
+     * ```qss
+     * AWindow[has-material=true] {
+     *     background: transparent;
+     * }
+     * ``` 
+     * @param bkMaterial 材质类型
+     * @param on         是否开启，开启后会将之前设置过的材质样式清空
+     * @return 是否设置成功
      */
-    inline ACaptionBar *getCaptionBar(void) const noexcept
-    {
-        return mCaptionBar;
-    }
+    bool setBackgroundMaterial(EWinBackgroundMaterial bkMaterial, bool on);
+
+    /** @brief 获取窗口背景材质 */
+    EWinBackgroundMaterial getBackgroundMaterial() const;
+#endif
 
 protected:
     virtual bool event(QEvent* evt) override;
@@ -72,13 +76,6 @@ protected:
     virtual void closeEvent(QCloseEvent *ev) override;
 
 protected:
-    /** @brief 标题栏 */
-    ACaptionBar *mCaptionBar;
-
-    /** @brief 阻塞事件循环，用于实现模态窗口 */
-    QEventLoop *mEventLoop;
-
-private:
     /** @brief 窗口代理，用于实现无边框窗口 */
     QWK::WidgetWindowAgent* mWinAgent = nullptr;
 };

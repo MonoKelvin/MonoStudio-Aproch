@@ -43,6 +43,15 @@
 
 APROCH_NAMESPACE_BEGIN
 
+#ifdef Q_OS_WIN
+static QMap<EWinBackgroundMaterial, QString> s_bkMaterial2Name = {
+    QPair<EWinBackgroundMaterial, QString>(EWinBackgroundMaterial::DWMBlur, AStr("dwm-blur")),
+    QPair<EWinBackgroundMaterial, QString>(EWinBackgroundMaterial::Acrylic, AStr("acrylic-material")),
+    QPair<EWinBackgroundMaterial, QString>(EWinBackgroundMaterial::Mica, AStr("mica")),
+    QPair<EWinBackgroundMaterial, QString>(EWinBackgroundMaterial::MicaAlt, AStr("mica-alt")),
+};
+#endif
+
 static inline void emulateLeaveEvent(QWidget* widget)
 {
     Q_ASSERT(widget);
@@ -83,30 +92,39 @@ static inline void emulateLeaveEvent(QWidget* widget)
 }
 
 AWindow::AWindow(QWidget *parent, Qt::WindowType type)
-    : QWidget(parent, type)
-    , mEventLoop(nullptr)
+    : QMainWindow(parent, type)
 {
     mWinAgent = new QWK::WidgetWindowAgent(this);
     mWinAgent->setup(this);
 
     // 标题栏
-    mCaptionBar = new ACaptionBar(this);
-    mCaptionBar->resize(900, 48);
-    mCaptionBar->setHostWidget(this);
+    auto captionBar = new ACaptionBar(this);
+    captionBar->setHostWidget(this);
 
 #ifndef Q_OS_MAC
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::WindowIcon, mCaptionBar->getIcon());
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::Help, mCaptionBar->getHelpButton());
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::Minimize, mCaptionBar->getMinButton());
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::Maximize, mCaptionBar->getMaxButton());
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::Close, mCaptionBar->getMaxButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::WindowIcon, captionBar->getIcon());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Help, captionBar->getHelpButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Minimize, captionBar->getMinButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Maximize, captionBar->getMaxButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Close, captionBar->getCloseButton());
 #endif
-    mWinAgent->setTitleBar(mCaptionBar);
-    mWinAgent->setHitTestVisible(mCaptionBar, true);
-    mWinAgent->centralize();
+    mWinAgent->setTitleBar(captionBar);
 
-    connect(mCaptionBar, &ACaptionBar::minimizeRequested, this, &QWidget::showMinimized);
-    connect(mCaptionBar, &ACaptionBar::maximizeRequested, this, [this](bool max) {
+    if (captionBar->getMenuBar())
+        mWinAgent->setHitTestVisible(captionBar->getMenuBar(), true);
+
+#ifdef Q_OS_MAC
+    mWinAgent->setSystemButtonAreaCallback([](const QSize& size) {
+        static constexpr const int width = 75;
+        return QRect(QPoint(size.width() - width, 0), QSize(width, size.height()));
+    });
+#endif
+
+    setMenuWidget(captionBar);
+
+#ifndef Q_OS_MAC
+    connect(captionBar, &ACaptionBar::minimizeRequested, this, &QWidget::showMinimized);
+    connect(captionBar, &ACaptionBar::maximizeRequested, this, [this, captionBar](bool max) {
         if (max)
             showMaximized();
         else
@@ -115,55 +133,78 @@ AWindow::AWindow(QWidget *parent, Qt::WindowType type)
         // It's a Qt issue that if a QAbstractButton::clicked triggers a window's maximization,
         // the button remains to be hovered until the mouse move. As a result, we need to
         // manually send leave events to the button.
-        emulateLeaveEvent(mCaptionBar->getMaxButton());
+        emulateLeaveEvent(captionBar->getMaxButton());
     });
-    connect(mCaptionBar, &ACaptionBar::closeRequested, this, &QWidget::close);
+    connect(captionBar, &ACaptionBar::closeRequested, this, &QWidget::close);
+#endif
 }
 
 AWindow::~AWindow()
 {
 }
 
-int AWindow::showModality()
+ACaptionBar* AWindow::getCaptionBar(void) const
 {
-    setAttribute(Qt::WA_ShowModal, true);
-    setWindowModality(Qt::ApplicationModal);
-
-    const bool deleteOnClose = testAttribute(Qt::WA_DeleteOnClose);
-    setAttribute(Qt::WA_DeleteOnClose, false);
-
-    show();
-
-    QPointer<QWidget> guard = this;
-    mEventLoop = new QEventLoop(this);
-    const int result = mEventLoop->exec(QEventLoop::DialogExec);
-    if (guard.isNull())
-        return -1;
-
-    if (deleteOnClose)
-        delete this;
-    return result;
+    return qobject_cast<ACaptionBar*>(menuWidget());
 }
+
+#ifdef Q_OS_WIN
+bool AWindow::setBackgroundMaterial(EWinBackgroundMaterial bkMaterial, bool on)
+{
+    Q_ASSERT(mWinAgent);
+
+    bool hasMaterial = false;
+    QString name = s_bkMaterial2Name.value(bkMaterial);
+    if (name.isEmpty() || !on)
+    {
+        for (auto value : s_bkMaterial2Name)
+            mWinAgent->setWindowAttribute(value, false);
+    }
+    else
+    {
+        hasMaterial = mWinAgent->setWindowAttribute(name, true);
+        if (!hasMaterial)
+            return false;
+    }
+
+    setProperty("has-material", hasMaterial);
+    style()->polish(this);
+    return true;
+}
+
+EWinBackgroundMaterial AWindow::getBackgroundMaterial() const
+{
+    Q_ASSERT(mWinAgent);
+
+    for (auto iter = s_bkMaterial2Name.cbegin(); iter != s_bkMaterial2Name.cend(); ++iter)
+    {
+        if (mWinAgent->windowAttribute(iter.value()).toBool())
+            return iter.key();
+    }
+
+    return EWinBackgroundMaterial::NoneMaterial;
+}
+#endif
 
 bool AWindow::event(QEvent* evt)
 {
     switch (evt->type())
     {
     case QEvent::WindowActivate: {
-        auto captionBar = getCaptionBar();
+        auto captionBar = menuWidget();
         if (captionBar)
         {
-            captionBar->setProperty("bar-active", true);
+            captionBar->setProperty("active", true);
             style()->polish(captionBar);
         }
         break;
     }
 
     case QEvent::WindowDeactivate: {
-        auto captionBar = getCaptionBar();
+        auto captionBar = menuWidget();
         if (captionBar)
         {
-            captionBar->setProperty("bar-active", false);
+            captionBar->setProperty("active", false);
             style()->polish(captionBar);
         }
         break;
@@ -172,7 +213,7 @@ bool AWindow::event(QEvent* evt)
     default:
         break;
     }
-    return QWidget::event(evt);
+    return QMainWindow::event(evt);
 }
 
 void AWindow::paintEvent(QPaintEvent *ev)
