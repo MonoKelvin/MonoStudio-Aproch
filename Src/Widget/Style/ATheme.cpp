@@ -1,6 +1,6 @@
-﻿/****************************************************************************
- * @file    AWindow.h
- * @date    2021-1-24
+/****************************************************************************
+ * @file    AWindowsStyleManager.cpp
+ * @date    2022-05-29
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -26,32 +26,52 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
-#pragma once
-#include "AWidgetStyleDecoration.h"
-
-#include <QMainWindow>
+#include "stdafx.h"
+#include "ATheme.h"
 
 APROCH_NAMESPACE_BEGIN
 
-class ACaptionBar;
-
-/**
- * @brief 窗口
- */
-class APROCH_API AWindow : public QMainWindow, public AWidgetStyleDecoration
+class AThemePrivate
 {
-    Q_OBJECT
 public:
-    explicit AWindow(QWidget *parent = nullptr, Qt::WindowType type = Qt::Window);
-    virtual ~AWindow();
+    inline static ATheme* theAppTheme = nullptr;
+    ATheme::EThemeType themeType = ATheme::System;
 
-    /** @brief 获取标题栏 */
-    ACaptionBar* getCaptionBar(void) const;
-
-protected:
-    virtual bool event(QEvent* evt) override;
-    virtual void paintEvent(QPaintEvent *ev) override;
-    virtual void closeEvent(QCloseEvent *ev) override;
+public:
+    static ATheme* themeInst()
+    {
+        if (!theAppTheme)
+            theAppTheme = new ATheme();
+        return theAppTheme;
+    }
 };
+
+ATheme::ATheme(QObject* parent)
+    : QObject(parent)
+    , d_ptr(new AThemePrivate())
+{
+}
+
+ATheme::~ATheme()
+{
+}
+
+void ATheme::setTheme(EThemeType type)
+{
+    auto theAppTheme = AThemePrivate::themeInst();
+    if (theAppTheme->d_ptr->themeType == type)
+        return;
+    theAppTheme->d_ptr->themeType = type;
+
+    // TODO
+
+    emit theAppTheme->themeChanged();
+}
+
+ATheme::EThemeType ATheme::getTheme()
+{
+    auto theAppTheme = AThemePrivate::themeInst();
+    return theAppTheme->d_ptr->themeType;
+}
 
 APROCH_NAMESPACE_END

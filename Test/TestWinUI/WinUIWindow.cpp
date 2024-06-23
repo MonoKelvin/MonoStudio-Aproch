@@ -28,7 +28,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
             auto menuBar = new QMenuBar();
 
             // Virtual menu
-            auto file = new QMenu(tr("File(&F)"), menuBar);
+            auto file = new AMenu(tr("File(&F)"), menuBar);
             file->addAction(new QAction(tr("New(&N)"), menuBar));
             file->addAction(new QAction(tr("Open(&O)"), menuBar));
             file->addSeparator();
@@ -89,48 +89,54 @@ WinUIWindow::WinUIWindow(QWidget *parent)
             menuBar->addMenu(settings);
             return menuBar;
         }();
-        menuBar->setObjectName(QStringLiteral("win-menu-bar"));
 
         getCaptionBar()->setMenuBar(menuBar);
 
         mWinAgent->setHitTestVisible(menuBar, true);
 
+        setBackgroundMaterial(EWinBackgroundMaterial::MicaAlt);
+        setMaterialTheme(ATheme::Dark);
     }
-    return;
+
+    QWidget* cw = new QWidget(this);
+    setCentralWidget(cw);
+
+    QBoxLayout* theLayout = new QBoxLayout(QBoxLayout::TopToBottom, cw);
 
     /*QLineEdit* le111 = new QLineEdit(this);
     le111->setPlaceholderText(AStr("placeholder text"));
-    layout()->addWidget(le111);
+    theLayout->addWidget(le111);
 
     ATextBox* tb111 = new ATextBox(this);
     tb111->setPlaceholderText(AStr("placeholder text"));
-    layout()->addWidget(tb111);*/
+    theLayout->addWidget(tb111);*/
 
     QPushButton* pb111 = new QPushButton(AStr("按钮QPushButton001"), this);
-    layout()->addWidget(pb111);
+    theLayout->addWidget(pb111);
 
     /*QTextEdit* te001 = new QTextEdit(this);
     te001->setPlaceholderText(AStr("placeholder text"));
-    layout()->addWidget(te001);*/
+    theLayout->addWidget(te001);*/
 
     if (0)
     {
         /*new QBoxLayout(QBoxLayout::TopToBottom, this);
         ATextBlock* newBlock = new ATextBlock(AStr("I am a Text"), this);
-        layout()->addWidget(newBlock);
+        theLayout->addWidget(newBlock);
 
         ATextBlock* newBlock2 = new ATextBlock(AStr("Lorem ipsum dolor, sit amet consectetur adipisicing elit."), this);
-        layout()->addWidget(newBlock2);
+        theLayout->addWidget(newBlock2);
         newBlock2->setText(AStr("Lorem ipsum dolor, sit amet consectetur adipisicing elit."), Qt::ElideRight);
 
         ATextBox* textBox = new ATextBox(this);
-        layout()->addWidget(textBox);
+        theLayout->addWidget(textBox);
 
         ATextBox* textBox2 = new ATextBox(this);
-        layout()->addWidget(textBox2);*/
+        theLayout->addWidget(textBox2);*/
     }
 
-    if(1){
+    if (1)
+    {
         AIntDataManager* IntDM = new AIntDataManager(this);
         AData* intData = IntDM->addData(AStr("name"));
         IntDM->setValue(intData, 10);
@@ -147,7 +153,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(spinBox003);
         widgetLayout->addWidget(spinBox004);
         widgetLayout->addWidget(spinBox005);
-        layout()->addItem(widgetLayout);
+        theLayout->addItem(widgetLayout);
 
         ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox001, QString(), EDataBindType::FirstTime));
         ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox002, QString(), EDataBindType::OneWay));
@@ -156,7 +162,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox005, QString(), EDataBindType::TwoWay));
     }
 
-    if(1)
+    if (1)
     {
         ADoubleDataManager* DoubleDM = new ADoubleDataManager(this);
         AData* dblData = DoubleDM->addData(AStr("name"));
@@ -174,7 +180,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(spinBox003);
         widgetLayout->addWidget(spinBox004);
         widgetLayout->addWidget(spinBox005);
-        layout()->addItem(widgetLayout);
+        theLayout->addItem(widgetLayout);
 
         ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox001, QString(), EDataBindType::FirstTime));
         ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox002, QString(), EDataBindType::OneWay));
@@ -182,8 +188,8 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox004, QString(), EDataBindType::TwoWay));
         ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox005, QString(), EDataBindType::TwoWay));
     }
-    
-    if(1)
+
+    if (1)
     {
         AStringDataManager* StringDM = new AStringDataManager(this);
         AData* dt = StringDM->addData(AStr("name"));
@@ -200,7 +206,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(widget003);
         widgetLayout->addWidget(widget004);
         widgetLayout->addWidget(widget005);
-        layout()->addItem(widgetLayout);
+        theLayout->addItem(widgetLayout);
 
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
@@ -226,7 +232,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(widget003);
         widgetLayout->addWidget(widget004);
         widgetLayout->addWidget(widget005);
-        layout()->addItem(widgetLayout);
+        theLayout->addItem(widgetLayout);
 
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
@@ -252,7 +258,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(widget003);
         widgetLayout->addWidget(widget004);
         widgetLayout->addWidget(widget005);
-        layout()->addItem(widgetLayout);
+        theLayout->addItem(widgetLayout);
 
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
@@ -299,7 +305,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(widget003);
         widgetLayout->addWidget(widget004);
         widgetLayout->addWidget(widget005);
-        layout()->addItem(widgetLayout);
+        theLayout->addItem(widgetLayout);
 
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::OneWay));
         ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
@@ -317,4 +323,53 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
 WinUIWindow::~WinUIWindow()
 {
+}
+
+#include <QGraphicsDropShadowEffect>
+
+AMenu::AMenu(QWidget* parent)
+    : AMenu("", parent)
+{
+}
+
+AMenu::AMenu(const QString& title, QWidget* parent)
+    : QMenu(title, parent)
+{
+    setWindowFlags(windowFlags() /*| Qt::FramelessWindowHint*/ | Qt::NoDropShadowWindowHint);
+    setAttribute(Qt::WA_TranslucentBackground, true);
+    setAutoFillBackground(false);
+
+    int BlurRadius = 40;
+    int XOffset = 2;
+    int YOffset = 4;
+
+    QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect(this);
+    effect->setBlurRadius(BlurRadius);
+    effect->setColor("#55111111");
+    effect->setOffset(XOffset, YOffset);
+    setGraphicsEffect(effect);
+
+    QString strMenuStyle = QString("QMenu{background-color:#fff;color:#111;border-radius:6px;margin:%1px %2px %3px %4px;}")
+        .arg(BlurRadius - YOffset).arg(BlurRadius + XOffset).arg(BlurRadius + YOffset).arg(BlurRadius - XOffset);
+    this->setStyleSheet(strMenuStyle);
+}
+//
+//void AMenu::paintEvent(QPaintEvent* evt)
+//{
+//    APROCH_USE_STYLE_SHEET();
+//
+//    QPainter painter(this);
+//
+//    /*painter.setRenderHint(QPainter::Antialiasing);
+//    painter.setPen(Qt::NoPen);
+//    painter.setBrush(Qt::gray);
+//    painter.drawRoundedRect(rect(), 10, 10);*/
+//
+//    QMenu::paintEvent(evt);
+//}
+
+void AMenu::showEvent(QShowEvent* evt)
+{
+    //move(x() - 32, y() - 13);
+    return QMenu::showEvent(evt);
 }

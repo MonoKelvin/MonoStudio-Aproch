@@ -125,9 +125,6 @@
     <ClInclude Include="Widget\Style\AStyleDefines.h">
       <Filter>Widget\Style</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\Style\AWindowsStyleManager.h">
-      <Filter>Widget\Style</Filter>
-    </ClInclude>
     <ClInclude Include="APluginManager.h">
       <Filter>Application</Filter>
     </ClInclude>
@@ -260,6 +257,9 @@
     <ClInclude Include="Widget\Private\ACaptionBar_p.h">
       <Filter>Widget\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Widget\AWidgetStyleDecoration.h">
+      <Filter>Widget\Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -349,7 +349,7 @@
     <ClCompile Include="Widget\Style\AStyleDefines.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp">
+    <ClCompile Include="Widget\Style\ATheme.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
     <ClCompile Include="AAction.cpp">
@@ -448,6 +448,9 @@
     <ClCompile Include="Private\AHotKey_win.cpp">
       <Filter>Application\HotKey</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\AWidgetStyleDecoration.cpp">
+      <Filter>Widget\Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -533,6 +536,9 @@
     </QtMoc>
     <QtMoc Include="WinUI\AWinUIPlugin.h">
       <Filter>WinUI</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Style\ATheme.h">
+      <Filter>Widget\Style</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

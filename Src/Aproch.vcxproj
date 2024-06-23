@@ -87,12 +87,12 @@
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.6.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.6.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -159,6 +159,7 @@
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Private\AHotKey_win.cpp" />
+    <ClCompile Include="Widget\AWidgetStyleDecoration.cpp" />
     <ClCompile Include="WinUI\AWinUIApplication.cpp" />
     <ClCompile Include="WinUI\AWinUIPlugin.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
@@ -170,6 +171,7 @@
     <QtMoc Include="AHotKey.h" />
     <QtMoc Include="Private\AHotKey_p.h" />
     <QtMoc Include="WinUI\AWinUIPlugin.h" />
+    <ClInclude Include="Widget\AWidgetStyleDecoration.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <ClInclude Include="WinUI\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
@@ -203,7 +205,7 @@
     <ClCompile Include="Widget\Style\AStyleHelper.cpp" />
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp" />
     <ClCompile Include="Widget\Style\AWindowsColor.cpp" />
-    <ClCompile Include="Widget\Style\AWindowsStyleManager.cpp" />
+    <ClCompile Include="Widget\Style\ATheme.cpp" />
     <ClCompile Include="WinUI\AWinUITheme.cpp" />
     <ClInclude Include="Common\AContextContainter.h" />
     <ClInclude Include="Common\ACursorDatabase.h" />
@@ -259,7 +261,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Widget\AFlowLayout.h" />
     <ClInclude Include="Widget\Style\AStyleDefines.h" />
-    <ClInclude Include="Widget\Style\AWindowsStyleManager.h" />
+    <QtMoc Include="Widget\Style\ATheme.h" />
     <QtMoc Include="Widget\AWindow.h" />
     <QtMoc Include="Widget\AWheelColorPickerWidget.h" />
     <QtMoc Include="Widget\AWheelColorPicker.h" />

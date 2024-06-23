@@ -1,6 +1,6 @@
-﻿/****************************************************************************
- * @file    AWindow.h
- * @date    2021-1-24
+/****************************************************************************
+ * @file    AWindowsStyleManager.h
+ * @date    2022-05-29
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,31 +27,44 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-#include "AWidgetStyleDecoration.h"
-
-#include <QMainWindow>
 
 APROCH_NAMESPACE_BEGIN
 
-class ACaptionBar;
+class AThemePrivate;
 
 /**
- * @brief 窗口
+ * @brief Windows样式管理器。只有Windows系统才可以使用各种样式设置
+ *
  */
-class APROCH_API AWindow : public QMainWindow, public AWidgetStyleDecoration
+class APROCH_API ATheme : public QObject
 {
     Q_OBJECT
 public:
-    explicit AWindow(QWidget *parent = nullptr, Qt::WindowType type = Qt::Window);
-    virtual ~AWindow();
+    /**
+     * @brief 主题类型
+     */
+    enum EThemeType
+    {
+        Dark,   // 深色
+        Light,  // 浅色
+        System, // 跟随系统
+        Custom, // 自定义
+    };
 
-    /** @brief 获取标题栏 */
-    ACaptionBar* getCaptionBar(void) const;
+    ~ATheme();
 
-protected:
-    virtual bool event(QEvent* evt) override;
-    virtual void paintEvent(QPaintEvent *ev) override;
-    virtual void closeEvent(QCloseEvent *ev) override;
+    static void setTheme(EThemeType type);
+    static EThemeType getTheme();
+
+Q_SIGNALS:
+    void themeChanged();
+
+private:
+    ATheme(QObject* parent = nullptr);
+
+private:
+    friend class AThemePrivate;
+    QScopedPointer<AThemePrivate> d_ptr;
 };
 
 APROCH_NAMESPACE_END

@@ -1,6 +1,6 @@
-/****************************************************************************
- * @file    AWindowsStyleManager.h
- * @date    2022-05-29
+﻿/****************************************************************************
+ * @file    AWidgetStyleDecoration.h
+ * @date    2024-06-23 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,46 +27,60 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "Style/ATheme.h"
 
-#ifdef Q_OS_WINDOWS
-
-#include <Windows.h>
+namespace QWK
+{
+    class WidgetWindowAgent;
+}
 
 APROCH_NAMESPACE_BEGIN
 
 /**
- * @brief Windows样式管理器。只有Windows系统才可以使用各种样式设置
- *
+ * @brief 窗口
  */
-class APROCH_API AWindowsStyleManager
+class APROCH_API AWidgetStyleDecoration
 {
 public:
-    /**
-     * @brief 主题类型
-     */
-    enum EThemeType
-    {
-        Dark,   // 深色
-        Light,  // 浅色
-        System, // 跟随系统
-        Custom, // 自定义
-    };
+    AWidgetStyleDecoration();
+    virtual ~AWidgetStyleDecoration();
 
+#ifdef Q_OS_WIN
     /**
-     * @brief Windows主题颜色配置
+     * @brief 设置窗口背景材质
+     * @note 要支持windows背景材质，qss样式表中需要添加：
+     * ```qss
+     * AWindow[has-material=true] {
+     *     background: transparent;
+     * }
+     * ``` 
+     * @param bkMaterial 材质类型
+     * @param on         是否开启，开启后会将之前设置过的材质样式清空
+     * @return 是否设置成功
      */
-    struct SWindowsThemeConfig
-    {
-        bool appsUseLightTheme;    // 应用主题是否是亮色主题，否则为深色
-        bool enableTransparency;   // 是否开启透明度
-        bool systemUsesLightTheme; // 系统主题是否是亮色主题，否则为深色
-    };
+    bool setBackgroundMaterial(EWinBackgroundMaterial bkMaterial, bool on = true);
+
+    /** @brief 获取窗口背景材质 */
+    EWinBackgroundMaterial getBackgroundMaterial() const;
+#endif
+
+    /** @brief 设置材质主题色 */
+    void setMaterialTheme(ATheme::EThemeType type);
+    
+    /** @brief 获取材质主题色 */
+    ATheme::EThemeType getMaterialTheme() const;
+
+public:
+    /** @brief 创建样式 */
+    static QSharedPointer<AWidgetStyleDecoration> Create(QWidget* widget);
+
+#ifdef Q_OS_WIN
 
     /** @brief Windows窗口样式配置 */
     struct SStyleOption
     {
         /** @brief 主题类型 */
-        EThemeType themeType;
+        ATheme::EThemeType themeType;
 
         /** @brief 自定义颜色类型（支持透明度），只有<ThemeType>为<EThemeType::Custom>时才起作用,
          * 如果系统关闭了透明度，则自定义的颜色设置透明度会失效
@@ -77,7 +91,7 @@ public:
         bool isEffectShadow;
 
         SStyleOption() noexcept
-            : themeType(System), color(0, 0, 0, 240), isEffectShadow(false)
+            : themeType(ATheme::System), color(0, 0, 0, 240), isEffectShadow(false)
         {
         }
     };
@@ -100,7 +114,7 @@ public:
      *
      * @return
      */
-    static void ApplyAcrylic(QWidget *widget, const SStyleOption &option = SStyleOption());
+    static void ApplyAcrylic(QWidget* widget, const SStyleOption& option = SStyleOption());
 
     /**
      * @brief 为窗口句柄设置亚克力效果
@@ -108,7 +122,7 @@ public:
      * @param option 选项
      * @return
      */
-    static void ApplyAcrylic(HWND hwnd, const SStyleOption &option = SStyleOption());
+    static void ApplyAcrylic(HWND hwnd, const SStyleOption& option = SStyleOption());
 
     /**
      * @brief 为窗口设置Areo毛玻璃效果
@@ -116,7 +130,7 @@ public:
      * @param option 选项
      * @return
      */
-    static void ApplyAero(QWidget *widget, const SStyleOption &option = SStyleOption());
+    static void ApplyAero(QWidget* widget, const SStyleOption& option = SStyleOption());
 
     /**
      * @brief 为窗口句柄设置Areo毛玻璃效果
@@ -124,73 +138,35 @@ public:
      * @param option 选项
      * @return
      */
-    static void ApplyAero(HWND hwnd, const SStyleOption &option = SStyleOption());
+    static void ApplyAero(HWND hwnd, const SStyleOption& option = SStyleOption());
+
+    /**
+     * @brief Windows主题颜色配置
+     */
+    struct SWindowsThemeConfig
+    {
+        bool appsUseLightTheme;    // 应用主题是否是亮色主题，否则为深色
+        bool enableTransparency;   // 是否开启透明度
+        bool systemUsesLightTheme; // 系统主题是否是亮色主题，否则为深色
+    };
 
     /**
      * @brief 获取Windows主题配置
      * @return 主题配置
      */
     static SWindowsThemeConfig GetWindowsThemeConfig();
+#endif
 
 protected:
-    typedef enum _WINDOWCOMPOSITIONATTRIB
-    {
-        WCA_UNDEFINED = 0,
-        WCA_NCRENDERING_ENABLED = 1,
-        WCA_NCRENDERING_POLICY = 2,
-        WCA_TRANSITIONS_FORCEDISABLED = 3,
-        WCA_ALLOW_NCPAINT = 4,
-        WCA_CAPTION_BUTTON_BOUNDS = 5,
-        WCA_NONCLIENT_RTL_LAYOUT = 6,
-        WCA_FORCE_ICONIC_REPRESENTATION = 7,
-        WCA_EXTENDED_FRAME_BOUNDS = 8,
-        WCA_HAS_ICONIC_BITMAP = 9,
-        WCA_THEME_ATTRIBUTES = 10,
-        WCA_NCRENDERING_EXILED = 11,
-        WCA_NCADORNMENTINFO = 12,
-        WCA_EXCLUDED_FROM_LIVEPREVIEW = 13,
-        WCA_VIDEO_OVERLAY_ACTIVE = 14,
-        WCA_FORCE_ACTIVEWINDOW_APPEARANCE = 15,
-        WCA_DISALLOW_PEEK = 16,
-        WCA_CLOAK = 17,
-        WCA_CLOAKED = 18,
-        WCA_ACCENT_POLICY = 19,
-        WCA_FREEZE_REPRESENTATION = 20,
-        WCA_EVER_UNCLOAKED = 21,
-        WCA_VISUAL_OWNER = 22,
-        WCA_LAST = 23
-    } WINDOWCOMPOSITIONATTRIB;
+    /** @brief 初始化样式设置 */
+    void initStyle(QWidget* self);
 
-    typedef struct _WINDOWCOMPOSITIONATTRIBDATA
-    {
-        WINDOWCOMPOSITIONATTRIB dwAttrib;
-        PVOID pvData;
-        SIZE_T cbData;
-    } WINDOWCOMPOSITIONATTRIBDATA;
+protected:
+    /** @brief 窗口代理，用于实现无边框窗口 */
+    QWK::WidgetWindowAgent* mWinAgent = nullptr;
 
-    typedef enum _ACCENT_STATE
-    {
-        ACCENT_DISABLED = 0,
-        ACCENT_ENABLE_GRADIENT = 1,
-        ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
-        ACCENT_ENABLE_BLURBEHIND = 3,
-        ACCENT_ENABLE_ACRYLICBLURBEHIND = 4,
-        ACCENT_INVALID_STATE = 5
-    } ACCENT_STATE;
-
-    typedef struct _ACCENT_POLICY
-    {
-        ACCENT_STATE AccentState;
-        DWORD AccentFlags;
-        DWORD GradientColor;
-        DWORD AnimationId;
-    } ACCENT_POLICY;
-
-    typedef BOOL(WINAPI *pfnSetWindowCompositionAttribute)(HWND, WINDOWCOMPOSITIONATTRIBDATA *);
-
-    static void WindowsBlurHelper(HWND hwnd, ACCENT_STATE state, const SStyleOption &option);
+private:
+    QPointer<QWidget> _host;
 };
 
 APROCH_NAMESPACE_END
-
-#endif

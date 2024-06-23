@@ -34,23 +34,7 @@
 
 #include <QWindowKit/QWKWidgets/widgetwindowagent.h>
 
-#ifdef Q_OS_WIN
-// #include <windows.h>
-#include <windowsx.h>
-#include <dwmapi.h>
-#pragma comment(lib, "dwmapi")
-#endif
-
 APROCH_NAMESPACE_BEGIN
-
-#ifdef Q_OS_WIN
-static QMap<EWinBackgroundMaterial, QString> s_bkMaterial2Name = {
-    QPair<EWinBackgroundMaterial, QString>(EWinBackgroundMaterial::DWMBlur, AStr("dwm-blur")),
-    QPair<EWinBackgroundMaterial, QString>(EWinBackgroundMaterial::Acrylic, AStr("acrylic-material")),
-    QPair<EWinBackgroundMaterial, QString>(EWinBackgroundMaterial::Mica, AStr("mica")),
-    QPair<EWinBackgroundMaterial, QString>(EWinBackgroundMaterial::MicaAlt, AStr("mica-alt")),
-};
-#endif
 
 static inline void emulateLeaveEvent(QWidget* widget)
 {
@@ -94,8 +78,7 @@ static inline void emulateLeaveEvent(QWidget* widget)
 AWindow::AWindow(QWidget *parent, Qt::WindowType type)
     : QMainWindow(parent, type)
 {
-    mWinAgent = new QWK::WidgetWindowAgent(this);
-    mWinAgent->setup(this);
+    initStyle(this);
 
     // 标题栏
     auto captionBar = new ACaptionBar(this);
@@ -148,44 +131,6 @@ ACaptionBar* AWindow::getCaptionBar(void) const
     return qobject_cast<ACaptionBar*>(menuWidget());
 }
 
-#ifdef Q_OS_WIN
-bool AWindow::setBackgroundMaterial(EWinBackgroundMaterial bkMaterial, bool on)
-{
-    Q_ASSERT(mWinAgent);
-
-    bool hasMaterial = false;
-    QString name = s_bkMaterial2Name.value(bkMaterial);
-    if (name.isEmpty() || !on)
-    {
-        for (auto value : s_bkMaterial2Name)
-            mWinAgent->setWindowAttribute(value, false);
-    }
-    else
-    {
-        hasMaterial = mWinAgent->setWindowAttribute(name, true);
-        if (!hasMaterial)
-            return false;
-    }
-
-    setProperty("has-material", hasMaterial);
-    style()->polish(this);
-    return true;
-}
-
-EWinBackgroundMaterial AWindow::getBackgroundMaterial() const
-{
-    Q_ASSERT(mWinAgent);
-
-    for (auto iter = s_bkMaterial2Name.cbegin(); iter != s_bkMaterial2Name.cend(); ++iter)
-    {
-        if (mWinAgent->windowAttribute(iter.value()).toBool())
-            return iter.key();
-    }
-
-    return EWinBackgroundMaterial::NoneMaterial;
-}
-#endif
-
 bool AWindow::event(QEvent* evt)
 {
     switch (evt->type())
@@ -220,8 +165,7 @@ void AWindow::paintEvent(QPaintEvent *ev)
 {
     APROCH_USE_STYLE_SHEET();
 
-    QPainter p(this);
-    p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    return QMainWindow::paintEvent(ev);
 }
 
 void AWindow::closeEvent(QCloseEvent *ev)
