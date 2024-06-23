@@ -75,13 +75,18 @@ static inline void emulateLeaveEvent(QWidget* widget)
     });
 }
 
-AWindow::AWindow(QWidget *parent, Qt::WindowType type)
-    : QMainWindow(parent, type)
+AWindow::AWindow(QWidget* parent)
+    : AWindow(EWindowCaptionWidget::WindowWidgets, parent)
+{
+}
+
+AWindow::AWindow(const FWindowCaptionWidgets& captionWidgets, QWidget *parent)
+    : QMainWindow(parent)
 {
     initStyle(this);
 
     // 标题栏
-    auto captionBar = new ACaptionBar(this);
+    auto captionBar = new ACaptionBar(captionWidgets, this);
     captionBar->setHostWidget(this);
 
 #ifndef Q_OS_MAC

@@ -2,16 +2,18 @@
     <qresource prefix="/">
         <file>shader/wheel_color_picker.frag</file>
         <file>shader/wheel_color_picker.vert</file>
-        <file>icon/app/ico/aproch_16x16.ico</file>
-        <file>icon/app/ico/aproch_24x24.ico</file>
-        <file>icon/app/ico/aproch_32x32.ico</file>
-        <file>icon/app/ico/aproch_48x48.ico</file>
-        <file>icon/app/ico/aproch_64x64.ico</file>
-        <file>icon/app/ico/aproch_128x128.ico</file>
-        <file alias="icon/windowbtn_close">icon/system/windowbtn_close.png</file>
-        <file alias="icon/windowbtn_maximize">icon/system/windowbtn_maximize.png</file>
-        <file alias="icon/windowbtn_restore">icon/system/windowbtn_restore.png</file>
-        <file alias="icon/windowbtn_minimize">icon/system/windowbtn_minimize.png</file>
+        <file alias="icon/app/aproch_16x16">icon/app/ico/aproch_16x16.ico</file>
+        <file alias="icon/app/aproch_24x24">icon/app/ico/aproch_24x24.ico</file>
+        <file alias="icon/app/aproch_32x32">icon/app/ico/aproch_32x32.ico</file>
+        <file alias="icon/app/aproch_48x48">icon/app/ico/aproch_48x48.ico</file>
+        <file alias="icon/app/aproch_64x64">icon/app/ico/aproch_64x64.ico</file>
+        <file alias="icon/app/aproch_128x128">icon/app/ico/aproch_128x128.ico</file>
+        <file alias="icon/windowbtn_minimize">icon/system/windowbtn_minimize.svg</file>
+        <file alias="icon/windowbtn_maximize">icon/system/windowbtn_maximize.svg</file>
+        <file alias="icon/windowbtn_restore">icon/system/windowbtn_restore.svg</file>
+        <file alias="icon/windowbtn_close">icon/system/windowbtn_close.svg</file>
+        <file alias="icon/windowbtn_fullscreen">icon/system/windowbtn_fullscreen.svg</file>
+        <file alias="icon/menubar_more_line">icon/system/menubar_more_line.svg</file>
         <file>theme/dark.qss</file>
         <file>theme/light.qss</file>
     </qresource>

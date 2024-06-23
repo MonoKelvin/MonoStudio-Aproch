@@ -8,7 +8,7 @@ QMenuBar {
 }
 
 QMenuBar>QToolButton#qt_menubar_ext_button {
-    qproperty-icon: url(":/window-bar/more-line.svg");
+    qproperty-icon: url(":/icon/menubar_more_line");
 }
 
 QMenuBar>QToolButton#qt_menubar_ext_button:hover,
@@ -93,16 +93,16 @@ ACaptionBar>QLabel#aproch-captionbar-title {
 /* System buttons */
 
 ACaptionBar>QAbstractButton[aproch-system-button=true] {
-    qproperty-iconSize: 12px 12px;
-    min-width: 50px;
+    qproperty-iconSize: 10px 10px;
+    min-width: 34px;
+    width: 46px;
     border: none;
     padding: 0;
     background-color: transparent;
 }
 
 ACaptionBar>QAbstractButton#aproch-captionbar-help {
-    qproperty-iconNormal: url(":/window-bar/help.svg");
-    qproperty-iconSize: 12px 12px;
+    qproperty-icon: url(":/icon/windowbtn_help");
 }
 ACaptionBar>QAbstractButton#aproch-captionbar-help:hover,
 ACaptionBar>QAbstractButton#aproch-captionbar-help:pressed {
@@ -110,8 +110,7 @@ ACaptionBar>QAbstractButton#aproch-captionbar-help:pressed {
 }
 
 ACaptionBar>QAbstractButton#aproch-captionbar-min {
-    qproperty-iconNormal: url(":/window-bar/minimize.svg");
-    qproperty-iconSize: 12px 12px;
+    qproperty-icon: url(":/icon/windowbtn_minimize");
 }
 ACaptionBar>QAbstractButton#aproch-captionbar-min:hover,
 ACaptionBar>QAbstractButton#aproch-captionbar-min:pressed {
@@ -119,8 +118,10 @@ ACaptionBar>QAbstractButton#aproch-captionbar-min:pressed {
 }
 
 ACaptionBar>QAbstractButton#aproch-captionbar-max {
-    qproperty-iconNormal: url(":/window-bar/maximize.svg");
-    qproperty-iconChecked: url(":/window-bar/restore.svg");
+    qproperty-icon: url(":/icon/windowbtn_maximize");
+}
+ACaptionBar>QAbstractButton#aproch-captionbar-max[checked=true] {
+    qproperty-icon: url(":/icon/windowbtn_restore");
 }
 ACaptionBar>QAbstractButton#aproch-captionbar-max:hover,
 ACaptionBar>QAbstractButton#aproch-captionbar-max:pressed {
@@ -128,7 +129,7 @@ ACaptionBar>QAbstractButton#aproch-captionbar-max:pressed {
 }
 
 ACaptionBar>QAbstractButton#aproch-captionbar-close {
-    qproperty-iconNormal: url(":/window-bar/close.svg");
+    qproperty-icon: url(":/icon/windowbtn_close");
 }
 ACaptionBar>QAbstractButton#aproch-captionbar-close:hover,
 ACaptionBar>QAbstractButton#aproch-captionbar-close:pressed {
@@ -139,7 +140,7 @@ ACaptionBar>QAbstractButton#aproch-captionbar-close:pressed {
 /* Icon button */
 
 ACaptionBar>QAbstractButton#aproch-captionbar-icon {
-    qproperty-iconNormal: url(":/app/example.png");
+    qproperty-icon: url(":/icon/app/aproch_16x16");
     qproperty-iconSize: 18px 18px;
     min-width: 40px;
     border: none;
@@ -154,5 +155,9 @@ AWindow {
 }
 
 AWindow[has-material=true] {
+    background: transparent;
+}
+
+AWindow[has-material=true]>ACaptionBar {
     background: transparent;
 }

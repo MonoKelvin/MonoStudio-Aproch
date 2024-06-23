@@ -155,3 +155,7 @@ AWindow {
 AWindow[has-material=true] {
     background-color: transparent;
 }
+
+AWindow[has-material=true]>ACaptionBar {
+    background: transparent;
+}

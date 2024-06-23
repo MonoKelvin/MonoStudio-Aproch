@@ -58,10 +58,10 @@ public:
      * @param on         是否开启，开启后会将之前设置过的材质样式清空
      * @return 是否设置成功
      */
-    bool setBackgroundMaterial(EWinBackgroundMaterial bkMaterial, bool on = true);
+    virtual bool setBackgroundMaterial(EWinBackgroundMaterial bkMaterial, bool on = true);
 
     /** @brief 获取窗口背景材质 */
-    EWinBackgroundMaterial getBackgroundMaterial() const;
+    virtual EWinBackgroundMaterial getBackgroundMaterial() const;
 #endif
 
     /** @brief 设置材质主题色 */

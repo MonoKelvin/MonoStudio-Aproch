@@ -42,7 +42,8 @@ class APROCH_API AWindow : public QMainWindow, public AWidgetStyleDecoration
 {
     Q_OBJECT
 public:
-    explicit AWindow(QWidget *parent = nullptr, Qt::WindowType type = Qt::Window);
+    explicit AWindow(QWidget *parent = nullptr);
+    explicit AWindow(const FWindowCaptionWidgets& captionWidgets, QWidget* parent = nullptr);
     virtual ~AWindow();
 
     /** @brief 获取标题栏 */

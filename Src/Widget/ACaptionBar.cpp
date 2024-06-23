@@ -60,33 +60,34 @@ namespace {
     QPushButton* createDefaultWinBtn(EWindowCaptionWidget type, QWidget* parent)
     {
         QString objName;
-        QPixmap iconPixmap;
+        QIcon icon;
         QPushButton* winBtn = new QPushButton(parent);
+
+        HWND hWnd = GetShellWindow();  // 获取Shell窗口句柄
 
         switch (type)
         {
         case EWindowCaptionWidget::WindowHelpButton:
-            iconPixmap = parent->style()->standardPixmap(QStyle::SP_TitleBarContextHelpButton);
             objName = AStr("aproch-captionbar-help");
             break;
         case EWindowCaptionWidget::WindowMinimizeButton:
-            iconPixmap = parent->style()->standardPixmap(QStyle::SP_TitleBarMinButton);
+            icon = QIcon(":/icon/windowbtn_minimize");
             objName = AStr("aproch-captionbar-min");
             break;
         case EWindowCaptionWidget::WindowMaximizeButton:
-            iconPixmap = parent->style()->standardPixmap(QStyle::SP_TitleBarMaxButton);
+            icon = QIcon(":/icon/windowbtn_maximize");
             winBtn->setCheckable(true);
             objName = AStr("aproch-captionbar-max");
             break;
         case EWindowCaptionWidget::WindowCloseButton:
-            iconPixmap = parent->style()->standardPixmap(QStyle::SP_TitleBarCloseButton);
+            icon = QIcon(":/icon/windowbtn_close");
             objName = AStr("aproch-captionbar-close");
             break;
         default:
             break;
         }
 
-        winBtn->setIcon(iconPixmap);
+        winBtn->setIcon(icon);
         winBtn->setProperty("aproch-system-button", true);
         winBtn->setObjectName(objName.toLatin1());
         winBtn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -218,7 +219,7 @@ ACaptionBar::ACaptionBar(QWidget* parent)
 }
 
 ACaptionBar::ACaptionBar(const FWindowCaptionWidgets& captionWidgets, QWidget* parent)
-    : ACaptionBar(new ACaptionBarPrivate(), parent)
+    : ACaptionBar(new ACaptionBarPrivate(), parent, captionWidgets)
 {
 }
 

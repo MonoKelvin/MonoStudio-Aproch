@@ -28,7 +28,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
             auto menuBar = new QMenuBar();
 
             // Virtual menu
-            auto file = new AMenu(tr("File(&F)"), menuBar);
+            auto file = new QMenu(tr("File(&F)"), menuBar);
             file->addAction(new QAction(tr("New(&N)"), menuBar));
             file->addAction(new QAction(tr("Open(&O)"), menuBar));
             file->addSeparator();
@@ -323,53 +323,4 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
 WinUIWindow::~WinUIWindow()
 {
-}
-
-#include <QGraphicsDropShadowEffect>
-
-AMenu::AMenu(QWidget* parent)
-    : AMenu("", parent)
-{
-}
-
-AMenu::AMenu(const QString& title, QWidget* parent)
-    : QMenu(title, parent)
-{
-    setWindowFlags(windowFlags() /*| Qt::FramelessWindowHint*/ | Qt::NoDropShadowWindowHint);
-    setAttribute(Qt::WA_TranslucentBackground, true);
-    setAutoFillBackground(false);
-
-    int BlurRadius = 40;
-    int XOffset = 2;
-    int YOffset = 4;
-
-    QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect(this);
-    effect->setBlurRadius(BlurRadius);
-    effect->setColor("#55111111");
-    effect->setOffset(XOffset, YOffset);
-    setGraphicsEffect(effect);
-
-    QString strMenuStyle = QString("QMenu{background-color:#fff;color:#111;border-radius:6px;margin:%1px %2px %3px %4px;}")
-        .arg(BlurRadius - YOffset).arg(BlurRadius + XOffset).arg(BlurRadius + YOffset).arg(BlurRadius - XOffset);
-    this->setStyleSheet(strMenuStyle);
-}
-//
-//void AMenu::paintEvent(QPaintEvent* evt)
-//{
-//    APROCH_USE_STYLE_SHEET();
-//
-//    QPainter painter(this);
-//
-//    /*painter.setRenderHint(QPainter::Antialiasing);
-//    painter.setPen(Qt::NoPen);
-//    painter.setBrush(Qt::gray);
-//    painter.drawRoundedRect(rect(), 10, 10);*/
-//
-//    QMenu::paintEvent(evt);
-//}
-
-void AMenu::showEvent(QShowEvent* evt)
-{
-    //move(x() - 32, y() - 13);
-    return QMenu::showEvent(evt);
 }
