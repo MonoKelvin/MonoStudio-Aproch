@@ -42,11 +42,29 @@ APROCH_NAMESPACE_BEGIN
 #pragma comment(lib, "UXTheme.lib")
 #endif
 
-#ifdef Q_OS_WIN
-/** @brief Windows 窗口背景材质 */
-enum EWinBackgroundMaterial
+/**
+ * @brief 主题类型
+ */
+enum class EThemeType
 {
-    NoneMaterial,
+    /** @brief 深色 */
+    Dark,   // 深色
+
+    /** @brief 浅色 */
+    Light,
+
+    /** @brief 跟随系统 */
+    System,
+
+    /** @brief 自定义 */
+    Custom,
+};
+
+#ifdef Q_OS_WIN
+/** @brief WinUI 窗口材质 */
+enum EWinUIMaterial
+{
+    NoWinUIMaterial,
     DWMBlur,
     Acrylic,
     Mica,

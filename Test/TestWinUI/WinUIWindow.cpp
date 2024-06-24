@@ -14,6 +14,7 @@
 #include <QLineEdit>
 #include <QMenuBar>
 #include <QActionGroup>
+#include <QDialog>
 
 #include <QWindowKit/QWKWidgets/widgetwindowagent.h>
 
@@ -41,25 +42,25 @@ WinUIWindow::WinUIWindow(QWidget *parent)
             auto dwmBlurAction = new QAction(tr("Enable DWM blur"), menuBar);
             dwmBlurAction->setCheckable(true);
             connect(dwmBlurAction, &QAction::toggled, this, [this](bool checked) {
-                setBackgroundMaterial(EWinBackgroundMaterial::DWMBlur, checked);
+                setWinUIMaterial({DWMBlur, getWinUIMaterial().theme, checked });
             });
 
             auto acrylicAction = new QAction(tr("Enable acrylic material"), menuBar);
             acrylicAction->setCheckable(true);
             connect(acrylicAction, &QAction::toggled, this, [this](bool checked) {
-                setBackgroundMaterial(EWinBackgroundMaterial::Acrylic, checked);
+                setWinUIMaterial({ Acrylic, getWinUIMaterial().theme, checked });
             });
 
             auto micaAction = new QAction(tr("Enable mica"), menuBar);
             micaAction->setCheckable(true);
             connect(micaAction, &QAction::toggled, this, [this](bool checked) {
-                setBackgroundMaterial(EWinBackgroundMaterial::Mica, checked);
+                setWinUIMaterial({ Mica, getWinUIMaterial().theme, checked });
             });
 
             auto micaAltAction = new QAction(tr("Enable mica alt"), menuBar);
             micaAltAction->setCheckable(true);
             connect(micaAltAction, &QAction::toggled, this, [this](bool checked) {
-                setBackgroundMaterial(EWinBackgroundMaterial::MicaAlt, checked);
+                setWinUIMaterial({ MicaAlt, getWinUIMaterial().theme, checked });
             });
 
             QActionGroup* actionGroup = new QActionGroup(menuBar);
@@ -94,8 +95,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
         mWinAgent->setHitTestVisible(menuBar, true);
 
-        setBackgroundMaterial(EWinBackgroundMaterial::MicaAlt);
-        setMaterialTheme(ATheme::Dark);
+        setWinUIMaterial({ MicaAlt, EThemeType::Dark, true});
     }
 
     QWidget* cw = new QWidget(this);
@@ -292,6 +292,34 @@ WinUIWindow::WinUIWindow(QWidget *parent)
                     strlist.pop_back();
             }
             StringListDM->setValue(dt, strlist);
+
+            class MyDlg : public AWindow
+            {
+            public:
+                MyDlg(QWidget* parent = nullptr)
+                    : AWindow(parent)
+                {
+                    initStyle(this);
+                }
+            };
+
+            class MyDlg2 : public QDialog
+            {
+            public:
+            };
+
+            MyDlg dlg(this);
+            dlg.setWindowTitle("fuck you title");
+            dlg.resize(800, 600);
+            dlg.setWinUIMaterial({ Mica, EThemeType::Dark, true });
+            dlg.getCaptionBar()->reset(WindowIcon | WindowCloseButton);
+            dlg.showModality();
+
+            MyDlg2 dlg2;
+            //AWinUIStyleHelper::micaAlt(&dlg2, { EThemeType::Dark, Qt::red });
+            auto sd = AWinUIStyleHelper::createStyleDecoration(&dlg2);
+            sd->setWinUIMaterial({ MicaAlt, EThemeType::Dark, true });
+            dlg2.exec();
         });
 
         QBoxLayout* widgetLayout = new QBoxLayout(QBoxLayout::LeftToRight);

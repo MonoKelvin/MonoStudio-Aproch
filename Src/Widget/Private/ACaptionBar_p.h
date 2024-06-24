@@ -53,9 +53,9 @@ public:
     bool isAutoIcon = true;
 
 public:
-    static int constexpr _widget2Index(EWindowCaptionWidget widgetType)
+    static const int _widget2Index(EWindowCaptionWidget widgetType) noexcept
     {
-        return int(widgetType) / 2;
+        return std::log2(int(widgetType));
     }
 
     static EWindowCaptionWidget constexpr _index2Widget(int index)

@@ -1,6 +1,6 @@
 ﻿/****************************************************************************
- * @file    AWindow.h
- * @date    2021-1-24
+ * @file    AWidgetStyleDecoration.h
+ * @date    2024-06-23 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,43 +27,72 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-#include "Style/AWidgetStyleDecoration.h"
+#include "ATheme.h"
 
-#include <QMainWindow>
+namespace QWK
+{
+    class WidgetWindowAgent;
+}
 
 APROCH_NAMESPACE_BEGIN
-
-class AWindowPrivate;
-class ACaptionBar;
 
 /**
  * @brief 窗口
  */
-class APROCH_API AWindow : public QMainWindow, public AWidgetStyleDecoration
+class APROCH_API AWidgetStyleDecoration
 {
-    Q_OBJECT
 public:
-    explicit AWindow(QWidget *parent = nullptr);
-    explicit AWindow(const FWindowCaptionWidgets& captionWidgets, QWidget* parent = nullptr);
-    virtual ~AWindow();
+    AWidgetStyleDecoration();
+    virtual ~AWidgetStyleDecoration();
+
+#ifdef Q_OS_WIN
+    struct SWinUIMaterialOption
+    {
+        /** @brief winui 风格材质 */
+        EWinUIMaterial material;
+
+        /** @brief 材质主题 */
+        EThemeType theme;
+
+        /** @brief 是否启用 */
+        bool enabled = true;
+    };
 
     /**
-     * @brief 以模态窗口的方式显示
-     * @note 关闭后会删除该控件
+     * @brief 设置窗口背景材质
+     * @note 要支持windows背景材质，qss样式表中需要添加：
+     * ```qss
+     * AWindow[has-material=true] {
+     *     background: transparent;
+     * }
+     * ``` 
+     * @param option 材质选项
+     * @return 是否设置成功
      */
-    int showModality();
+    virtual bool setWinUIMaterial(const SWinUIMaterialOption& option);
 
-    /** @brief 获取标题栏 */
-    ACaptionBar* getCaptionBar(void) const;
+    /** @brief 获取窗口背景材质 */
+    virtual SWinUIMaterialOption getWinUIMaterial();
+
+    /** @brief 设置窗口预留的边框大小 */
+    void setExtraMargins(const QMargins& margins);
+
+    /** @brief 获取窗口预留的边框大小 */
+    QMargins getExtraMargins() const;
+#endif
 
 protected:
-    virtual bool event(QEvent* evt) override;
-    virtual void paintEvent(QPaintEvent *ev) override;
-    virtual void closeEvent(QCloseEvent *ev) override;
+    /** @brief 初始化样式设置 */
+    void initStyle(QWidget* self);
+
+protected:
+    /** @brief 窗口代理，用于实现无边框窗口 */
+    QWK::WidgetWindowAgent* mWinAgent = nullptr;
 
 private:
-    Q_DISABLE_COPY_MOVE(AWindow);
-    QScopedPointer<AWindowPrivate> d_ptr;
+    friend class AWinUIStyleHelper;
+    QPointer<QWidget> _host;
+    SWinUIMaterialOption _materialOption;
 };
 
 APROCH_NAMESPACE_END

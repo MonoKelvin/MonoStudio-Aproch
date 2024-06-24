@@ -125,7 +125,7 @@ void ACaptionBarPrivate::init(const FWindowCaptionWidgets& widgets)
 
         if (widgets & EWindowCaptionWidget::WindowAppendixLayout)
         {
-            auto AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+            auto AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight, q_ptr);
             AppendixLayout->setContentsMargins(QMargins());
             AppendixLayout->setSpacing(0);
             q_ptr->setAppendixLayout(AppendixLayout);
@@ -147,7 +147,7 @@ void ACaptionBarPrivate::init(const FWindowCaptionWidgets& widgets)
 
 void ACaptionBarPrivate::setWidgetAt(EWindowCaptionWidget type, QWidget* widget)
 {
-    int index = _widget2Index(type);
+    const int index = _widget2Index(type);
     auto item = mainLayout->takeAt(index);
     auto orgWidget = item->widget();
     if (orgWidget)
@@ -166,7 +166,7 @@ void ACaptionBarPrivate::setWidgetAt(EWindowCaptionWidget type, QWidget* widget)
 
 QWidget* ACaptionBarPrivate::takeWidgetAt(EWindowCaptionWidget type)
 {
-    int index = _widget2Index(type);
+    const int index = _widget2Index(type);
     auto item = mainLayout->itemAt(index);
     auto orgWidget = item->widget();
     if (orgWidget)
@@ -180,7 +180,7 @@ QWidget* ACaptionBarPrivate::takeWidgetAt(EWindowCaptionWidget type)
 
 void ACaptionBarPrivate::setAppendixLayout(QLayout* layout)
 {
-    constexpr int index = _widget2Index(EWindowCaptionWidget::WindowAppendixLayout);
+    const int index = _widget2Index(EWindowCaptionWidget::WindowAppendixLayout);
     auto item = mainLayout->takeAt(index);
     auto orgLayout = item->layout();
     if (orgLayout)
@@ -199,7 +199,7 @@ void ACaptionBarPrivate::setAppendixLayout(QLayout* layout)
 
 QLayout* ACaptionBarPrivate::takeAppendixLayout()
 {
-    constexpr int index = _widget2Index(EWindowCaptionWidget::WindowAppendixLayout);
+    const int index = _widget2Index(EWindowCaptionWidget::WindowAppendixLayout);
     auto item = mainLayout->itemAt(index);
     auto orgLayout = item->layout();
     if (orgLayout)
@@ -234,6 +234,50 @@ ACaptionBar::ACaptionBar(ACaptionBarPrivate* d, QWidget* parent, const FWindowCa
 
 ACaptionBar::~ACaptionBar(void)
 {
+}
+
+void ACaptionBar::reset(const FWindowCaptionWidgets& widgets)
+{
+    if (widgets & EWindowCaptionWidget::WindowIcon)
+        setIcon(createDefaultIcon(this));
+    else
+        setIcon(nullptr);
+
+    if (widgets & EWindowCaptionWidget::WindowMenu)
+        setMenuBar(createDefaultMenuBar(this));
+    else
+        setMenuBar(nullptr);
+
+    if (widgets & EWindowCaptionWidget::WindowTitle)
+        setTitle(createDefaultTitle(this));
+    else
+        setMenuBar(nullptr);
+
+    //if (widgets & EWindowCaptionWidget::WindowAppendixLayout)
+    {
+        auto AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight, this);
+        AppendixLayout->setContentsMargins(QMargins());
+        AppendixLayout->setSpacing(0);
+        setAppendixLayout(AppendixLayout);
+    }
+
+    // 控制按钮
+    if (widgets & EWindowCaptionWidget::WindowHelpButton)
+        setHelpButton(createDefaultWinBtn(EWindowCaptionWidget::WindowHelpButton, this));
+    else
+        setHelpButton(nullptr);
+    if (widgets & EWindowCaptionWidget::WindowMinimizeButton)
+        setMinButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMinimizeButton, this));
+    else
+        setMinButton(nullptr);
+    if (widgets & EWindowCaptionWidget::WindowMaximizeButton)
+        setMaxButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMaximizeButton, this));
+    else
+        setMaxButton(nullptr);
+    if (widgets & EWindowCaptionWidget::WindowCloseButton)
+        setCloseButton(createDefaultWinBtn(EWindowCaptionWidget::WindowCloseButton, this));
+    else
+        setCloseButton(nullptr);
 }
 
 QAbstractButton* ACaptionBar::getIcon() const

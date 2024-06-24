@@ -62,6 +62,9 @@ public:
     explicit ACaptionBar(const FWindowCaptionWidgets &captionWidgets, QWidget *parent = nullptr);
     ~ACaptionBar(void);
 
+    /** @brief 重置标题栏控件 */
+    void reset(const FWindowCaptionWidgets& widgets);
+
     QAbstractButton* getIcon() const;
     QMenuBar* getMenuBar() const;
     QLabel* getTitle() const;

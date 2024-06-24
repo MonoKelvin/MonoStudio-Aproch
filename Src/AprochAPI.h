@@ -106,12 +106,15 @@
 #include "Widget/ANavigationBar.h"
 #include "Widget/APromptWidget.h"
 #include "Widget/AToolBar.h"
-#include "Widget/AToolTip.h"
 #include "Widget/AVerticalLabel.h"
 #include "Widget/AWheelColorPicker.h"
 #include "Widget/AWheelColorPickerWidget.h"
 #include "Widget/AWidgetFactory.h"
 #include "Widget/AWindow.h"
+
+// widgets style
+#include "Widget/Style/ATheme.h"
+#include "Widget/Style/AWinUIStyleHelper.h"
 
 #include "Data/header.inc"
 

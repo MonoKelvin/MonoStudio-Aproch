@@ -29,13 +29,18 @@
 #include "stdafx.h"
 #include "ATheme.h"
 
+#ifdef Q_OS_WIN
+#include "AWinUIStyleHelper.h"
+#endif // Q_OS_WIN
+
+
 APROCH_NAMESPACE_BEGIN
 
 class AThemePrivate
 {
 public:
     inline static ATheme* theAppTheme = nullptr;
-    ATheme::EThemeType themeType = ATheme::System;
+    EThemeType themeType = EThemeType::System;
 
 public:
     static ATheme* themeInst()
@@ -68,10 +73,19 @@ void ATheme::setTheme(EThemeType type)
     emit theAppTheme->themeChanged();
 }
 
-ATheme::EThemeType ATheme::getTheme()
+EThemeType ATheme::getTheme()
 {
     auto theAppTheme = AThemePrivate::themeInst();
     return theAppTheme->d_ptr->themeType;
+}
+
+EThemeType ATheme::getSystemTheme()
+{
+#ifdef Q_OS_WIN
+    return AWinUIStyleHelper::getThemeConfig().systemUsesLightTheme ? EThemeType::Light : EThemeType::Dark;
+#endif // Q_OS_WIN
+
+    return EThemeType::System;
 }
 
 APROCH_NAMESPACE_END

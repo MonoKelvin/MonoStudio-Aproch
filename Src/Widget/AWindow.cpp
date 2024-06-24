@@ -36,6 +36,12 @@
 
 APROCH_NAMESPACE_BEGIN
 
+class AWindowPrivate
+{
+public:
+    QEventLoop* eventLoop = nullptr;
+};
+
 static inline void emulateLeaveEvent(QWidget* widget)
 {
     Q_ASSERT(widget);
@@ -82,6 +88,7 @@ AWindow::AWindow(QWidget* parent)
 
 AWindow::AWindow(const FWindowCaptionWidgets& captionWidgets, QWidget *parent)
     : QMainWindow(parent)
+    , d_ptr(new AWindowPrivate())
 {
     initStyle(this);
 
@@ -131,6 +138,27 @@ AWindow::~AWindow()
 {
 }
 
+int AWindow::showModality()
+{
+    setAttribute(Qt::WA_ShowModal, true);
+    setWindowModality(Qt::ApplicationModal);
+
+    const bool deleteOnClose = testAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_DeleteOnClose, false);
+
+    show();
+
+    QPointer<QWidget> guard = this;
+    d_ptr->eventLoop = new QEventLoop(this);
+    const int result = d_ptr->eventLoop->exec(QEventLoop::DialogExec);
+    if (guard.isNull())
+        return -1;
+
+    if (deleteOnClose)
+        delete this;
+    return result;
+}
+
 ACaptionBar* AWindow::getCaptionBar(void) const
 {
     return qobject_cast<ACaptionBar*>(menuWidget());
@@ -175,6 +203,12 @@ void AWindow::paintEvent(QPaintEvent *ev)
 
 void AWindow::closeEvent(QCloseEvent *ev)
 {
+    if (d_ptr->eventLoop != nullptr)
+    {
+        d_ptr->eventLoop->exit();
+        d_ptr->eventLoop = nullptr;
+    }
+
     ev->accept();
 }
 

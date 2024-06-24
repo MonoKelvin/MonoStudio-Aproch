@@ -242,7 +242,7 @@
     <ClInclude Include="Common\AUnorderedPair.h">
       <Filter>Common\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\Style\AStyleHelper.h">
+    <ClInclude Include="Widget\Style\AWinUIStyleHelper.h">
       <Filter>Widget\Style</Filter>
     </ClInclude>
     <ClInclude Include="Widget\Style\AWindowsColor.h">
@@ -257,8 +257,8 @@
     <ClInclude Include="Widget\Private\ACaptionBar_p.h">
       <Filter>Widget\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\AWidgetStyleDecoration.h">
-      <Filter>Widget\Widget</Filter>
+    <ClInclude Include="Widget\Style\AWidgetStyleDecoration.h">
+      <Filter>Widget\Style</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -424,14 +424,11 @@
     <ClCompile Include="Widget\AWidgetFactory.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\Style\AStyleHelper.cpp">
+    <ClCompile Include="Widget\Style\AWinUIStyleHelper.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
     <ClCompile Include="Widget\Style\AWindowsColor.cpp">
       <Filter>Widget\Style</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AToolTip.cpp">
-      <Filter>Widget\Widget</Filter>
     </ClCompile>
     <ClCompile Include="WinUI\AWinUIPlugin.cpp">
       <Filter>WinUI</Filter>
@@ -448,8 +445,8 @@
     <ClCompile Include="Private\AHotKey_win.cpp">
       <Filter>Application\HotKey</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\AWidgetStyleDecoration.cpp">
-      <Filter>Widget\Widget</Filter>
+    <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp">
+      <Filter>Widget\Style</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -521,9 +518,6 @@
     </QtMoc>
     <QtMoc Include="Data\ADWBindMethods.h">
       <Filter>Data</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AToolTip.h">
-      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="WinUI\AWinUIApplication.h">
       <Filter>WinUI</Filter>

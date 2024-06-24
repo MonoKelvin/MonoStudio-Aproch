@@ -27,34 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "AprochExportDefine.h"
 
 APROCH_NAMESPACE_BEGIN
 
 class AThemePrivate;
 
 /**
- * @brief Windows样式管理器。只有Windows系统才可以使用各种样式设置
- *
+ * @brief 应用主题
  */
 class APROCH_API ATheme : public QObject
 {
     Q_OBJECT
 public:
-    /**
-     * @brief 主题类型
-     */
-    enum EThemeType
-    {
-        Dark,   // 深色
-        Light,  // 浅色
-        System, // 跟随系统
-        Custom, // 自定义
-    };
-
     ~ATheme();
 
+    /** @brief 设置应用主题类型 */
     static void setTheme(EThemeType type);
+
+    /** @brief 获取应用主题类型 */
     static EThemeType getTheme();
+
+    /** @brief 获取系统主题类型 */
+    static EThemeType getSystemTheme();
 
 Q_SIGNALS:
     void themeChanged();

@@ -87,12 +87,12 @@
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.6.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.6.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -159,7 +159,7 @@
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Private\AHotKey_win.cpp" />
-    <ClCompile Include="Widget\AWidgetStyleDecoration.cpp" />
+    <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp" />
     <ClCompile Include="WinUI\AWinUIApplication.cpp" />
     <ClCompile Include="WinUI\AWinUIPlugin.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
@@ -171,8 +171,8 @@
     <QtMoc Include="AHotKey.h" />
     <QtMoc Include="Private\AHotKey_p.h" />
     <QtMoc Include="WinUI\AWinUIPlugin.h" />
-    <ClInclude Include="Widget\AWidgetStyleDecoration.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
+    <ClInclude Include="Widget\Style\AWidgetStyleDecoration.h" />
     <ClInclude Include="WinUI\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
@@ -195,14 +195,13 @@
     <ClCompile Include="Widget\ANavigationBar.cpp" />
     <ClCompile Include="Widget\APromptWidget.cpp" />
     <ClCompile Include="Widget\AToolBar.cpp" />
-    <ClCompile Include="Widget\AToolTip.cpp" />
     <ClCompile Include="Widget\AVerticalLabel.cpp" />
     <ClCompile Include="Widget\AWheelColorPicker.cpp" />
     <ClCompile Include="Widget\AWheelColorPickerWidget.cpp" />
     <ClCompile Include="Widget\AWidgetFactory.cpp" />
     <ClCompile Include="Widget\AWindow.cpp" />
     <ClCompile Include="Widget\Style\AStyleDefines.cpp" />
-    <ClCompile Include="Widget\Style\AStyleHelper.cpp" />
+    <ClCompile Include="Widget\Style\AWinUIStyleHelper.cpp" />
     <ClCompile Include="Widget\Style\AUIStyleObject.cpp" />
     <ClCompile Include="Widget\Style\AWindowsColor.cpp" />
     <ClCompile Include="Widget\Style\ATheme.cpp" />
@@ -221,9 +220,8 @@
     <QtMoc Include="Data\ADataManager.h" />
     <QtMoc Include="Data\ADataWidgetBindMethod.h" />
     <QtMoc Include="Data\ADWBindMethods.h" />
-    <QtMoc Include="Widget\AToolTip.h" />
     <ClInclude Include="Widget\AWidgetFactory.h" />
-    <ClInclude Include="Widget\Style\AStyleHelper.h" />
+    <ClInclude Include="Widget\Style\AWinUIStyleHelper.h" />
     <ClInclude Include="Widget\Style\AUIStyleObject.h" />
     <ClInclude Include="Widget\Style\AWindowsColor.h" />
     <QtMoc Include="AAction.h" />
