@@ -78,7 +78,7 @@ public:
         return mainLayout->itemAt(_widget2Index(EWindowCaptionWidget::WindowAppendixLayout))->layout();
     }
     void setAppendixLayout(QLayout* layout);
-    QLayout* takeAppendixLayout();
+    void takeAppendixLayout();
 
     Q_ALWAYS_INLINE void insertDefaultSpace(int index)
     {

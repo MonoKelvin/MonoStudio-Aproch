@@ -96,17 +96,8 @@ AWindow::AWindow(const FWindowCaptionWidgets& captionWidgets, QWidget *parent)
     auto captionBar = new ACaptionBar(captionWidgets, this);
     captionBar->setHostWidget(this);
 
-#ifndef Q_OS_MAC
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::WindowIcon, captionBar->getIcon());
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::Help, captionBar->getHelpButton());
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::Minimize, captionBar->getMinButton());
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::Maximize, captionBar->getMaxButton());
-    mWinAgent->setSystemButton(QWK::WindowAgentBase::Close, captionBar->getCloseButton());
-#endif
-    mWinAgent->setTitleBar(captionBar);
-
-    if (captionBar->getMenuBar())
-        mWinAgent->setHitTestVisible(captionBar->getMenuBar(), true);
+    setMenuWidget(captionBar);
+    updateCaptionBar();
 
 #ifdef Q_OS_MAC
     mWinAgent->setSystemButtonAreaCallback([](const QSize& size) {
@@ -115,11 +106,14 @@ AWindow::AWindow(const FWindowCaptionWidgets& captionWidgets, QWidget *parent)
     });
 #endif
 
-    setMenuWidget(captionBar);
-
 #ifndef Q_OS_MAC
     connect(captionBar, &ACaptionBar::minimizeRequested, this, &QWidget::showMinimized);
     connect(captionBar, &ACaptionBar::maximizeRequested, this, [this, captionBar](bool max) {
+        // 固定大小不可缩放
+        if (sizePolicy() == QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed) ||
+            (minimumWidth() == maximumWidth() && minimumHeight() == maximumHeight()))
+            return;
+
         if (max)
             showMaximized();
         else
@@ -162,6 +156,27 @@ int AWindow::showModality()
 ACaptionBar* AWindow::getCaptionBar(void) const
 {
     return qobject_cast<ACaptionBar*>(menuWidget());
+}
+
+void AWindow::updateCaptionBar()
+{
+    Q_ASSERT(mWinAgent);
+
+    ACaptionBar* captionBar = getCaptionBar();
+    if (!captionBar)
+        return;
+
+#ifndef Q_OS_MAC
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::WindowIcon, captionBar->getIcon());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Help, captionBar->getHelpButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Minimize, captionBar->getMinButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Maximize, captionBar->getMaxButton());
+    mWinAgent->setSystemButton(QWK::WindowAgentBase::Close, captionBar->getCloseButton());
+#endif
+    mWinAgent->setTitleBar(captionBar);
+
+    if (captionBar->getMenuBar())
+        mWinAgent->setHitTestVisible(captionBar->getMenuBar(), true);
 }
 
 bool AWindow::event(QEvent* evt)

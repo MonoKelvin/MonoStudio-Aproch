@@ -56,6 +56,9 @@ public:
     /** @brief 获取标题栏 */
     ACaptionBar* getCaptionBar(void) const;
 
+    /** @brief 更新标题栏。当标题栏控件内容修改，如reset, setMinButton等之后需要重新更新标题栏 */
+    void updateCaptionBar();
+
 protected:
     virtual bool event(QEvent* evt) override;
     virtual void paintEvent(QPaintEvent *ev) override;

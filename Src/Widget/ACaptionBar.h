@@ -52,7 +52,8 @@ class ACaptionBarPrivate;
  * 其布局如下：
  *
  * [ I - M - T ----- A ----- H - Mi - Mx - C ]
- *
+ * @note 通过 setIcon, setMenuBar 等一系列设置标题控件的方法去设置控件时，传入的控件不能指定父级对象，
+ * 因为设置成功后会自动指定对象，如果外部设置了，重新设置时会无法正确删除已有控件。
  */
 class APROCH_API ACaptionBar : public QFrame
 {
@@ -86,7 +87,7 @@ public:
     QAbstractButton* takeIcon();
     QMenuBar* takeMenuBar();
     QLabel* takeTitle();
-    QLayout* takeAppendixLayout() const;
+    void takeAppendixLayout();
     QAbstractButton* takeHelpButton();
     QAbstractButton* takeMinButton();
     QAbstractButton* takeMaxButton();

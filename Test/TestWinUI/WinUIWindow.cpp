@@ -293,29 +293,15 @@ WinUIWindow::WinUIWindow(QWidget *parent)
             }
             StringListDM->setValue(dt, strlist);
 
-            class MyDlg : public AWindow
-            {
-            public:
-                MyDlg(QWidget* parent = nullptr)
-                    : AWindow(parent)
-                {
-                    initStyle(this);
-                }
-            };
-
-            class MyDlg2 : public QDialog
-            {
-            public:
-            };
-
-            MyDlg dlg(this);
+            AWindow dlg(this);
             dlg.setWindowTitle("fuck you title");
-            dlg.resize(800, 600);
+            dlg.setFixedSize(800, 600);
             dlg.setWinUIMaterial({ Mica, EThemeType::Dark, true });
-            dlg.getCaptionBar()->reset(WindowIcon | WindowCloseButton);
+            dlg.getCaptionBar()->reset(WindowMinimizeButton | WindowCloseButton);
+            dlg.updateCaptionBar();
             dlg.showModality();
 
-            MyDlg2 dlg2;
+            QDialog dlg2;
             //AWinUIStyleHelper::micaAlt(&dlg2, { EThemeType::Dark, Qt::red });
             auto sd = AWinUIStyleHelper::createStyleDecoration(&dlg2);
             sd->setWinUIMaterial({ MicaAlt, EThemeType::Dark, true });

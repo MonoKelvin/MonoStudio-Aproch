@@ -31,37 +31,37 @@
 #include "Private/ACaptionBar_p.h"
 
 namespace {
-    QAbstractButton* createDefaultIcon(QWidget* parent)
+    QAbstractButton* createDefaultIcon()
     {
-        auto iconBtn = new QPushButton(parent);
+        auto iconBtn = new QPushButton();
         iconBtn->setObjectName(AStr("aproch-captionbar-icon"));
         iconBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         return iconBtn;
     }
 
-    QLabel* createDefaultTitle(QWidget* parent)
+    QLabel* createDefaultTitle()
     {
-        auto titleLabel = new QLabel(parent);
+        auto titleLabel = new QLabel();
         titleLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
         titleLabel->setAlignment(Qt::AlignCenter);
         titleLabel->setObjectName(AStr("aproch-captionbar-title"));
         return titleLabel;
     }
 
-    QMenuBar* createDefaultMenuBar(QWidget* parent)
+    QMenuBar* createDefaultMenuBar()
     {
-        QMenuBar* menuBar = new QMenuBar(parent);
+        QMenuBar* menuBar = new QMenuBar();
         menuBar->setObjectName("aproch-captionbar-menubar");
         menuBar->setAttribute(Qt::WA_TranslucentBackground, true);
         menuBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         return menuBar;
     }
 
-    QPushButton* createDefaultWinBtn(EWindowCaptionWidget type, QWidget* parent)
+    QPushButton* createDefaultWinBtn(EWindowCaptionWidget type)
     {
         QString objName;
         QIcon icon;
-        QPushButton* winBtn = new QPushButton(parent);
+        QPushButton* winBtn = new QPushButton();
 
         HWND hWnd = GetShellWindow();  // 获取Shell窗口句柄
 
@@ -117,15 +117,15 @@ void ACaptionBarPrivate::init(const FWindowCaptionWidgets& widgets)
     // init widgets
     {
         if (widgets & EWindowCaptionWidget::WindowIcon)
-            q_ptr->setIcon(createDefaultIcon(q_ptr));
+            q_ptr->setIcon(createDefaultIcon());
         if (widgets & EWindowCaptionWidget::WindowMenu)
-            q_ptr->setMenuBar(createDefaultMenuBar(q_ptr));
+            q_ptr->setMenuBar(createDefaultMenuBar());
         if (widgets & EWindowCaptionWidget::WindowTitle)
-            q_ptr->setTitle(createDefaultTitle(q_ptr));
+            q_ptr->setTitle(createDefaultTitle());
 
         if (widgets & EWindowCaptionWidget::WindowAppendixLayout)
         {
-            auto AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight, q_ptr);
+            auto AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight);
             AppendixLayout->setContentsMargins(QMargins());
             AppendixLayout->setSpacing(0);
             q_ptr->setAppendixLayout(AppendixLayout);
@@ -133,13 +133,13 @@ void ACaptionBarPrivate::init(const FWindowCaptionWidgets& widgets)
 
         // 控制按钮
         if (widgets & EWindowCaptionWidget::WindowHelpButton)
-            q_ptr->setHelpButton(createDefaultWinBtn(EWindowCaptionWidget::WindowHelpButton, q_ptr));
+            q_ptr->setHelpButton(createDefaultWinBtn(EWindowCaptionWidget::WindowHelpButton));
         if (widgets & EWindowCaptionWidget::WindowMinimizeButton)
-            q_ptr->setMinButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMinimizeButton, q_ptr));
+            q_ptr->setMinButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMinimizeButton));
         if (widgets & EWindowCaptionWidget::WindowMaximizeButton)
-            q_ptr->setMaxButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMaximizeButton, q_ptr));
+            q_ptr->setMaxButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMaximizeButton));
         if (widgets & EWindowCaptionWidget::WindowCloseButton)
-            q_ptr->setCloseButton(createDefaultWinBtn(EWindowCaptionWidget::WindowCloseButton, q_ptr));
+            q_ptr->setCloseButton(createDefaultWinBtn(EWindowCaptionWidget::WindowCloseButton));
     }
 
     q_ptr->setLayout(mainLayout);
@@ -193,11 +193,14 @@ void ACaptionBarPrivate::setAppendixLayout(QLayout* layout)
     }
     else
     {
+        // 确保将布局脱离标题栏控件，否则insertLayout无法正确插入
+        if (layout->parentWidget() == q_ptr)
+            layout->setParent(nullptr);
         mainLayout->insertLayout(index, layout);
     }
 }
 
-QLayout* ACaptionBarPrivate::takeAppendixLayout()
+void ACaptionBarPrivate::takeAppendixLayout()
 {
     const int index = _widget2Index(EWindowCaptionWidget::WindowAppendixLayout);
     auto item = mainLayout->itemAt(index);
@@ -208,7 +211,6 @@ QLayout* ACaptionBarPrivate::takeAppendixLayout()
         delete item;
         insertDefaultSpace(index);
     }
-    return orgLayout;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,23 +241,23 @@ ACaptionBar::~ACaptionBar(void)
 void ACaptionBar::reset(const FWindowCaptionWidgets& widgets)
 {
     if (widgets & EWindowCaptionWidget::WindowIcon)
-        setIcon(createDefaultIcon(this));
+        setIcon(createDefaultIcon());
     else
         setIcon(nullptr);
 
     if (widgets & EWindowCaptionWidget::WindowMenu)
-        setMenuBar(createDefaultMenuBar(this));
+        setMenuBar(createDefaultMenuBar());
     else
         setMenuBar(nullptr);
 
     if (widgets & EWindowCaptionWidget::WindowTitle)
-        setTitle(createDefaultTitle(this));
+        setTitle(createDefaultTitle());
     else
         setMenuBar(nullptr);
 
     //if (widgets & EWindowCaptionWidget::WindowAppendixLayout)
     {
-        auto AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight, this);
+        auto AppendixLayout = new QBoxLayout(QBoxLayout::LeftToRight);
         AppendixLayout->setContentsMargins(QMargins());
         AppendixLayout->setSpacing(0);
         setAppendixLayout(AppendixLayout);
@@ -263,19 +265,19 @@ void ACaptionBar::reset(const FWindowCaptionWidgets& widgets)
 
     // 控制按钮
     if (widgets & EWindowCaptionWidget::WindowHelpButton)
-        setHelpButton(createDefaultWinBtn(EWindowCaptionWidget::WindowHelpButton, this));
+        setHelpButton(createDefaultWinBtn(EWindowCaptionWidget::WindowHelpButton));
     else
         setHelpButton(nullptr);
     if (widgets & EWindowCaptionWidget::WindowMinimizeButton)
-        setMinButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMinimizeButton, this));
+        setMinButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMinimizeButton));
     else
         setMinButton(nullptr);
     if (widgets & EWindowCaptionWidget::WindowMaximizeButton)
-        setMaxButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMaximizeButton, this));
+        setMaxButton(createDefaultWinBtn(EWindowCaptionWidget::WindowMaximizeButton));
     else
         setMaxButton(nullptr);
     if (widgets & EWindowCaptionWidget::WindowCloseButton)
-        setCloseButton(createDefaultWinBtn(EWindowCaptionWidget::WindowCloseButton, this));
+        setCloseButton(createDefaultWinBtn(EWindowCaptionWidget::WindowCloseButton));
     else
         setCloseButton(nullptr);
 }
@@ -359,10 +361,7 @@ void ACaptionBar::setMenuBar(QMenuBar* menuBar)
 
 void ACaptionBar::setAppendixLayout(QLayout* layout)
 {
-    auto org = takeAppendixLayout();
-    if (org)
-        org->deleteLater();
-
+    takeAppendixLayout();
     if (!layout)
         return;
     d_ptr->setAppendixLayout(layout);
@@ -427,9 +426,9 @@ QMenuBar* ACaptionBar::takeMenuBar()
     return static_cast<QMenuBar*>(d_ptr->takeWidgetAt(EWindowCaptionWidget::WindowMenu));
 }
 
-QLayout* ACaptionBar::takeAppendixLayout() const
+void ACaptionBar::takeAppendixLayout()
 {
-    return d_ptr->takeAppendixLayout();
+    d_ptr->takeAppendixLayout();
 }
 
 QAbstractButton* ACaptionBar::takeHelpButton()
