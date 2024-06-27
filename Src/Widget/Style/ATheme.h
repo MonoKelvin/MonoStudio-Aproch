@@ -42,6 +42,9 @@ class APROCH_API ATheme : public QObject
 public:
     ~ATheme();
 
+    /** @brief 获取实例对象 */
+    static ATheme* instance();
+
     /** @brief 设置应用主题类型 */
     static void setTheme(EThemeType type);
 
@@ -51,8 +54,14 @@ public:
     /** @brief 获取系统主题类型 */
     static EThemeType getSystemTheme();
 
+    /** @brief 设置是否监控系统主题的变化。开启后系统主题变化时，同步发送 themeChanged() 信号 */
+    static void setSystemThemeWatchEnabled(bool enabled);
+
 Q_SIGNALS:
     void themeChanged();
+
+private:
+    virtual bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
     ATheme(QObject* parent = nullptr);

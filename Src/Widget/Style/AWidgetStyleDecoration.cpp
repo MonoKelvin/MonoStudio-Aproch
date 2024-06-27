@@ -33,7 +33,34 @@
 
 APROCH_NAMESPACE_BEGIN
 
+class AWidgetStyleDecorationPrivate
+{
+public:
+    QPointer<QWidget> _host;
+    EThemeType _theme;
+    QMetaObject::Connection _themeChangedConnection;
+
+    inline void setTheme(QWK::WidgetWindowAgent* winAgent, EThemeType theme)
+    {
+        switch (theme)
+        {
+        case EThemeType::Dark:
+            winAgent->setWindowAttribute("dark-mode", true);
+            break;
+        case EThemeType::Light:
+            winAgent->setWindowAttribute("dark-mode", false);
+            break;
+        case EThemeType::Custom:
+            // TODO
+            break;
+        default:
+            break;
+        }
+    }
+};
+
 AWidgetStyleDecoration::AWidgetStyleDecoration()
+    : d_ptr(new AWidgetStyleDecorationPrivate)
 {
 }
 
@@ -43,6 +70,16 @@ AWidgetStyleDecoration::~AWidgetStyleDecoration()
 
 #ifdef Q_OS_WIN
 
+void AWidgetStyleDecoration::setWinUIEnabled(bool enabled)
+{
+    setWinUIMaterial(EWinUIMaterial::NoWinUIMaterial);
+}
+
+bool AWidgetStyleDecoration::isWinUIEnabled() const
+{
+    return getWinUIMaterial() != EWinUIMaterial::NoWinUIMaterial;
+}
+
 static QMap<EWinUIMaterial, QString> s_bkMaterial2Name = {
     QPair<EWinUIMaterial, QString>(EWinUIMaterial::DWMBlur, AStr("dwm-blur")),
     QPair<EWinUIMaterial, QString>(EWinUIMaterial::Acrylic, AStr("acrylic-material")),
@@ -50,79 +87,82 @@ static QMap<EWinUIMaterial, QString> s_bkMaterial2Name = {
     QPair<EWinUIMaterial, QString>(EWinUIMaterial::MicaAlt, AStr("mica-alt")),
 };
 
-bool AWidgetStyleDecoration::setWinUIMaterial(const SWinUIMaterialOption& option)
+bool AWidgetStyleDecoration::setWinUIMaterial(EWinUIMaterial material)
 {
-    if (!_host)
-        return false;
-
     Q_ASSERT(mWinAgent);
 
     bool hasMaterial = false;
-    QString name = s_bkMaterial2Name.value(option.material);
-    if (name.isEmpty() || !option.enabled)
-    {
-        for (auto value : s_bkMaterial2Name)
-            mWinAgent->setWindowAttribute(value, false);
-    }
-    else
+    QString name = s_bkMaterial2Name.value(material);
+
+    // 先清空已有样式
+    for (auto value : s_bkMaterial2Name)
+        mWinAgent->setWindowAttribute(value, false);
+
+    if (!name.isEmpty())
     {
         hasMaterial = mWinAgent->setWindowAttribute(name, true);
         if (!hasMaterial)
             return false;
     }
 
-    _materialOption = option;
-
-    // apply system theme
-    auto appTheme = _materialOption.theme;
-    if (appTheme == EThemeType::System)
-        appTheme = ATheme::getSystemTheme();
-
-    if (_materialOption.enabled)
+    if (d_ptr->_host)
     {
-        switch (appTheme)
-        {
-        case EThemeType::Dark:
-            mWinAgent->setWindowAttribute("dark-mode", true);
-            break;
-        case EThemeType::Light:
-            mWinAgent->setWindowAttribute("dark-mode", false);
-            break;
-        case EThemeType::Custom:
-            // TODO
-            break;
-        default:
-            break;
-        }
+        d_ptr->_host->setAttribute(Qt::WA_TranslucentBackground, hasMaterial);
+        d_ptr->_host->setProperty("has-material", hasMaterial);
+        d_ptr->_host->style()->polish(d_ptr->_host);
     }
 
-    _host->setAttribute(Qt::WA_TranslucentBackground, hasMaterial);
-    _host->setProperty("has-material", hasMaterial);
-    _host->style()->polish(_host);
     return true;
 }
 
-AWidgetStyleDecoration::SWinUIMaterialOption AWidgetStyleDecoration::getWinUIMaterial()
+EWinUIMaterial AWidgetStyleDecoration::getWinUIMaterial() const
 {
     Q_ASSERT(mWinAgent);
-
-    _materialOption.material = EWinUIMaterial::NoWinUIMaterial;
-    _materialOption.enabled = false;
 
     for (auto iter = s_bkMaterial2Name.cbegin(); iter != s_bkMaterial2Name.cend(); ++iter)
     {
         if (mWinAgent->windowAttribute(iter.value()).toBool())
-        {
-            _materialOption.material = iter.key();
-            _materialOption.enabled = true;
-            break;
-        }
+            return iter.key();
     }
 
-    if (mWinAgent->windowAttribute("dark-mode").toBool())
-        _materialOption.theme = EThemeType::Dark;
+    return EWinUIMaterial::NoWinUIMaterial;
+}
 
-    return _materialOption;
+bool AWidgetStyleDecoration::setWinUITheme(EThemeType theme)
+{
+    Q_ASSERT(mWinAgent);
+
+    if (d_ptr->_theme == theme)
+        return false;
+
+    // apply system theme
+    auto appTheme = theme;
+    if (appTheme == EThemeType::System)
+    {
+        appTheme = ATheme::getSystemTheme();
+        if (d_ptr->_host)
+        {
+            d_ptr->_themeChangedConnection = QObject::connect(ATheme::instance(), &ATheme::themeChanged, [this]() {
+                if (!d_ptr->_host)
+                    return;
+                d_ptr->setTheme(mWinAgent, ATheme::getSystemTheme());
+            });
+        }
+    }
+    else
+    {
+        QObject::disconnect(d_ptr->_themeChangedConnection);
+    }
+
+    d_ptr->_theme = theme;
+    d_ptr->setTheme(mWinAgent, appTheme);
+
+    return true;
+}
+
+EThemeType AWidgetStyleDecoration::getWinUITheme() const
+{
+    return d_ptr->_theme;
 }
 
 void AWidgetStyleDecoration::setExtraMargins(const QMargins& margins)
@@ -144,9 +184,11 @@ void AWidgetStyleDecoration::initStyle(QWidget* self)
 {
     Q_ASSERT(self);
 
-    _host = self;
-    mWinAgent = new QWK::WidgetWindowAgent(_host);
-    mWinAgent->setup(_host);
+    d_ptr->_host = self;
+    mWinAgent = new QWK::WidgetWindowAgent(d_ptr->_host);
+    mWinAgent->setup(d_ptr->_host);
+
+    setWinUITheme(EThemeType::System);
 }
 
 APROCH_NAMESPACE_END

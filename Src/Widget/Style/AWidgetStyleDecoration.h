@@ -36,8 +36,16 @@ namespace QWK
 
 APROCH_NAMESPACE_BEGIN
 
+class AWidgetStyleDecorationPrivate;
+
 /**
  * @brief 窗口
+ * @note 要支持windows背景材质，qss样式表中需要添加：
+ * ```qss
+ * AWindow[has-material=true] {
+ *     background: transparent;
+ * }
+ * ```
  */
 class APROCH_API AWidgetStyleDecoration
 {
@@ -46,38 +54,17 @@ public:
     virtual ~AWidgetStyleDecoration();
 
 #ifdef Q_OS_WIN
-    struct SWinUIMaterialOption
-    {
-        /** @brief winui 风格材质 */
-        EWinUIMaterial material;
 
-        /** @brief 材质主题 */
-        EThemeType theme;
+    void setWinUIEnabled(bool enabled);
+    bool isWinUIEnabled() const;
 
-        /** @brief 是否启用 */
-        bool enabled = true;
-    };
+    bool setWinUIMaterial(EWinUIMaterial material);
+    EWinUIMaterial getWinUIMaterial() const;
 
-    /**
-     * @brief 设置窗口背景材质
-     * @note 要支持windows背景材质，qss样式表中需要添加：
-     * ```qss
-     * AWindow[has-material=true] {
-     *     background: transparent;
-     * }
-     * ``` 
-     * @param option 材质选项
-     * @return 是否设置成功
-     */
-    virtual bool setWinUIMaterial(const SWinUIMaterialOption& option);
+    bool setWinUITheme(EThemeType theme);
+    EThemeType getWinUITheme() const;
 
-    /** @brief 获取窗口背景材质 */
-    virtual SWinUIMaterialOption getWinUIMaterial();
-
-    /** @brief 设置窗口预留的边框大小 */
     void setExtraMargins(const QMargins& margins);
-
-    /** @brief 获取窗口预留的边框大小 */
     QMargins getExtraMargins() const;
 #endif
 
@@ -91,8 +78,7 @@ protected:
 
 private:
     friend class AWinUIStyleHelper;
-    QPointer<QWidget> _host;
-    SWinUIMaterialOption _materialOption;
+    QScopedPointer<AWidgetStyleDecorationPrivate> d_ptr;
 };
 
 APROCH_NAMESPACE_END

@@ -27,6 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+
+class QLineEdit;
+class QSlider;
+class QBoxLayout;
 class QLabel;
 
 APROCH_NAMESPACE_BEGIN

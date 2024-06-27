@@ -10,6 +10,8 @@ int main(int argc, char* argv[])
     //aproch::AWinUIApplication app(argc, argv);
     QApplication app(argc, argv);
 
+    aproch::ATheme::setSystemThemeWatchEnabled(true);
+
     WinUIWindow window;
     window.show();
 

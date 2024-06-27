@@ -29,6 +29,8 @@
 #include "stdafx.h"
 #include "ATheme.h"
 
+#include <QApplication>
+
 #ifdef Q_OS_WIN
 #include "AWinUIStyleHelper.h"
 #endif // Q_OS_WIN
@@ -36,20 +38,37 @@
 
 APROCH_NAMESPACE_BEGIN
 
+ATheme* theAppTheme = nullptr;
+
 class AThemePrivate
 {
 public:
-    inline static ATheme* theAppTheme = nullptr;
     EThemeType themeType = EThemeType::System;
-
-public:
-    static ATheme* themeInst()
-    {
-        if (!theAppTheme)
-            theAppTheme = new ATheme();
-        return theAppTheme;
-    }
+    bool systemThemeWatchEnabled = false;
 };
+
+bool ATheme::eventFilter(QObject* obj, QEvent* event)
+{
+    if (event->type() == QEvent::ThemeChange)
+    {
+        if (d_ptr->systemThemeWatchEnabled)
+        {
+            // TODO
+            /*auto sysTheme = getSystemTheme();
+
+            QString qss = sysTheme == EThemeType::Dark ? "dark.qss" : "light.qss";
+
+            QFile style(QApplication::applicationDirPath() + AStr("/../../../../Src/Resource/theme/%1").arg(qss));
+            if (style.open(QFile::ReadOnly | QFile::Text))
+                qApp->setStyleSheet(style.readAll());
+            style.close();*/
+
+            emit themeChanged();
+        }
+    }
+
+    return false;
+}
 
 ATheme::ATheme(QObject* parent)
     : QObject(parent)
@@ -61,10 +80,20 @@ ATheme::~ATheme()
 {
 }
 
+ATheme* ATheme::instance()
+{
+    if (!theAppTheme)
+    {
+        theAppTheme = new ATheme();
+        qApp->installEventFilter(theAppTheme);
+    }
+    return theAppTheme;
+}
+
 void ATheme::setTheme(EThemeType type)
 {
-    auto theAppTheme = AThemePrivate::themeInst();
-    if (theAppTheme->d_ptr->themeType == type)
+    auto theAppTheme = instance();
+    if (instance()->d_ptr->themeType == type)
         return;
     theAppTheme->d_ptr->themeType = type;
 
@@ -75,8 +104,7 @@ void ATheme::setTheme(EThemeType type)
 
 EThemeType ATheme::getTheme()
 {
-    auto theAppTheme = AThemePrivate::themeInst();
-    return theAppTheme->d_ptr->themeType;
+    return instance()->d_ptr->themeType;
 }
 
 EThemeType ATheme::getSystemTheme()
@@ -86,6 +114,11 @@ EThemeType ATheme::getSystemTheme()
 #endif // Q_OS_WIN
 
     return EThemeType::System;
+}
+
+void ATheme::setSystemThemeWatchEnabled(bool enabled)
+{
+    instance()->d_ptr->systemThemeWatchEnabled = enabled;
 }
 
 APROCH_NAMESPACE_END
