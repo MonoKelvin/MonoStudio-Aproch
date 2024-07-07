@@ -220,7 +220,7 @@ QString AStringToolkit::ReplaceContinuousString(const QString &str, const QStrin
 QVariant AStringToolkit::FindValue(const QVariantMap &varMap, const QString &key,
                                    Qt::CaseSensitivity sensitivity, const QVariant &defaultVal)
 {
-    return std::move(FindValue<QVariant>(varMap, key, sensitivity, defaultVal));
+    return FindValue<QVariant>(varMap, key, sensitivity, defaultVal);
 }
 
 const QString AStringToolkit::EncryptByMD5(const QString &source, bool isHalf)

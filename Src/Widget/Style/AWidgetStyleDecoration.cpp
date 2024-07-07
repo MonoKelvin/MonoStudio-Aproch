@@ -37,7 +37,7 @@ class AWidgetStyleDecorationPrivate
 {
 public:
     QPointer<QWidget> _host;
-    EThemeType _theme;
+    EThemeType _theme = EThemeType::System;
     QMetaObject::Connection _themeChangedConnection;
 
     inline void setTheme(QWK::WidgetWindowAgent* winAgent, EThemeType theme)
@@ -132,8 +132,8 @@ bool AWidgetStyleDecoration::setWinUITheme(EThemeType theme)
 {
     Q_ASSERT(mWinAgent);
 
-    if (d_ptr->_theme == theme)
-        return false;
+    /*if (d_ptr->_theme == theme)
+        return false;*/
 
     // apply system theme
     auto appTheme = theme;

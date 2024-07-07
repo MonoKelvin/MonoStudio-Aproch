@@ -28,7 +28,7 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AAppConfigService.h"
-
+#include <QApplication>
 const QString xPluginDirName = AStr("Application/PluginsDirectory");
 
 APROCH_NAMESPACE_BEGIN
@@ -38,7 +38,7 @@ AAppConfigService::AAppConfigService()
 {
     // 添加默认的配置设置
     if (!has(xPluginDirName))
-        setValue(xPluginDirName, AApplicationContext::AppDirectory() + "/Plugins");
+        setValue(xPluginDirName, QApplication::applicationDirPath() + "/Plugins");
 }
 
 void AAppConfigService::setFileName(const QString &filename)
@@ -150,8 +150,8 @@ void AAppConfigService::getNormalKeys(const QString &key, QString &keyWithDef, Q
 
 const QString AAppConfigService::configFilePath() const
 {
-    const QString configFileName = AApplicationContext::AppDirectory() + AStr("/Settings/") +
-                                   AApplicationContext::AppName() + AStr(".ini");
+    const QString configFileName = QApplication::applicationDirPath() + AStr("/Settings/") +
+        QApplication::applicationName() + AStr(".ini");
 
     if (AFileToolkit::IsFileExists(configFileName))
         return configFileName;

@@ -30,8 +30,7 @@
 #include "APluginManager.h"
 
 #include <QPluginLoader>
-#include <qmessagebox.h>
-
+#include <QApplication>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -114,7 +113,7 @@ bool APluginManager::loadPlugin(const QString &dllFileName)
 void APluginManager::loadPlugins()
 {
     QStringList dirList;
-    dirList << AApplicationContext::getInstance()->AppDirectory();
+    dirList << QApplication::applicationDirPath();
 
     AAppConfigService configService;
     dirList << configService.getValue("Application/PluginsDirectory").toString();

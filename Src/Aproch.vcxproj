@@ -272,7 +272,7 @@
     <QtMoc Include="Widget\ACaptionBar.h" />
     <QtMoc Include="Widget\AAvatar.h" />
     <QtMoc Include="Widget\AAbstractColorPicker.h" />
-    <QtMoc Include="AApplicationContext.h" />
+    <QtMoc Include="AAppContext.h" />
     <ClInclude Include="AAbstractKeyExpression.h" />
     <ClInclude Include="ACommandManager.h" />
     <QtMoc Include="ADocFile.h" />
@@ -289,7 +289,7 @@
     <ClInclude Include="AprochGlobal.h" />
     <ClCompile Include="AAndKeyExpression.cpp" />
     <ClCompile Include="AAppConfigService.cpp" />
-    <ClCompile Include="AApplicationContext.cpp" />
+    <ClCompile Include="AAppContext.cpp" />
     <ClCompile Include="ACommand.cpp" />
     <ClCompile Include="AAbstractKeyExpression.cpp" />
     <ClCompile Include="ACommandManager.cpp" />

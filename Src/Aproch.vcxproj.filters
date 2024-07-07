@@ -283,7 +283,7 @@
     <ClCompile Include="AKeyExpressionService.cpp">
       <Filter>Application\KeyExpr</Filter>
     </ClCompile>
-    <ClCompile Include="AApplicationContext.cpp">
+    <ClCompile Include="AAppContext.cpp">
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="AOrKeyExpression.cpp">
@@ -456,7 +456,7 @@
     <QtMoc Include="ADocumentService.h">
       <Filter>Application\Document</Filter>
     </QtMoc>
-    <QtMoc Include="AApplicationContext.h">
+    <QtMoc Include="AAppContext.h">
       <Filter>Application</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AAbstractColorPicker.h">

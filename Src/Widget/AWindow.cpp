@@ -227,4 +227,15 @@ void AWindow::closeEvent(QCloseEvent *ev)
     ev->accept();
 }
 
+void AWindow::showEvent(QShowEvent* ev)
+{
+    QMainWindow::showEvent(ev);
+
+    if (isWinUIEnabled())
+    {
+        setWinUITheme(getWinUITheme());
+        setWinUIMaterial(getWinUIMaterial());
+    }
+}
+
 APROCH_NAMESPACE_END

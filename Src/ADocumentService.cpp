@@ -29,10 +29,12 @@
 #include "stdafx.h"
 #include "ADocumentService.h"
 
+#include <QApplication>
+
 APROCH_NAMESPACE_BEGIN
 
 ADocumentService::ADocumentService(QObject *parent)
-    : QObject(parent), mWorkspace(AApplicationContext::AppDirectory() + AStr("/Workspace"))
+    : QObject(parent), mWorkspace(QApplication::applicationDirPath() + AStr("/Workspace"))
 {
 }
 

@@ -81,7 +81,7 @@
 #include "AAction.h"
 #include "AActionManager.h"
 #include "ACommand.h"
-#include "AApplicationContext.h"
+#include "AAppContext.h"
 #include "ACommandManager.h"
 #include "ACursorManager.h"
 #include "AAbstractKeyExpression.h"
