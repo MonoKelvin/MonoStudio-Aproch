@@ -123,6 +123,7 @@
     <QtRcc Include="WinUIWindow.qrc" />
     <QtUic Include="WinUIWindow.ui" />
     <QtMoc Include="WinUIWindow.h" />
+    <ClCompile Include="ApplicationWindow.cpp" />
     <ClCompile Include="WinUIWindow.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -133,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="qml\App.qml" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="ApplicationWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

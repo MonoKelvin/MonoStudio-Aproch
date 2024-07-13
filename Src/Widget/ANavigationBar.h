@@ -29,10 +29,10 @@
 #pragma once
 #include <QAbstractScrollArea>
 
-#define AOBJNAME_NAVBAR AStr("aproch_navbar")
-#define AOBJNAME_NAVBAR_ITEM AStr("aproch_navbar_item")
-#define AOBJNAME_NAVBAR_TRACKBAR AStr("aproch_navbar_trackbar")
-#define AOBJNAME_NAVBAR_GROUP AStr("aproch_navbar_group")
+#define AOBJNAME_NAVBAR AStr("aproch-navbar")
+#define AOBJNAME_NAVBAR_ITEM AStr("aproch-navbar-item")
+#define AOBJNAME_NAVBAR_TRACKBAR AStr("aproch-navbar-trackbar")
+#define AOBJNAME_NAVBAR_GROUP AStr("aproch-navbar-group")
 
 class QPushButton;
 class QButtonGroup;
@@ -91,9 +91,13 @@ struct SNavTrackBarStyle
     bool isEnabled;
 
     SNavTrackBarStyle(void)
-        : offset(0), animationType(1) // InQuad
-          ,
-          duration(250), isFitItem(true), isAnimation(true), isStretchingAnimation(false), isEnabled(true)
+        : offset(0)
+        , animationType(1) // InQuad
+        , duration(250)
+        , isFitItem(true)
+        , isAnimation(true)
+        , isStretchingAnimation(false)
+        , isEnabled(true)
     {
     }
 };

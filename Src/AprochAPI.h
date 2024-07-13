@@ -96,26 +96,7 @@
 #include "ASqlDataBase.h"
 #include "APluginManager.h"
 
-// widgets
-#include "Widget/AAbstractColorPicker.h"
-#include "Widget/AAvatar.h"
-#include "Widget/ACaptionBar.h"
-#include "Widget/AColorPickerIndicator.h"
-#include "Widget/AColorSliderControl.h"
-#include "Widget/AFlowLayout.h"
-#include "Widget/ANavigationBar.h"
-#include "Widget/APromptWidget.h"
-#include "Widget/AToolBar.h"
-#include "Widget/AVerticalLabel.h"
-#include "Widget/AWheelColorPicker.h"
-#include "Widget/AWheelColorPickerWidget.h"
-#include "Widget/AWidgetFactory.h"
-#include "Widget/AWindow.h"
-
-// widgets style
-#include "Widget/Style/ATheme.h"
-#include "Widget/Style/AWinUIStyleHelper.h"
-
+#include "Widget/header.inc"
 #include "Data/header.inc"
 
 #ifdef APROCH_WINUI

@@ -32,9 +32,15 @@
     <ClCompile Include="main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="ApplicationWindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="WinUIWindow.h">
+      <Filter>src</Filter>
+    </QtMoc>
+    <QtMoc Include="ApplicationWindow.h">
       <Filter>src</Filter>
     </QtMoc>
   </ItemGroup>

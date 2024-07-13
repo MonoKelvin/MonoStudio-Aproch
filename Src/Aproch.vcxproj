@@ -159,6 +159,10 @@
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Private\AHotKey_win.cpp" />
+    <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp" />
+    <ClCompile Include="Widget\NavigationView\ANavigationView.cpp" />
+    <ClCompile Include="Widget\NavigationView\ANavigationViewItem.cpp" />
+    <ClCompile Include="Widget\Private\ANavigationPanel.cpp" />
     <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp" />
     <ClCompile Include="WinUI\AWinUIApplication.cpp" />
     <ClCompile Include="WinUI\AWinUIPlugin.cpp">
@@ -171,7 +175,13 @@
     <QtMoc Include="AHotKey.h" />
     <QtMoc Include="Private\AHotKey_p.h" />
     <QtMoc Include="WinUI\AWinUIPlugin.h" />
+    <QtMoc Include="Widget\NavigationView\ANavigationView.h" />
+    <QtMoc Include="Widget\NavigationView\ANavigationViewItem.h" />
+    <QtMoc Include="Widget\NavigationView\ANavigationPageView.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
+    <QtMoc Include="Widget\Private\ANavigationPanel.h" />
+    <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />
+    <ClInclude Include="Widget\Private\ANavigationView_p.h" />
     <ClInclude Include="Widget\Style\AWidgetStyleDecoration.h" />
     <ClInclude Include="WinUI\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
@@ -309,6 +319,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\header.inc" />
+    <None Include="Widget\header.inc" />
     <None Include="WinUI\include.inc" />
     <None Include="WinUI\QML\AApplication.qml" />
   </ItemGroup>

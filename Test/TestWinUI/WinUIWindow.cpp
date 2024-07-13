@@ -107,7 +107,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
         mWinAgent->setHitTestVisible(menuBar, true);
 
-        setWinUIMaterial(MicaAlt);
+        setWinUIMaterial(Mica);
         //setWinUITheme(EThemeType::Dark);
     }
 

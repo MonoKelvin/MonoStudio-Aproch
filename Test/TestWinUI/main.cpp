@@ -1,9 +1,29 @@
 #include "WinUIWindow.h"
+#include "ApplicationWindow.h"
+
 #include <QtWidgets/QApplication>
 #include <QPushButton>
 #include <QMessageBox>
 
 #include "AprochAPI.h"
+
+void _setStyleSheet(QWidget* widget)
+{
+#if _DEBUG
+    QPushButton* styleBtn = new QPushButton(QObject::tr("Load Style"), widget);
+    QObject::connect(styleBtn, &QPushButton::clicked, [=] {
+        QFile style(QApplication::applicationDirPath() + AStr("/../../../../Src/Resource/theme/dark.qss"));
+        if (style.open(QFile::ReadOnly | QFile::Text))
+        {
+            widget->setStyleSheet(style.readAll());
+        }
+        style.close();
+    });
+    styleBtn->move((widget->width() - styleBtn->width()) * 0.5, styleBtn->height());
+    styleBtn->click();
+    styleBtn->setStyleSheet("background:black; color: white; padding: 4px");
+#endif // _DEBUG
+}
 
 int main(int argc, char* argv[])
 {
@@ -15,24 +35,15 @@ int main(int argc, char* argv[])
 
     QObject::connect(appInst, &aproch::AAppContext::ready, [](bool& canContinue) {
 
-        WinUIWindow* window = new WinUIWindow();
+        /*WinUIWindow* window = new WinUIWindow();
+        window->show();*/
+
+        ApplicationWindow* window = new ApplicationWindow();
         window->show();
 
         aproch::AAppContext::setMainWindow(window);
 
-#ifdef _DEBUG
-        // DEBUG 测试加载默认样式表
-        /*QPushButton styleBtn(QObject::tr("重新加载样式表"), window);
-        QObject::connect(&styleBtn, &QPushButton::clicked, [&] {
-            QFile style(QApplication::applicationDirPath() + AStr("/../../../../Src/Resource/theme/dark.qss"));
-            if (style.open(QFile::ReadOnly | QFile::Text))
-                window.setStyleSheet(style.readAll());
-            style.close();
-        });
-        styleBtn.resize(140, 40);
-        styleBtn.move((window.width() - styleBtn.width()) * 0.5, styleBtn.height() - 100);
-        styleBtn.click();*/
-#endif // _DEBUG
+        _setStyleSheet(window);
     });
 
     QObject::connect(appInst, &aproch::AAppContext::start, []() {

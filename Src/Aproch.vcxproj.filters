@@ -75,6 +75,9 @@
     <Filter Include="Widget\Private">
       <UniqueIdentifier>{791604b4-00e7-4f39-8f3b-179c6f7dc3cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Widget\Widget\NavigationView">
+      <UniqueIdentifier>{aaeda16c-7b0c-4161-bf8b-8fe21ea2cac2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainWindow.h">
@@ -259,6 +262,12 @@
     </ClInclude>
     <ClInclude Include="Widget\Style\AWidgetStyleDecoration.h">
       <Filter>Widget\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Private\ANavigationView_p.h">
+      <Filter>Widget\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Private\ANavigationPanel_p.h">
+      <Filter>Widget\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +457,18 @@
     <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\NavigationView\ANavigationView.cpp">
+      <Filter>Widget\Widget\NavigationView</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Private\ANavigationPanel.cpp">
+      <Filter>Widget\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\NavigationView\ANavigationViewItem.cpp">
+      <Filter>Widget\Widget\NavigationView</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp">
+      <Filter>Widget\Widget\NavigationView</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -534,6 +555,18 @@
     <QtMoc Include="Widget\Style\ATheme.h">
       <Filter>Widget\Style</Filter>
     </QtMoc>
+    <QtMoc Include="Widget\NavigationView\ANavigationView.h">
+      <Filter>Widget\Widget\NavigationView</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Private\ANavigationPanel.h">
+      <Filter>Widget\Private</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\NavigationView\ANavigationViewItem.h">
+      <Filter>Widget\Widget\NavigationView</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\NavigationView\ANavigationPageView.h">
+      <Filter>Widget\Widget\NavigationView</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">
@@ -549,6 +582,9 @@
     </None>
     <None Include="WinUI\QML\AApplication.qml">
       <Filter>WinUI\QML</Filter>
+    </None>
+    <None Include="Widget\header.inc">
+      <Filter>Widget\Widget</Filter>
     </None>
   </ItemGroup>
 </Project>
