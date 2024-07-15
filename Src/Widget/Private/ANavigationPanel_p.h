@@ -31,6 +31,19 @@
 
 APROCH_NAMESPACE_BEGIN
 
+class ANavigationMenuItem;
+class ANavigationMenuItemTreeView;
+
+class ANavigationMenuItemDelegatePrivate
+{
+public:
+};
+
+class ANavigationMenuItemTreeViewPrivate
+{
+public:
+};
+
 class ANavigationPanelPrivate
 {
 public:

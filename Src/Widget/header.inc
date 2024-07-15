@@ -42,9 +42,10 @@
 #include "AWheelColorPickerWidget.h"
 #include "AWidgetFactory.h"
 #include "AWindow.h"
+#include "ASplitterHandle.h"
 #include "NavigationView/ANavigationPageView.h"
 #include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationViewItem.h"
+#include "NavigationView/ANavigationMenuItem.h"
 
 #include "Style/ATheme.h"
 #include "Style/AWinUIStyleHelper.h"

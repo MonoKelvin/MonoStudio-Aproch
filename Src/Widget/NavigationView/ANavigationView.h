@@ -28,21 +28,21 @@
  *****************************************************************************/
 #pragma once
 #include "AprochExportDefine.h"
-#include <QFrame>
+#include <QSplitter>
 
 class QTreeView;
 
 APROCH_NAMESPACE_BEGIN
 
 class ANavigationViewPrivate;
-class ANavigationViewItem;
-class ANavigationViewItemGroup;
+class ANavigationMenuItem;
+class ANavigationMenuItemGroup;
 class ANavigationPageView;
 
 /**
  * @brief 导航视图
  */
-class APROCH_API ANavigationView : public QFrame
+class APROCH_API ANavigationView : public QSplitter
 {
     Q_OBJECT;
 
@@ -116,24 +116,14 @@ public:
 
     /** MenuItems */
 
-    void setMenuItems(QList<ANavigationViewItem*> menuItems);
-    QList<ANavigationViewItem*> getMenuItems() const;
-
-    ANavigationViewItem* insertMenuItem(const QString& text, const QIcon& icon, int index, ANavigationViewItem* parentItem = nullptr);
-    bool insertMenuItem(ANavigationViewItem* newItem, int index, ANavigationViewItem* parentItem = nullptr);
-    bool appendMenuItem(ANavigationViewItem* newItem, ANavigationViewItem* parentItem = nullptr);
-    bool removeMenuItem(ANavigationViewItem* item);
-    bool removeMenuItem(int index, ANavigationViewItem* parentItem = nullptr);
-    ANavigationViewItem* getMenuItem(int index, ANavigationViewItem* parent = nullptr) const;
-
-    ANavigationViewItemGroup* insertItemGroup(const QString& text, ANavigationViewItem* rootItem = nullptr);
-    bool insertItemGroup(ANavigationViewItemGroup* group, ANavigationViewItem* rootItem);
-    bool appendItemGroup(ANavigationViewItemGroup* group);
-    bool removeItemGroup(ANavigationViewItemGroup* group);
-    bool removeItemGroup(int index);
-    ANavigationViewItemGroup* getItemGroup(int index) const;
-
-    QTreeView* getMenuItemView() const;
+    ANavigationMenuItem* insertMenuItem(const QString& text, const QIcon& icon, int index, ANavigationMenuItem* parentItem = nullptr);
+    ANavigationMenuItemGroup* insertMenuItemGroup(const QString& text, int index);
+    bool insertMenuItem(ANavigationMenuItem* newItem, int index, ANavigationMenuItem* parentItem = nullptr);
+    bool appendMenuItem(ANavigationMenuItem* newItem, ANavigationMenuItem* parentItem = nullptr);
+    bool removeMenuItem(ANavigationMenuItem* item);
+    bool removeMenuItem(int index, ANavigationMenuItem* parentItem = nullptr);
+    int getMenuItemCount(ANavigationMenuItem* parent = nullptr) const;
+    ANavigationMenuItem* getMenuItem(int index, ANavigationMenuItem* parent = nullptr) const;
 
     /** Footer */
 
@@ -155,11 +145,13 @@ public:
     virtual QSize sizeHint() const override;
 
 protected:
+    virtual QSplitterHandle* createHandle() override;
+    virtual void paintEvent(QPaintEvent* evt) override;
 
 Q_SIGNALS:
     void panelPositionChanged();
     void compactModeChanged();
-    void selectionChanged(ANavigationViewItem* item);
+    void selectionChanged(ANavigationMenuItem* item);
     void trigger(ItemRole role);
 
 private:

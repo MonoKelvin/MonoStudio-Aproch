@@ -32,10 +32,17 @@
 
 APROCH_NAMESPACE_BEGIN
 
+class ANavigationPageViewPrivate;
+
 class APROCH_API ANavigationPageView : public QStackedWidget
 {
     Q_OBJECT;
 public:
+    explicit ANavigationPageView(QWidget* parent);
+
+private:
+    Q_DISABLE_COPY_MOVE(ANavigationPageView);
+    QSharedPointer<ANavigationPageViewPrivate> d_ptr;
 };
 
 APROCH_NAMESPACE_END

@@ -463,11 +463,14 @@
     <ClCompile Include="Widget\Private\ANavigationPanel.cpp">
       <Filter>Widget\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\NavigationView\ANavigationViewItem.cpp">
+    <ClCompile Include="Widget\NavigationView\ANavigationMenuItem.cpp">
       <Filter>Widget\Widget\NavigationView</Filter>
     </ClCompile>
     <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp">
       <Filter>Widget\Widget\NavigationView</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ASplitterHandle.cpp">
+      <Filter>Widget\Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -561,11 +564,14 @@
     <QtMoc Include="Widget\Private\ANavigationPanel.h">
       <Filter>Widget\Private</Filter>
     </QtMoc>
-    <QtMoc Include="Widget\NavigationView\ANavigationViewItem.h">
+    <QtMoc Include="Widget\NavigationView\ANavigationMenuItem.h">
       <Filter>Widget\Widget\NavigationView</Filter>
     </QtMoc>
     <QtMoc Include="Widget\NavigationView\ANavigationPageView.h">
       <Filter>Widget\Widget\NavigationView</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\ASplitterHandle.h">
+      <Filter>Widget\Widget</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

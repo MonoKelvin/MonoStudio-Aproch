@@ -1,5 +1,5 @@
 /****************************************************************************
- * @file    ANavigationViewItem.cpp
+ * @file    ANavigationMenuItem.cpp
  * @date    2024-07-13 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #include "stdafx.h"
-#include "ANavigationViewItem.h"
+#include "ANavigationMenuItem.h"
 
 APROCH_NAMESPACE_BEGIN
 
@@ -36,10 +36,50 @@ class ANavigationViewItemPrivate
 public:
 };
 
-ANavigationViewItem::ANavigationViewItem(QWidget* parent)
-    : QWidget(parent)
+ANavigationMenuItem::ANavigationMenuItem(QWidget* parent)
+    : ANavigationMenuItem(QString(), QIcon(), parent)
+{
+}
+
+ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon, QWidget* parent)
+    : QToolButton(parent)
     , d_ptr(new ANavigationViewItemPrivate())
 {
+    setText(text);
+    setIcon(icon);
+    setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+}
+
+QSize ANavigationMenuItem::sizeHint() const
+{
+    return QSize(180, 44);
+}
+
+AInfoBadge* ANavigationMenuItem::getInfoBadge() const
+{
+    throw std::exception("no implement");
+    return nullptr;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ANavigationMenuItemGroup::ANavigationMenuItemGroup(QWidget* parent)
+    : ANavigationMenuItemGroup(QString(), parent)
+{
+}
+
+ANavigationMenuItemGroup::ANavigationMenuItemGroup(const QString& text, QWidget* parent)
+    : ANavigationMenuItem(text, QIcon(), parent)
+{
+    setAttribute(Qt::WA_TransparentForMouseEvents);
+    setToolButtonStyle(Qt::ToolButtonTextOnly);
+}
+
+QSize ANavigationMenuItemGroup::sizeHint() const
+{
+    return QSize(100, 24);
 }
 
 APROCH_NAMESPACE_END

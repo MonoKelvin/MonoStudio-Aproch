@@ -159,9 +159,10 @@
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Private\AHotKey_win.cpp" />
+    <ClCompile Include="Widget\ASplitterHandle.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationView.cpp" />
-    <ClCompile Include="Widget\NavigationView\ANavigationViewItem.cpp" />
+    <ClCompile Include="Widget\NavigationView\ANavigationMenuItem.cpp" />
     <ClCompile Include="Widget\Private\ANavigationPanel.cpp" />
     <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp" />
     <ClCompile Include="WinUI\AWinUIApplication.cpp" />
@@ -176,8 +177,9 @@
     <QtMoc Include="Private\AHotKey_p.h" />
     <QtMoc Include="WinUI\AWinUIPlugin.h" />
     <QtMoc Include="Widget\NavigationView\ANavigationView.h" />
-    <QtMoc Include="Widget\NavigationView\ANavigationViewItem.h" />
+    <QtMoc Include="Widget\NavigationView\ANavigationMenuItem.h" />
     <QtMoc Include="Widget\NavigationView\ANavigationPageView.h" />
+    <QtMoc Include="Widget\ASplitterHandle.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />

@@ -1,5 +1,5 @@
 /****************************************************************************
- * @file    ANavigationViewItem.h
+ * @file    ANavigationMenuItem.h
  * @date    2024-07-13 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
@@ -28,29 +28,39 @@
  *****************************************************************************/
 #pragma once
 #include "AprochExportDefine.h"
-
 #include <QLabel>
+#include <QToolButton>
 
 APROCH_NAMESPACE_BEGIN
 
+class AInfoBadge;
 class ANavigationViewItemPrivate;
 
-class APROCH_API ANavigationViewItem : public QWidget
+class APROCH_API ANavigationMenuItem : public QToolButton
 {
     Q_OBJECT;
-
 public:
-    explicit ANavigationViewItem(QWidget* parent);
+    explicit ANavigationMenuItem(QWidget* parent);
+    ANavigationMenuItem(const QString& text, const QIcon& icon, QWidget* parent);
+
+    virtual QSize sizeHint() const override;
+
+    AInfoBadge* getInfoBadge() const;
 
 private:
-    Q_DISABLE_COPY_MOVE(ANavigationViewItem);
+    friend class ANavigationViewItemPrivate;
+    Q_DISABLE_COPY_MOVE(ANavigationMenuItem);
     QSharedPointer<ANavigationViewItemPrivate> d_ptr;
 };
 
-class ANavigationViewItemGroup : public QLabel
+class APROCH_API ANavigationMenuItemGroup : public ANavigationMenuItem
 {
     Q_OBJECT;
 public:
+    explicit ANavigationMenuItemGroup(QWidget* parent = nullptr);
+    explicit ANavigationMenuItemGroup(const QString& text, QWidget* parent = nullptr);
+
+    virtual QSize sizeHint() const override;
 };
 
 APROCH_NAMESPACE_END

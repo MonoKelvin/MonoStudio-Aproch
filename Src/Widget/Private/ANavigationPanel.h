@@ -28,12 +28,53 @@
  *****************************************************************************/
 #pragma once
 #include "Widget/NavigationView/ANavigationView.h"
+#include "Widget/NavigationView/ANavigationMenuItem.h"
 
 #include <QWidget>
+#include <QStyledItemDelegate>
+#include <QTreeView>
 
 APROCH_NAMESPACE_BEGIN
 
+class ANavigationMenuItemDelegatePrivate;
+class ANavigationMenuItemTreeViewPrivate;
 class ANavigationPanelPrivate;
+
+class ANavigationMenuItemDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT;
+public:
+    explicit ANavigationMenuItemDelegate(QObject* parent = nullptr);
+
+    void setMenuItems(QList<ANavigationMenuItem*> menuItems);
+    QList<ANavigationMenuItem*> getMenuItems() const;
+
+protected:
+    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+    void setEditorData(QWidget* editor, const QModelIndex& index) const override;
+    void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const override;
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+
+private:
+    Q_DISABLE_COPY_MOVE(ANavigationMenuItemDelegate);
+    QScopedPointer<ANavigationMenuItemDelegatePrivate> d_ptr;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class ANavigationMenuItemTreeView : public QTreeView
+{
+    Q_OBJECT;
+public:
+    explicit ANavigationMenuItemTreeView(QWidget* parent = nullptr);
+
+private:
+    Q_DISABLE_COPY_MOVE(ANavigationMenuItemTreeView);
+    QScopedPointer<ANavigationMenuItemTreeViewPrivate> d_ptr;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class ANavigationPanel : public QWidget
 {
@@ -43,7 +84,9 @@ public:
     explicit ANavigationPanel(ANavigationView::EPanelPosition position, QWidget* parent = nullptr);
 
     void setPosition(ANavigationView::EPanelPosition position);
-    ANavigationView::EPanelPosition getPosition();
+    ANavigationView::EPanelPosition getPosition() const;
+
+    virtual QSize sizeHint() const override;
 
 private:
     friend class ANavigationView;

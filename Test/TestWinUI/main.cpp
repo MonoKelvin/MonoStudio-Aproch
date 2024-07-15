@@ -22,6 +22,8 @@ void _setStyleSheet(QWidget* widget)
     styleBtn->move((widget->width() - styleBtn->width()) * 0.5, styleBtn->height());
     styleBtn->click();
     styleBtn->setStyleSheet("background:black; color: white; padding: 4px");
+    styleBtn->raise();
+    styleBtn->show();
 #endif // _DEBUG
 }
 

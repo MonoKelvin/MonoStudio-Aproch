@@ -31,4 +31,15 @@
 
 APROCH_NAMESPACE_BEGIN
 
+class ANavigationPageViewPrivate
+{
+public:
+};
+
+ANavigationPageView::ANavigationPageView(QWidget* parent)
+    : QStackedWidget(parent)
+    , d_ptr(new ANavigationPageViewPrivate())
+{
+}
+
 APROCH_NAMESPACE_END

@@ -32,6 +32,51 @@
 
 APROCH_NAMESPACE_BEGIN
 
+
+ANavigationMenuItemDelegate::ANavigationMenuItemDelegate(QObject* parent)
+    : QStyledItemDelegate(parent)
+    , d_ptr(new ANavigationMenuItemDelegatePrivate())
+{
+}
+
+void ANavigationMenuItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+    return QStyledItemDelegate::paint(painter, option, index);
+}
+
+QWidget* ANavigationMenuItemDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+    ANavigationMenuItem* item = new ANavigationMenuItem(parent);
+    return item;
+}
+
+void ANavigationMenuItemDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
+{
+}
+
+void ANavigationMenuItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
+{
+}
+
+void ANavigationMenuItemDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+    editor->setGeometry(option.rect);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
+    : QTreeView(parent)
+    , d_ptr(new ANavigationMenuItemTreeViewPrivate())
+{
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 ANavigationPanel::ANavigationPanel(QWidget* parent)
     : ANavigationPanel(ANavigationView::Left)
 {
@@ -62,9 +107,26 @@ void ANavigationPanel::setPosition(ANavigationView::EPanelPosition position)
     mainLayout->setDirection(dir);
 }
 
-ANavigationView::EPanelPosition ANavigationPanel::getPosition()
+ANavigationView::EPanelPosition ANavigationPanel::getPosition() const
 {
-    return ANavigationView::EPanelPosition();
+    QBoxLayout* mainLayout = qobject_cast<QBoxLayout*>(layout());
+    Q_ASSERT(mainLayout);
+
+    return (mainLayout->direction() == QBoxLayout::LeftToRight ||
+            mainLayout->direction() == QBoxLayout::RightToLeft) ? ANavigationView::Top : ANavigationView::Left;
+}
+
+QSize ANavigationPanel::sizeHint() const
+{
+    switch (getPosition())
+    {
+    case aproch::ANavigationView::Top:
+        //case aproch::ANavigationView::Bottom:
+        return QSize(1000, 60);
+    default:
+        break;
+    }
+    return QSize(400, 680);
 }
 
 APROCH_NAMESPACE_END
