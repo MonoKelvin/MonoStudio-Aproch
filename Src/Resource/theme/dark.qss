@@ -4,15 +4,30 @@
     /* border: 1px solid red; */
 }
 
+QFrame {
+    background-color: transparent;
+}
+
+/* Scroll Bar */
+
+
 
 /* Tool Button */
 
 QToolButton {
+    max-height: 36px;
+    border-radius: 4px;
     background-color: transparent;
 }
 
-QFrame {
-    background-color: transparent;
+QToolButton:hover {
+    padding: 0;
+    background-color: rgba(255, 255, 255, 5%);
+}
+
+QToolButton:pressed {
+    padding: 0;
+    background-color: rgba(255, 255, 255, 3%);
 }
 
 /* Splitter */
@@ -21,8 +36,12 @@ QSplitter::handle {
     background: transparent;
 }
 
+QSplitter::handle:hover {
+    background-color: rgba(255, 255, 255, 2%);
+}
+
 QSplitter::handle:pressed {
-    background-color: rgba(255, 255, 255, 10%);
+    background-color: rgba(255, 255, 255, 5%);
 }
 
 /* Menu Bar */
@@ -97,7 +116,7 @@ QMenu::separator {
 
 ACaptionBar {
     min-height: 33px;
-    height: 33px;
+    height: 45px;
 }
 
 ACaptionBar[active=true] {
@@ -196,13 +215,26 @@ AWindow[has-material=true]>ACaptionBar {
 /* Splitter Handle */
 
 ASplitterHandle:hover {
-    border-top-left-radius: 10px;
-    background-color: rgba(255, 255, 255, 8%);
+    background-color: rgba(255, 255, 255, 2%);
 }
 
 
-/* Navigation */
+/* Navigation View */
 
+ANavigationPanel {
+    padding: 3px 6px;
+}
+
+ANavigationView::handle:hover,
+ANavigationView ASplitterHandle {
+    border-top-left-radius: 10px;
+}
+
+ANavigationView ANavigationMenuItem {
+    margin: 3px 6px;
+}
+
+/* Navigation Page View */
 ANavigationPageView {
     border-top-left-radius: 10px;
     background-color: rgba(255, 255, 255, 5%);

@@ -177,6 +177,11 @@ int AAppContext::run(int argc, char* argv[])
 
     // 设置程序相关属性
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+    
+    // 启用高DPI缩放
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 
     // 启动程序
     QApplication app(argc, argv);

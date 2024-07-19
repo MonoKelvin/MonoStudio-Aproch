@@ -31,14 +31,66 @@
 #include "Widget/NavigationView/ANavigationMenuItem.h"
 
 #include <QWidget>
+#include <QAbstractItemModel>
 #include <QStyledItemDelegate>
 #include <QTreeView>
 
 APROCH_NAMESPACE_BEGIN
 
+class ANavigationMenuItemModelPrivate;
 class ANavigationMenuItemDelegatePrivate;
 class ANavigationMenuItemTreeViewPrivate;
 class ANavigationPanelPrivate;
+
+struct SNavigationMenuItem
+{
+    ANavigationMenuItem* item = nullptr;
+    QWeakPointer<SNavigationMenuItem> parent;
+    QList<QSharedPointer<SNavigationMenuItem>> subItems;
+
+    SNavigationMenuItem()
+    {
+    }
+
+    explicit SNavigationMenuItem(ANavigationMenuItem* menuItem, const QSharedPointer<SNavigationMenuItem>& parentItem = nullptr)
+        : item(menuItem)
+        , parent(parentItem)
+    {
+    }
+
+    bool operator==(const SNavigationMenuItem& rhs) const noexcept
+    {
+        return rhs.item == item;
+    }
+};
+typedef QSharedPointer<SNavigationMenuItem> TNavigationMenuItemPtr;
+
+class ANavigationMenuItemModel : public QAbstractItemModel
+{
+    Q_OBJECT;
+public:
+    explicit ANavigationMenuItemModel(QObject* parent = nullptr);
+
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    QModelIndex index(int row, int column, const QModelIndex& parent) const override;
+    QModelIndex parent(const QModelIndex& child) const override;
+    int rowCount(const QModelIndex& parent) const override;
+    int columnCount(const QModelIndex& parent) const override;
+
+    static void enumerator(const QSharedPointer<SNavigationMenuItem>& item, 
+                           QList<QSharedPointer<SNavigationMenuItem>>& subItems);
+    static void enumerator(const QSharedPointer<SNavigationMenuItem>& item, 
+                           QList<ANavigationMenuItem*>& items);
+    static QSharedPointer<SNavigationMenuItem> findItem(const QSharedPointer<SNavigationMenuItem>& menuItem, 
+                                                        ANavigationMenuItem* item);
+    QSharedPointer<SNavigationMenuItem> findItem(ANavigationMenuItem* item);
+
+private:
+    friend class ANavigationView;
+    friend class ANavigationMenuItemModel;
+    Q_DISABLE_COPY_MOVE(ANavigationMenuItemModel);
+    QScopedPointer<ANavigationMenuItemModelPrivate> d_ptr;
+};
 
 class ANavigationMenuItemDelegate : public QStyledItemDelegate
 {
@@ -46,8 +98,7 @@ class ANavigationMenuItemDelegate : public QStyledItemDelegate
 public:
     explicit ANavigationMenuItemDelegate(QObject* parent = nullptr);
 
-    void setMenuItems(QList<ANavigationMenuItem*> menuItems);
-    QList<ANavigationMenuItem*> getMenuItems() const;
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 protected:
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
@@ -87,6 +138,9 @@ public:
     ANavigationView::EPanelPosition getPosition() const;
 
     virtual QSize sizeHint() const override;
+
+protected:
+    virtual void paintEvent(QPaintEvent* evt) override;
 
 private:
     friend class ANavigationView;

@@ -7,6 +7,7 @@ APROCH_NAMESPACE_BEGIN
 class APROCH_API ASplitterHandle : public QSplitterHandle
 {
     Q_OBJECT;
+    A_DEFINE_PROPERTY_NOSIGNAL(QColor, barColor, BarColor);
 public:
     explicit ASplitterHandle(QSplitter* parent = nullptr);
     explicit ASplitterHandle(Qt::Orientation o, QSplitter* parent = nullptr);
@@ -14,8 +15,9 @@ public:
 
     void moveSplitterEx(int pos);
 
-protected:
     virtual QSize sizeHint() const override;
+
+protected:
     virtual void paintEvent(QPaintEvent* evt) override;
 
 private:

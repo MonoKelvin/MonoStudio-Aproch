@@ -38,6 +38,9 @@ class ANavigationViewPrivate;
 class ANavigationMenuItem;
 class ANavigationMenuItemGroup;
 class ANavigationPageView;
+class ANavigationMenuItemTreeView;
+class ANavigationMenuItemDelegate;
+class ANavigationMenuItemModel;
 
 /**
  * @brief 导航视图
@@ -79,7 +82,7 @@ public:
         Other,
         BackButton,
         CompactButton,
-        MenuItem,
+        SNavigationMenuItem,
         Settings,
     };
     Q_ENUM(ItemRole);
@@ -146,6 +149,7 @@ public:
 
 protected:
     virtual QSplitterHandle* createHandle() override;
+    virtual void showEvent(QShowEvent* evt) override;
     virtual void paintEvent(QPaintEvent* evt) override;
 
 Q_SIGNALS:
@@ -153,6 +157,9 @@ Q_SIGNALS:
     void compactModeChanged();
     void selectionChanged(ANavigationMenuItem* item);
     void trigger(ItemRole role);
+
+protected Q_SLOTS:
+    void updatePageViewPosition(int pos, int index);
 
 private:
     Q_DISABLE_COPY_MOVE(ANavigationView);

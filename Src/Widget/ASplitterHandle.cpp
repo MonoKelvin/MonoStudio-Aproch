@@ -13,6 +13,7 @@ ASplitterHandle::ASplitterHandle(QSplitter* parent)
 
 ASplitterHandle::ASplitterHandle(Qt::Orientation o, QSplitter* parent)
     : QSplitterHandle(o, parent)
+    , m_barColor(128, 128, 128, 180)
 {
 #ifndef QT_NO_CURSOR
     setCursor(o == Qt::Horizontal ? Qt::SizeHorCursor : Qt::SizeVerCursor);
@@ -31,7 +32,7 @@ void ASplitterHandle::moveSplitterEx(int pos)
 QSize ASplitterHandle::sizeHint() const
 {
     const QSize defSh = QSplitterHandle::sizeHint();
-    return orientation() == Qt::Vertical ? QSize(12, defSh.height()) : QSize(defSh.width(), 12);
+    return orientation() == Qt::Horizontal ? QSize(12, defSh.height()) : QSize(defSh.width(), 12);
 
 }
 
@@ -41,20 +42,27 @@ void ASplitterHandle::paintEvent(QPaintEvent* evt)
 
     QSplitterHandle::paintEvent(evt);
 
+    const bool isHor = orientation() == Qt::Horizontal;
+
     QPainter painter(this);
 
-    // draw line
-    const QPoint c = rect().center();
-    constexpr int barWidth = 6;
+    // draw bar
+    const QPoint c = (rect().topLeft() + rect().bottomRight()) / 2;
+    constexpr int barWidth = 4;
     constexpr int barHeight = 30;
     constexpr int barBorderRadius = 3;
-    QRect barRect(c.x() - barWidth / 2, c.y() - barHeight / 2, barWidth, barHeight);
+
+    QRect barRect;
+    if (isHor)
+        barRect = QRect(c.x() - barWidth / 2, c.y() - barHeight / 2, barWidth, barHeight);
+    else
+        barRect = QRect(c.x() - barHeight / 2, c.y() - barWidth / 2, barHeight, barWidth);
 
     QPainterPath path;
     AGraphicsToolkit::drawRoundedRect(path, barRect, barBorderRadius);
     
     painter.setPen(Qt::NoPen);
-    painter.setBrush(Qt::gray);
+    painter.setBrush(m_barColor);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.drawPath(path);
 }

@@ -44,6 +44,18 @@ class ANavigationMenuItemTreeViewPrivate
 public:
 };
 
+class ANavigationMenuItemModelPrivate
+{
+public:
+    ANavigationMenuItemModelPrivate()
+        : rootMenuItem(new SNavigationMenuItem())
+    {
+    }
+
+public:
+    QSharedPointer<SNavigationMenuItem> rootMenuItem;
+};
+
 class ANavigationPanelPrivate
 {
 public:

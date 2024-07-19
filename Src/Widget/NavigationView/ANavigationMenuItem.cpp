@@ -48,6 +48,7 @@ ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon,
     setText(text);
     setIcon(icon);
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 }
 
 QSize ANavigationMenuItem::sizeHint() const
