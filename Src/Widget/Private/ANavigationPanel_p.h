@@ -42,18 +42,47 @@ public:
 class ANavigationMenuItemTreeViewPrivate
 {
 public:
+    ANavigationMenuItemTreeViewPrivate()
+    {
+    }
+
+    QTreeWidgetItem* findMenuItem(const ANavigationMenuItemTreeView* view,
+                                  QTreeWidgetItem* theItem,
+                                  ANavigationMenuItem* menuItem)
+    {
+        if (view->itemWidget(theItem, 0) == menuItem)
+            return theItem;
+        for (int i = 0; i < theItem->childCount(); ++i)
+        {
+            auto subItem = findMenuItem(view, theItem->child(i), menuItem);
+            if (subItem)
+                return subItem;
+        }
+        return nullptr;
+    }
+
+    void getMenuItemMap(const ANavigationMenuItemTreeView* view, QTreeWidgetItem* parentItem,
+                        QMap<QTreeWidgetItem*, ANavigationMenuItem*>& menuItemMap)
+    {
+        if (!parentItem)
+            return;
+
+        auto menuItem = qobject_cast<ANavigationMenuItem*>(view->itemWidget(parentItem, 0));
+        if (menuItem)
+            menuItemMap[parentItem] = menuItem;
+
+        for (int i = 0; i < parentItem->childCount(); ++i)
+            getMenuItemMap(view, parentItem->child(i), menuItemMap);
+    }
 };
 
 class ANavigationMenuItemModelPrivate
 {
 public:
     ANavigationMenuItemModelPrivate()
-        : rootMenuItem(new SNavigationMenuItem())
     {
     }
-
 public:
-    QSharedPointer<SNavigationMenuItem> rootMenuItem;
 };
 
 class ANavigationPanelPrivate

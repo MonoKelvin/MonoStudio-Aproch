@@ -40,8 +40,8 @@ class APROCH_API ANavigationMenuItem : public QToolButton
 {
     Q_OBJECT;
 public:
-    explicit ANavigationMenuItem(QWidget* parent);
-    ANavigationMenuItem(const QString& text, const QIcon& icon, QWidget* parent);
+    explicit ANavigationMenuItem(QWidget* parent = nullptr);
+    ANavigationMenuItem(const QString& text, const QIcon& icon, QWidget* parent = nullptr);
 
     virtual QSize sizeHint() const override;
 

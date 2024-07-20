@@ -1,6 +1,6 @@
 * {
     color: white;
-    /* border: none; */
+    border: none;
     /* border: 1px solid red; */
 }
 
@@ -222,7 +222,7 @@ ASplitterHandle:hover {
 /* Navigation View */
 
 ANavigationPanel {
-    padding: 3px 6px;
+    padding: 6px 6px;
 }
 
 ANavigationView::handle:hover,
@@ -231,7 +231,6 @@ ANavigationView ASplitterHandle {
 }
 
 ANavigationView ANavigationMenuItem {
-    margin: 3px 6px;
 }
 
 /* Navigation Page View */
