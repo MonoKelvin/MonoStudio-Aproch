@@ -36,6 +36,7 @@ AWheelColorPicker::AWheelColorPicker(const QColor &initColor, QWidget *parent)
 {
     mIndicator = new AColorPickerIndicator(this);
     const int s = qMax(mIndicator->width(), mIndicator->height());
+    setAttribute(Qt::WA_StyledBackground);
 }
 
 void AWheelColorPicker::setIndicatorPos(int x, int y)
@@ -170,8 +171,6 @@ void AWheelColorPicker::paintGL()
 #else
 void AWheelColorPicker::paintEvent(QPaintEvent *ev)
 {
-    APROCH_USE_STYLE_SHEET();
-
     QPainter painter(this);
     const QVector2D center(rect().center());
     int radius = qMin(width() / 2, height() / 2);

@@ -94,9 +94,6 @@ public:
 
     virtual QSize sizeHint() const override;
 
-protected:
-    virtual void paintEvent(QPaintEvent* evt) override;
-
 private:
     friend class ANavigationView;
     friend class ANavigationViewPrivate;

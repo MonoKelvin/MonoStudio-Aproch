@@ -141,7 +141,7 @@ public:
 
     /** page View */
 
-    ANavigationPageView* getContentView() const;
+    ANavigationPageView* getPageView() const;
 
     /** Other Methods */
 

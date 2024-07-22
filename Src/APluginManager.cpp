@@ -87,7 +87,7 @@ bool APluginManager::loadPlugin(const QString &dllFileName)
         return false;
     }
 
-    IPlugin* pPlugin = qobject_cast<IPlugin*>(loader.instance());
+    IPlugin* pPlugin = qobject_cast<IPlugin*>(loader.getInstance());
     if (nullptr == pPlugin)
         return false;*/
 

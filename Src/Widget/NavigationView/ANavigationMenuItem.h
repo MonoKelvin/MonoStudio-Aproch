@@ -28,15 +28,14 @@
  *****************************************************************************/
 #pragma once
 #include "AprochExportDefine.h"
-#include <QLabel>
-#include <QToolButton>
+#include <QPushButton>
 
 APROCH_NAMESPACE_BEGIN
 
 class AInfoBadge;
 class ANavigationViewItemPrivate;
 
-class APROCH_API ANavigationMenuItem : public QToolButton
+class APROCH_API ANavigationMenuItem : public QWidget
 {
     Q_OBJECT;
 public:
@@ -47,7 +46,7 @@ public:
 
     AInfoBadge* getInfoBadge() const;
 
-private:
+protected:
     friend class ANavigationViewItemPrivate;
     Q_DISABLE_COPY_MOVE(ANavigationMenuItem);
     QSharedPointer<ANavigationViewItemPrivate> d_ptr;
@@ -59,8 +58,6 @@ class APROCH_API ANavigationMenuItemGroup : public ANavigationMenuItem
 public:
     explicit ANavigationMenuItemGroup(QWidget* parent = nullptr);
     explicit ANavigationMenuItemGroup(const QString& text, QWidget* parent = nullptr);
-
-    virtual QSize sizeHint() const override;
 };
 
 APROCH_NAMESPACE_END

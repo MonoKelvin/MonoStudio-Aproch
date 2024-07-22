@@ -34,6 +34,8 @@ APROCH_NAMESPACE_BEGIN
 class ANavigationViewItemPrivate
 {
 public:
+    QLabel* iconLabel = nullptr;
+    QLabel* textLabel = nullptr;
 };
 
 ANavigationMenuItem::ANavigationMenuItem(QWidget* parent)
@@ -42,12 +44,25 @@ ANavigationMenuItem::ANavigationMenuItem(QWidget* parent)
 }
 
 ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon, QWidget* parent)
-    : QToolButton(parent)
+    : QWidget(parent)
     , d_ptr(new ANavigationViewItemPrivate())
 {
-    setText(text);
-    setIcon(icon);
-    setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    QBoxLayout* theLayout = new QBoxLayout(QBoxLayout::LeftToRight, this);
+
+    //AFontIcon* iconLabel = new AFontIcon("", this);
+    d_ptr->iconLabel = new QLabel(this);
+    d_ptr->iconLabel->setPixmap(icon.pixmap(AFontIcon::DefaultIconSize));
+    d_ptr->iconLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    d_ptr->textLabel = new QLabel(text, this);
+    d_ptr->textLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
+    theLayout->addWidget(d_ptr->iconLabel);
+    theLayout->addWidget(d_ptr->textLabel);
+    theLayout->setSpacing(12);
+    theLayout->setContentsMargins(QMargins(10, 0, 10, 0));
+
+    setAttribute(Qt::WA_StyledBackground);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 }
 
@@ -74,13 +89,10 @@ ANavigationMenuItemGroup::ANavigationMenuItemGroup(QWidget* parent)
 ANavigationMenuItemGroup::ANavigationMenuItemGroup(const QString& text, QWidget* parent)
     : ANavigationMenuItem(text, QIcon(), parent)
 {
-    setAttribute(Qt::WA_TransparentForMouseEvents);
-    setToolButtonStyle(Qt::ToolButtonTextOnly);
-}
+    d_ptr->iconLabel->deleteLater();
+    d_ptr->iconLabel = nullptr;
 
-QSize ANavigationMenuItemGroup::sizeHint() const
-{
-    return QSize(100, 24);
+    setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 APROCH_NAMESPACE_END

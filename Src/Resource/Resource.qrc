@@ -16,8 +16,12 @@
         <file alias="icon/menubar_more_line">icon/system/menubar_more_line.svg</file>
         <file>theme/dark.qss</file>
         <file>theme/light.qss</file>
-    </qresource>
-    <qresource prefix="/winui">
-        <file>i18n/zh_CN.qm</file>
+        <file>fonts/segmdl2.ttf</file>
+        <file>fonts/segoeicons.ttf</file>
+        <file>fonts/seguiemj.ttf</file>
+        <file>icon/system/arrow-down-solid.svg</file>
+        <file>icon/system/arrow-left-solid.svg</file>
+        <file>icon/system/arrow-right-solid.svg</file>
+        <file>icon/system/arrow-up-solid.svg</file>
     </qresource>
 </RCC>

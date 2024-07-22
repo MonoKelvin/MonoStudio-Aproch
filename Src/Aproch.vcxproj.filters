@@ -54,17 +54,11 @@
     <Filter Include="Common\Validator">
       <UniqueIdentifier>{ac4c3272-4c82-4fb4-8a23-c088d04b9122}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\UI">
-      <UniqueIdentifier>{b2df0160-50cb-4a7d-8ff1-fc8db66c1532}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\Utils">
       <UniqueIdentifier>{5dbda83b-f6bb-4376-adc1-666bb55f4dc1}</UniqueIdentifier>
     </Filter>
     <Filter Include="WinUI\Style">
       <UniqueIdentifier>{ad98d920-c39b-47b3-9969-f6ca8407e2d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Widget\Widget">
-      <UniqueIdentifier>{5e2f0503-cf9f-4eba-b964-ea939fef9fe7}</UniqueIdentifier>
     </Filter>
     <Filter Include="WinUI\QML">
       <UniqueIdentifier>{2e5d7cd7-db07-4e5c-953f-17d0e6f66f1c}</UniqueIdentifier>
@@ -75,7 +69,7 @@
     <Filter Include="Widget\Private">
       <UniqueIdentifier>{791604b4-00e7-4f39-8f3b-179c6f7dc3cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Widget\Widget\NavigationView">
+    <Filter Include="Widget\NavigationView">
       <UniqueIdentifier>{aaeda16c-7b0c-4161-bf8b-8fe21ea2cac2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -121,9 +115,6 @@
     </ClInclude>
     <ClInclude Include="AprochAPI.h">
       <Filter>Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="Widget\AFlowLayout.h">
-      <Filter>Widget\Widget</Filter>
     </ClInclude>
     <ClInclude Include="Widget\Style\AStyleDefines.h">
       <Filter>Widget\Style</Filter>
@@ -193,9 +184,6 @@
     </ClInclude>
     <ClInclude Include="Common\ANumberValidator.h">
       <Filter>Common\Validator</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\AIconFont.h">
-      <Filter>Common\UI</Filter>
     </ClInclude>
     <ClInclude Include="Common\ASingleton.h">
       <Filter>Common\Utils</Filter>
@@ -269,6 +257,12 @@
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h">
       <Filter>Widget\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Widget\AFlowLayout.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="AFontDatabase.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -316,45 +310,6 @@
     <ClCompile Include="AprochGlobal.cpp">
       <Filter>Defines</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\AAbstractColorPicker.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AAvatar.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\ACaptionBar.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AColorPickerIndicator.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AColorSliderControl.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AFlowLayout.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\ANavigationBar.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\APromptWidget.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AToolBar.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AVerticalLabel.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AWheelColorPicker.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AWheelColorPickerWidget.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\AWindow.cpp">
-      <Filter>Widget\Widget</Filter>
-    </ClCompile>
     <ClCompile Include="Widget\Style\AStyleDefines.cpp">
       <Filter>Widget\Style</Filter>
     </ClCompile>
@@ -387,9 +342,6 @@
     </ClCompile>
     <ClCompile Include="Common\ADoubleValidator.cpp">
       <Filter>Common\Validator</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\AIconFont.cpp">
-      <Filter>Common\UI</Filter>
     </ClCompile>
     <ClCompile Include="Common\AIdentity.cpp">
       <Filter>Common\Utils</Filter>
@@ -458,19 +410,64 @@
       <Filter>Widget\Style</Filter>
     </ClCompile>
     <ClCompile Include="Widget\NavigationView\ANavigationView.cpp">
-      <Filter>Widget\Widget\NavigationView</Filter>
+      <Filter>Widget\NavigationView</Filter>
     </ClCompile>
     <ClCompile Include="Widget\Private\ANavigationPanel.cpp">
       <Filter>Widget\Private</Filter>
     </ClCompile>
     <ClCompile Include="Widget\NavigationView\ANavigationMenuItem.cpp">
-      <Filter>Widget\Widget\NavigationView</Filter>
+      <Filter>Widget\NavigationView</Filter>
     </ClCompile>
     <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp">
-      <Filter>Widget\Widget\NavigationView</Filter>
+      <Filter>Widget\NavigationView</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AAbstractColorPicker.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AAvatar.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ACaptionBar.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AColorPickerIndicator.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AColorSliderControl.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AFlowLayout.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\ANavigationBar.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\APromptWidget.cpp">
+      <Filter>Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\ASplitterHandle.cpp">
-      <Filter>Widget\Widget</Filter>
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AToolBar.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AVerticalLabel.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWheelColorPicker.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWheelColorPickerWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AWindow.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="AFontDatabase.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AFontIcon.cpp">
+      <Filter>Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -482,42 +479,6 @@
     </QtMoc>
     <QtMoc Include="AAppContext.h">
       <Filter>Application</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AAbstractColorPicker.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AAvatar.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\ACaptionBar.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AColorPickerIndicator.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AColorSliderControl.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\ANavigationBar.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\APromptWidget.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AToolBar.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AVerticalLabel.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AWheelColorPicker.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AWheelColorPickerWidget.h">
-      <Filter>Widget\Widget</Filter>
-    </QtMoc>
-    <QtMoc Include="Widget\AWindow.h">
-      <Filter>Widget\Widget</Filter>
     </QtMoc>
     <QtMoc Include="AAction.h">
       <Filter>Application\Action</Filter>
@@ -559,19 +520,58 @@
       <Filter>Widget\Style</Filter>
     </QtMoc>
     <QtMoc Include="Widget\NavigationView\ANavigationView.h">
-      <Filter>Widget\Widget\NavigationView</Filter>
+      <Filter>Widget\NavigationView</Filter>
     </QtMoc>
     <QtMoc Include="Widget\Private\ANavigationPanel.h">
       <Filter>Widget\Private</Filter>
     </QtMoc>
     <QtMoc Include="Widget\NavigationView\ANavigationMenuItem.h">
-      <Filter>Widget\Widget\NavigationView</Filter>
+      <Filter>Widget\NavigationView</Filter>
     </QtMoc>
     <QtMoc Include="Widget\NavigationView\ANavigationPageView.h">
-      <Filter>Widget\Widget\NavigationView</Filter>
+      <Filter>Widget\NavigationView</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AAbstractColorPicker.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AAvatar.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\ACaptionBar.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AColorPickerIndicator.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AColorSliderControl.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\ANavigationBar.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\APromptWidget.h">
+      <Filter>Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\ASplitterHandle.h">
-      <Filter>Widget\Widget</Filter>
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AToolBar.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AVerticalLabel.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AWheelColorPicker.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AWheelColorPickerWidget.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AWindow.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AFontIcon.h">
+      <Filter>Widget</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -590,7 +590,7 @@
       <Filter>WinUI\QML</Filter>
     </None>
     <None Include="Widget\header.inc">
-      <Filter>Widget\Widget</Filter>
+      <Filter>Widget</Filter>
     </None>
   </ItemGroup>
 </Project>

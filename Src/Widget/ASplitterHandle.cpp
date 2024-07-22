@@ -18,6 +18,7 @@ ASplitterHandle::ASplitterHandle(Qt::Orientation o, QSplitter* parent)
 #ifndef QT_NO_CURSOR
     setCursor(o == Qt::Horizontal ? Qt::SizeHorCursor : Qt::SizeVerCursor);
 #endif
+    setAttribute(Qt::WA_StyledBackground);
 }
 
 ASplitterHandle::~ASplitterHandle()
@@ -38,10 +39,6 @@ QSize ASplitterHandle::sizeHint() const
 
 void ASplitterHandle::paintEvent(QPaintEvent* evt)
 {
-    APROCH_USE_STYLE_SHEET();
-
-    QSplitterHandle::paintEvent(evt);
-
     const bool isHor = orientation() == Qt::Horizontal;
 
     QPainter painter(this);

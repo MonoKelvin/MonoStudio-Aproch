@@ -43,10 +43,13 @@ public:
     ~ATheme();
 
     /** @brief 获取实例对象 */
-    static ATheme* instance();
+    static ATheme* getInstance();
 
     /** @brief 设置应用主题类型 */
     static void setTheme(EThemeType type);
+
+    /** @brief 设置自定义主题样式文件路径。设置后不会立即应用，需要调用 setTheme(EThemeType::Custom) */
+    static bool setCustomThemeFile(const QString& strFileName);
 
     /** @brief 获取应用主题类型 */
     static EThemeType getTheme();
@@ -54,11 +57,18 @@ public:
     /** @brief 获取系统主题类型 */
     static EThemeType getSystemTheme();
 
-    /** @brief 设置是否监控系统主题的变化。开启后系统主题变化时，同步发送 themeChanged() 信号 */
+    /**
+     * @brief 设置是否监控系统主题的变化。开启后系统主题变化时自动切换程序样式并发送 themeChanged() 信号
+     * 注意：主题设置为跟随系统才启用，即调用: setThem(EThemeType::System)
+     */
     static void setSystemThemeWatchEnabled(bool enabled);
 
 Q_SIGNALS:
     void themeChanged();
+
+public Q_SLOTS:
+    /** @brief 重新加载主题样式 */
+    void reload();
 
 private:
     virtual bool eventFilter(QObject* obj, QEvent* event) override;

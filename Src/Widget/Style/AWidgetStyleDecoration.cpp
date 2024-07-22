@@ -142,7 +142,7 @@ bool AWidgetStyleDecoration::setWinUITheme(EThemeType theme)
         appTheme = ATheme::getSystemTheme();
         if (d_ptr->_host)
         {
-            d_ptr->_themeChangedConnection = QObject::connect(ATheme::instance(), &ATheme::themeChanged, [this]() {
+            d_ptr->_themeChangedConnection = QObject::connect(ATheme::getInstance(), &ATheme::themeChanged, [this]() {
                 if (!d_ptr->_host)
                     return;
                 d_ptr->setTheme(mWinAgent, ATheme::getSystemTheme());

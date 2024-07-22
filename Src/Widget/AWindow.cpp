@@ -91,6 +91,7 @@ AWindow::AWindow(const FWindowCaptionWidgets& captionWidgets, QWidget *parent)
     , d_ptr(new AWindowPrivate())
 {
     initStyle(this);
+    setAttribute(Qt::WA_StyledBackground);
 
     // 标题栏
     auto captionBar = new ACaptionBar(captionWidgets, this);
@@ -207,13 +208,6 @@ bool AWindow::event(QEvent* evt)
         break;
     }
     return QMainWindow::event(evt);
-}
-
-void AWindow::paintEvent(QPaintEvent *ev)
-{
-    APROCH_USE_STYLE_SHEET();
-
-    return QMainWindow::paintEvent(ev);
 }
 
 void AWindow::closeEvent(QCloseEvent *ev)

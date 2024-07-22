@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="AAction.cpp" />
     <ClCompile Include="AActionManager.cpp" />
+    <ClCompile Include="AFontDatabase.cpp" />
     <ClCompile Include="AHotKey.cpp" />
     <ClCompile Include="Common\ACategory.cpp" />
     <ClCompile Include="Common\AContextContainter.cpp" />
@@ -150,7 +151,6 @@
     <ClCompile Include="Common\AException.cpp" />
     <ClCompile Include="Common\AFileToolkit.cpp" />
     <ClCompile Include="Common\AGraphicsToolkit.cpp" />
-    <ClCompile Include="Common\AIconFont.cpp" />
     <ClCompile Include="Common\AIdentity.cpp" />
     <ClCompile Include="Common\AMathToolkit.cpp" />
     <ClCompile Include="Common\AReflection.cpp" />
@@ -159,6 +159,7 @@
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Private\AHotKey_win.cpp" />
+    <ClCompile Include="Widget\AFontIcon.cpp" />
     <ClCompile Include="Widget\ASplitterHandle.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationView.cpp" />
@@ -180,6 +181,8 @@
     <QtMoc Include="Widget\NavigationView\ANavigationMenuItem.h" />
     <QtMoc Include="Widget\NavigationView\ANavigationPageView.h" />
     <QtMoc Include="Widget\ASplitterHandle.h" />
+    <ClInclude Include="AFontDatabase.h" />
+    <QtMoc Include="Widget\AFontIcon.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />
@@ -247,7 +250,6 @@
     <QtMoc Include="Common\ADoubleValidator.h" />
     <ClInclude Include="Common\AException.h" />
     <ClInclude Include="Common\AFileToolkit.h" />
-    <ClInclude Include="Common\AIconFont.h" />
     <ClInclude Include="Common\AIdentity.h" />
     <ClInclude Include="Common\AMathToolkit.h" />
     <ClInclude Include="Common\ANumberValidator.h" />

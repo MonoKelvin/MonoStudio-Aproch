@@ -78,7 +78,6 @@ protected:
      */
     // virtual  void show();
 
-    void paintEvent(QPaintEvent *) override;
     void showEvent(QShowEvent *) override;
 
     /**

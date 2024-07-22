@@ -72,15 +72,18 @@ namespace {
             break;
         case EWindowCaptionWidget::WindowMinimizeButton:
             icon = QIcon(":/icon/windowbtn_minimize");
+            //icon = AFontIcon::icon("\uE921", AFontDatabase::getDefaultIconFont(), Qt::white);
             objName = AStr("aproch-captionbar-min");
             break;
         case EWindowCaptionWidget::WindowMaximizeButton:
             icon = QIcon(":/icon/windowbtn_maximize");
+            //icon = AFontIcon::icon("\uE922", AFontDatabase::getDefaultIconFont(), Qt::white);
             winBtn->setCheckable(true);
             objName = AStr("aproch-captionbar-max");
             break;
         case EWindowCaptionWidget::WindowCloseButton:
             icon = QIcon(":/icon/windowbtn_close");
+            //icon = AFontIcon::icon("\uE8BB", AFontDatabase::getDefaultIconFont(), Qt::white);
             objName = AStr("aproch-captionbar-close");
             break;
         default:

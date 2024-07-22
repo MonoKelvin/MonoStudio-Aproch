@@ -25,19 +25,28 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     Qt::Orientation mainDir = position == EPanelPosition::Top ? Qt::Vertical : Qt::Horizontal;
     setOrientation(mainDir);
     setChildrenCollapsible(false);
+    setAttribute(Qt::WA_StyledBackground);
 
     // panel
     d_ptr->panel = new ANavigationPanel(position, this);
     d_ptr->panel->resize(d_ptr->panel->sizeHint());
+    
+    // TODO: new ANavigationBackButton
+    QIcon backIcon = AFontIcon::icon("\uE72B", AFontDatabase::getDefaultIconFont(), Qt::white);
+    d_ptr->backButton = new ANavigationMenuItem(AStr("Back"), backIcon, d_ptr->panel);
+    
+    // TODO: new ANavigationCompactButton
+    QIcon compactIcon = AFontIcon::icon("\uE700", AFontDatabase::getDefaultIconFont(), Qt::white);
+    d_ptr->compactButton = new ANavigationMenuItem(d_ptr->headerText, compactIcon, d_ptr->panel);
 
-    // panel controls
-    d_ptr->backButton = new ANavigationMenuItem(AStr("返回"), QIcon(), d_ptr->panel);      // icon
-    d_ptr->compactButton = new ANavigationMenuItem(d_ptr->headerText, QIcon(), d_ptr->panel);      // icon
-    d_ptr->settingsButton = new ANavigationMenuItem(AStr("设置"), QIcon(), d_ptr->panel);  // icon
+    // TODO: new ANavigationSettingsButton
+    QIcon settingsIcon = AFontIcon::icon("\uE713", AFontDatabase::getDefaultIconFont(), Qt::white);
+    d_ptr->settingsButton = new ANavigationMenuItem(AStr("Settings"), settingsIcon, d_ptr->panel);
+    
     d_ptr->menuItemView = new ANavigationMenuItemTreeView(d_ptr->panel);
     d_ptr->menuItemView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     d_ptr->menuItemView->setHeaderHidden(true);
-    //d_ptr->menuItemView->setIndentation(26);
+    d_ptr->menuItemView->setIndentation(0);
     d_ptr->menuItemView->setRootIsDecorated(false);
     d_ptr->menuItemView->setAnimated(true);
     d_ptr->menuItemView->setIconSize(QSize(24, 24));
@@ -60,6 +69,8 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     d_ptr->panel->layout()->addWidget(d_ptr->menuItemView);
     //d_ptr->panel->layout()->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Maximum));
     d_ptr->panel->layout()->addWidget(d_ptr->settingsButton);
+
+    d_ptr->menuButtonGroup = new QButtonGroup(d_ptr->menuItemView);
 
     // page view
     d_ptr->pageView = new ANavigationPageView(this);
@@ -152,7 +163,7 @@ QString ANavigationView::getHeaderText() const
 
 void ANavigationView::setHeaderText(const QString& text)
 {
-    d_ptr->compactButton->setText(text);
+    //d_ptr->compactButton->setText(text);
 }
 
 QWidget* ANavigationView::getHeader() const
@@ -198,6 +209,8 @@ bool ANavigationView::insertMenuItem(ANavigationMenuItem* newItem, int index, AN
     if (!newItem)
         return false;
 
+    newItem->setParent(d_ptr->menuItemView);
+
     QTreeWidgetItem* pItem = nullptr;
     if (parentItem)
     {
@@ -208,8 +221,6 @@ bool ANavigationView::insertMenuItem(ANavigationMenuItem* newItem, int index, AN
         Q_ASSERT(!(index < 0 || index > parentMenuItem->childCount()));
         if (index < 0 || index > parentMenuItem->childCount())
             return false;
-
-        newItem->setParent(nullptr);
 
         pItem = new QTreeWidgetItem(parentMenuItem);
         d_ptr->menuItemView->setItemWidget(pItem, 0, newItem);
@@ -228,10 +239,6 @@ bool ANavigationView::insertMenuItem(ANavigationMenuItem* newItem, int index, AN
     if (itemGroup)
     {
         pItem->setFlags(Qt::ItemFlags(Qt::ItemFlag::NoItemFlags));
-    }
-    else
-    {
-        pItem->setFlags(Qt::ItemFlags(Qt::ItemFlag::ItemIsSelectable));
     }
 
     return newItem;
@@ -322,9 +329,9 @@ void ANavigationView::setSettingsVisible(bool visible)
 {
 }
 
-ANavigationPageView* ANavigationView::getContentView() const
+ANavigationPageView* ANavigationView::getPageView() const
 {
-    return nullptr;
+    return d_ptr->pageView;
 }
 
 QSize ANavigationView::sizeHint() const
@@ -357,7 +364,6 @@ void ANavigationView::showEvent(QShowEvent* evt)
 
 void ANavigationView::paintEvent(QPaintEvent* evt)
 {
-    APROCH_USE_STYLE_SHEET();
     return QSplitter::paintEvent(evt);
 }
 

@@ -38,15 +38,11 @@ APromptWidget::APromptWidget(const QString &content, QWidget *parent, APromptWid
     : QWidget(parent), mDuration(duration)
 {
     Q_ASSERT(parent);
+    setAttribute(Qt::WA_StyledBackground);
 
     buildUI(content);
     setProperty("promptType", type);
     show();
-}
-
-void APromptWidget::paintEvent(QPaintEvent *)
-{
-    APROCH_USE_STYLE_SHEET();
 }
 
 void APromptWidget::showEvent(QShowEvent *)

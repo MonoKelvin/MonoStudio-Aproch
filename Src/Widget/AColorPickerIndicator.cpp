@@ -36,6 +36,7 @@ AColorPickerIndicator::AColorPickerIndicator(QWidget *parent)
 {
     setFixedSize(20, 20);
     setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_StyledBackground);
     setToolTipDuration(4000);
 
     QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(this);
@@ -82,8 +83,6 @@ void AColorPickerIndicator::updateTooltip(const QColor &color)
 
 void AColorPickerIndicator::paintEvent(QPaintEvent *ev)
 {
-    APROCH_USE_STYLE_SHEET();
-
     constexpr int thickness = 6;
 
     QPainter painter(this);

@@ -52,6 +52,7 @@ public:
     ANavigationMenuItem* compactButton = nullptr;
     QWidget* headerWidget = nullptr;
     ANavigationMenuItemTreeView* menuItemView = nullptr;
+    QButtonGroup* menuButtonGroup = nullptr;
     QWidget* footerWidget = nullptr;
     ANavigationMenuItem* settingsButton = nullptr;
 

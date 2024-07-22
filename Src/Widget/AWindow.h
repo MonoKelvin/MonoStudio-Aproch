@@ -61,7 +61,6 @@ public:
 
 protected:
     virtual bool event(QEvent* evt) override;
-    virtual void paintEvent(QPaintEvent *ev) override;
     virtual void closeEvent(QCloseEvent *ev) override;
     virtual void showEvent(QShowEvent* ev) override;
 

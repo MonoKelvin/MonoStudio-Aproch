@@ -49,7 +49,7 @@ public:
 	AHotkeyPrivate();
 	~AHotkeyPrivate();
 
-	static AHotkeyPrivate* instance();
+	static AHotkeyPrivate* getInstance();
 	static bool isPlatformSupported();
 
 	AHotkey::NativeShortcut nativeShortcut(Qt::Key keycode, Qt::KeyboardModifiers modifiers);
@@ -81,7 +81,7 @@ private:
 
 #define NATIVE_INSTANCE(ClassName) \
 	Q_GLOBAL_STATIC(ClassName, hotkeyPrivate) \
-	AHotkeyPrivate *AHotkeyPrivate::instance()\
+	AHotkeyPrivate *AHotkeyPrivate::getInstance()\
 	{\
 		return hotkeyPrivate;\
 	}

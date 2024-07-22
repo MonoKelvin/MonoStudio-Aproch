@@ -67,7 +67,6 @@
 #include "Common/AGraphicsToolkit.h"
 #include "Common/AIdentity.h"
 #include "Common/ANumberValidator.h"
-#include "Common/AIconFont.h"
 #include "Common/ADoubleValidator.h"
 #include "Common/ADataConverter.h"
 #include "Common/ACategory.h"
@@ -95,6 +94,7 @@
 #include "APrivateAppConfigService.h"
 #include "ASqlDataBase.h"
 #include "APluginManager.h"
+#include "AFontDatabase.h"
 
 #include "Widget/header.inc"
 #include "Data/header.inc"

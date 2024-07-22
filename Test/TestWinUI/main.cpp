@@ -12,7 +12,8 @@ void _setStyleSheet(QWidget* widget)
 #if _DEBUG
     QPushButton* styleBtn = new QPushButton(QObject::tr("Load Style"), widget);
     QObject::connect(styleBtn, &QPushButton::clicked, [=] {
-        QFile style(QApplication::applicationDirPath() + AStr("/../../../../Src/Resource/theme/dark.qss"));
+        QString themeResFile = aproch::ATheme::getSystemTheme() == aproch::EThemeType::Light ? "light" : "dark";
+        QFile style(QApplication::applicationDirPath() + AStr("/../../../../Src/Resource/theme/%1.qss").arg(themeResFile));
         if (style.open(QFile::ReadOnly | QFile::Text))
         {
             widget->setStyleSheet(style.readAll());

@@ -134,8 +134,6 @@ public:
     void setAlignment(const Qt::Alignment &align);
 
 protected:
-    virtual void paintEvent(QPaintEvent *event) override;
-
     /**
      * @brief 从给定标签文本字符创建标签列表
      * @param label 标签文本

@@ -20,7 +20,7 @@ void AHotkey::addGlobalMapping(const QKeySequence& shortcut, AHotkey::NativeShor
     const int key = shortcut[0];
 #endif
 
-    QMetaObject::invokeMethod(AHotkeyPrivate::instance(), "addMappingInvoked", Qt::QueuedConnection,
+    QMetaObject::invokeMethod(AHotkeyPrivate::getInstance(), "addMappingInvoked", Qt::QueuedConnection,
                               Q_ARG(Qt::Key, Qt::Key(key & ~Qt::KeyboardModifierMask)),
                               Q_ARG(Qt::KeyboardModifiers, Qt::KeyboardModifiers(key & Qt::KeyboardModifierMask)),
                               Q_ARG(AHotkey::NativeShortcut, nativeShortcut));
@@ -70,7 +70,7 @@ AHotkey::AHotkey(AHotkey::NativeShortcut shortcut, bool autoRegister, QObject* p
 AHotkey::~AHotkey()
 {
     if (_registered)
-        AHotkeyPrivate::instance()->removeShortcut(this);
+        AHotkeyPrivate::getInstance()->removeShortcut(this);
 }
 
 QKeySequence AHotkey::getShortcut() const
@@ -132,7 +132,7 @@ bool AHotkey::setShortcut(Qt::Key keyCode, Qt::KeyboardModifiers modifiers, bool
     {
         if (autoRegister)
         {
-            if (!AHotkeyPrivate::instance()->removeShortcut(this))
+            if (!AHotkeyPrivate::getInstance()->removeShortcut(this))
                 return false;
         }
         else
@@ -149,11 +149,11 @@ bool AHotkey::setShortcut(Qt::Key keyCode, Qt::KeyboardModifiers modifiers, bool
 
     _keyCode = keyCode;
     _modifiers = modifiers;
-    _nativeShortcut = AHotkeyPrivate::instance()->nativeShortcut(keyCode, modifiers);
+    _nativeShortcut = AHotkeyPrivate::getInstance()->nativeShortcut(keyCode, modifiers);
     if (_nativeShortcut.isValid())
     {
         if (autoRegister)
-            return AHotkeyPrivate::instance()->addShortcut(this);
+            return AHotkeyPrivate::getInstance()->addShortcut(this);
         return true;
     }
 
@@ -167,7 +167,7 @@ bool AHotkey::setShortcut(Qt::Key keyCode, Qt::KeyboardModifiers modifiers, bool
 bool AHotkey::resetShortcut()
 {
     if (_registered &&
-        !AHotkeyPrivate::instance()->removeShortcut(this))
+        !AHotkeyPrivate::getInstance()->removeShortcut(this))
     {
         return false;
     }
@@ -184,7 +184,7 @@ bool AHotkey::setNativeShortcut(AHotkey::NativeShortcut nativeShortcut, bool aut
     {
         if (autoRegister)
         {
-            if (!AHotkeyPrivate::instance()->removeShortcut(this))
+            if (!AHotkeyPrivate::getInstance()->removeShortcut(this))
                 return false;
         }
         else
@@ -197,7 +197,7 @@ bool AHotkey::setNativeShortcut(AHotkey::NativeShortcut nativeShortcut, bool aut
         _modifiers = Qt::NoModifier;
         _nativeShortcut = nativeShortcut;
         if (autoRegister)
-            return AHotkeyPrivate::instance()->addShortcut(this);
+            return AHotkeyPrivate::getInstance()->addShortcut(this);
         return true;
     }
 
@@ -210,12 +210,12 @@ bool AHotkey::setNativeShortcut(AHotkey::NativeShortcut nativeShortcut, bool aut
 bool AHotkey::setRegistered(bool registered)
 {
     if (_registered && !registered)
-        return AHotkeyPrivate::instance()->removeShortcut(this);
+        return AHotkeyPrivate::getInstance()->removeShortcut(this);
     if (!_registered && registered)
     {
         if (!_nativeShortcut.isValid())
             return false;
-        return AHotkeyPrivate::instance()->addShortcut(this);
+        return AHotkeyPrivate::getInstance()->addShortcut(this);
     }
     return true;
 }

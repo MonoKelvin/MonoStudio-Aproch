@@ -196,8 +196,7 @@ int AAppContext::run(int argc, char* argv[])
         return -1;
 
     // 注册默认图标字体
-    const AIconFont fontAwesome(AStr(":/font/Fonts/fontawesome-webfont.ttf"));
-    AIconFont::AddIconFont(fontAwesome);
+    //AFontDatabase::addFont();
 
     // 注册默认的服务
     registerService<AKeyExpressionService>(AServiceName_KeyExpression);

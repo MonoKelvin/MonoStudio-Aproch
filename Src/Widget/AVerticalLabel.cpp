@@ -176,13 +176,6 @@ void AVerticalLabel::setAlignment(const Qt::Alignment &align)
     mHLayout->update();
 }
 
-void AVerticalLabel::paintEvent(QPaintEvent *event)
-{
-    APROCH_USE_STYLE_SHEET();
-
-    QWidget::paintEvent(event);
-}
-
 QList<QLabel *> AVerticalLabel::createLabel(const QString &label, Qt::Alignment align, const EOption option)
 {
     QString newLabel = label;

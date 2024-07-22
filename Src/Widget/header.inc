@@ -43,6 +43,8 @@
 #include "AWidgetFactory.h"
 #include "AWindow.h"
 #include "ASplitterHandle.h"
+#include "AFontIcon.h"
+
 #include "NavigationView/ANavigationPageView.h"
 #include "NavigationView/ANavigationView.h"
 #include "NavigationView/ANavigationMenuItem.h"

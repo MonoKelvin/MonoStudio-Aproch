@@ -43,6 +43,8 @@ ATheme* theAppTheme = nullptr;
 class AThemePrivate
 {
 public:
+    QByteArray customThemeData;
+    QString customThemeFile;
     EThemeType themeType = EThemeType::System;
     bool systemThemeWatchEnabled = false;
 };
@@ -51,18 +53,9 @@ bool ATheme::eventFilter(QObject* obj, QEvent* event)
 {
     if (event->type() == QEvent::ThemeChange)
     {
-        if (d_ptr->systemThemeWatchEnabled)
+        if (d_ptr->systemThemeWatchEnabled && d_ptr->themeType == EThemeType::System)
         {
-            // TODO
-            /*auto sysTheme = getSystemTheme();
-
-            QString qss = sysTheme == EThemeType::Dark ? "dark.qss" : "light.qss";
-
-            QFile style(QApplication::applicationDirPath() + AStr("/../../../../Src/Resource/theme/%1").arg(qss));
-            if (style.open(QFile::ReadOnly | QFile::Text))
-                qApp->setStyleSheet(style.readAll());
-            style.close();*/
-
+            reload();
             emit themeChanged();
         }
     }
@@ -80,7 +73,7 @@ ATheme::~ATheme()
 {
 }
 
-ATheme* ATheme::instance()
+ATheme* ATheme::getInstance()
 {
     if (!theAppTheme)
     {
@@ -92,19 +85,36 @@ ATheme* ATheme::instance()
 
 void ATheme::setTheme(EThemeType type)
 {
-    auto theAppTheme = instance();
-    if (instance()->d_ptr->themeType == type)
+    auto theAppTheme = getInstance();
+    if (theAppTheme->d_ptr->themeType == type)
         return;
+
     theAppTheme->d_ptr->themeType = type;
 
-    // TODO
+    // reload theme
+    theAppTheme->reload();
 
     emit theAppTheme->themeChanged();
 }
 
+bool ATheme::setCustomThemeFile(const QString& strFileName)
+{
+    QFile file(strFileName);
+    if (!file.open(QFile::ReadOnly))
+        return false;
+
+    auto theAppTheme = getInstance();
+    theAppTheme->d_ptr->customThemeData = file.readAll();
+    theAppTheme->d_ptr->customThemeFile = strFileName;
+    if (theAppTheme->d_ptr->customThemeData.isEmpty())
+        return false;
+
+    return true;
+}
+
 EThemeType ATheme::getTheme()
 {
-    return instance()->d_ptr->themeType;
+    return getInstance()->d_ptr->themeType;
 }
 
 EThemeType ATheme::getSystemTheme()
@@ -118,7 +128,54 @@ EThemeType ATheme::getSystemTheme()
 
 void ATheme::setSystemThemeWatchEnabled(bool enabled)
 {
-    instance()->d_ptr->systemThemeWatchEnabled = enabled;
+    getInstance()->d_ptr->systemThemeWatchEnabled = enabled;
+}
+
+void ATheme::reload()
+{
+    EThemeType themeType = ATheme::getTheme();
+
+    QByteArray themeData;
+    if (themeType == EThemeType::Custom)
+    {
+        QFile customThemeFile(d_ptr->customThemeFile);
+        if (!customThemeFile.open(QFile::ReadOnly | QFile::Text))
+        {
+            qWarning() << "custom theme file \"" << d_ptr->customThemeFile << "\" is missing,"
+                " reading cached data";
+            themeData = d_ptr->customThemeData;
+        }
+        else
+            themeData = customThemeFile.readAll();
+        customThemeFile.close();
+    }
+    else
+    {
+        QString themeResFile = "dark";
+        switch (themeType)
+        {
+        case EThemeType::Light:
+        {
+            themeResFile = "light";
+            break;
+        }
+        case EThemeType::System:
+        {
+            if (getSystemTheme() == EThemeType::Light)
+                themeResFile = "light";
+            break;
+        }
+        default:
+            break;
+        }
+
+        QFile qssFile(AStr(":/theme/%1.qss").arg(themeResFile));
+        if (qssFile.open(QFile::ReadOnly | QFile::Text))
+            themeData = qssFile.readAll();
+        qssFile.close();
+    }
+
+    qApp->setStyleSheet(themeData);
 }
 
 APROCH_NAMESPACE_END

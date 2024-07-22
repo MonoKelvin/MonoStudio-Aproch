@@ -153,6 +153,7 @@ void AAvatar::_init(const QPixmap &pixmap)
     mStateEnable = false;
     mNameShowCount = 1;
 
+    setAttribute(Qt::WA_StyledBackground);
     setAutoFillBackground(true);
     setAvatar(pixmap);
     setCursor(Qt::PointingHandCursor);
@@ -165,8 +166,6 @@ void AAvatar::mousePressEvent(QMouseEvent *)
 
 void AAvatar::paintEvent(QPaintEvent *event)
 {
-    APROCH_USE_STYLE_SHEET();
-
     QPainter painter(this);
     drawAvatar(&painter, rect(), mAvatar, mName);
     return QWidget::paintEvent(event);

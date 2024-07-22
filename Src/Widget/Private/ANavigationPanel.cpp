@@ -85,6 +85,11 @@ ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
     , d_ptr(new ANavigationMenuItemTreeViewPrivate())
 {
     connect(this, &QTreeView::clicked, [=](const QModelIndex& index) {
+
+        auto pItem = itemFromIndex(index);
+        if (!pItem || pItem->childCount() == 0)
+            return;
+
         if (isExpanded(index))
             collapse(index);
         else
@@ -161,11 +166,13 @@ ANavigationPanel::ANavigationPanel(ANavigationView::EPanelPosition position, QWi
     : QWidget(parent)
     , d_ptr(new ANavigationPanelPrivate())
 {
+    setAttribute(Qt::WA_StyledBackground);
+
     QBoxLayout::Direction dir = (position == ANavigationView::Top ?
                                  QBoxLayout::LeftToRight : QBoxLayout::TopToBottom);
     QBoxLayout* mainLayout = new QBoxLayout(dir, this);
     mainLayout->setSpacing(6);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setContentsMargins(4, 0, 4, 6);
     setPosition(position);
 }
 
@@ -202,13 +209,6 @@ QSize ANavigationPanel::sizeHint() const
         break;
     }
     return QSize(400, 680);
-}
-
-void ANavigationPanel::paintEvent(QPaintEvent* evt)
-{
-    APROCH_USE_STYLE_SHEET();
-
-    QWidget::paintEvent(evt);
 }
 
 APROCH_NAMESPACE_END
