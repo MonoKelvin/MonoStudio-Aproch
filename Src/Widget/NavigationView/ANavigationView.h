@@ -151,6 +151,7 @@ protected:
     virtual QSplitterHandle* createHandle() override;
     virtual void showEvent(QShowEvent* evt) override;
     virtual void paintEvent(QPaintEvent* evt) override;
+    virtual bool eventFilter(QObject* watched, QEvent* evt) override;
 
 Q_SIGNALS:
     void panelPositionChanged();

@@ -93,6 +93,7 @@ public:
     ANavigationView::EPanelPosition getPosition() const;
 
     virtual QSize sizeHint() const override;
+    virtual QSize minimumSizeHint() const override;
 
 private:
     friend class ANavigationView;

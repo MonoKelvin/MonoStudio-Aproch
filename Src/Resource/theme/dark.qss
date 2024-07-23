@@ -10,6 +10,7 @@ QFrame {
     background-color: transparent;
 }
 
+
 /* Scroll Bar */
 
 QScrollBar {
@@ -88,22 +89,52 @@ QScrollBar::add-line:horizontal:pressed {
     margin-right: 3px;
 }
 
-/* Tool Button */
 
-QAbstractButton {
-    padding: 0 10px;
-    max-height: 36px;
-    border-radius: 4px;
+/* Tree Widget */
+
+QTreeWidget::item {
+    min-height: 34px;
+    max-height: 34px;
+    border-radius: 6px;
     background-color: transparent;
-    qproperty-iconSize: 20px 20px;
+    margin: 2px 0;
 }
 
-QAbstractButton:hover {
+QTreeWidget::branch {
+    background-color: transparent;
+}
+
+QTreeWidget::item:hover {
+    background-color: rgba(255, 255, 255, 3%);
+}
+
+QTreeWidget::item:selected {
     background-color: rgba(255, 255, 255, 6%);
 }
 
+QTreeWidget::item:selected:hover {
+    background-color: rgba(255, 255, 255, 2);
+}
+
+
+/* Button */
+
+QAbstractButton {
+    min-height: 42px;
+    max-height: 42px;
+    border-radius: 6px;
+    background-color: transparent;
+    qproperty-iconSize: 22px 22px;
+    padding: 0 10px;
+    text-align: left;
+}
+
+QAbstractButton:hover {
+    background-color: rgba(255, 255, 255, 3%);
+}
+
 QAbstractButton:pressed {
-    background-color: rgba(255, 255, 255, 4%);
+    background-color: rgba(255, 255, 255, 2);
 }
 
 QAbstractButton:checked {
@@ -111,11 +142,11 @@ QAbstractButton:checked {
 }
 
 QAbstractButton:checked:hover {
-    background-color: rgba(255, 255, 255, 4%);
+    background-color: rgba(255, 255, 255, 3%);
 }
 
 QAbstractButton:checked:pressed {
-    background-color: rgba(255, 255, 255, 6%);
+    background-color: rgba(255, 255, 255, 2);
 }
 
 /* Splitter */
@@ -246,6 +277,7 @@ ACaptionBar>QAbstractButton[aproch-system-button=true] {
     border-radius: 0;
     padding: 0;
     background-color: transparent;
+    text-align: center;
 }
 
 ACaptionBar>QAbstractButton#aproch-captionbar-help {
@@ -330,48 +362,26 @@ ANavigationView ASplitterHandle {
 /** ANavigationMenuItem */
 
 ANavigationMenuItem {
+    border-radius: 6px;
+    /* min-width: 42px; */
     background-color: transparent;
+}
+
+ANavigationMenuItem #aproch-nav-menuitem-icon {
+    padding-left: 10px;
+}
+
+ANavigationMenuItem #aproch-nav-menuitem-text {
+    padding-right: 10px;
 }
 
 ANavigationMenuItemGroup * {
     font-weight: bold;
-    color: rgba(255, 255, 255, 60%)
+    color: rgba(255, 255, 255, 60%);
 }
 
 /* Navigation Page View */
 ANavigationPageView {
     border-top-left-radius: 10px;
     background-color: rgba(255, 255, 255, 3%);
-}
-
-QTreeWidget::item {
-    min-height: 34px;
-    max-height: 34px;
-    border-radius: 6px;
-    background-color: transparent;
-    margin: 2px 0;
-}
-
-QTreeWidget::branch {
-    background-color: transparent;
-}
-
-QTreeWidget::item:hover {
-    background-color: rgba(255, 255, 255, 6%);
-}
-
-QTreeWidget::item:pressed {
-    background-color: rgba(255, 255, 255, 4%);
-}
-
-QTreeWidget::item:selected {
-    background-color: rgba(255, 255, 255, 6%);
-}
-
-QTreeWidget::item:selected:hover {
-    background-color: rgba(255, 255, 255, 4%);
-}
-
-QTreeWidget::item:selected:pressed {
-    background-color: rgba(255, 255, 255, 6%);
 }

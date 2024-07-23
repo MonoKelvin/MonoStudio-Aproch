@@ -29,19 +29,12 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
 
     // panel
     d_ptr->panel = new ANavigationPanel(position, this);
+    d_ptr->panel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Expanding);
     d_ptr->panel->resize(d_ptr->panel->sizeHint());
     
-    // TODO: new ANavigationBackButton
-    QIcon backIcon = AFontIcon::icon("\uE72B", AFontDatabase::getDefaultIconFont(), Qt::white);
-    d_ptr->backButton = new ANavigationMenuItem(AStr("Back"), backIcon, d_ptr->panel);
-    
-    // TODO: new ANavigationCompactButton
-    QIcon compactIcon = AFontIcon::icon("\uE700", AFontDatabase::getDefaultIconFont(), Qt::white);
-    d_ptr->compactButton = new ANavigationMenuItem(d_ptr->headerText, compactIcon, d_ptr->panel);
-
-    // TODO: new ANavigationSettingsButton
-    QIcon settingsIcon = AFontIcon::icon("\uE713", AFontDatabase::getDefaultIconFont(), Qt::white);
-    d_ptr->settingsButton = new ANavigationMenuItem(AStr("Settings"), settingsIcon, d_ptr->panel);
+    d_ptr->backButton = new ANavigationBackButton(d_ptr->panel);
+    d_ptr->compactButton = new ANavigationCompactButton(d_ptr->headerText, d_ptr->panel);
+    d_ptr->settingsButton = new ANavigationSettingsButton(d_ptr->panel);
     
     d_ptr->menuItemView = new ANavigationMenuItemTreeView(d_ptr->panel);
     d_ptr->menuItemView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -336,15 +329,15 @@ ANavigationPageView* ANavigationView::getPageView() const
 
 QSize ANavigationView::sizeHint() const
 {
+    auto defaultSize = QSplitter::sizeHint();
     switch (getPanelPosition())
     {
     case aproch::ANavigationView::Top:
-    //case aproch::ANavigationView::Bottom:
-        return QSize(1000, 60);
+        return QSize(defaultSize.width(), 60);
     default:
         break;
     }
-    return QSize(1000, 680);
+    return QSize(defaultSize.width(), 680);
 }
 
 QSplitterHandle* ANavigationView::createHandle()
@@ -365,6 +358,11 @@ void ANavigationView::showEvent(QShowEvent* evt)
 void ANavigationView::paintEvent(QPaintEvent* evt)
 {
     return QSplitter::paintEvent(evt);
+}
+
+bool ANavigationView::eventFilter(QObject* watched, QEvent* evt)
+{
+    return QSplitter::eventFilter(watched, evt);
 }
 
 void ANavigationView::updatePageViewPosition(int pos, int index)

@@ -52,18 +52,20 @@ ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon,
     //AFontIcon* iconLabel = new AFontIcon("", this);
     d_ptr->iconLabel = new QLabel(this);
     d_ptr->iconLabel->setPixmap(icon.pixmap(AFontIcon::DefaultIconSize));
-    d_ptr->iconLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    d_ptr->iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    d_ptr->iconLabel->setObjectName("aproch-nav-menuitem-icon");
 
     d_ptr->textLabel = new QLabel(text, this);
-    d_ptr->textLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    d_ptr->textLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    d_ptr->textLabel->setObjectName("aproch-nav-menuitem-text");
 
     theLayout->addWidget(d_ptr->iconLabel);
     theLayout->addWidget(d_ptr->textLabel);
     theLayout->setSpacing(12);
-    theLayout->setContentsMargins(QMargins(10, 0, 10, 0));
+    theLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     setAttribute(Qt::WA_StyledBackground);
-    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
 QSize ANavigationMenuItem::sizeHint() const
@@ -75,6 +77,17 @@ AInfoBadge* ANavigationMenuItem::getInfoBadge() const
 {
     throw std::exception("no implement");
     return nullptr;
+}
+
+void ANavigationMenuItem::showEvent(QShowEvent* evt)
+{
+    if (d_ptr->iconLabel)
+    {
+        const auto& lm = layout()->contentsMargins();
+        setMinimumWidth(d_ptr->iconLabel->width() + lm.left() + lm.right());
+    }
+
+    QWidget::showEvent(evt);
 }
 
 
@@ -94,5 +107,45 @@ ANavigationMenuItemGroup::ANavigationMenuItemGroup(const QString& text, QWidget*
 
     setAttribute(Qt::WA_TransparentForMouseEvents);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ANavigationBackButton::ANavigationBackButton(QWidget* parent)
+    : QPushButton(parent)
+{
+    setIcon(AFontIcon::icon("\uE72B", AFontDatabase::getDefaultIconFont(), Qt::white));
+    setToolTip(tr("Back"));
+    setAttribute(Qt::WA_StyledBackground);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ANavigationCompactButton::ANavigationCompactButton(const QString& text, QWidget* parent)
+    : QPushButton(text, parent)
+{
+    setIcon(AFontIcon::icon("\uE700", AFontDatabase::getDefaultIconFont(), Qt::white));
+    setToolTip(tr("Close Navigation"));
+    setAttribute(Qt::WA_StyledBackground);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ANavigationSettingsButton::ANavigationSettingsButton(QWidget* parent)
+    : QPushButton(parent)
+{
+    setIcon(AFontIcon::icon("\uE713", AFontDatabase::getDefaultIconFont(), Qt::white));
+    setToolTip(tr("Settings"));
+    setAttribute(Qt::WA_StyledBackground);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+}
+
 
 APROCH_NAMESPACE_END

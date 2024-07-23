@@ -48,13 +48,13 @@ public:
     ANavigationPageView* pageView = nullptr;
 
     ANavigationPanel* panel = nullptr;
-    ANavigationMenuItem* backButton = nullptr;
-    ANavigationMenuItem* compactButton = nullptr;
+    ANavigationBackButton* backButton = nullptr;
+    ANavigationCompactButton* compactButton = nullptr;
     QWidget* headerWidget = nullptr;
     ANavigationMenuItemTreeView* menuItemView = nullptr;
     QButtonGroup* menuButtonGroup = nullptr;
     QWidget* footerWidget = nullptr;
-    ANavigationMenuItem* settingsButton = nullptr;
+    ANavigationSettingsButton* settingsButton = nullptr;
 
     ANavigationView::EPanelPosition panelPosition = (ANavigationView::EPanelPosition)0;
     ANavigationView::ECompactMode compactMode = (ANavigationView::ECompactMode)0;

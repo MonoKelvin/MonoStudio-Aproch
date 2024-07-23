@@ -174,6 +174,7 @@ ANavigationPanel::ANavigationPanel(ANavigationView::EPanelPosition position, QWi
     mainLayout->setSpacing(6);
     mainLayout->setContentsMargins(4, 0, 4, 6);
     setPosition(position);
+    setMinimumSize(minimumSizeHint());
 }
 
 void ANavigationPanel::setPosition(ANavigationView::EPanelPosition position)
@@ -200,15 +201,29 @@ ANavigationView::EPanelPosition ANavigationPanel::getPosition() const
 
 QSize ANavigationPanel::sizeHint() const
 {
+    auto defaultSize = QWidget::sizeHint();
     switch (getPosition())
     {
     case aproch::ANavigationView::Top:
         //case aproch::ANavigationView::Bottom:
-        return QSize(1000, 60);
+        return QSize(defaultSize.width(), 60);
     default:
         break;
     }
-    return QSize(400, 680);
+    return QSize(320, defaultSize.height());
+}
+
+QSize ANavigationPanel::minimumSizeHint() const
+{
+    auto defaultSize = QWidget::sizeHint();
+    switch (getPosition())
+    {
+    case aproch::ANavigationView::Top:
+        return QSize(defaultSize.width(), 44);
+    default:
+        break;
+    }
+    return QSize(52, defaultSize.height());
 }
 
 APROCH_NAMESPACE_END

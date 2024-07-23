@@ -47,6 +47,9 @@ public:
     AInfoBadge* getInfoBadge() const;
 
 protected:
+    virtual void showEvent(QShowEvent* evt) override;
+
+protected:
     friend class ANavigationViewItemPrivate;
     Q_DISABLE_COPY_MOVE(ANavigationMenuItem);
     QSharedPointer<ANavigationViewItemPrivate> d_ptr;
@@ -58,6 +61,36 @@ class APROCH_API ANavigationMenuItemGroup : public ANavigationMenuItem
 public:
     explicit ANavigationMenuItemGroup(QWidget* parent = nullptr);
     explicit ANavigationMenuItemGroup(const QString& text, QWidget* parent = nullptr);
+};
+
+class APROCH_API ANavigationBackButton : public QPushButton     // TODO: AButton supports animation
+{
+    Q_OBJECT;
+public:
+    explicit ANavigationBackButton(QWidget* parent = nullptr);
+
+protected:
+    Q_DISABLE_COPY_MOVE(ANavigationBackButton);
+};
+
+class APROCH_API ANavigationCompactButton : public QPushButton
+{
+    Q_OBJECT;
+public:
+    explicit ANavigationCompactButton(const QString& text = QString(), QWidget* parent = nullptr);
+
+protected:
+    Q_DISABLE_COPY_MOVE(ANavigationCompactButton);
+};
+
+class APROCH_API ANavigationSettingsButton : public QPushButton
+{
+    Q_OBJECT;
+public:
+    explicit ANavigationSettingsButton(QWidget* parent = nullptr);
+
+protected:
+    Q_DISABLE_COPY_MOVE(ANavigationSettingsButton);
 };
 
 APROCH_NAMESPACE_END
