@@ -380,6 +380,11 @@ ANavigationMenuItemGroup * {
     color: rgba(255, 255, 255, 60%);
 }
 
+/* Navigation Compact Button */
+ANavigationCompactButton:checked {
+    background-color: transparent;
+}
+
 /* Navigation Page View */
 ANavigationPageView {
     border-top-left-radius: 10px;

@@ -115,7 +115,7 @@ ANavigationMenuItemGroup::ANavigationMenuItemGroup(const QString& text, QWidget*
 ANavigationBackButton::ANavigationBackButton(QWidget* parent)
     : QPushButton(parent)
 {
-    setIcon(AFontIcon::icon("\uE72B", AFontDatabase::getDefaultIconFont(), Qt::white));
+    setIcon(AFontIcon::icon("\uE72B"));
     setToolTip(tr("Back"));
     setAttribute(Qt::WA_StyledBackground);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -128,7 +128,8 @@ ANavigationBackButton::ANavigationBackButton(QWidget* parent)
 ANavigationCompactButton::ANavigationCompactButton(const QString& text, QWidget* parent)
     : QPushButton(text, parent)
 {
-    setIcon(AFontIcon::icon("\uE700", AFontDatabase::getDefaultIconFont(), Qt::white));
+    setCheckable(true);
+    setIcon(AFontIcon::icon("\uE700"));
     setToolTip(tr("Close Navigation"));
     setAttribute(Qt::WA_StyledBackground);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -141,8 +142,9 @@ ANavigationCompactButton::ANavigationCompactButton(const QString& text, QWidget*
 ANavigationSettingsButton::ANavigationSettingsButton(QWidget* parent)
     : QPushButton(parent)
 {
-    setIcon(AFontIcon::icon("\uE713", AFontDatabase::getDefaultIconFont(), Qt::white));
-    setToolTip(tr("Settings"));
+    setIcon(AFontIcon::icon("\uE713"));
+    setText(tr("Settings"));
+    setToolTip(text());
     setAttribute(Qt::WA_StyledBackground);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }

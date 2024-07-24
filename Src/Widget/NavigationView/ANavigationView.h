@@ -50,8 +50,10 @@ class APROCH_API ANavigationView : public QSplitter
     Q_OBJECT;
 
     Q_PROPERTY(EPanelPosition panelPosition READ getPanelPosition WRITE setPanelPosition NOTIFY panelPositionChanged);
-    Q_PROPERTY(ECompactMode compactMode READ getCompactMode WRITE setCompactMode);
+    //Q_PROPERTY(ECompactMode compactMode READ getCompactMode WRITE setCompactMode);
     Q_PROPERTY(QString headerText READ getHeaderText WRITE setHeaderText);
+    Q_PROPERTY(int compactWidth READ getCompactWidth WRITE setCompactWidth);
+    Q_PROPERTY(bool isExpanded READ isExpanded WRITE setExpanded NOTIFY expandChanged);
     Q_PROPERTY(bool isHeaderVisible READ isHeaderVisible WRITE setHeaderVisible);
     Q_PROPERTY(bool isFooterVisible READ isFooterVisible WRITE setFooterVisible);
     Q_PROPERTY(bool isPanelResizable READ isPanelResizable WRITE setPanelResizable);
@@ -94,8 +96,12 @@ public:
     EPanelPosition getPanelPosition() const;
     void setPanelPosition(EPanelPosition position);
 
-    ECompactMode getCompactMode() const;
-    void setCompactMode(ECompactMode compactMode);
+    bool isExpanded() const;
+    //ECompactMode getCompactMode() const;
+    //void setCompactMode(ECompactMode compactMode);
+
+    int getCompactWidth() const;
+    void setCompactWidth(int w);
 
     bool isPanelResizable() const;
     void setPanelResizable(bool enabled);
@@ -147,20 +153,24 @@ public:
 
     virtual QSize sizeHint() const override;
 
-protected:
-    virtual QSplitterHandle* createHandle() override;
-    virtual void showEvent(QShowEvent* evt) override;
-    virtual void paintEvent(QPaintEvent* evt) override;
-    virtual bool eventFilter(QObject* watched, QEvent* evt) override;
-
 Q_SIGNALS:
     void panelPositionChanged();
     void compactModeChanged();
     void selectionChanged(ANavigationMenuItem* item);
     void trigger(ItemRole role);
+    void expandChanged();
+
+public Q_SLOTS:
+    void setExpanded(bool expand);
 
 protected Q_SLOTS:
     void updatePageViewPosition(int pos, int index);
+
+protected:
+    virtual QSplitterHandle* createHandle() override;
+    virtual void showEvent(QShowEvent* evt) override;
+    virtual void paintEvent(QPaintEvent* evt) override;
+    virtual bool eventFilter(QObject* watched, QEvent* evt) override;
 
 private:
     Q_DISABLE_COPY_MOVE(ANavigationView);

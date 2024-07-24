@@ -52,14 +52,16 @@ public:
     ANavigationCompactButton* compactButton = nullptr;
     QWidget* headerWidget = nullptr;
     ANavigationMenuItemTreeView* menuItemView = nullptr;
-    QButtonGroup* menuButtonGroup = nullptr;
     QWidget* footerWidget = nullptr;
     ANavigationSettingsButton* settingsButton = nullptr;
 
     ANavigationView::EPanelPosition panelPosition = (ANavigationView::EPanelPosition)0;
-    ANavigationView::ECompactMode compactMode = (ANavigationView::ECompactMode)0;
+    //ANavigationView::ECompactMode compactMode = (ANavigationView::ECompactMode)0;
     QString headerText;
     int  oldHandleWidth = 0;
+    int oldPanelWidth = 0;
+    int compactWidth = 0;
+    bool isExpanded = true;
     bool isResizable = false;
 };
 

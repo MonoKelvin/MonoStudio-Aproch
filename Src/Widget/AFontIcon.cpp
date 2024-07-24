@@ -86,6 +86,23 @@ void AFontIcon::setGlyph(const QString& glyph)
     emit glyphChanged();
 }
 
+QIcon AFontIcon::icon(const QString& glyph)
+{
+    EThemeType type = ATheme::getTheme();
+    if (type == EThemeType::System)
+        type = ATheme::getSystemTheme();
+    else if (type == EThemeType::Custom)
+        type = EThemeType::Light;
+
+    QColor color;
+    if (type == EThemeType::Light)
+        color = QApplication::palette().color(QPalette::WindowText);
+    else
+        color = Qt::white;
+
+    return icon(glyph, AFontDatabase::getDefaultIconFont(), color, DefaultIconSize);
+}
+
 QIcon AFontIcon::icon(const QString& glyph, AFontDatabase::EAppFontType type, const QColor& color, const QSize& size)
 {
     return icon(glyph, AFontDatabase::getFont(type), color, size);
