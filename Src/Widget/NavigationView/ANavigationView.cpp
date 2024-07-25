@@ -27,20 +27,25 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     setChildrenCollapsible(false);
     setAttribute(Qt::WA_StyledBackground);
 
+    //d_ptr->isResizable = true;
+
     // panel
-    d_ptr->panel = new ANavigationPanel(position, this);
-    d_ptr->panel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Expanding);
-    d_ptr->panel->resize(d_ptr->panel->sizeHint());
+    d_ptr->panel = new ANavigationPanel(position);
+    d_ptr->oldPanelWidth = d_ptr->panel->sizeHint().width();
     
+    // back button
     d_ptr->backButton = new ANavigationBackButton(d_ptr->panel);
     d_ptr->backButton->setEnabled(false);
 
+    // compact button
     d_ptr->compactButton = new ANavigationCompactButton(d_ptr->headerText, d_ptr->panel);
     d_ptr->compactButton->setChecked(d_ptr->isExpanded);
     connect(d_ptr->compactButton, &ANavigationCompactButton::toggled, this, &ANavigationView::setExpanded);
 
+    // settings button
     d_ptr->settingsButton = new ANavigationSettingsButton(d_ptr->panel);
-    
+
+    // menu item view(horizontal)
     d_ptr->menuItemView = new ANavigationMenuItemTreeView(d_ptr->panel);
     d_ptr->menuItemView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     d_ptr->menuItemView->setHeaderHidden(true);
@@ -61,15 +66,22 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     //d_ptr->menuItemModel = new ANavigationMenuItemModel(d_ptr->menuItemView);
     //d_ptr->menuItemView->setModel(d_ptr->menuItemModel);
 
+    d_ptr->footerWidget = new QWidget(d_ptr->panel);
+    d_ptr->headerWidget = new QWidget(d_ptr->panel);
+    setHeaderVisible(false);
+    setFooterVisible(false);
+
     // widgets
     d_ptr->panel->layout()->addWidget(d_ptr->backButton);
     d_ptr->panel->layout()->addWidget(d_ptr->compactButton);
+    d_ptr->panel->layout()->addWidget(d_ptr->headerWidget);
     d_ptr->panel->layout()->addWidget(d_ptr->menuItemView);
-    //d_ptr->panel->layout()->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Maximum));
+    d_ptr->panel->layout()->addWidget(d_ptr->footerWidget);
     d_ptr->panel->layout()->addWidget(d_ptr->settingsButton);
 
     // page view
-    d_ptr->pageView = new ANavigationPageView(this);
+    d_ptr->pageView = new ANavigationPageView();
+    d_ptr->pageView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     addWidget(d_ptr->panel);
     addWidget(d_ptr->pageView);
@@ -77,8 +89,6 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     setPanelPosition(position);
 
     // last 
-    d_ptr->oldPanelWidth = d_ptr->panel->sizeHint().width();
-
     const auto& plmargins = d_ptr->panel->layout()->contentsMargins();
     d_ptr->compactWidth = 42 + plmargins.left() + plmargins.right();
 }
@@ -93,24 +103,35 @@ void ANavigationView::setPanelPosition(EPanelPosition position)
     if (position == d_ptr->panelPosition)
         return;
 
+    d_ptr->panel->setPosition(position);
+
     if (position == EPanelPosition::Top)
     {
-        // panel
-        d_ptr->panel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        d_ptr->pageView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-        // self
         setOrientation(Qt::Vertical);
         setHandleWidth(0);
+
+        handle(1)->setEnabled(false);
+        handle(1)->setVisible(false);
     }
     else
     {
-        const bool& bRsz = !d_ptr->isResizable;
-        d_ptr->panel->setSizePolicy(bRsz ? QSizePolicy::Maximum : QSizePolicy::Fixed, QSizePolicy::Expanding);
-        d_ptr->pageView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
         setOrientation(Qt::Horizontal);
-        setHandleWidth(bRsz ? d_ptr->oldHandleWidth : 0);
+
+        if (d_ptr->isResizable)
+        {
+            d_ptr->panel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+
+            handle(1)->setEnabled(true);
+            handle(1)->setVisible(true);
+        }
+        else
+        {
+            d_ptr->panel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+            d_ptr->panel->setFixedWidth(qMin(d_ptr->panel->width(), d_ptr->oldPanelWidth));
+
+            handle(1)->setEnabled(false);
+            handle(1)->setVisible(false);
+        }
     }
 
     d_ptr->panelPosition = position;
@@ -430,6 +451,9 @@ QSize ANavigationView::sizeHint() const
 QSplitterHandle* ANavigationView::createHandle()
 {
     auto sh = new ASplitterHandle(orientation(), this);
+    sh->grabMouse();
+    sh->installEventFilter(this);
+
     d_ptr->oldHandleWidth = orientation() == Qt::Horizontal ? sh->sizeHint().width() : sh->sizeHint().height();
     connect(this, &ANavigationView::splitterMoved, this, &ANavigationView::updatePageViewPosition);
 
@@ -438,7 +462,7 @@ QSplitterHandle* ANavigationView::createHandle()
 
 void ANavigationView::showEvent(QShowEvent* evt)
 {
-    updatePageViewPosition(d_ptr->panel->sizeHint().width() - 120, 0);
+    updatePageViewPosition(d_ptr->panel->sizeHint().width(), 1);
 
     d_ptr->oldPanelWidth = d_ptr->panel->width();
 
@@ -452,18 +476,44 @@ void ANavigationView::paintEvent(QPaintEvent* evt)
 
 bool ANavigationView::eventFilter(QObject* watched, QEvent* evt)
 {
+    auto hd = handle(1);
+    if (watched == hd)
+    {
+        if (!isExpanded() || !isPanelResizable())
+        {
+            hd->setEnabled(false);
+            hd->setVisible(false);
+        }
+        else
+        {
+            hd->setEnabled(true);
+            hd->setVisible(true);
+
+            if (orientation() == Qt::Horizontal)
+            {
+                updatePageViewPosition(hd->pos().x(), 1);
+            }
+        }
+    }
+
     return QSplitter::eventFilter(watched, evt);
 }
 
 void ANavigationView::updatePageViewPosition(int pos, int index)
 {
-    handle(0)->move(pos, handle(0)->y());
+    auto hd = handle(index);
     const bool isHor = orientation() == Qt::Horizontal;
     const auto& geo = d_ptr->pageView->geometry();
     if (isHor)
-        d_ptr->pageView->setGeometry(pos, geo.y(), geo.width() + d_ptr->oldHandleWidth, geo.height());
+    {
+        int offset = hd ? hd->width() : d_ptr->oldHandleWidth;
+        d_ptr->pageView->setGeometry(pos, geo.y(), geo.width() + offset, geo.height());
+    }
     else
-        d_ptr->pageView->setGeometry(geo.x(), pos, geo.width(), geo.height() + d_ptr->oldHandleWidth);
+    {
+        int offset = hd ? hd->height() : d_ptr->oldHandleWidth;
+        d_ptr->pageView->setGeometry(geo.x(), pos, geo.width(), geo.height() + offset);
+    }
 }
 
 void ANavigationView::setExpanded(bool expand)
@@ -483,7 +533,7 @@ void ANavigationView::setExpanded(bool expand)
         if (d_ptr->isResizable)
         {
             d_ptr->panel->setMinimumWidth(d_ptr->compactWidth);
-            d_ptr->panel->setMaximumWidth(std::numeric_limits<int>::max());
+            d_ptr->panel->setMaximumWidth(QWIDGETSIZE_MAX);
             d_ptr->panel->resize(d_ptr->oldPanelWidth, d_ptr->panel->height());
         }
         else

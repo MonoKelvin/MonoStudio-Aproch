@@ -174,7 +174,6 @@ ANavigationPanel::ANavigationPanel(ANavigationView::EPanelPosition position, QWi
     mainLayout->setSpacing(6);
     mainLayout->setContentsMargins(4, 0, 4, 6);
     setPosition(position);
-    setMinimumSize(minimumSizeHint());
 }
 
 void ANavigationPanel::setPosition(ANavigationView::EPanelPosition position)
@@ -182,12 +181,30 @@ void ANavigationPanel::setPosition(ANavigationView::EPanelPosition position)
     if (position == d_ptr->position)
         return;
 
+    d_ptr->position = position;
+
     QBoxLayout* mainLayout = qobject_cast<QBoxLayout*>(layout());
     Q_ASSERT(mainLayout);
 
-    QBoxLayout::Direction dir = (position == ANavigationView::Top ?
-                                 QBoxLayout::LeftToRight : QBoxLayout::TopToBottom);
-    mainLayout->setDirection(dir);
+    if (position == ANavigationView::Top)
+    {
+        mainLayout->setDirection(QBoxLayout::LeftToRight);
+        
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        setMinimumWidth(0);
+        setMaximumWidth(QWIDGETSIZE_MAX);
+        setFixedHeight(sizeHint().height());
+    }
+    else
+    {
+        mainLayout->setDirection(QBoxLayout::TopToBottom);
+
+        setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+        setMinimumSize(minimumSizeHint());
+        setMaximumWidth(QWIDGETSIZE_MAX);
+        setMaximumHeight(QWIDGETSIZE_MAX);
+        resize(sizeHint());
+    }
 }
 
 ANavigationView::EPanelPosition ANavigationPanel::getPosition() const
@@ -205,7 +222,6 @@ QSize ANavigationPanel::sizeHint() const
     switch (getPosition())
     {
     case aproch::ANavigationView::Top:
-        //case aproch::ANavigationView::Bottom:
         return QSize(defaultSize.width(), 60);
     default:
         break;

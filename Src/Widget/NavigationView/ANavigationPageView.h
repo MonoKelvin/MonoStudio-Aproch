@@ -38,7 +38,7 @@ class APROCH_API ANavigationPageView : public QStackedWidget
 {
     Q_OBJECT;
 public:
-    explicit ANavigationPageView(QWidget* parent);
+    explicit ANavigationPageView(QWidget* parent = nullptr);
 
 private:
     Q_DISABLE_COPY_MOVE(ANavigationPageView);
