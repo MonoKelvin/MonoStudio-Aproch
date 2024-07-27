@@ -35,8 +35,10 @@ class QTreeView;
 APROCH_NAMESPACE_BEGIN
 
 class ANavigationViewPrivate;
+class ANavigationViewItemBase;
 class ANavigationMenuItem;
 class ANavigationMenuItemGroup;
+class ANavigationViewItemSeparator;
 class ANavigationPageView;
 class ANavigationMenuItemTreeView;
 class ANavigationMenuItemDelegate;
@@ -123,16 +125,18 @@ public:
     bool isHeaderVisible() const;
     void setHeaderVisible(bool visible);
 
-    /** MenuItems */
+    /** Items */
 
     ANavigationMenuItem* insertMenuItem(const QString& text, const QIcon& icon, int index, ANavigationMenuItem* parentItem = nullptr);
     ANavigationMenuItemGroup* insertMenuItemGroup(const QString& text, int index);
-    bool insertMenuItem(ANavigationMenuItem* newItem, int index, ANavigationMenuItem* parentItem = nullptr);
-    bool appendMenuItem(ANavigationMenuItem* newItem, ANavigationMenuItem* parentItem = nullptr);
-    bool removeMenuItem(ANavigationMenuItem* item);
-    bool removeMenuItem(int index, ANavigationMenuItem* parentItem = nullptr);
-    int getMenuItemCount(ANavigationMenuItem* parent = nullptr) const;
-    ANavigationMenuItem* getMenuItem(int index, ANavigationMenuItem* parent = nullptr) const;
+    ANavigationViewItemSeparator* insertSeparator(int index);
+
+    bool insertItem(ANavigationViewItemBase* newItem, int index, ANavigationViewItemBase* parentItem = nullptr);
+    bool appendItem(ANavigationViewItemBase* newItem, ANavigationViewItemBase* parentItem = nullptr);
+    bool removeItem(ANavigationViewItemBase* item);
+    bool removeItem(int index, ANavigationViewItemBase* parentItem = nullptr);
+    int getItemCount(ANavigationViewItemBase* parent = nullptr) const;
+    ANavigationViewItemBase* getItemAt(int index, ANavigationViewItemBase* parent = nullptr) const;
 
     /** Footer */
 

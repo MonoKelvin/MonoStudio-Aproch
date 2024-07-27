@@ -31,7 +31,7 @@
 
 APROCH_NAMESPACE_BEGIN
 
-class ANavigationMenuItem;
+class ANavigationViewItemBase;
 class ANavigationMenuItemTreeView;
 
 class ANavigationMenuItemDelegatePrivate
@@ -48,13 +48,13 @@ public:
 
     QTreeWidgetItem* findMenuItem(const ANavigationMenuItemTreeView* view,
                                   QTreeWidgetItem* theItem,
-                                  ANavigationMenuItem* menuItem)
+                                  ANavigationViewItemBase* itemBase)
     {
-        if (view->itemWidget(theItem, 0) == menuItem)
+        if (view->itemWidget(theItem, 0) == itemBase)
             return theItem;
         for (int i = 0; i < theItem->childCount(); ++i)
         {
-            auto subItem = findMenuItem(view, theItem->child(i), menuItem);
+            auto subItem = findMenuItem(view, theItem->child(i), itemBase);
             if (subItem)
                 return subItem;
         }
@@ -62,17 +62,17 @@ public:
     }
 
     void getMenuItemMap(const ANavigationMenuItemTreeView* view, QTreeWidgetItem* parentItem,
-                        QMap<QTreeWidgetItem*, ANavigationMenuItem*>& menuItemMap)
+                        QMap<QTreeWidgetItem*, ANavigationViewItemBase*>& itemBaseMap)
     {
         if (!parentItem)
             return;
 
-        auto menuItem = qobject_cast<ANavigationMenuItem*>(view->itemWidget(parentItem, 0));
-        if (menuItem)
-            menuItemMap[parentItem] = menuItem;
+        auto itemBase = qobject_cast<ANavigationViewItemBase*>(view->itemWidget(parentItem, 0));
+        if (itemBase)
+            itemBaseMap[parentItem] = itemBase;
 
         for (int i = 0; i < parentItem->childCount(); ++i)
-            getMenuItemMap(view, parentItem->child(i), menuItemMap);
+            getMenuItemMap(view, parentItem->child(i), itemBaseMap);
     }
 };
 

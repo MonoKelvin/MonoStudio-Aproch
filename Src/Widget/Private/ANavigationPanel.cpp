@@ -32,6 +32,7 @@
 
 #include <QProgressBar>
 #include <QWindow>
+#include <QPainterPath>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -97,9 +98,9 @@ ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
     });
 }
 
-QTreeWidgetItem* ANavigationMenuItemTreeView::itemFromMenuItem(ANavigationMenuItem* menuItem) const
+QTreeWidgetItem* ANavigationMenuItemTreeView::getItemFromWidget(ANavigationViewItemBase* itemBase) const
 {
-    if (!menuItem)
+    if (!itemBase)
         return nullptr;
 
     for (int i = 0; i < topLevelItemCount(); ++i)
@@ -108,7 +109,7 @@ QTreeWidgetItem* ANavigationMenuItemTreeView::itemFromMenuItem(ANavigationMenuIt
         if (!item)
             continue;
 
-        item = d_ptr->findMenuItem(this, item, menuItem);
+        item = d_ptr->findMenuItem(this, item, itemBase);
         if (item)
             return item;
     }
@@ -116,17 +117,17 @@ QTreeWidgetItem* ANavigationMenuItemTreeView::itemFromMenuItem(ANavigationMenuIt
     return nullptr;
 }
 
-ANavigationMenuItem* ANavigationMenuItemTreeView::menuItemFromItem(QTreeWidgetItem* menuItem) const
+ANavigationViewItemBase* ANavigationMenuItemTreeView::getWidgetFromItem(QTreeWidgetItem* itemBase) const
 {
-    return qobject_cast<ANavigationMenuItem*>(itemWidget(menuItem, 0));
+    return qobject_cast<ANavigationViewItemBase*>(itemWidget(itemBase, 0));
 }
 
-QMap<QTreeWidgetItem*, ANavigationMenuItem*> ANavigationMenuItemTreeView::getMenuItemMap(QTreeWidgetItem* parentItem) const
+QMap<QTreeWidgetItem*, ANavigationViewItemBase*> ANavigationMenuItemTreeView::getItemMap(QTreeWidgetItem* parentItem) const
 {
-    QMap<QTreeWidgetItem*, ANavigationMenuItem*> menuItemMap;
+    QMap<QTreeWidgetItem*, ANavigationViewItemBase*> itemBaseMap;
     if (parentItem)
     {
-        d_ptr->getMenuItemMap(this, parentItem, menuItemMap);
+        d_ptr->getMenuItemMap(this, parentItem, itemBaseMap);
     }
     else
     {
@@ -136,21 +137,45 @@ QMap<QTreeWidgetItem*, ANavigationMenuItem*> ANavigationMenuItemTreeView::getMen
             if (!item)
                 continue;
 
-            d_ptr->getMenuItemMap(this, item, menuItemMap);
+            d_ptr->getMenuItemMap(this, item, itemBaseMap);
         }
     }
-    
-    return menuItemMap;
+
+    return itemBaseMap;
 }
 
-QList<ANavigationMenuItem*> ANavigationMenuItemTreeView::getMenuItemList(QTreeWidgetItem* parentItem) const
+QList<ANavigationViewItemBase*> ANavigationMenuItemTreeView::getItemList(QTreeWidgetItem* parentItem) const
 {
-    QList<ANavigationMenuItem*> menuItemList;
+    QList<ANavigationViewItemBase*> itemBaseList;
 
-    // TODO
-    Q_ASSERT(false);
+    if (parentItem)
+    {
+        for (int i = 0; i < parentItem->childCount(); ++i)
+        {
+            auto item = parentItem->child(i);
+            if (!item)
+                continue;
 
-    return menuItemList;
+            auto itemBase = getWidgetFromItem(item);
+            if (itemBase)
+                itemBaseList.push_back(itemBase);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < topLevelItemCount(); ++i)
+        {
+            auto item = topLevelItem(i);
+            if (!item)
+                continue;
+
+            auto itemBase = getWidgetFromItem(item);
+            if (itemBase)
+                itemBaseList.push_back(itemBase);
+        }
+    }
+
+    return itemBaseList;
 }
 
 
@@ -171,8 +196,9 @@ ANavigationPanel::ANavigationPanel(ANavigationView::EPanelPosition position, QWi
     QBoxLayout::Direction dir = (position == ANavigationView::Top ?
                                  QBoxLayout::LeftToRight : QBoxLayout::TopToBottom);
     QBoxLayout* mainLayout = new QBoxLayout(dir, this);
-    mainLayout->setSpacing(6);
-    mainLayout->setContentsMargins(4, 0, 4, 6);
+    mainLayout->setSpacing(0);
+    //mainLayout->setContentsMargins(4, 0, 4, 6);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     setPosition(position);
 }
 

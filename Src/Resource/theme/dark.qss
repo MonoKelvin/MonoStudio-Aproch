@@ -92,12 +92,17 @@ QScrollBar::add-line:horizontal:pressed {
 
 /* Tree Widget */
 
+QTreeWidget {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
 QTreeWidget::item {
     min-height: 34px;
     max-height: 34px;
     border-radius: 6px;
     background-color: transparent;
-    margin: 2px 0;
+    margin: 2px 8px 2px 0px;
 }
 
 QTreeWidget::branch {
@@ -120,8 +125,8 @@ QTreeWidget::item:selected:hover {
 /* Button */
 
 QAbstractButton {
-    min-height: 42px;
-    max-height: 42px;
+    min-height: 40px;
+    max-height: 40px;
     border-radius: 6px;
     background-color: transparent;
     qproperty-iconSize: 22px 22px;
@@ -351,7 +356,8 @@ ASplitterHandle:hover {
 
 /* Navigation View */
 
-ANavigationPanel {
+ANavigationPanel > QPushButton {
+    margin: 4px;
 }
 
 ANavigationView::handle:hover,
@@ -359,11 +365,12 @@ ANavigationView ASplitterHandle {
     border-top-left-radius: 10px;
 }
 
-/** ANavigationMenuItem */
+/** Navigation Item */
 
 ANavigationMenuItem {
     border-radius: 6px;
-    /* min-width: 42px; */
+    min-height: 40px;
+    max-height: 40px;
     background-color: transparent;
 }
 
@@ -372,12 +379,23 @@ ANavigationMenuItem #aproch-nav-menuitem-icon {
 }
 
 ANavigationMenuItem #aproch-nav-menuitem-text {
-    padding-right: 10px;
+    /* padding-right: 10px; */
 }
 
 ANavigationMenuItemGroup * {
+    padding-left: 8px;
     font-weight: bold;
     color: rgba(255, 255, 255, 60%);
+}
+
+ANavigationViewItemSeparator {
+    background-color: rgba(255, 255, 255, 10%);
+}
+
+ANavigationPanel > ANavigationViewItemSeparator {
+    min-height: 2px;
+    background-color: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 10%);
 }
 
 /* Navigation Compact Button */

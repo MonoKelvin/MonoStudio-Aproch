@@ -30,12 +30,22 @@
 #include "AprochExportDefine.h"
 #include <QPushButton>
 
+class QLabel;
+
 APROCH_NAMESPACE_BEGIN
 
 class AInfoBadge;
 class ANavigationViewItemPrivate;
+class ANavigationViewItemSeparatorPrivate;
 
-class APROCH_API ANavigationMenuItem : public QWidget
+class APROCH_API ANavigationViewItemBase : public QWidget
+{
+    Q_OBJECT;
+public:
+    explicit ANavigationViewItemBase(QWidget* parent = nullptr);
+};
+
+class APROCH_API ANavigationMenuItem : public ANavigationViewItemBase
 {
     Q_OBJECT;
 public:
@@ -44,6 +54,8 @@ public:
 
     virtual QSize sizeHint() const override;
 
+    QLabel* getIconLabel() const;
+    QLabel* getTextLabel() const;
     AInfoBadge* getInfoBadge() const;
 
 protected:
@@ -61,6 +73,32 @@ class APROCH_API ANavigationMenuItemGroup : public ANavigationMenuItem
 public:
     explicit ANavigationMenuItemGroup(QWidget* parent = nullptr);
     explicit ANavigationMenuItemGroup(const QString& text, QWidget* parent = nullptr);
+
+private:
+    Q_DISABLE_COPY_MOVE(ANavigationMenuItemGroup);
+};
+
+class APROCH_API ANavigationViewItemSeparator : public ANavigationViewItemBase
+{
+    Q_OBJECT;
+    Q_PROPERTY(Qt::Orientation orientation READ getOrientation WRITE setOrientation);
+    Q_PROPERTY(int thickness READ getThickness WRITE setThickness);
+public:
+    explicit ANavigationViewItemSeparator(QWidget* parent = nullptr);
+    explicit ANavigationViewItemSeparator(Qt::Orientation ori, QWidget* parent = nullptr);
+
+    void setOrientation(Qt::Orientation ori);
+    Qt::Orientation getOrientation() const;
+
+    void setThickness(int n);
+    int getThickness() const;
+
+    virtual QSize sizeHint() const override;
+
+private:
+    friend class ANavigationViewItemSeparator;
+    Q_DISABLE_COPY_MOVE(ANavigationViewItemSeparator);
+    QSharedPointer<ANavigationViewItemSeparatorPrivate> d_ptr;
 };
 
 class APROCH_API ANavigationBackButton : public QPushButton     // TODO: AButton supports animation

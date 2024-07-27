@@ -31,6 +31,16 @@
 
 APROCH_NAMESPACE_BEGIN
 
+ANavigationViewItemBase::ANavigationViewItemBase(QWidget* parent)
+    : QWidget(parent)
+{
+    setAttribute(Qt::WA_StyledBackground);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 class ANavigationViewItemPrivate
 {
 public:
@@ -44,7 +54,7 @@ ANavigationMenuItem::ANavigationMenuItem(QWidget* parent)
 }
 
 ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon, QWidget* parent)
-    : QWidget(parent)
+    : ANavigationViewItemBase(parent)
     , d_ptr(new ANavigationViewItemPrivate())
 {
     QBoxLayout* theLayout = new QBoxLayout(QBoxLayout::LeftToRight, this);
@@ -56,21 +66,31 @@ ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon,
     d_ptr->iconLabel->setObjectName("aproch-nav-menuitem-icon");
 
     d_ptr->textLabel = new QLabel(text, this);
+    d_ptr->textLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     d_ptr->textLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
     d_ptr->textLabel->setObjectName("aproch-nav-menuitem-text");
 
-    theLayout->addWidget(d_ptr->iconLabel);
-    theLayout->addWidget(d_ptr->textLabel);
+    theLayout->addWidget(d_ptr->iconLabel, 0, Qt::AlignLeft);
+    theLayout->addWidget(d_ptr->textLabel, 1, Qt::AlignLeft);
     theLayout->setSpacing(12);
     theLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
-    setAttribute(Qt::WA_StyledBackground);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
 QSize ANavigationMenuItem::sizeHint() const
 {
     return QSize(180, 44);
+}
+
+QLabel* ANavigationMenuItem::getIconLabel() const
+{
+    return d_ptr->iconLabel;
+}
+
+QLabel* ANavigationMenuItem::getTextLabel() const
+{
+    return d_ptr->textLabel;
 }
 
 AInfoBadge* ANavigationMenuItem::getInfoBadge() const
@@ -111,6 +131,71 @@ ANavigationMenuItemGroup::ANavigationMenuItemGroup(const QString& text, QWidget*
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+class ANavigationViewItemSeparatorPrivate
+{
+public:
+    Qt::Orientation ori = Qt::Horizontal;
+    int thickness = 1;
+};
+
+ANavigationViewItemSeparator::ANavigationViewItemSeparator(QWidget* parent)
+    : ANavigationViewItemSeparator(Qt::Horizontal, parent)
+{
+}
+
+ANavigationViewItemSeparator::ANavigationViewItemSeparator(Qt::Orientation ori, QWidget* parent)
+    : ANavigationViewItemBase(parent)
+    , d_ptr(new ANavigationViewItemSeparatorPrivate)
+{
+    setOrientation(ori);
+    setAttribute(Qt::WA_TransparentForMouseEvents);
+}
+
+void ANavigationViewItemSeparator::setOrientation(Qt::Orientation ori)
+{
+    if (d_ptr->ori == ori)
+        return;
+
+    d_ptr->ori = ori;
+
+    if (d_ptr->ori == Qt::Horizontal)
+        resize(width(), d_ptr->thickness);
+    else
+        resize(d_ptr->thickness, height());
+}
+
+Qt::Orientation ANavigationViewItemSeparator::getOrientation() const
+{
+    return d_ptr->ori;
+}
+
+void ANavigationViewItemSeparator::setThickness(int n)
+{
+    if (d_ptr->thickness == n)
+        return;
+
+    d_ptr->thickness = n;
+
+    if (d_ptr->ori == Qt::Horizontal)
+        resize(width(), d_ptr->thickness);
+    else
+        resize(d_ptr->thickness, height());
+}
+
+int ANavigationViewItemSeparator::getThickness() const
+{
+    return d_ptr->thickness;
+}
+
+QSize ANavigationViewItemSeparator::sizeHint() const
+{
+    const QSize defSizeHint = ANavigationViewItemBase::sizeHint();
+    return d_ptr->ori == Qt::Horizontal ? QSize(defSizeHint.width(), 1) : QSize(1, defSizeHint.height());
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 ANavigationBackButton::ANavigationBackButton(QWidget* parent)
     : QPushButton(parent)
@@ -133,6 +218,10 @@ ANavigationCompactButton::ANavigationCompactButton(const QString& text, QWidget*
     setToolTip(tr("Close Navigation"));
     setAttribute(Qt::WA_StyledBackground);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    connect(this, &ANavigationCompactButton::toggled, this, [=](bool expand) {
+        setToolTip(expand ? tr("Close Navigation") : tr("Open Navigation"));
+    });
 }
 
 

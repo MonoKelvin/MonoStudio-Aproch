@@ -70,10 +70,10 @@ class ANavigationMenuItemTreeView : public QTreeWidget
 public:
     explicit ANavigationMenuItemTreeView(QWidget* parent = nullptr);
 
-    QTreeWidgetItem* itemFromMenuItem(ANavigationMenuItem* menuItem) const;
-    ANavigationMenuItem* menuItemFromItem(QTreeWidgetItem* menuItem) const;
-    QMap<QTreeWidgetItem*, ANavigationMenuItem*> getMenuItemMap(QTreeWidgetItem* parentItem = nullptr) const;
-    QList<ANavigationMenuItem*> getMenuItemList(QTreeWidgetItem* parentItem = nullptr) const;
+    QTreeWidgetItem* getItemFromWidget(ANavigationViewItemBase* menuItem) const;
+    ANavigationViewItemBase* getWidgetFromItem(QTreeWidgetItem* menuItem) const;
+    QMap<QTreeWidgetItem*, ANavigationViewItemBase*> getItemMap(QTreeWidgetItem* parentItem = nullptr) const;
+    QList<ANavigationViewItemBase*> getItemList(QTreeWidgetItem* parentItem = nullptr) const;
 
 private:
     Q_DISABLE_COPY_MOVE(ANavigationMenuItemTreeView);

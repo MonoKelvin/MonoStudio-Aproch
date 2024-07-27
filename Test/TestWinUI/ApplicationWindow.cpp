@@ -39,20 +39,20 @@ ApplicationWindow::ApplicationWindow(QWidget* parent /*= nullptr*/)
     aproch::ANavigationMenuItem* item8 = new aproch::ANavigationMenuItem(AStr("Menu Item8"), icon, navView);
     aproch::ANavigationMenuItem* item9 = new aproch::ANavigationMenuItem(AStr("Menu Item9"), icon, navView);
 
-    navView->appendMenuItem(item1);
-    navView->appendMenuItem(item2);
-    navView->insertMenuItem(item21, 0, item2);
-    navView->insertMenuItem(item211, 0, item21);
-    navView->insertMenuItem(item212, 1, item21);
-    navView->insertMenuItem(item22, 1, item2);
-    navView->appendMenuItem(group1);
-    navView->appendMenuItem(item3);
-    navView->appendMenuItem(item4);
-    navView->appendMenuItem(item5);
-    navView->appendMenuItem(item6);
-    navView->appendMenuItem(item7);
-    navView->appendMenuItem(item8);
-    navView->appendMenuItem(item9);
+    navView->appendItem(item1);
+    navView->appendItem(item2);
+    navView->insertItem(item21, 0, item2);
+    navView->insertItem(item211, 0, item21);
+    navView->insertItem(item212, 1, item21);
+    navView->insertItem(item22, 1, item2);
+    navView->appendItem(group1);
+    navView->appendItem(item3);
+    navView->appendItem(item4);
+    navView->appendItem(item5);
+    navView->appendItem(item6);
+    navView->appendItem(item7);
+    navView->appendItem(item8);
+    navView->appendItem(item9);
 
     //aproch::AFontIcon* fontIcon = new aproch::AFontIcon("\uE759", navView->getPageView());
     //fontIcon->show();

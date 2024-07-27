@@ -27,7 +27,7 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     setChildrenCollapsible(false);
     setAttribute(Qt::WA_StyledBackground);
 
-    //d_ptr->isResizable = true;
+    d_ptr->isResizable = true;
 
     // panel
     d_ptr->panel = new ANavigationPanel(position);
@@ -42,12 +42,9 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     d_ptr->compactButton->setChecked(d_ptr->isExpanded);
     connect(d_ptr->compactButton, &ANavigationCompactButton::toggled, this, &ANavigationView::setExpanded);
 
-    // settings button
-    d_ptr->settingsButton = new ANavigationSettingsButton(d_ptr->panel);
-
     // menu item view(horizontal)
     d_ptr->menuItemView = new ANavigationMenuItemTreeView(d_ptr->panel);
-    d_ptr->menuItemView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    d_ptr->menuItemView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     d_ptr->menuItemView->setHeaderHidden(true);
     d_ptr->menuItemView->setIndentation(0);
     d_ptr->menuItemView->setRootIsDecorated(false);
@@ -71,12 +68,22 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     setHeaderVisible(false);
     setFooterVisible(false);
 
+    // footer separator
+    ANavigationViewItemSeparator* footerSeparator = new ANavigationViewItemSeparator(mainDir, d_ptr->panel);
+    connect(this, &ANavigationView::panelPositionChanged, footerSeparator, [=]() {
+        footerSeparator->setOrientation(getPanelPosition() == EPanelPosition::Top ? Qt::Vertical : Qt::Horizontal);
+    });
+
+    // settings button
+    d_ptr->settingsButton = new ANavigationSettingsButton(d_ptr->panel);
+
     // widgets
     d_ptr->panel->layout()->addWidget(d_ptr->backButton);
     d_ptr->panel->layout()->addWidget(d_ptr->compactButton);
     d_ptr->panel->layout()->addWidget(d_ptr->headerWidget);
     d_ptr->panel->layout()->addWidget(d_ptr->menuItemView);
     d_ptr->panel->layout()->addWidget(d_ptr->footerWidget);
+    d_ptr->panel->layout()->addWidget(footerSeparator);
     d_ptr->panel->layout()->addWidget(d_ptr->settingsButton);
 
     // page view
@@ -88,9 +95,17 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
 
     setPanelPosition(position);
 
-    // last 
-    const auto& plmargins = d_ptr->panel->layout()->contentsMargins();
-    d_ptr->compactWidth = 42 + plmargins.left() + plmargins.right();
+    // computer the min-compact-width
+    QStyleOptionButton opt;
+    opt.initFrom(d_ptr->compactButton);
+    opt.features = QStyleOptionButton::Flat;
+    opt.iconSize = d_ptr->compactButton->iconSize();
+    opt.icon = d_ptr->compactButton->icon();
+    opt.text = d_ptr->compactButton->text();
+    const QRect contentsRect = d_ptr->compactButton->style()->subElementRect(QStyle::SE_PushButtonContents, &opt);
+    const int realOffset = qreal(contentsRect.left() * 2.0) / devicePixelRatio();
+    d_ptr->compactWidth = d_ptr->compactButton->iconSize().width() + realOffset;
+    d_ptr->compactWidth = 50;
 }
 
 ANavigationView::EPanelPosition ANavigationView::getPanelPosition() const
@@ -269,7 +284,7 @@ void ANavigationView::setHeaderVisible(bool visible)
 ANavigationMenuItem* ANavigationView::insertMenuItem(const QString& text, const QIcon& icon, int index, ANavigationMenuItem* parentItem)
 {
     ANavigationMenuItem* newItem = new ANavigationMenuItem(text, icon, d_ptr->panel);
-    if (insertMenuItem(newItem, index, parentItem))
+    if (insertItem(newItem, index, parentItem))
         return newItem;
 
     delete newItem;
@@ -279,14 +294,24 @@ ANavigationMenuItem* ANavigationView::insertMenuItem(const QString& text, const 
 ANavigationMenuItemGroup* ANavigationView::insertMenuItemGroup(const QString& text, int index)
 {
     ANavigationMenuItemGroup* newItem = new ANavigationMenuItemGroup(text, d_ptr->panel);
-    if (insertMenuItem(newItem, index, nullptr))
+    if (insertItem(newItem, index, nullptr))
         return newItem;
 
     delete newItem;
     return nullptr;
 }
 
-bool ANavigationView::insertMenuItem(ANavigationMenuItem* newItem, int index, ANavigationMenuItem* parentItem)
+ANavigationViewItemSeparator* ANavigationView::insertSeparator(int index)
+{
+    ANavigationViewItemSeparator* newItem = new ANavigationViewItemSeparator(orientation(), d_ptr->panel);
+    if (insertItem(newItem, index, nullptr))
+        return newItem;
+
+    delete newItem;
+    return nullptr;
+}
+
+bool ANavigationView::insertItem(ANavigationViewItemBase* newItem, int index, ANavigationViewItemBase* parentItem)
 {
     if (!newItem)
         return false;
@@ -296,7 +321,7 @@ bool ANavigationView::insertMenuItem(ANavigationMenuItem* newItem, int index, AN
     QTreeWidgetItem* pItem = nullptr;
     if (parentItem)
     {
-        QTreeWidgetItem* parentMenuItem = d_ptr->menuItemView->itemFromMenuItem(parentItem);
+        QTreeWidgetItem* parentMenuItem = d_ptr->menuItemView->getItemFromWidget(parentItem);
         if (!parentMenuItem)
             return false;
 
@@ -326,27 +351,27 @@ bool ANavigationView::insertMenuItem(ANavigationMenuItem* newItem, int index, AN
     return newItem;
 }
 
-bool ANavigationView::appendMenuItem(ANavigationMenuItem* newItem, ANavigationMenuItem* parentItem)
+bool ANavigationView::appendItem(ANavigationViewItemBase* newItem, ANavigationViewItemBase* parentItem)
 {
     if (parentItem)
     {
-        QTreeWidgetItem* twItem = d_ptr->menuItemView->itemFromMenuItem(parentItem);
+        QTreeWidgetItem* twItem = d_ptr->menuItemView->getItemFromWidget(parentItem);
         if (!twItem)
             return false;
 
-        return insertMenuItem(newItem, twItem->childCount(), parentItem);
+        return insertItem(newItem, twItem->childCount(), parentItem);
     }
 
-    return insertMenuItem(newItem, d_ptr->menuItemView->topLevelItemCount(), parentItem);
+    return insertItem(newItem, d_ptr->menuItemView->topLevelItemCount(), parentItem);
 }
 
-bool ANavigationView::removeMenuItem(ANavigationMenuItem* item)
+bool ANavigationView::removeItem(ANavigationViewItemBase* item)
 {
-    QTreeWidgetItem* twItem = d_ptr->menuItemView->itemFromMenuItem(item);
+    QTreeWidgetItem* twItem = d_ptr->menuItemView->getItemFromWidget(item);
     if (!twItem)
         return false;
 
-    auto menuItemMap = d_ptr->menuItemView->getMenuItemMap(twItem);
+    auto menuItemMap = d_ptr->menuItemView->getItemMap(twItem);
     for (auto iter = menuItemMap.cbegin(); iter != menuItemMap.cend(); ++iter)
         d_ptr->menuItemView->removeItemWidget(iter.key(), 0);
 
@@ -355,32 +380,32 @@ bool ANavigationView::removeMenuItem(ANavigationMenuItem* item)
     return true;
 }
 
-bool ANavigationView::removeMenuItem(int index, ANavigationMenuItem* parentItem)
+bool ANavigationView::removeItem(int index, ANavigationViewItemBase* parentItem)
 {
-    ANavigationMenuItem* removedMenuItem;
+    ANavigationViewItemBase* removedMenuItem;
     if (parentItem)
     {
-        QTreeWidgetItem* twItem = d_ptr->menuItemView->itemFromMenuItem(parentItem);
+        QTreeWidgetItem* twItem = d_ptr->menuItemView->getItemFromWidget(parentItem);
         if (!twItem)
             return false;
-        removedMenuItem = d_ptr->menuItemView->menuItemFromItem(twItem->child(index));
+        removedMenuItem = d_ptr->menuItemView->getWidgetFromItem(twItem->child(index));
     }
     else
-        removedMenuItem = d_ptr->menuItemView->menuItemFromItem(d_ptr->menuItemView->topLevelItem(index));
-    return removedMenuItem ? removeMenuItem(removedMenuItem) : false;
+        removedMenuItem = d_ptr->menuItemView->getWidgetFromItem(d_ptr->menuItemView->topLevelItem(index));
+    return removedMenuItem ? removeItem(removedMenuItem) : false;
 }
 
-int ANavigationView::getMenuItemCount(ANavigationMenuItem* parent) const
+int ANavigationView::getItemCount(ANavigationViewItemBase* parent) const
 {
-    QTreeWidgetItem* twItem = d_ptr->menuItemView->itemFromMenuItem(parent);
-    auto menuItemList = d_ptr->menuItemView->getMenuItemList(twItem);
+    QTreeWidgetItem* twItem = d_ptr->menuItemView->getItemFromWidget(parent);
+    auto menuItemList = d_ptr->menuItemView->getItemList(twItem);
     return menuItemList.size();
 }
 
-ANavigationMenuItem* ANavigationView::getMenuItem(int index, ANavigationMenuItem* parent) const
+ANavigationViewItemBase* ANavigationView::getItemAt(int index, ANavigationViewItemBase* parent) const
 {
-    QTreeWidgetItem* twItem = d_ptr->menuItemView->itemFromMenuItem(parent);
-    auto menuItemList = d_ptr->menuItemView->getMenuItemList(twItem);
+    QTreeWidgetItem* twItem = d_ptr->menuItemView->getItemFromWidget(parent);
+    auto menuItemList = d_ptr->menuItemView->getItemList(twItem);
     return menuItemList.at(index);
 }
 
@@ -545,6 +570,39 @@ void ANavigationView::setExpanded(bool expand)
     {
         d_ptr->oldPanelWidth = d_ptr->panel->width();
         d_ptr->panel->setFixedWidth(d_ptr->compactWidth);
+    }
+
+    // show/hide menu item group
+    auto allMenuItemMap = d_ptr->menuItemView->getItemMap();
+    for (auto iter = allMenuItemMap.cbegin(); iter != allMenuItemMap.cend(); ++iter)
+    {
+        auto pItem = iter.value();
+        if (qobject_cast<ANavigationMenuItemGroup*>(pItem))
+        {
+            iter.key()->setHidden(!expand);
+            continue;
+        }
+    }
+
+    if (expand)
+    {
+        d_ptr->menuItemView->setColumnWidth(0, d_ptr->menuItemView->width());
+    }
+    else
+    {
+        int w = d_ptr->panel->width();
+
+        /*QStyleOptionButton opt;
+        opt.initFrom(d_ptr->compactButton);
+        opt.features = QStyleOptionButton::Flat;
+        opt.iconSize = d_ptr->compactButton->iconSize();
+        opt.icon = d_ptr->compactButton->icon();
+        opt.text = d_ptr->compactButton->text();
+        const QRect contentsRect = d_ptr->compactButton->style()->subElementRect(QStyle::SE_PushButtonContents, &opt);
+        const int paddings_lr = qreal((d_ptr->compactButton->size() - contentsRect.size()).width());*/
+
+        d_ptr->menuItemView->setColumnWidth(0, w);
+        d_ptr->menuItemView->resize(w, d_ptr->menuItemView->height());
     }
 
     emit expandChanged();
