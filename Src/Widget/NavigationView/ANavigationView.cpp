@@ -330,7 +330,6 @@ bool ANavigationView::insertItem(ANavigationViewItemBase* newItem, int index, AN
             return false;
 
         pItem = new QTreeWidgetItem(parentMenuItem);
-        d_ptr->menuItemView->setItemWidget(pItem, 0, newItem);
     }
     else
     {
@@ -339,8 +338,10 @@ bool ANavigationView::insertItem(ANavigationViewItemBase* newItem, int index, AN
             return false;
 
         pItem = new QTreeWidgetItem(d_ptr->menuItemView);
-        d_ptr->menuItemView->setItemWidget(pItem, 0, newItem);
     }
+
+    d_ptr->menuItemView->setItemWidget(pItem, 0, newItem);
+    newItem->installEventFilter(d_ptr->menuItemView);
 
     auto itemGroup = qobject_cast<ANavigationMenuItemGroup*>(newItem);
     if (itemGroup)
@@ -533,7 +534,12 @@ void ANavigationView::updatePageViewPosition(int pos, int index)
     {
         int offset = hd ? hd->width() : d_ptr->oldHandleWidth;
         d_ptr->pageView->setGeometry(pos, geo.y(), geo.width() + offset, geo.height());
-        d_ptr->menuItemView->setColumnWidth(0, pos);
+
+        const int minWidth = d_ptr->compactWidth * 2;
+        if (pos > minWidth)
+            d_ptr->menuItemView->setColumnWidth(0, pos);
+        else
+            d_ptr->menuItemView->setColumnWidth(0, minWidth);
     }
     else
     {
@@ -573,7 +579,7 @@ void ANavigationView::setExpanded(bool expand)
         d_ptr->panel->setFixedWidth(d_ptr->compactWidth);
     }
 
-    // show/hide menu item group
+    // show/hide menu item group and expand/collapse button
     auto allMenuItemMap = d_ptr->menuItemView->getItemMap();
     for (auto iter = allMenuItemMap.cbegin(); iter != allMenuItemMap.cend(); ++iter)
     {
@@ -583,6 +589,10 @@ void ANavigationView::setExpanded(bool expand)
             iter.key()->setHidden(!expand);
             continue;
         }
+
+        auto menuItem = qobject_cast<ANavigationMenuItem*>(pItem);
+        if (menuItem)
+            menuItem->setExpandedButtonVisible(expand);
     }
 
     if (expand)

@@ -52,6 +52,7 @@ public:
     QLabel* iconLabel = nullptr;
     QLabel* textLabel = nullptr;
     QLabel* expandLabel = nullptr;
+    QVariantAnimation* expandRotateAnimation = nullptr;
     ANavigationMenuItem::EExpandState expandState = ANavigationMenuItem::NoExpandState;
 };
 
@@ -83,6 +84,14 @@ ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon,
     theLayout->setSpacing(0);
     theLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
+    d_ptr->expandRotateAnimation = new QVariantAnimation(this);
+    d_ptr->expandRotateAnimation->setDuration(200);
+    d_ptr->expandRotateAnimation->setStartValue(0.0);
+    d_ptr->expandRotateAnimation->setEndValue(-180.0);
+    d_ptr->expandRotateAnimation->setEasingCurve(QEasingCurve::OutCubic);
+    connect(d_ptr->expandRotateAnimation, &QPropertyAnimation::valueChanged,
+            this, &ANavigationMenuItem::rotateExpandedIcon);
+
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
@@ -108,6 +117,7 @@ QString ANavigationMenuItem::getText() const
 
 void ANavigationMenuItem::setExpandState(EExpandState state)
 {
+    auto oldState = d_ptr->expandState;
     if (d_ptr->expandState == state)
         return;
 
@@ -123,7 +133,7 @@ void ANavigationMenuItem::setExpandState(EExpandState state)
     }
         break;
     case Expanded:
-    case UnExpanded:
+    case Collapsed:
     {
         if (!d_ptr->expandLabel)
         {
@@ -138,13 +148,11 @@ void ANavigationMenuItem::setExpandState(EExpandState state)
             theLayout->addWidget(d_ptr->expandLabel, 0, Qt::AlignRight);
         }
 
-        QIcon icon;
-        if (state == Expanded)
-            icon = AFontIcon::icon("\uE70D");
+        if (oldState == NoExpandState || oldState == Collapsed)
+            d_ptr->expandRotateAnimation->setDirection(QAbstractAnimation::Forward);
         else
-            icon = AFontIcon::icon("\uE70E");
-        d_ptr->expandLabel->setPixmap(icon.pixmap(AFontIcon::DefaultIconSize));
-
+            d_ptr->expandRotateAnimation->setDirection(QAbstractAnimation::Backward);
+        d_ptr->expandRotateAnimation->start();
     }
         break;
     default:
@@ -158,6 +166,17 @@ void ANavigationMenuItem::setExpandState(EExpandState state)
 ANavigationMenuItem::EExpandState ANavigationMenuItem::getExpandState() const
 {
     return d_ptr->expandState;
+}
+
+void ANavigationMenuItem::setExpandedButtonVisible(bool visible)
+{
+    if (d_ptr->expandLabel)
+        d_ptr->expandLabel->setVisible(visible);
+}
+
+bool ANavigationMenuItem::getExpandButtonVisible() const
+{
+    return d_ptr->expandLabel && d_ptr->expandLabel->isVisible();
 }
 
 AInfoBadge* ANavigationMenuItem::getInfoBadge() const
@@ -175,6 +194,20 @@ void ANavigationMenuItem::showEvent(QShowEvent* evt)
     }
 
     QWidget::showEvent(evt);
+}
+
+void ANavigationMenuItem::rotateExpandedIcon(const QVariant& rot)
+{
+    if (!d_ptr->expandLabel)
+        return;
+
+    QIcon icon = AFontIcon::icon("\uE96D"); // ^
+    QPixmap p = icon.pixmap(AFontIcon::DefaultIconSize);
+    
+    p = p.transformed(QTransform().rotate(rot.toDouble()), Qt::TransformationMode::SmoothTransformation);
+    
+    d_ptr->expandLabel->setPixmap(p.scaled(AFontIcon::DefaultIconSize * 0.8, 
+                                  Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
 
 

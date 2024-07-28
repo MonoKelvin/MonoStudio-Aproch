@@ -96,6 +96,12 @@ ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
         else
             expand(index);
     });
+
+    auto theModel = model();
+    connect(theModel, &QAbstractItemModel::rowsInserted, this, &ANavigationMenuItemTreeView::updateExpandedState);
+    connect(theModel, &QAbstractItemModel::rowsRemoved, this, &ANavigationMenuItemTreeView::updateExpandedState);
+    connect(this, &ANavigationMenuItemTreeView::expanded, this, &ANavigationMenuItemTreeView::updateExpandedState);
+    connect(this, &ANavigationMenuItemTreeView::collapsed, this, &ANavigationMenuItemTreeView::updateExpandedState);
 }
 
 QTreeWidgetItem* ANavigationMenuItemTreeView::getItemFromWidget(ANavigationViewItemBase* itemBase) const
@@ -181,6 +187,40 @@ QList<ANavigationViewItemBase*> ANavigationMenuItemTreeView::getItemList(QTreeWi
 void ANavigationMenuItemTreeView::scrollContentsBy(int dx, int dy)
 {
     return QTreeWidget::scrollContentsBy(0, dy);
+}
+
+void ANavigationMenuItemTreeView::updateExpandedState(const QModelIndex& index)
+{
+    auto item = itemFromIndex(index);
+    auto menuItem = qobject_cast<ANavigationMenuItem*>(getWidgetFromItem(item));
+    if (menuItem)
+    {
+        if (item->childCount() > 0)
+        {
+            if (item->isExpanded())
+                menuItem->setExpandState(ANavigationMenuItem::Expanded);
+            else
+                menuItem->setExpandState(ANavigationMenuItem::Collapsed);
+        }
+        else
+            menuItem->setExpandState(ANavigationMenuItem::NoExpandState);
+    }
+}
+
+bool ANavigationMenuItemTreeView::eventFilter(QObject* watched, QEvent* evt)
+{
+    QEvent::Type et = evt->type();
+    auto menuItem = qobject_cast<ANavigationMenuItem*>(watched);
+    if (menuItem)
+    {
+        if (et == QEvent::ShowToParent)
+        {
+            auto item = getItemFromWidget(menuItem);
+            updateExpandedState(indexFromItem(item));
+        }
+    }
+
+    return QTreeWidget::eventFilter(watched, evt);
 }
 
 

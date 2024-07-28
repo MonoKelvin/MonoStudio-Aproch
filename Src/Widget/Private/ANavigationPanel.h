@@ -77,6 +77,12 @@ public:
     
     void scrollContentsBy(int dx, int dy) override;
 
+public Q_SLOTS:
+    void updateExpandedState(const QModelIndex& index);
+
+protected:
+    virtual bool eventFilter(QObject* watched, QEvent* evt) override;
+
 private:
     Q_DISABLE_COPY_MOVE(ANavigationMenuItemTreeView);
     QScopedPointer<ANavigationMenuItemTreeViewPrivate> d_ptr;

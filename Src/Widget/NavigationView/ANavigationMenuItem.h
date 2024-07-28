@@ -61,7 +61,7 @@ public:
     {
         NoExpandState,
         Expanded,
-        UnExpanded,
+        Collapsed,
     };
     Q_ENUM(EExpandState);
 
@@ -74,6 +74,9 @@ public:
     void setExpandState(EExpandState state);
     EExpandState getExpandState() const;
 
+    void setExpandedButtonVisible(bool visible);
+    bool getExpandButtonVisible() const;
+
     AInfoBadge* getInfoBadge() const;
 
 Q_SIGNALS:
@@ -81,6 +84,9 @@ Q_SIGNALS:
 
 protected:
     virtual void showEvent(QShowEvent* evt) override;
+
+protected Q_SLOTS:
+    void rotateExpandedIcon(const QVariant& rot);
 
 protected:
     Q_DISABLE_COPY_MOVE(ANavigationMenuItem);

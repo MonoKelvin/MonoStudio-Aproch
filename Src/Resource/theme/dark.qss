@@ -382,6 +382,12 @@ ANavigationViewItemBase {
     margin: 0 10px;
 }
 
+#aproch-nav-menuitem-expanded {
+    margin-right: 18px;
+    margin-left: 6px;
+    padding-bottom: 2px;
+}
+
 ANavigationMenuItemGroup * {
     font-weight: bold;
     color: rgba(255, 255, 255, 60%);

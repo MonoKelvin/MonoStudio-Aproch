@@ -86,7 +86,7 @@ void AFontIcon::setGlyph(const QString& glyph)
     emit glyphChanged();
 }
 
-QIcon AFontIcon::icon(const QString& glyph)
+QIcon AFontIcon::icon(const QString& glyph, const QSize& size)
 {
     EThemeType type = ATheme::getTheme();
     if (type == EThemeType::System)
@@ -100,7 +100,7 @@ QIcon AFontIcon::icon(const QString& glyph)
     else
         color = Qt::white;
 
-    return icon(glyph, AFontDatabase::getDefaultIconFont(), color, DefaultIconSize);
+    return icon(glyph, AFontDatabase::getDefaultIconFont(), color, size);
 }
 
 QIcon AFontIcon::icon(const QString& glyph, AFontDatabase::EAppFontType type, const QColor& color, const QSize& size)
