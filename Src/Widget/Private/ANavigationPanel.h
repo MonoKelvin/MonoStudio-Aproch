@@ -74,6 +74,8 @@ public:
     ANavigationViewItemBase* getWidgetFromItem(QTreeWidgetItem* menuItem) const;
     QMap<QTreeWidgetItem*, ANavigationViewItemBase*> getItemMap(QTreeWidgetItem* parentItem = nullptr) const;
     QList<ANavigationViewItemBase*> getItemList(QTreeWidgetItem* parentItem = nullptr) const;
+    
+    void scrollContentsBy(int dx, int dy) override;
 
 private:
     Q_DISABLE_COPY_MOVE(ANavigationMenuItemTreeView);

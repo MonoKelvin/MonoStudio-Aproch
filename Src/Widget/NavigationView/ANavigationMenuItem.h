@@ -35,7 +35,8 @@ class QLabel;
 APROCH_NAMESPACE_BEGIN
 
 class AInfoBadge;
-class ANavigationViewItemPrivate;
+class ANavigationMenuItemPrivate;
+class ANavigationMenuItemGroupPrivate;
 class ANavigationViewItemSeparatorPrivate;
 
 class APROCH_API ANavigationViewItemBase : public QWidget
@@ -43,39 +44,63 @@ class APROCH_API ANavigationViewItemBase : public QWidget
     Q_OBJECT;
 public:
     explicit ANavigationViewItemBase(QWidget* parent = nullptr);
+    virtual QSize sizeHint() const override;
 };
 
 class APROCH_API ANavigationMenuItem : public ANavigationViewItemBase
 {
     Q_OBJECT;
+    Q_PROPERTY(QString text READ getText WRITE setText);
+    Q_PROPERTY(QIcon icon READ getIcon WRITE setIcon);
+    Q_PROPERTY(EExpandState expandState READ getExpandState WRITE setExpandState NOTIFY expandStateChanged);
 public:
     explicit ANavigationMenuItem(QWidget* parent = nullptr);
     ANavigationMenuItem(const QString& text, const QIcon& icon, QWidget* parent = nullptr);
 
-    virtual QSize sizeHint() const override;
+    enum EExpandState
+    {
+        NoExpandState,
+        Expanded,
+        UnExpanded,
+    };
+    Q_ENUM(EExpandState);
 
-    QLabel* getIconLabel() const;
-    QLabel* getTextLabel() const;
+    void setIcon(const QIcon& icon);
+    QIcon getIcon() const;
+
+    void setText(const QString& text);
+    QString getText() const;
+
+    void setExpandState(EExpandState state);
+    EExpandState getExpandState() const;
+
     AInfoBadge* getInfoBadge() const;
+
+Q_SIGNALS:
+    void expandStateChanged();
 
 protected:
     virtual void showEvent(QShowEvent* evt) override;
 
 protected:
-    friend class ANavigationViewItemPrivate;
     Q_DISABLE_COPY_MOVE(ANavigationMenuItem);
-    QSharedPointer<ANavigationViewItemPrivate> d_ptr;
+    QSharedPointer<ANavigationMenuItemPrivate> d_ptr;
 };
 
-class APROCH_API ANavigationMenuItemGroup : public ANavigationMenuItem
+class APROCH_API ANavigationMenuItemGroup : public ANavigationViewItemBase
 {
     Q_OBJECT;
+    Q_PROPERTY(QString text READ getText WRITE setText);
 public:
     explicit ANavigationMenuItemGroup(QWidget* parent = nullptr);
     explicit ANavigationMenuItemGroup(const QString& text, QWidget* parent = nullptr);
 
+    void setText(const QString& text);
+    QString getText() const;
+
 private:
-    Q_DISABLE_COPY_MOVE(ANavigationMenuItemGroup);
+    Q_DISABLE_COPY_MOVE(ANavigationMenuItemGroup); 
+    QSharedPointer<ANavigationMenuItemGroupPrivate> d_ptr;
 };
 
 class APROCH_API ANavigationViewItemSeparator : public ANavigationViewItemBase

@@ -37,15 +37,22 @@ ANavigationViewItemBase::ANavigationViewItemBase(QWidget* parent)
     setAttribute(Qt::WA_StyledBackground);
 }
 
+QSize ANavigationViewItemBase::sizeHint() const
+{
+    return QSize(180, 44);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-class ANavigationViewItemPrivate
+class ANavigationMenuItemPrivate
 {
 public:
     QLabel* iconLabel = nullptr;
     QLabel* textLabel = nullptr;
+    QLabel* expandLabel = nullptr;
+    ANavigationMenuItem::EExpandState expandState = ANavigationMenuItem::NoExpandState;
 };
 
 ANavigationMenuItem::ANavigationMenuItem(QWidget* parent)
@@ -55,14 +62,15 @@ ANavigationMenuItem::ANavigationMenuItem(QWidget* parent)
 
 ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon, QWidget* parent)
     : ANavigationViewItemBase(parent)
-    , d_ptr(new ANavigationViewItemPrivate())
+    , d_ptr(new ANavigationMenuItemPrivate())
 {
     QBoxLayout* theLayout = new QBoxLayout(QBoxLayout::LeftToRight, this);
 
-    //AFontIcon* iconLabel = new AFontIcon("", this);
     d_ptr->iconLabel = new QLabel(this);
+    d_ptr->iconLabel->setAlignment(Qt::AlignCenter);
     d_ptr->iconLabel->setPixmap(icon.pixmap(AFontIcon::DefaultIconSize));
     d_ptr->iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    d_ptr->iconLabel->setMinimumSize(AFontIcon::DefaultIconSize);
     d_ptr->iconLabel->setObjectName("aproch-nav-menuitem-icon");
 
     d_ptr->textLabel = new QLabel(text, this);
@@ -72,25 +80,84 @@ ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon,
 
     theLayout->addWidget(d_ptr->iconLabel, 0, Qt::AlignLeft);
     theLayout->addWidget(d_ptr->textLabel, 1, Qt::AlignLeft);
-    theLayout->setSpacing(12);
+    theLayout->setSpacing(0);
     theLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
-QSize ANavigationMenuItem::sizeHint() const
+void ANavigationMenuItem::setIcon(const QIcon& icon)
 {
-    return QSize(180, 44);
+    d_ptr->iconLabel->setPixmap(icon.pixmap(AFontIcon::DefaultIconSize));
 }
 
-QLabel* ANavigationMenuItem::getIconLabel() const
+QIcon ANavigationMenuItem::getIcon() const
 {
-    return d_ptr->iconLabel;
+    return d_ptr->iconLabel->pixmap();
 }
 
-QLabel* ANavigationMenuItem::getTextLabel() const
+void ANavigationMenuItem::setText(const QString& text)
 {
-    return d_ptr->textLabel;
+    d_ptr->textLabel->setText(text);
+}
+
+QString ANavigationMenuItem::getText() const
+{
+    return d_ptr->textLabel->text();
+}
+
+void ANavigationMenuItem::setExpandState(EExpandState state)
+{
+    if (d_ptr->expandState == state)
+        return;
+
+    switch (state)
+    {
+    case NoExpandState:
+    {
+        if (d_ptr->expandLabel)
+        {
+            d_ptr->expandLabel->deleteLater();
+            d_ptr->expandLabel = nullptr;
+        }
+    }
+        break;
+    case Expanded:
+    case UnExpanded:
+    {
+        if (!d_ptr->expandLabel)
+        {
+            d_ptr->expandLabel = new QLabel(this);
+            d_ptr->expandLabel->setAlignment(Qt::AlignCenter);
+            d_ptr->expandLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+            d_ptr->expandLabel->setMinimumSize(AFontIcon::DefaultIconSize);
+            d_ptr->expandLabel->setObjectName("aproch-nav-menuitem-expanded");
+
+            auto theLayout = qobject_cast<QBoxLayout*>(layout());
+            Q_ASSERT(theLayout);
+            theLayout->addWidget(d_ptr->expandLabel, 0, Qt::AlignRight);
+        }
+
+        QIcon icon;
+        if (state == Expanded)
+            icon = AFontIcon::icon("\uE70D");
+        else
+            icon = AFontIcon::icon("\uE70E");
+        d_ptr->expandLabel->setPixmap(icon.pixmap(AFontIcon::DefaultIconSize));
+
+    }
+        break;
+    default:
+        break;
+    }
+
+    d_ptr->expandState = state;
+    emit expandStateChanged();
+}
+
+ANavigationMenuItem::EExpandState ANavigationMenuItem::getExpandState() const
+{
+    return d_ptr->expandState;
 }
 
 AInfoBadge* ANavigationMenuItem::getInfoBadge() const
@@ -114,18 +181,44 @@ void ANavigationMenuItem::showEvent(QShowEvent* evt)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+class ANavigationMenuItemGroupPrivate
+{
+public:
+    QLabel* textLabel = nullptr;
+};
+
 ANavigationMenuItemGroup::ANavigationMenuItemGroup(QWidget* parent)
     : ANavigationMenuItemGroup(QString(), parent)
 {
 }
 
 ANavigationMenuItemGroup::ANavigationMenuItemGroup(const QString& text, QWidget* parent)
-    : ANavigationMenuItem(text, QIcon(), parent)
+    : ANavigationViewItemBase(parent)
+    , d_ptr(new ANavigationMenuItemGroupPrivate())
 {
-    d_ptr->iconLabel->deleteLater();
-    d_ptr->iconLabel = nullptr;
+    QBoxLayout* theLayout = new QBoxLayout(QBoxLayout::LeftToRight, this);
 
+    d_ptr->textLabel = new QLabel(text, this);
+    d_ptr->textLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    d_ptr->textLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    d_ptr->textLabel->setObjectName("aproch-nav-menuitem-text");
+
+    theLayout->addWidget(d_ptr->textLabel, 1, Qt::AlignLeft);
+    theLayout->setSpacing(0);
+    theLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setAttribute(Qt::WA_TransparentForMouseEvents);
+}
+
+void ANavigationMenuItemGroup::setText(const QString& text)
+{
+    d_ptr->textLabel->setText(text);
+}
+
+QString ANavigationMenuItemGroup::getText() const
+{
+    return d_ptr->textLabel->text();
 }
 
 

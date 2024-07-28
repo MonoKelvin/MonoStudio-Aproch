@@ -178,6 +178,11 @@ QList<ANavigationViewItemBase*> ANavigationMenuItemTreeView::getItemList(QTreeWi
     return itemBaseList;
 }
 
+void ANavigationMenuItemTreeView::scrollContentsBy(int dx, int dy)
+{
+    return QTreeWidget::scrollContentsBy(0, dy);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

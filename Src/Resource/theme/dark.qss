@@ -3,7 +3,6 @@
     border: none;
     outline: none;
     font-size: 10pt;
-    /* border: 1px solid red; */
 }
 
 QFrame {
@@ -367,23 +366,23 @@ ANavigationView ASplitterHandle {
 
 /** Navigation Item */
 
-ANavigationMenuItem {
+ANavigationViewItemBase {
     border-radius: 6px;
     min-height: 40px;
     max-height: 40px;
     background-color: transparent;
 }
 
-ANavigationMenuItem #aproch-nav-menuitem-icon {
-    padding-left: 10px;
+#aproch-nav-menuitem-icon {
+    min-width: 22px;
+    margin-left: 10px;
 }
 
-ANavigationMenuItem #aproch-nav-menuitem-text {
-    /* padding-right: 10px; */
+#aproch-nav-menuitem-text {
+    margin: 0 10px;
 }
 
 ANavigationMenuItemGroup * {
-    padding-left: 8px;
     font-weight: bold;
     color: rgba(255, 255, 255, 60%);
 }

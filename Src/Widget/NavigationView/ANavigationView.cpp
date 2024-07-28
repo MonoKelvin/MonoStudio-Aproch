@@ -49,7 +49,7 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     d_ptr->menuItemView->setIndentation(0);
     d_ptr->menuItemView->setRootIsDecorated(false);
     d_ptr->menuItemView->setAnimated(true);
-    d_ptr->menuItemView->setIconSize(QSize(24, 24));
+    d_ptr->menuItemView->setIconSize(AFontIcon::DefaultIconSize);
     d_ptr->menuItemView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     d_ptr->menuItemView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->menuItemView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -533,6 +533,7 @@ void ANavigationView::updatePageViewPosition(int pos, int index)
     {
         int offset = hd ? hd->width() : d_ptr->oldHandleWidth;
         d_ptr->pageView->setGeometry(pos, geo.y(), geo.width() + offset, geo.height());
+        d_ptr->menuItemView->setColumnWidth(0, pos);
     }
     else
     {
@@ -590,19 +591,7 @@ void ANavigationView::setExpanded(bool expand)
     }
     else
     {
-        int w = d_ptr->panel->width();
-
-        /*QStyleOptionButton opt;
-        opt.initFrom(d_ptr->compactButton);
-        opt.features = QStyleOptionButton::Flat;
-        opt.iconSize = d_ptr->compactButton->iconSize();
-        opt.icon = d_ptr->compactButton->icon();
-        opt.text = d_ptr->compactButton->text();
-        const QRect contentsRect = d_ptr->compactButton->style()->subElementRect(QStyle::SE_PushButtonContents, &opt);
-        const int paddings_lr = qreal((d_ptr->compactButton->size() - contentsRect.size()).width());*/
-
-        d_ptr->menuItemView->setColumnWidth(0, w);
-        d_ptr->menuItemView->resize(w, d_ptr->menuItemView->height());
+        d_ptr->menuItemView->setColumnWidth(0, d_ptr->panel->width());
     }
 
     emit expandChanged();
