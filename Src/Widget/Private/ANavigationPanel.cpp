@@ -223,6 +223,34 @@ bool ANavigationMenuItemTreeView::eventFilter(QObject* watched, QEvent* evt)
     return QTreeWidget::eventFilter(watched, evt);
 }
 
+void ANavigationMenuItemTreeView::drawRow(QPainter* painter, const QStyleOptionViewItem& options, const QModelIndex& index) const
+{
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    QStyleOptionViewItem opt(options);
+    QPainterPath path;
+    path.addRoundedRect(opt.rect.x(), opt.rect.y() + 2,
+                        opt.rect.width(), opt.rect.height() - 4, 6, 6);
+
+    QBrush bgBrush = Qt::NoBrush;
+    auto item = itemFromIndex(index);
+    if (!item)
+        return QTreeWidget::drawRow(painter, opt, index);
+
+    bool hover = item == itemAt(mapFromGlobal(QCursor::pos()));
+    if (item->isSelected())
+    {
+        if (hover)
+            bgBrush = QColor::fromRgbF(1.0f, 1.0f, 1.0f, 0.04f);
+        else
+            bgBrush = QColor::fromRgbF(1.0f, 1.0f, 1.0f, 0.06f);
+    }
+    else if (hover)
+        bgBrush = QColor::fromRgbF(1.0f, 1.0f, 1.0f, 0.06f);
+
+    painter->fillPath(path, bgBrush);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

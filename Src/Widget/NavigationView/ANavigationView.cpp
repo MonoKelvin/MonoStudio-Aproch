@@ -46,7 +46,7 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     d_ptr->menuItemView = new ANavigationMenuItemTreeView(d_ptr->panel);
     d_ptr->menuItemView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     d_ptr->menuItemView->setHeaderHidden(true);
-    d_ptr->menuItemView->setIndentation(0);
+    d_ptr->menuItemView->setIndentation(30);
     d_ptr->menuItemView->setRootIsDecorated(false);
     d_ptr->menuItemView->setAnimated(true);
     d_ptr->menuItemView->setIconSize(AFontIcon::DefaultIconSize);
@@ -579,11 +579,29 @@ void ANavigationView::setExpanded(bool expand)
         d_ptr->panel->setFixedWidth(d_ptr->compactWidth);
     }
 
+    static QMap<int, bool> expandedStateMap;
+
     // show/hide menu item group and expand/collapse button
     auto allMenuItemMap = d_ptr->menuItemView->getItemMap();
     for (auto iter = allMenuItemMap.cbegin(); iter != allMenuItemMap.cend(); ++iter)
     {
+        auto pTreeItem = iter.key();
         auto pItem = iter.value();
+
+        // top-level items need to remember expanded/collapse state
+        if (pTreeItem->parent() == nullptr)
+        {
+            const int topLevelIndex = d_ptr->menuItemView->indexOfTopLevelItem(pTreeItem);
+            if (expand)
+                pTreeItem->setExpanded(expandedStateMap.value(topLevelIndex, false));
+            else
+            {
+                expandedStateMap[topLevelIndex] = pTreeItem->isExpanded();
+                pTreeItem->setExpanded(false);
+            }
+        }
+
+        // hide all group items
         if (qobject_cast<ANavigationMenuItemGroup*>(pItem))
         {
             iter.key()->setHidden(!expand);

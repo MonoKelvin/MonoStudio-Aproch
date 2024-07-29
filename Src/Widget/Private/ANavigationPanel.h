@@ -82,6 +82,7 @@ public Q_SLOTS:
 
 protected:
     virtual bool eventFilter(QObject* watched, QEvent* evt) override;
+    virtual void drawRow(QPainter* painter, const QStyleOptionViewItem& options, const QModelIndex& index) const override;
 
 private:
     Q_DISABLE_COPY_MOVE(ANavigationMenuItemTreeView);
