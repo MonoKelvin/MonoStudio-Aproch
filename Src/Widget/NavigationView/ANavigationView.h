@@ -43,6 +43,7 @@ class ANavigationPageView;
 class ANavigationMenuItemTreeView;
 class ANavigationMenuItemDelegate;
 class ANavigationMenuItemModel;
+class ATrackBar;
 
 /**
  * @brief 导航视图
@@ -62,6 +63,7 @@ class APROCH_API ANavigationView : public QSplitter
     Q_PROPERTY(bool isBackEnabled READ isBackEnabled WRITE setBackEnabled);
     Q_PROPERTY(bool isBackVisible READ isBackVisible WRITE setBackVisible);
     Q_PROPERTY(bool isSettingsVisible READ isSettingsVisible WRITE setSettingsVisible);
+    Q_PROPERTY(bool isTrackBarVisible READ isTrackBarVisible WRITE setTrackBarVisible);
 
 public:
     enum EPanelPosition
@@ -107,6 +109,9 @@ public:
 
     bool isPanelResizable() const;
     void setPanelResizable(bool enabled);
+
+    bool isTrackBarVisible() const;
+    void setTrackBarVisible(bool visible);
 
     /** Back Button */
 

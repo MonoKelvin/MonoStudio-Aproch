@@ -29,6 +29,7 @@
 #include "stdafx.h"
 #include "ANavigationPanel.h"
 #include "Widget/Private/ANavigationPanel_p.h"
+#include "Widget/ATrackBar.h"
 
 #include <QProgressBar>
 #include <QWindow>
@@ -85,6 +86,9 @@ ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
     : QTreeWidget(parent)
     , d_ptr(new ANavigationMenuItemTreeViewPrivate())
 {
+    d_ptr->trackBar = new ATrackBar(this);
+    d_ptr->trackBar->raise();
+
     connect(this, &QTreeView::clicked, [=](const QModelIndex& index) {
 
         auto pItem = itemFromIndex(index);
@@ -97,11 +101,29 @@ ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
             expand(index);
     });
 
+    auto selModel = selectionModel();
+    connect(selModel, &QItemSelectionModel::currentRowChanged, this, &ANavigationMenuItemTreeView::selectedChagned);
+
     auto theModel = model();
     connect(theModel, &QAbstractItemModel::rowsInserted, this, &ANavigationMenuItemTreeView::updateExpandedState);
     connect(theModel, &QAbstractItemModel::rowsRemoved, this, &ANavigationMenuItemTreeView::updateExpandedState);
     connect(this, &ANavigationMenuItemTreeView::expanded, this, &ANavigationMenuItemTreeView::updateExpandedState);
     connect(this, &ANavigationMenuItemTreeView::collapsed, this, &ANavigationMenuItemTreeView::updateExpandedState);
+
+    selectedChagned(QModelIndex(), QModelIndex());
+}
+
+bool ANavigationMenuItemTreeView::isTrackBarVisible() const
+{
+    return d_ptr->trackBar && !d_ptr->trackBar->isHidden();
+}
+
+void ANavigationMenuItemTreeView::setTrackBarVisible(bool visible)
+{
+    if (d_ptr->trackBar)
+        d_ptr->trackBar->setVisible(visible);
+    if (d_ptr->nextTrackBar)
+        d_ptr->nextTrackBar->setVisible(visible);
 }
 
 QTreeWidgetItem* ANavigationMenuItemTreeView::getItemFromWidget(ANavigationViewItemBase* itemBase) const
@@ -205,6 +227,33 @@ void ANavigationMenuItemTreeView::updateExpandedState(const QModelIndex& index)
         else
             menuItem->setExpandState(ANavigationMenuItem::NoExpandState);
     }
+}
+
+void ANavigationMenuItemTreeView::selectedChagned(const QModelIndex& current, const QModelIndex& previous)
+{
+    auto pItem = itemFromIndex(current);
+    if (!pItem)
+    {
+        d_ptr->trackbarVisibleRestore = isTrackBarVisible();
+        setTrackBarVisible(false);
+        return;
+    }
+
+    if (d_ptr->trackbarVisibleRestore)
+        setTrackBarVisible(true);
+
+    if (isTrackBarVisible())
+    {
+        const QRect itemRect = visualItemRect(pItem);
+        d_ptr->trackBar->getAnimation()->stop();
+        d_ptr->trackBar->move(itemRect.left() + d_ptr->trackBar->width() / 2,
+                              itemRect.center().y() - d_ptr->trackBar->height() / 2);
+    }
+}
+
+void ANavigationMenuItemTreeView::showEvent(QShowEvent* evt)
+{
+    QTreeWidget::showEvent(evt);
 }
 
 bool ANavigationMenuItemTreeView::eventFilter(QObject* watched, QEvent* evt)

@@ -353,6 +353,16 @@ ASplitterHandle:hover {
 }
 
 
+/* Track Bar */
+
+ATrackBar {
+    qproperty-offset: 0;
+    qproperty-animationDuration: 300;
+    border-radius: 2px;
+    background-color: #61ccff;
+}
+
+
 /* Navigation View */
 
 ANavigationPanel > QPushButton {

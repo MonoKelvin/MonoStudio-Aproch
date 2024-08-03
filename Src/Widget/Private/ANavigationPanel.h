@@ -70,6 +70,9 @@ class ANavigationMenuItemTreeView : public QTreeWidget
 public:
     explicit ANavigationMenuItemTreeView(QWidget* parent = nullptr);
 
+    bool isTrackBarVisible() const;
+    void setTrackBarVisible(bool enabled);
+
     QTreeWidgetItem* getItemFromWidget(ANavigationViewItemBase* menuItem) const;
     ANavigationViewItemBase* getWidgetFromItem(QTreeWidgetItem* menuItem) const;
     QMap<QTreeWidgetItem*, ANavigationViewItemBase*> getItemMap(QTreeWidgetItem* parentItem = nullptr) const;
@@ -79,8 +82,10 @@ public:
 
 public Q_SLOTS:
     void updateExpandedState(const QModelIndex& index);
+    void selectedChagned(const QModelIndex& current, const QModelIndex& previous);
 
 protected:
+    virtual void showEvent(QShowEvent* evt) override;
     virtual bool eventFilter(QObject* watched, QEvent* evt) override;
     virtual void drawRow(QPainter* painter, const QStyleOptionViewItem& options, const QModelIndex& index) const override;
 

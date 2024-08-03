@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    ATrackBar.h
+ * @date    2024-07-30 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,28 +27,46 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "AprochExportDefine.h"
+#include <QWidget>
 
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "ATrackBar.h"
+class QAbstractAnimation;
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+class ATrackBarPrivate;
+
+/** @brief A small widget that follows position changes, with a default size of a vertical bar */
+class APROCH_API ATrackBar : public QWidget
+{
+    Q_OBJECT;
+    Q_PROPERTY(bool enableAnimation READ isEnableAnimation WRITE setEnableAnimation);
+    Q_PROPERTY(int animationDuration READ getAnimationDuration WRITE setAnimationDuration);
+    Q_PROPERTY(int offset READ getOffset WRITE setOffset);
+public:
+    explicit ATrackBar(QWidget* parent = nullptr);
+    explicit ATrackBar(Qt::Orientation ori, QWidget* parent = nullptr);
+
+    bool isEnableAnimation() const;
+    void setEnableAnimation(bool enabled);
+
+    int getAnimationDuration() const;
+    void setAnimationDuration(int msec);
+
+    int getOffset() const;
+    void setOffset(int offset);
+
+    QAbstractAnimation* getAnimation() const;
+
+    virtual QSize sizeHint() const override;
+
+protected:
+    virtual void moveEvent(QMoveEvent* evt) override;
+    virtual void resizeEvent(QResizeEvent* evt) override;
+
+private:
+    Q_DISABLE_COPY_MOVE(ATrackBar);
+    QSharedPointer<ATrackBarPrivate> d_ptr;
+};
+
+APROCH_NAMESPACE_END

@@ -199,6 +199,16 @@ void ANavigationView::setPanelResizable(bool enabled)
     // TODO
 }
 
+bool ANavigationView::isTrackBarVisible() const
+{
+    return d_ptr->menuItemView->isTrackBarVisible();
+}
+
+void ANavigationView::setTrackBarVisible(bool visible)
+{
+    d_ptr->menuItemView->setTrackBarVisible(visible);
+}
+
 bool ANavigationView::isBackEnabled() const
 {
     return d_ptr->backButton && d_ptr->backButton->isEnabled() && d_ptr->backButton->isVisible();
