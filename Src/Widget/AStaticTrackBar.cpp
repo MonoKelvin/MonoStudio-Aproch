@@ -1,5 +1,5 @@
 /****************************************************************************
- * @file    ATrackBar.cpp
+ * @file    AStaticTrackBar.cpp
  * @date    2024-07-30 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #include "stdafx.h"
-#include "ATrackBar.h"
+#include "AStaticTrackBar.h"
 #include <QParallelAnimationGroup>
 
 APROCH_NAMESPACE_BEGIN
@@ -46,12 +46,12 @@ public:
     QParallelAnimationGroup* animationGroup = nullptr;
 };
 
-ATrackBar::ATrackBar(QWidget* parent)
-    : ATrackBar(Qt::Vertical, parent)
+AStaticTrackBar::AStaticTrackBar(QWidget* parent)
+    : AStaticTrackBar(Qt::Vertical, parent)
 {
 }
 
-ATrackBar::ATrackBar(Qt::Orientation ori, QWidget* parent)
+AStaticTrackBar::AStaticTrackBar(Qt::Orientation ori, QWidget* parent)
     : QWidget(parent)
     , d_ptr(new ATrackBarPrivate)
 {
@@ -125,48 +125,62 @@ ATrackBar::ATrackBar(Qt::Orientation ori, QWidget* parent)
     d_ptr->oldSize = size();
 }
 
-bool ATrackBar::isEnableAnimation() const
+bool AStaticTrackBar::isEnableAnimation() const
 {
     return d_ptr->enableAnimation;
 }
 
-void ATrackBar::setEnableAnimation(bool enabled)
+void AStaticTrackBar::setEnableAnimation(bool enabled)
 {
     d_ptr->enableAnimation = enabled;
 }
 
-int ATrackBar::getAnimationDuration() const
+int AStaticTrackBar::getAnimationDuration() const
 {
     return d_ptr->animationGroup->duration();
 }
 
-void ATrackBar::setAnimationDuration(int msec)
+void AStaticTrackBar::setAnimationDuration(int msec)
 {
     d_ptr->lenAni->setDuration(msec);
     d_ptr->posAni->setDuration(msec);
 }
 
-int ATrackBar::getOffset() const
+int AStaticTrackBar::getOffset() const
 {
     return d_ptr->offset;
 }
 
-void ATrackBar::setOffset(int offset)
+void AStaticTrackBar::setOffset(int offset)
 {
     d_ptr->offset = offset;
 }
 
-QAbstractAnimation* ATrackBar::getAnimation() const
+Qt::Orientation AStaticTrackBar::getOrientation() const
+{
+    return d_ptr->orientation;
+}
+
+void AStaticTrackBar::setOrientation(Qt::Orientation ori)
+{
+    if (d_ptr->orientation == ori)
+        return;
+
+    d_ptr->orientation = ori;
+    resize(height(), width());
+}
+
+QAbstractAnimation* AStaticTrackBar::getAnimation() const
 {
     return d_ptr->animationGroup;
 }
 
-QSize ATrackBar::sizeHint() const
+QSize AStaticTrackBar::sizeHint() const
 {
     return d_ptr->orientation == Qt::Vertical ? QSize(4, 16) : QSize(16, 4);
 }
 
-void ATrackBar::moveEvent(QMoveEvent* evt)
+void AStaticTrackBar::moveEvent(QMoveEvent* evt)
 {
     if (!d_ptr->enableAnimation)
         return QWidget::moveEvent(evt);
@@ -212,14 +226,6 @@ void ATrackBar::moveEvent(QMoveEvent* evt)
 
         d_ptr->animationGroup->start();
     }
-}
-
-void ATrackBar::resizeEvent(QResizeEvent* evt)
-{
-    if (!d_ptr->enableAnimation)
-        return QWidget::resizeEvent(evt);
-
-    return QWidget::resizeEvent(evt);
 }
 
 APROCH_NAMESPACE_END

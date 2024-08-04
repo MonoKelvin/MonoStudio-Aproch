@@ -1,5 +1,5 @@
 /****************************************************************************
- * @file    ATrackBar.h
+ * @file    AStaticTrackBar.h
  * @date    2024-07-30 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
@@ -37,15 +37,16 @@ APROCH_NAMESPACE_BEGIN
 class ATrackBarPrivate;
 
 /** @brief A small widget that follows position changes, with a default size of a vertical bar */
-class APROCH_API ATrackBar : public QWidget
+class APROCH_API AStaticTrackBar : public QWidget
 {
     Q_OBJECT;
     Q_PROPERTY(bool enableAnimation READ isEnableAnimation WRITE setEnableAnimation);
     Q_PROPERTY(int animationDuration READ getAnimationDuration WRITE setAnimationDuration);
     Q_PROPERTY(int offset READ getOffset WRITE setOffset);
+    Q_PROPERTY(Qt::Orientation orientation READ getOrientation WRITE setOrientation);
 public:
-    explicit ATrackBar(QWidget* parent = nullptr);
-    explicit ATrackBar(Qt::Orientation ori, QWidget* parent = nullptr);
+    explicit AStaticTrackBar(QWidget* parent = nullptr);
+    explicit AStaticTrackBar(Qt::Orientation ori, QWidget* parent = nullptr);
 
     bool isEnableAnimation() const;
     void setEnableAnimation(bool enabled);
@@ -56,16 +57,18 @@ public:
     int getOffset() const;
     void setOffset(int offset);
 
+    Qt::Orientation getOrientation() const;
+    void setOrientation(Qt::Orientation ori);
+
     QAbstractAnimation* getAnimation() const;
 
     virtual QSize sizeHint() const override;
 
 protected:
     virtual void moveEvent(QMoveEvent* evt) override;
-    virtual void resizeEvent(QResizeEvent* evt) override;
 
 private:
-    Q_DISABLE_COPY_MOVE(ATrackBar);
+    Q_DISABLE_COPY_MOVE(AStaticTrackBar);
     QSharedPointer<ATrackBarPrivate> d_ptr;
 };
 

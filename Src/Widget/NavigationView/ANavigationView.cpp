@@ -4,6 +4,7 @@
 #include "ANavigationPageView.h"
 #include "Widget/Private/ANavigationPanel.h"
 #include "Widget/ASplitterHandle.h"
+#include "Widget/AIndicatorBar.h"
 
 #include "Widget/Private/ANavigationView_p.h"
 #include "Widget/Private/ANavigationPanel_p.h"
@@ -199,14 +200,14 @@ void ANavigationView::setPanelResizable(bool enabled)
     // TODO
 }
 
-bool ANavigationView::isTrackBarVisible() const
+bool ANavigationView::isIndicatorVisible() const
 {
-    return d_ptr->menuItemView->isTrackBarVisible();
+    return d_ptr->menuItemView->isIndicatorVisible();
 }
 
-void ANavigationView::setTrackBarVisible(bool visible)
+void ANavigationView::setIndicatorVisible(bool visible)
 {
-    d_ptr->menuItemView->setTrackBarVisible(visible);
+    d_ptr->menuItemView->setIndicatorVisible(visible);
 }
 
 bool ANavigationView::isBackEnabled() const
@@ -295,7 +296,12 @@ ANavigationMenuItem* ANavigationView::insertMenuItem(const QString& text, const 
 {
     ANavigationMenuItem* newItem = new ANavigationMenuItem(text, icon, d_ptr->panel);
     if (insertItem(newItem, index, parentItem))
+    {
+        if (newItem->getIndicatorBar())
+            newItem->getIndicatorBar()->setEnabled(isIndicatorVisible());
+
         return newItem;
+    }
 
     delete newItem;
     return nullptr;
@@ -566,28 +572,60 @@ void ANavigationView::setExpanded(bool expand)
     if (d_ptr->isExpanded == expand)
         return;
 
-    // TODO: add animation
+    QVariantAnimation* expandedAni = new QVariantAnimation(d_ptr->panel);
+    int oldPanelWidth = d_ptr->panel->width();
+    int newPanelWidth = d_ptr->oldPanelWidth;
+
+    // 1.
 
     d_ptr->isExpanded = expand;
-    auto oldVPolicy = d_ptr->panel->sizePolicy().verticalPolicy();
     if (expand)
     {
         if (d_ptr->isResizable)
         {
             d_ptr->panel->setMinimumWidth(d_ptr->compactWidth);
             d_ptr->panel->setMaximumWidth(QWIDGETSIZE_MAX);
-            d_ptr->panel->resize(d_ptr->oldPanelWidth, d_ptr->panel->height());
+
+            connect(expandedAni, &QPropertyAnimation::finished, [this]() {
+                d_ptr->panel->resize(d_ptr->oldPanelWidth, d_ptr->panel->height());
+            });
         }
         else
         {
-            d_ptr->panel->setFixedWidth(d_ptr->oldPanelWidth);
+            connect(expandedAni, &QPropertyAnimation::finished, [this]() {
+                d_ptr->panel->setFixedWidth(d_ptr->oldPanelWidth);
+            });
         }
     }
     else
     {
         d_ptr->oldPanelWidth = d_ptr->panel->width();
-        d_ptr->panel->setFixedWidth(d_ptr->compactWidth);
+
+        connect(expandedAni, &QPropertyAnimation::finished, [this]() {
+            d_ptr->panel->setFixedWidth(d_ptr->compactWidth);
+        });
+
+        newPanelWidth = d_ptr->compactWidth;
     }
+
+    connect(expandedAni, &QPropertyAnimation::valueChanged, [this](const QVariant& val) {
+        moveSplitter(val.toInt(), 1);
+    });
+
+    d_ptr->compactButton->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    d_ptr->menuItemView->setAnimated(false);
+    connect(expandedAni, &QPropertyAnimation::finished, [this]() {
+        d_ptr->menuItemView->setAnimated(true);
+        d_ptr->compactButton->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+    });
+
+    expandedAni->setStartValue(oldPanelWidth);
+    expandedAni->setEndValue(newPanelWidth);
+    expandedAni->setEasingCurve(QEasingCurve::OutExpo);
+    expandedAni->setDuration(200);
+    expandedAni->start(QAbstractAnimation::DeleteWhenStopped);
+
+    // 2.
 
     static QMap<int, bool> expandedStateMap;
 
@@ -620,8 +658,10 @@ void ANavigationView::setExpanded(bool expand)
 
         auto menuItem = qobject_cast<ANavigationMenuItem*>(pItem);
         if (menuItem)
-            menuItem->setExpandedButtonVisible(expand);
+            menuItem->setExpandButtonVisible(expand);
     }
+
+    // 3.
 
     if (expand)
     {

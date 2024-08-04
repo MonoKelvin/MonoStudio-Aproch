@@ -33,7 +33,7 @@ APROCH_NAMESPACE_BEGIN
 
 class ANavigationViewItemBase;
 class ANavigationMenuItemTreeView;
-class ATrackBar;
+class AStaticTrackBar;
 
 class ANavigationMenuItemDelegatePrivate
 {
@@ -76,9 +76,7 @@ public:
             getMenuItemMap(view, parentItem->child(i), itemBaseMap);
     }
 
-    ATrackBar* trackBar = nullptr;
-    ATrackBar* nextTrackBar = nullptr;
-    bool trackbarVisibleRestore = false;
+    bool indicatorVisible = true;
 };
 
 class ANavigationMenuItemModelPrivate

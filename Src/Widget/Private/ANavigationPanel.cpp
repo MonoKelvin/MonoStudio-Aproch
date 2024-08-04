@@ -29,7 +29,7 @@
 #include "stdafx.h"
 #include "ANavigationPanel.h"
 #include "Widget/Private/ANavigationPanel_p.h"
-#include "Widget/ATrackBar.h"
+#include "Widget/AIndicatorBar.h"
 
 #include <QProgressBar>
 #include <QWindow>
@@ -86,9 +86,6 @@ ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
     : QTreeWidget(parent)
     , d_ptr(new ANavigationMenuItemTreeViewPrivate())
 {
-    d_ptr->trackBar = new ATrackBar(this);
-    d_ptr->trackBar->raise();
-
     connect(this, &QTreeView::clicked, [=](const QModelIndex& index) {
 
         auto pItem = itemFromIndex(index);
@@ -109,21 +106,27 @@ ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
     connect(theModel, &QAbstractItemModel::rowsRemoved, this, &ANavigationMenuItemTreeView::updateExpandedState);
     connect(this, &ANavigationMenuItemTreeView::expanded, this, &ANavigationMenuItemTreeView::updateExpandedState);
     connect(this, &ANavigationMenuItemTreeView::collapsed, this, &ANavigationMenuItemTreeView::updateExpandedState);
-
-    selectedChagned(QModelIndex(), QModelIndex());
 }
 
-bool ANavigationMenuItemTreeView::isTrackBarVisible() const
+bool ANavigationMenuItemTreeView::isIndicatorVisible() const
 {
-    return d_ptr->trackBar && !d_ptr->trackBar->isHidden();
+    return d_ptr->indicatorVisible;
 }
 
-void ANavigationMenuItemTreeView::setTrackBarVisible(bool visible)
+void ANavigationMenuItemTreeView::setIndicatorVisible(bool visible)
 {
-    if (d_ptr->trackBar)
-        d_ptr->trackBar->setVisible(visible);
-    if (d_ptr->nextTrackBar)
-        d_ptr->nextTrackBar->setVisible(visible);
+    if (d_ptr->indicatorVisible == visible)
+        return;
+
+    d_ptr->indicatorVisible = visible;
+
+    QList<ANavigationViewItemBase*> itemList = getItemList();
+    for (const auto& pItem : itemList)
+    {
+        auto menuItem = qobject_cast<ANavigationMenuItem*>(pItem);
+        if (menuItem && menuItem->getIndicatorBar())
+            menuItem->getIndicatorBar()->setEnabled(d_ptr->indicatorVisible);
+    }
 }
 
 QTreeWidgetItem* ANavigationMenuItemTreeView::getItemFromWidget(ANavigationViewItemBase* itemBase) const
@@ -231,23 +234,17 @@ void ANavigationMenuItemTreeView::updateExpandedState(const QModelIndex& index)
 
 void ANavigationMenuItemTreeView::selectedChagned(const QModelIndex& current, const QModelIndex& previous)
 {
-    auto pItem = itemFromIndex(current);
-    if (!pItem)
+    if (isIndicatorVisible())
     {
-        d_ptr->trackbarVisibleRestore = isTrackBarVisible();
-        setTrackBarVisible(false);
-        return;
-    }
+        auto pPreviousItem = itemFromIndex(previous);
+        auto preMenuItem = qobject_cast<ANavigationMenuItem*>(getWidgetFromItem(pPreviousItem));
+        if (preMenuItem)
+            preMenuItem->setSelected(false);
 
-    if (d_ptr->trackbarVisibleRestore)
-        setTrackBarVisible(true);
-
-    if (isTrackBarVisible())
-    {
-        const QRect itemRect = visualItemRect(pItem);
-        d_ptr->trackBar->getAnimation()->stop();
-        d_ptr->trackBar->move(itemRect.left() + d_ptr->trackBar->width() / 2,
-                              itemRect.center().y() - d_ptr->trackBar->height() / 2);
+        auto pItem = itemFromIndex(current);
+        auto menutem = qobject_cast<ANavigationMenuItem*>(getWidgetFromItem(pItem));
+        if (menutem)
+            menutem->setSelected(true);
     }
 }
 

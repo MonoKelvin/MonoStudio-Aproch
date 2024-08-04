@@ -160,8 +160,9 @@
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Private\AHotKey_win.cpp" />
     <ClCompile Include="Widget\AFontIcon.cpp" />
+    <ClCompile Include="Widget\AIndicatorBar.cpp" />
     <ClCompile Include="Widget\ASplitterHandle.cpp" />
-    <ClCompile Include="Widget\ATrackBar.cpp" />
+    <ClCompile Include="Widget\AStaticTrackBar.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationView.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationMenuItem.cpp" />
@@ -184,7 +185,8 @@
     <QtMoc Include="Widget\ASplitterHandle.h" />
     <ClInclude Include="AFontDatabase.h" />
     <QtMoc Include="Widget\AFontIcon.h" />
-    <QtMoc Include="Widget\ATrackBar.h" />
+    <QtMoc Include="Widget\AStaticTrackBar.h" />
+    <QtMoc Include="Widget\AIndicatorBar.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />

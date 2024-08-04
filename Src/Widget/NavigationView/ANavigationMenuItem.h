@@ -35,6 +35,7 @@ class QLabel;
 APROCH_NAMESPACE_BEGIN
 
 class AInfoBadge;
+class AIndicatorBar;
 class ANavigationMenuItemPrivate;
 class ANavigationMenuItemGroupPrivate;
 class ANavigationViewItemSeparatorPrivate;
@@ -74,13 +75,19 @@ public:
     void setExpandState(EExpandState state);
     EExpandState getExpandState() const;
 
-    void setExpandedButtonVisible(bool visible);
+    void setExpandButtonVisible(bool visible);
     bool getExpandButtonVisible() const;
 
+    bool isSelected() const;
+
     AInfoBadge* getInfoBadge() const;
+    AIndicatorBar* getIndicatorBar() const;
 
 Q_SIGNALS:
     void expandStateChanged();
+
+public Q_SLOTS:
+    void setSelected(bool select);
 
 protected:
     virtual void showEvent(QShowEvent* evt) override;

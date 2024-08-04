@@ -469,9 +469,10 @@
     <ClCompile Include="Widget\AFontIcon.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\ATrackBar.cpp">
+    <ClCompile Include="Widget\AStaticTrackBar.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\AIndicatorBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -576,9 +577,10 @@
     <QtMoc Include="Widget\AFontIcon.h">
       <Filter>Widget</Filter>
     </QtMoc>
-    <QtMoc Include="Widget\ATrackBar.h">
+    <QtMoc Include="Widget\AStaticTrackBar.h">
       <Filter>Widget</Filter>
     </QtMoc>
+    <QtMoc Include="Widget\AIndicatorBar.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">

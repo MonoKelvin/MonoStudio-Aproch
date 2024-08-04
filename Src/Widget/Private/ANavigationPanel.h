@@ -70,8 +70,8 @@ class ANavigationMenuItemTreeView : public QTreeWidget
 public:
     explicit ANavigationMenuItemTreeView(QWidget* parent = nullptr);
 
-    bool isTrackBarVisible() const;
-    void setTrackBarVisible(bool enabled);
+    bool isIndicatorVisible() const;
+    void setIndicatorVisible(bool enabled);
 
     QTreeWidgetItem* getItemFromWidget(ANavigationViewItemBase* menuItem) const;
     ANavigationViewItemBase* getWidgetFromItem(QTreeWidgetItem* menuItem) const;

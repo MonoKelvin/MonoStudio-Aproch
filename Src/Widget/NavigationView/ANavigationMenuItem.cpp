@@ -28,6 +28,7 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "ANavigationMenuItem.h"
+#include "Widget/AIndicatorBar.h"
 
 APROCH_NAMESPACE_BEGIN
 
@@ -52,8 +53,10 @@ public:
     QLabel* iconLabel = nullptr;
     QLabel* textLabel = nullptr;
     QLabel* expandLabel = nullptr;
+    AIndicatorBar* indicatorBar = nullptr;
     QVariantAnimation* expandRotateAnimation = nullptr;
     ANavigationMenuItem::EExpandState expandState = ANavigationMenuItem::NoExpandState;
+    bool selected = false;
 };
 
 ANavigationMenuItem::ANavigationMenuItem(QWidget* parent)
@@ -91,6 +94,10 @@ ANavigationMenuItem::ANavigationMenuItem(const QString& text, const QIcon& icon,
     d_ptr->expandRotateAnimation->setEasingCurve(QEasingCurve::OutCubic);
     connect(d_ptr->expandRotateAnimation, &QPropertyAnimation::valueChanged,
             this, &ANavigationMenuItem::rotateExpandedIcon);
+
+    d_ptr->indicatorBar = new AIndicatorBar(this);
+    d_ptr->indicatorBar->hide();
+    d_ptr->indicatorBar->raise();
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
@@ -168,7 +175,7 @@ ANavigationMenuItem::EExpandState ANavigationMenuItem::getExpandState() const
     return d_ptr->expandState;
 }
 
-void ANavigationMenuItem::setExpandedButtonVisible(bool visible)
+void ANavigationMenuItem::setExpandButtonVisible(bool visible)
 {
     if (d_ptr->expandLabel)
         d_ptr->expandLabel->setVisible(visible);
@@ -179,10 +186,58 @@ bool ANavigationMenuItem::getExpandButtonVisible() const
     return d_ptr->expandLabel && d_ptr->expandLabel->isVisible();
 }
 
+void ANavigationMenuItem::setSelected(bool select)
+{
+    if (d_ptr->selected == select)
+        return;
+
+    d_ptr->selected = select;
+
+    if (!d_ptr->indicatorBar)
+        return;
+
+    if (!d_ptr->indicatorBar->isEnabled())  // disable indicator bar
+    {
+        d_ptr->indicatorBar->hide();
+        return;
+    }
+
+    if (d_ptr->selected)
+    {
+        if (d_ptr->indicatorBar->getOrientation() == Qt::Vertical)
+        {
+            // left position
+            d_ptr->indicatorBar->move(0, (height() - d_ptr->indicatorBar->height()) / 2);
+        }
+        else
+        {
+            // bottom position
+            d_ptr->indicatorBar->move((width() - d_ptr->indicatorBar->width()) / 2,
+                                      height() - d_ptr->indicatorBar->height());
+        }
+
+        d_ptr->indicatorBar->show();
+    }
+    else
+    {
+        d_ptr->indicatorBar->hide();
+    }
+}
+
+bool ANavigationMenuItem::isSelected() const
+{
+    return d_ptr->selected;
+}
+
 AInfoBadge* ANavigationMenuItem::getInfoBadge() const
 {
     throw std::exception("no implement");
     return nullptr;
+}
+
+AIndicatorBar* ANavigationMenuItem::getIndicatorBar() const
+{
+    return d_ptr->indicatorBar;
 }
 
 void ANavigationMenuItem::showEvent(QShowEvent* evt)

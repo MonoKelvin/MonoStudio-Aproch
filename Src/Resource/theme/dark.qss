@@ -355,7 +355,14 @@ ASplitterHandle:hover {
 
 /* Track Bar */
 
-ATrackBar {
+AStaticTrackBar {
+    qproperty-offset: 0;
+    qproperty-animationDuration: 300;
+    border-radius: 2px;
+    background-color: #61ccff;
+}
+
+AIndicatorBar {
     qproperty-offset: 0;
     qproperty-animationDuration: 300;
     border-radius: 2px;
