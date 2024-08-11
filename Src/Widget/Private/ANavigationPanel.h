@@ -58,6 +58,7 @@ protected:
     void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 private:
+    friend class ANavigationMenuItemTreeView;
     Q_DISABLE_COPY_MOVE(ANavigationMenuItemDelegate);
     QScopedPointer<ANavigationMenuItemDelegatePrivate> d_ptr;
 };

@@ -57,7 +57,7 @@ QSize ANavigationMenuItemDelegate::sizeHint(const QStyleOptionViewItem& option, 
 
 void ANavigationMenuItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    return QStyledItemDelegate::paint(painter, option, index);
+    QStyledItemDelegate::paint(painter, option, index);
 }
 
 QWidget* ANavigationMenuItemDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -86,6 +86,10 @@ ANavigationMenuItemTreeView::ANavigationMenuItemTreeView(QWidget* parent)
     : QTreeWidget(parent)
     , d_ptr(new ANavigationMenuItemTreeViewPrivate())
 {
+    /*auto menuItemDelegate = new ANavigationMenuItemDelegate(this);
+    menuItemDelegate->d_ptr->view = this;
+    setItemDelegate(menuItemDelegate);*/
+
     connect(this, &QTreeView::clicked, [=](const QModelIndex& index) {
 
         auto pItem = itemFromIndex(index);

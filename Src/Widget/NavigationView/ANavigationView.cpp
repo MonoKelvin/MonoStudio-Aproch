@@ -56,10 +56,6 @@ ANavigationView::ANavigationView(EPanelPosition position, QWidget* parent)
     d_ptr->menuItemView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     d_ptr->menuItemView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-    // view delegate 
-    //d_ptr->menuItemDelegate = new ANavigationMenuItemDelegate(d_ptr->menuItemView);
-    //d_ptr->menuItemView->setItemDelegate(d_ptr->menuItemDelegate);
-
     // view model
     //d_ptr->menuItemModel = new ANavigationMenuItemModel(d_ptr->menuItemView);
     //d_ptr->menuItemView->setModel(d_ptr->menuItemModel);

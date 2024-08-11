@@ -89,6 +89,10 @@ QScrollBar::add-line:horizontal:pressed {
 }
 
 
+QTreeView {
+    show-decoration-selected: 1;
+}
+
 /* Tree Widget */
 
 QTreeWidget {
@@ -246,6 +250,7 @@ AFontIcon {
 /* Window bar */
 
 ACaptionBar {
+    padding-left: 14px;
     min-height: 33px;
     height: 46px;
 }

@@ -38,6 +38,7 @@ class AStaticTrackBar;
 class ANavigationMenuItemDelegatePrivate
 {
 public:
+    ANavigationMenuItemTreeView* view = nullptr;
 };
 
 class ANavigationMenuItemTreeViewPrivate

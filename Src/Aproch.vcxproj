@@ -87,12 +87,12 @@
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.6.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private;widgets-private;gui-private</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.6.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private;widgets-private;gui-private</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
