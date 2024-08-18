@@ -168,6 +168,9 @@
     <ClCompile Include="Widget\NavigationView\ANavigationMenuItem.cpp" />
     <ClCompile Include="Widget\Private\ANavigationPanel.cpp" />
     <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp" />
+    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp" />
+    <ClCompile Include="Widget\TextEditor\ATextEditor.cpp" />
+    <ClCompile Include="Widget\TextEditor\ATextEditorToolBar.cpp" />
     <ClCompile Include="WinUI\AWinUIApplication.cpp" />
     <ClCompile Include="WinUI\AWinUIPlugin.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
@@ -191,7 +194,12 @@
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />
     <ClInclude Include="Widget\Private\ANavigationView_p.h" />
+    <ClInclude Include="Widget\Private\ATextEditorToolBar_p.h" />
+    <ClInclude Include="Widget\Private\ATextEditor_p.h" />
     <ClInclude Include="Widget\Style\AWidgetStyleDecoration.h" />
+    <QtMoc Include="Widget\TextEditor\ATextEditor.h" />
+    <QtMoc Include="Widget\TextEditor\ATextEditorToolBar.h" />
+    <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h" />
     <ClInclude Include="WinUI\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>

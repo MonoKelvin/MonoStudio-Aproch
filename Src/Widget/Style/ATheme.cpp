@@ -151,28 +151,36 @@ void ATheme::reload()
     }
     else
     {
-        QString themeResFile = "dark";
+        QString themeResFile = "Dark";
         switch (themeType)
         {
         case EThemeType::Light:
         {
-            themeResFile = "light";
+            themeResFile = "Light";
             break;
         }
         case EThemeType::System:
         {
             if (getSystemTheme() == EThemeType::Light)
-                themeResFile = "light";
+                themeResFile = "Light";
             break;
         }
         default:
             break;
         }
 
+        QByteArray readThemeData;
         QFile qssFile(AStr(":/theme/%1.qss").arg(themeResFile));
         if (qssFile.open(QFile::ReadOnly | QFile::Text))
-            themeData = qssFile.readAll();
+            readThemeData = qssFile.readAll();
         qssFile.close();
+
+        QFile appQssFile(QApplication::applicationDirPath() + AStr("/Style/Theme/%1.qss").arg(themeResFile));
+        if (appQssFile.open(QFile::ReadOnly | QFile::Text))
+            readThemeData += appQssFile.readAll();
+        appQssFile.close();
+
+        themeData = readThemeData;
     }
 
     qApp->setStyleSheet(themeData);

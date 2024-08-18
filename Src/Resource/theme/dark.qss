@@ -9,6 +9,11 @@ QFrame {
     background-color: transparent;
 }
 
+QWidget[panel=true] {
+    border-radius: 8px;
+    padding: 8px;
+}
+
 
 /* Scroll Bar */
 
@@ -279,9 +284,8 @@ ACaptionBar>QLabel#aproch-captionbar-title {
 
 ACaptionBar>QAbstractButton[aproch-system-button=true] {
     qproperty-iconSize: 10px 10px;
-    min-width: 34px;
+    min-width: 47px;
     max-height: 46px;
-    width: 46px;
     border: none;
     border-radius: 0;
     padding: 0;

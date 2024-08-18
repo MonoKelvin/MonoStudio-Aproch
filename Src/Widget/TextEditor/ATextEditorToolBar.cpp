@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    ATextEditorToolBar.cpp
+ * @date    2024-08-17 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -26,33 +26,39 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
-#pragma once
+#include "stdafx.h"
+#include "ATextEditorToolBar.h"
+#include "Widget/Private/ATextEditorToolBar_p.h"
 
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "AStaticTrackBar.h"
+#include <QFontComboBox>
+#include <QListView>
 
-#include "TextEditor/AFontSizeComboBox.h"
-#include "TextEditor/ATextEditor.h"
-#include "TextEditor/ATextEditorToolBar.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+ATextEditorToolBar::ATextEditorToolBar(QWidget* parent)
+    : QToolBar(parent)
+    , d_ptr(new ATextEditorToolBarPrivate)
+{
+    QFontComboBox* fontCb = new QFontComboBox(this);
+    fontCb->setEditable(false);
+    fontCb->setSizeAdjustPolicy(QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon);
 
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+    QListView* listView = qobject_cast<QListView*>(fontCb->view());
+    listView->window()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+    listView->window()->setAttribute(Qt::WA_TranslucentBackground);
+    //fontCb->setView(listView);
+
+    addWidget(fontCb);
+
+    AFontSizeComboBox* fontSizeCb = new AFontSizeComboBox(this);
+    addWidget(fontSizeCb);
+}
+
+bool ATextEditorToolBar::load(const QString& strUIFile)
+{
+    // TODO
+    throw std::exception("method not implemented");
+    return false;
+}
+
+APROCH_NAMESPACE_END

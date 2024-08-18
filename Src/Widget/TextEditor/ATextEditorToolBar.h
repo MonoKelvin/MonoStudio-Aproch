@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    ATextEditorToolBar.h
+ * @date    2024-08-17 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,32 +27,25 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "AprochExportDefine.h"
 
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "AStaticTrackBar.h"
+#include <QToolBar>
 
-#include "TextEditor/AFontSizeComboBox.h"
-#include "TextEditor/ATextEditor.h"
-#include "TextEditor/ATextEditorToolBar.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+class ATextEditorToolBarPrivate;
 
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+class APROCH_API ATextEditorToolBar : public QToolBar
+{
+    Q_OBJECT;
+public:
+    explicit ATextEditorToolBar(QWidget* parent = nullptr);
+
+    bool load(const QString& strUIFile);
+
+private:
+    Q_DISABLE_COPY_MOVE(ATextEditorToolBar);
+    QSharedPointer<ATextEditorToolBarPrivate> d_ptr;
+};
+
+APROCH_NAMESPACE_END

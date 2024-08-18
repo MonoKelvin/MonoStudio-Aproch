@@ -72,6 +72,9 @@
     <Filter Include="Widget\NavigationView">
       <UniqueIdentifier>{aaeda16c-7b0c-4161-bf8b-8fe21ea2cac2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Widget\TextEditor">
+      <UniqueIdentifier>{35ba9d54-049b-4193-9d2e-f4e128d03917}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainWindow.h">
@@ -262,6 +265,12 @@
     </ClInclude>
     <ClInclude Include="AFontDatabase.h">
       <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Private\ATextEditor_p.h">
+      <Filter>Widget\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Private\ATextEditorToolBar_p.h">
+      <Filter>Widget\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -475,6 +484,13 @@
     <ClCompile Include="Widget\AIndicatorBar.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\TextEditor\ATextEditor.cpp">
+      <Filter>Widget\TextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\TextEditor\ATextEditorToolBar.cpp">
+      <Filter>Widget\TextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -585,6 +601,13 @@
     <QtMoc Include="Widget\AIndicatorBar.h">
       <Filter>Widget</Filter>
     </QtMoc>
+    <QtMoc Include="Widget\TextEditor\ATextEditor.h">
+      <Filter>Widget\TextEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\TextEditor\ATextEditorToolBar.h">
+      <Filter>Widget\TextEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">

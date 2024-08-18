@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    AFontSizeComboBox.h
+ * @date    2024-08-18 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,32 +27,34 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include <QComboBox>
 
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "AStaticTrackBar.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "TextEditor/AFontSizeComboBox.h"
-#include "TextEditor/ATextEditor.h"
-#include "TextEditor/ATextEditorToolBar.h"
+class AFontSizeComboBoxPrivate;
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+class AFontSizeComboBox : public QComboBox
+{
+    Q_OBJECT;
+    Q_PROPERTY(int currentFontSize READ getCurrentFontSize WRITE setCurrentFontSize NOTIFY currentFontSizeChanged)
+public:
+    explicit AFontSizeComboBox(QWidget* parent = nullptr);
+    ~AFontSizeComboBox();
 
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+    int getCurrentFontSize() const;
+
+Q_SIGNALS:
+    void currentFontSizeChanged(int s);
+
+public Q_SLOTS:
+    void setCurrentFontSize(int s);
+
+private Q_SLOTS:
+    void _currentTextChanged(const QString&);
+
+private:
+    Q_DISABLE_COPY(AFontSizeComboBox);
+    QSharedPointer<AFontSizeComboBoxPrivate> d_ptr;
+};
+
+APROCH_NAMESPACE_END

@@ -27,6 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "AprochExportDefine.h"
 
 class QLabel;
 class QMenuBar;

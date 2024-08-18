@@ -14,8 +14,6 @@
         <file alias="icon/windowbtn_close">icon/system/windowbtn_close.svg</file>
         <file alias="icon/windowbtn_fullscreen">icon/system/windowbtn_fullscreen.svg</file>
         <file alias="icon/menubar_more_line">icon/system/menubar_more_line.svg</file>
-        <file>theme/dark.qss</file>
-        <file>theme/light.qss</file>
         <file>fonts/segmdl2.ttf</file>
         <file>fonts/segoeicons.ttf</file>
         <file>fonts/seguiemj.ttf</file>
@@ -23,5 +21,7 @@
         <file>icon/system/arrow-left-solid.svg</file>
         <file>icon/system/arrow-right-solid.svg</file>
         <file>icon/system/arrow-up-solid.svg</file>
+        <file>theme/Dark.qss</file>
+        <file>theme/Light.qss</file>
     </qresource>
 </RCC>

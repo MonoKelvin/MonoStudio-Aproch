@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    ATextEditor.cpp
+ * @date    2024-08-17 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -26,33 +26,44 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
-#pragma once
+#include "stdafx.h"
+#include "ATextEditor.h"
+#include "Widget/Private/ATextEditor_p.h"
 
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "AStaticTrackBar.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "TextEditor/AFontSizeComboBox.h"
-#include "TextEditor/ATextEditor.h"
-#include "TextEditor/ATextEditorToolBar.h"
+ATextEditor::ATextEditor(QWidget* parent)
+    : QTextEdit(parent)
+    , d_ptr(new ATextEditorPrivate)
+{
+    d_ptr->toolBar = new ATextEditorToolBar(this);
+}
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+ATextEditorToolBar* ATextEditor::getToolBar() const
+{
+    return d_ptr->toolBar;
+}
 
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+bool ATextEditor::getToolBarVisible() const
+{
+    return d_ptr->toolBar ? d_ptr->toolBar->isVisible() : false;
+}
+
+void ATextEditor::setToolBarVisible(bool visible)
+{
+    if (!d_ptr->toolBar)
+        return;
+    d_ptr->toolBar->setVisible(visible);
+}
+
+void ATextEditor::resizeEvent(QResizeEvent* evt)
+{
+    if (d_ptr->toolBar)
+    {
+        d_ptr->toolBar->setGeometry(0, 0, width(), d_ptr->toolBar->height());
+    }
+
+    QTextEdit::resizeEvent(evt);
+}
+
+APROCH_NAMESPACE_END
