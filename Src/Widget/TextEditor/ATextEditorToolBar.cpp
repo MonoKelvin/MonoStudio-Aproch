@@ -39,19 +39,107 @@ ATextEditorToolBar::ATextEditorToolBar(QWidget* parent)
     : QToolBar(parent)
     , d_ptr(new ATextEditorToolBarPrivate)
 {
-    QFontComboBox* fontCb = new QFontComboBox(this);
-    fontCb->setEditable(false);
-    fontCb->setSizeAdjustPolicy(QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon);
+    // font
+    d_ptr->fontComboBox = new QFontComboBox(this);
+    d_ptr->fontComboBox->setObjectName("aproch-texteditor-tool-font");
+    d_ptr->fontComboBox->setEditable(false);
+    d_ptr->fontComboBox->setSizeAdjustPolicy(QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon);
 
-    QListView* listView = qobject_cast<QListView*>(fontCb->view());
+    QListView* listView = qobject_cast<QListView*>(d_ptr->fontComboBox->view());
     listView->window()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
     listView->window()->setAttribute(Qt::WA_TranslucentBackground);
     //fontCb->setView(listView);
 
-    addWidget(fontCb);
+    // font size
+    d_ptr->fontSizeComboBox = new AFontSizeComboBox(this);
+    d_ptr->fontSizeComboBox->setObjectName("aproch-texteditor-tool-fontsize");
 
-    AFontSizeComboBox* fontSizeCb = new AFontSizeComboBox(this);
-    addWidget(fontSizeCb);
+    // bold
+    d_ptr->boldBtn = new QPushButton(this);
+    d_ptr->boldBtn->setObjectName("aproch-texteditor-tool-bold");
+    d_ptr->boldBtn->setIcon(AFontIcon::icon("\uE8DD"));
+    d_ptr->boldBtn->setCheckable(true);
+    d_ptr->boldBtn->setFixedSize(32, 32);
+
+    // italic
+    d_ptr->italicBtn = new QPushButton(this);
+    d_ptr->italicBtn->setObjectName("aproch-texteditor-tool-italic");
+    d_ptr->italicBtn->setIcon(AFontIcon::icon("\uE8DB"));
+    d_ptr->italicBtn->setCheckable(true);
+    d_ptr->italicBtn->setFixedSize(32, 32);
+
+    // underline
+    d_ptr->underlineBtn = new QPushButton(this);
+    d_ptr->underlineBtn->setObjectName("aproch-texteditor-tool-underline");
+    d_ptr->underlineBtn->setIcon(AFontIcon::icon("\uE8DC"));
+    d_ptr->underlineBtn->setCheckable(true);
+    d_ptr->underlineBtn->setFixedSize(32, 32);
+
+    // strikeout
+    d_ptr->strikethroughBtn = new QPushButton(this);
+    d_ptr->strikethroughBtn->setObjectName("aproch-texteditor-tool-strikethrough");
+    d_ptr->strikethroughBtn->setIcon(AFontIcon::icon("\uEDE0"));
+    d_ptr->strikethroughBtn->setCheckable(true);
+    d_ptr->strikethroughBtn->setFixedSize(32, 32);
+
+    // color
+    // TODO
+
+    // background color
+    // TODO
+
+    QPushButton* h1Btn = nullptr;
+    QPushButton* h2Btn = nullptr;
+    QPushButton* h3Btn = nullptr;
+
+    // image
+    d_ptr->imageBtn = new QPushButton(this);
+    d_ptr->imageBtn->setObjectName("aproch-texteditor-tool-image");
+    d_ptr->imageBtn->setIcon(AFontIcon::icon("\uEB9F"));
+    d_ptr->imageBtn->setFixedSize(32, 32);
+
+    // link
+    d_ptr->linkBtn = new QPushButton(this);
+    d_ptr->linkBtn->setObjectName("aproch-texteditor-tool-link");
+    d_ptr->linkBtn->setIcon(AFontIcon::icon("\uE71B"));
+    d_ptr->linkBtn->setFixedSize(32, 32);
+
+    // h1
+    d_ptr->h1Btn = new QPushButton(this);
+    d_ptr->h1Btn->setObjectName("aproch-texteditor-tool-h1");
+    d_ptr->h1Btn->setIcon(AFontIcon::icon("\uF146"));   // TODO use H1
+    d_ptr->h1Btn->setCheckable(true);
+    d_ptr->h1Btn->setFixedSize(32, 32);
+
+    // h2
+    d_ptr->h2Btn = new QPushButton(this);
+    d_ptr->h2Btn->setObjectName("aproch-texteditor-tool-h2");
+    d_ptr->h2Btn->setIcon(AFontIcon::icon("\uF147"));   // TODO use H2
+    d_ptr->h2Btn->setCheckable(true);
+    d_ptr->h2Btn->setFixedSize(32, 32);
+
+    // h3
+    d_ptr->h3Btn = new QPushButton(this);
+    d_ptr->h3Btn->setObjectName("aproch-texteditor-tool-h3");
+    d_ptr->h3Btn->setIcon(AFontIcon::icon("\uF148"));   // TODO use H3
+    d_ptr->h3Btn->setCheckable(true);
+    d_ptr->h3Btn->setFixedSize(32, 32);
+
+    AColorPickerIndicator* cpi = new AColorPickerIndicator();
+    cpi->resize(800, 600);
+
+    addWidget(d_ptr->fontComboBox);
+    addWidget(d_ptr->fontSizeComboBox);
+    addWidget(d_ptr->boldBtn);
+    addWidget(d_ptr->italicBtn);
+    addWidget(d_ptr->underlineBtn);
+    addWidget(d_ptr->strikethroughBtn);
+    addWidget(d_ptr->imageBtn);
+    addWidget(d_ptr->linkBtn);
+    addWidget(d_ptr->h1Btn);
+    addWidget(d_ptr->h2Btn);
+    addWidget(d_ptr->h3Btn);
+    //addWidget(cpi);
 }
 
 bool ATextEditorToolBar::load(const QString& strUIFile)

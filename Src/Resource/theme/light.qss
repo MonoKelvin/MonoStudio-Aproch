@@ -380,3 +380,25 @@ QTreeWidget::item:selected:hover {
 QTreeWidget::item:selected:pressed {
     background-color: rgba(0, 0, 0, 6%);
 }
+
+
+/* TextEditor */
+
+#textEditor {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding: 50px 50px 10px 50px;
+}
+
+#textEditor QToolBar {
+    min-height: 38px;
+    max-height: 38px;
+    margin: 6px 0;
+}
+
+#aproch-texteditor-title {
+    font-size: 18px;
+    font-weight: bold;
+    background: transparent;
+    margin: 4px 0 10px 0;
+}

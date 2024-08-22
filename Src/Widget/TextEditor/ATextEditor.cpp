@@ -30,6 +30,8 @@
 #include "ATextEditor.h"
 #include "Widget/Private/ATextEditor_p.h"
 
+#include <QStackedLayout>
+
 APROCH_NAMESPACE_BEGIN
 
 ATextEditor::ATextEditor(QWidget* parent)
@@ -37,6 +39,18 @@ ATextEditor::ATextEditor(QWidget* parent)
     , d_ptr(new ATextEditorPrivate)
 {
     d_ptr->toolBar = new ATextEditorToolBar(this);
+    d_ptr->toolBar->setObjectName("aproch-texteditor-toolbar");
+
+    d_ptr->titleEdit = new QLineEdit(this);
+    d_ptr->titleEdit->setObjectName("aproch-texteditor-title");
+    d_ptr->titleEdit->setPlaceholderText(tr("标题："));
+
+    QStackedLayout* stackLayout = new QStackedLayout;
+    stackLayout->addWidget(d_ptr->titleEdit);
+    stackLayout->setStackingMode(QStackedLayout::StackAll);
+    setLayout(stackLayout);
+
+    d_ptr->firstViewMargin = viewportMargins();
 }
 
 ATextEditorToolBar* ATextEditor::getToolBar() const
@@ -62,6 +76,11 @@ void ATextEditor::resizeEvent(QResizeEvent* evt)
     {
         d_ptr->toolBar->setGeometry(0, 0, width(), d_ptr->toolBar->height());
     }
+
+    // update margins
+    QMargins curMargins = viewportMargins();
+    curMargins.setTop(d_ptr->firstViewMargin.top() + d_ptr->titleEdit->height());
+    setViewportMargins(curMargins);
 
     QTextEdit::resizeEvent(evt);
 }

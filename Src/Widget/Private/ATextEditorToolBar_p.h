@@ -29,12 +29,25 @@
 #pragma once
 #include "Widget/TextEditor/ATextEditorToolBar.h"
 
+class QFontComboBox;
+
 APROCH_NAMESPACE_BEGIN
 
 class ATextEditorToolBarPrivate
 {
 public:
-    
+    QFontComboBox* fontComboBox = nullptr;
+    AFontSizeComboBox* fontSizeComboBox = nullptr;
+    QPushButton* boldBtn = nullptr;
+    QPushButton* italicBtn = nullptr;
+    QPushButton* underlineBtn = nullptr;
+    QPushButton* strikethroughBtn = nullptr;
+
+    QPushButton* imageBtn = nullptr;
+    QPushButton* linkBtn = nullptr;
+    QPushButton* h1Btn = nullptr;
+    QPushButton* h2Btn = nullptr;
+    QPushButton* h3Btn = nullptr;
 };
 
 APROCH_NAMESPACE_END
