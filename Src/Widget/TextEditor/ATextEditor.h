@@ -34,22 +34,45 @@
 APROCH_NAMESPACE_BEGIN
 
 class ATextEditorPrivate;
-class ATextEditorToolBar;
 
 class APROCH_API ATextEditor : public QTextEdit
 {
     Q_OBJECT;
-    Q_PROPERTY(bool toolBarVisible READ getToolBarVisible WRITE setToolBarVisible);
+    Q_PROPERTY(int tabWidth READ getTabWidth WRITE setTabWidth);
+    Q_PROPERTY(int lineHeight READ getLineHeight WRITE setLineHeight);
+    Q_PROPERTY(int segmentSpacing READ getSegmentSpacing WRITE setSegmentSpacing);
+    Q_PROPERTY(int leftMargin READ getLeftMargin WRITE setLeftMargin);
+    Q_PROPERTY(int rightMargin READ getRightMargin WRITE setRightMargin);
+
 public:
     explicit ATextEditor(QWidget* parent = nullptr);
 
-    ATextEditorToolBar* getToolBar() const;
+    void setTabWidth(int w);
+    int getTabWidth() const;
 
-    bool getToolBarVisible() const;
-    void setToolBarVisible(bool visible);
+    void setLineHeight(int h);
+    int getLineHeight() const;
 
-protected:
-    virtual void resizeEvent(QResizeEvent* evt) override;
+    void setSegmentSpacing(int s);
+    int getSegmentSpacing() const;
+
+    int getLeftMargin() const;
+    void setLeftMargin(int margin);
+
+    int getRightMargin() const;
+    void setRightMargin(int margin);
+
+    void setDocumentMargins(int left, int top, int right, int bottom);
+    void setDocumentMargins(const QMargins& margins);
+    QMargins getDocumentMargins() const;
+
+public Q_SLOTS:
+    void setFontFamily(const QString& family);
+    void setFontSize(int size);
+    void setBold(bool enabled);
+    void setItalic(bool enabled);
+    void setUnderline(bool enabled);
+    void setStrikethrough(bool enabled);
 
 private:
     Q_DISABLE_COPY_MOVE(ATextEditor);

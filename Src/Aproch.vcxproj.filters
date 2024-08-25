@@ -269,9 +269,6 @@
     <ClInclude Include="Widget\Private\ATextEditor_p.h">
       <Filter>Widget\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\Private\ATextEditorToolBar_p.h">
-      <Filter>Widget\Private</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -487,10 +484,9 @@
     <ClCompile Include="Widget\TextEditor\ATextEditor.cpp">
       <Filter>Widget\TextEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\TextEditor\ATextEditorToolBar.cpp">
+    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp">
       <Filter>Widget\TextEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -604,10 +600,9 @@
     <QtMoc Include="Widget\TextEditor\ATextEditor.h">
       <Filter>Widget\TextEditor</Filter>
     </QtMoc>
-    <QtMoc Include="Widget\TextEditor\ATextEditorToolBar.h">
+    <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h">
       <Filter>Widget\TextEditor</Filter>
     </QtMoc>
-    <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">

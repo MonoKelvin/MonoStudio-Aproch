@@ -80,8 +80,7 @@ void AFontSizeComboBox::setCurrentFontSize(int s)
 
 void AFontSizeComboBox::_currentTextChanged(const QString& text)
 {
-    if (text != currentText())
-        emit currentFontSizeChanged(text.toInt());
+    emit currentFontSizeChanged(text.toInt());
 }
 
 APROCH_NAMESPACE_END

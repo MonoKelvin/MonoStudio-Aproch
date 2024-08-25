@@ -387,18 +387,24 @@ QTreeWidget::item:selected:pressed {
 #textEditor {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    padding: 50px 50px 10px 50px;
+    padding: 50px 10px 10px 10px;
 }
 
-#textEditor QToolBar {
-    min-height: 38px;
-    max-height: 38px;
+#textEditor #toolBar {
+    min-height: 40px;
     margin: 6px 0;
 }
 
-#aproch-texteditor-title {
-    font-size: 18px;
+#textEditor #titleLabel {
+    color: #ACB2C4;
+    font-size: 16px;
     font-weight: bold;
     background: transparent;
-    margin: 4px 0 10px 0;
+}
+
+#textEditor #titleEdit {
+    font-size: 16px;
+    font-weight: bold;
+    background: transparent;
+    padding-left: 0;
 }

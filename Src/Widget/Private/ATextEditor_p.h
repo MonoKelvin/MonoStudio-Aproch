@@ -34,9 +34,9 @@ APROCH_NAMESPACE_BEGIN
 class ATextEditorPrivate
 {
 public:
-    ATextEditorToolBar* toolBar = nullptr;
-    QLineEdit* titleEdit = nullptr;
-    QMargins firstViewMargin;
+    int tabWidth = 4;
+    int leftMargin = 10;
+    int rightMargin = 10;
 };
 
 APROCH_NAMESPACE_END

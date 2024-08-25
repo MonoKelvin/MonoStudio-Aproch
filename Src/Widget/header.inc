@@ -48,7 +48,6 @@
 
 #include "TextEditor/AFontSizeComboBox.h"
 #include "TextEditor/ATextEditor.h"
-#include "TextEditor/ATextEditorToolBar.h"
 
 #include "NavigationView/ANavigationPageView.h"
 #include "NavigationView/ANavigationView.h"

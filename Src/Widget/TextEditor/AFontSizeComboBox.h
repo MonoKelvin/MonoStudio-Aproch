@@ -27,13 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "AprochExportDefine.h"
 #include <QComboBox>
 
 APROCH_NAMESPACE_BEGIN
 
 class AFontSizeComboBoxPrivate;
 
-class AFontSizeComboBox : public QComboBox
+class APROCH_API AFontSizeComboBox : public QComboBox
 {
     Q_OBJECT;
     Q_PROPERTY(int currentFontSize READ getCurrentFontSize WRITE setCurrentFontSize NOTIFY currentFontSizeChanged)

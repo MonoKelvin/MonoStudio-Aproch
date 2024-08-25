@@ -28,9 +28,15 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "ATextEditor.h"
+#include "AFontSizeComboBox.h"
 #include "Widget/Private/ATextEditor_p.h"
 
+#include <QFontComboBox>
+#include <QTextCursor>
+#include <QTextBlock>
+#include <QTextDocumentFragment>
 #include <QStackedLayout>
+#include <QApplication>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -38,51 +44,188 @@ ATextEditor::ATextEditor(QWidget* parent)
     : QTextEdit(parent)
     , d_ptr(new ATextEditorPrivate)
 {
-    d_ptr->toolBar = new ATextEditorToolBar(this);
-    d_ptr->toolBar->setObjectName("aproch-texteditor-toolbar");
+    setAttribute(Qt::WA_StyledBackground);
 
-    d_ptr->titleEdit = new QLineEdit(this);
-    d_ptr->titleEdit->setObjectName("aproch-texteditor-title");
-    d_ptr->titleEdit->setPlaceholderText(tr("标题："));
-
-    QStackedLayout* stackLayout = new QStackedLayout;
-    stackLayout->addWidget(d_ptr->titleEdit);
-    stackLayout->setStackingMode(QStackedLayout::StackAll);
-    setLayout(stackLayout);
-
-    d_ptr->firstViewMargin = viewportMargins();
+    // format
+    setTabWidth(4);
+    setLineHeight(0);
+    setSegmentSpacing(10);
 }
 
-ATextEditorToolBar* ATextEditor::getToolBar() const
+void ATextEditor::setTabWidth(int w)
 {
-    return d_ptr->toolBar;
+    QFontMetrics metrics(font());
+    setTabStopDistance(w * metrics.averageCharWidth());
 }
 
-bool ATextEditor::getToolBarVisible() const
+int ATextEditor::getTabWidth() const
 {
-    return d_ptr->toolBar ? d_ptr->toolBar->isVisible() : false;
+    return tabStopDistance();
 }
 
-void ATextEditor::setToolBarVisible(bool visible)
+void ATextEditor::setLineHeight(int h)
 {
-    if (!d_ptr->toolBar)
-        return;
-    d_ptr->toolBar->setVisible(visible);
+    selectAll();
+    QTextCursor currentCursor = textCursor();
+
+    QTextBlockFormat blockFormat;
+    blockFormat.setLineHeight(h, QTextBlockFormat::LineDistanceHeight);
+    currentCursor.setBlockFormat(blockFormat);
+    setTextCursor(currentCursor);
+
+    currentCursor.clearSelection();
+    setTextCursor(currentCursor);
 }
 
-void ATextEditor::resizeEvent(QResizeEvent* evt)
+int ATextEditor::getLineHeight() const
 {
-    if (d_ptr->toolBar)
+    return textCursor().blockFormat().lineHeight();
+}
+
+void ATextEditor::setSegmentSpacing(int s)
+{
+    selectAll();
+    QTextCursor currentCursor = textCursor();
+
+    QTextBlockFormat blockFormat;
+    blockFormat.setBottomMargin(s);
+    currentCursor.setBlockFormat(blockFormat);
+    setTextCursor(currentCursor);
+
+    currentCursor.clearSelection();
+    setTextCursor(currentCursor);
+}
+
+int ATextEditor::getSegmentSpacing() const
+{
+    return textCursor().blockFormat().bottomMargin();
+}
+
+int ATextEditor::getLeftMargin() const
+{
+    return viewportMargins().left();
+}
+
+void ATextEditor::setLeftMargin(int margin)
+{
+    auto m = viewportMargins();
+    m.setLeft(margin);
+    setViewportMargins(m);
+
+    QBoxLayout* theLayout = qobject_cast<QBoxLayout*>(layout());
+    if (theLayout)
     {
-        d_ptr->toolBar->setGeometry(0, 0, width(), d_ptr->toolBar->height());
+        auto m = theLayout->contentsMargins();
+        m.setLeft(margin);
+        theLayout->setContentsMargins(m);
     }
+}
 
-    // update margins
-    QMargins curMargins = viewportMargins();
-    curMargins.setTop(d_ptr->firstViewMargin.top() + d_ptr->titleEdit->height());
-    setViewportMargins(curMargins);
+int ATextEditor::getRightMargin() const
+{
+    return viewportMargins().right();
+}
 
-    QTextEdit::resizeEvent(evt);
+void ATextEditor::setRightMargin(int margin)
+{
+    auto m = viewportMargins();
+    m.setRight(margin);
+    setViewportMargins(m);
+
+    QBoxLayout* theLayout = qobject_cast<QBoxLayout*>(layout());
+    if (theLayout)
+    {
+        auto m = theLayout->contentsMargins();
+        m.setRight(margin);
+        theLayout->setContentsMargins(m);
+    }
+}
+
+void ATextEditor::setDocumentMargins(int left, int top, int right, int bottom)
+{
+    setViewportMargins(left, top, right, bottom);
+}
+
+void ATextEditor::setDocumentMargins(const QMargins& margins)
+{
+    setViewportMargins(margins);
+}
+
+QMargins ATextEditor::getDocumentMargins() const
+{
+    return viewportMargins();
+}
+
+void ATextEditor::setFontFamily(const QString& family)
+{
+    setFocus();
+
+    QTextCharFormat tcf = currentCharFormat();
+    QFont font = tcf.font();
+    font.setFamily(family);
+    tcf.setFont(font);
+
+    mergeCurrentCharFormat(tcf);
+}
+
+void ATextEditor::setFontSize(int size)
+{
+    setFocus();
+
+    QTextCharFormat tcf = currentCharFormat();
+    QFont font = tcf.font();
+    font.setPixelSize(size);
+    tcf.setFont(font);
+
+    mergeCurrentCharFormat(tcf);
+}
+
+void ATextEditor::setBold(bool enabled)
+{
+    setFocus();
+
+    QTextCharFormat tcf = currentCharFormat();
+    QFont font = tcf.font();
+    font.setBold(enabled);
+    tcf.setFont(font);
+
+    mergeCurrentCharFormat(tcf);
+}
+
+void ATextEditor::setItalic(bool enabled)
+{
+    setFocus();
+
+    QTextCharFormat tcf = currentCharFormat();
+    QFont font = tcf.font();
+    font.setItalic(enabled);
+    tcf.setFont(font);
+
+    mergeCurrentCharFormat(tcf);
+}
+
+void ATextEditor::setUnderline(bool enabled)
+{
+    setFocus();
+
+    QTextCharFormat tcf = currentCharFormat();
+    QFont font = tcf.font();
+    font.setUnderline(enabled);
+    tcf.setFont(font);
+
+    mergeCurrentCharFormat(tcf);
+}
+
+void ATextEditor::setStrikethrough(bool enabled)
+{
+    setFocus();
+
+    QTextCharFormat tcf = currentCharFormat();
+    QFont font = tcf.font();
+    font.setStrikeOut(enabled);
+    tcf.setFont(font);
+
+    mergeCurrentCharFormat(tcf);
 }
 
 APROCH_NAMESPACE_END
