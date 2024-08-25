@@ -98,7 +98,6 @@ QScrollBar::add-line:horizontal:pressed {
 
 QAbstractButton {
     padding: 0 10px;
-    max-height: 36px;
     border-radius: 4px;
     background-color: transparent;
     qproperty-iconSize: 20px 20px;
@@ -388,23 +387,4 @@ QTreeWidget::item:selected:pressed {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     padding: 50px 10px 10px 10px;
-}
-
-#textEditor #toolBar {
-    min-height: 40px;
-    margin: 6px 0;
-}
-
-#textEditor #titleLabel {
-    color: #ACB2C4;
-    font-size: 16px;
-    font-weight: bold;
-    background: transparent;
-}
-
-#textEditor #titleEdit {
-    font-size: 16px;
-    font-weight: bold;
-    background: transparent;
-    padding-left: 0;
 }

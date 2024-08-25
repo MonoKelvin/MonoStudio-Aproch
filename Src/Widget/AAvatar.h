@@ -37,11 +37,11 @@ class APROCH_API AAvatar : public QWidget
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPixmap mAvatar READ getAvatar WRITE setAvatar)
-    Q_PROPERTY(bool mStateEnable READ isStateEnable WRITE setStateEnable)
-    Q_PROPERTY(QColor mStateColor READ getStateColor WRITE setStateColor)
-    Q_PROPERTY(int mStateRadius READ getStateRadius WRITE setStateRadius)
-    Q_PROPERTY(QString mName READ getName WRITE setName)
+    Q_PROPERTY(QPixmap avatar READ getAvatar WRITE setAvatar)
+    Q_PROPERTY(bool stateEnable READ isStateEnable WRITE setStateEnable)
+    Q_PROPERTY(QColor stateColor READ getStateColor WRITE setStateColor)
+    Q_PROPERTY(int stateRadius READ getStateRadius WRITE setStateRadius)
+    Q_PROPERTY(QString name READ getName WRITE setName)
 public:
     explicit AAvatar(QWidget *parent = nullptr);
     explicit AAvatar(const QPixmap &pixmap, QWidget *parent = nullptr);
