@@ -38,11 +38,11 @@ int main(int argc, char* argv[])
 
     QObject::connect(appInst, &aproch::AAppContext::ready, [](bool& canContinue) {
 
-        /*WinUIWindow* window = new WinUIWindow();
-        window->show();*/
-
-        ApplicationWindow* window = new ApplicationWindow();
+        WinUIWindow* window = new WinUIWindow();
         window->show();
+
+        /*ApplicationWindow* window = new ApplicationWindow();
+        window->show();*/
 
         aproch::AAppContext::setMainWindow(window);
 

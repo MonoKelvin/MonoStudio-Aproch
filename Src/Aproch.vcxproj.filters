@@ -487,6 +487,9 @@
     <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp">
       <Filter>Widget\TextEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\AButton.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -602,6 +605,9 @@
     </QtMoc>
     <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h">
       <Filter>Widget\TextEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AButton.h">
+      <Filter>Widget</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

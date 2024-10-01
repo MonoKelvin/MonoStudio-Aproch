@@ -45,7 +45,7 @@ const char AUIStyleObject::Shadow[] = "_aprop_shadow";
 const char AUIStyleObject::Transition[] = "_aprop_transition";
 
 // default styles
-SCornerF AprochDefaultBorderRadius(8);
+SCornerF AprochDefaultBorderRadius(6);
 SBorderThicknessF AprochDefaultBorderThickness(0);
 QColor AprochDefaultBorderColor(Qt::transparent);
 QMargins AprochDefaultMargins(10, 10, 10, 10);

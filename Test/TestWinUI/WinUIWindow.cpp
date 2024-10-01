@@ -124,6 +124,9 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     tb111->setPlaceholderText(AStr("placeholder text"));
     theLayout->addWidget(tb111);*/
 
+    aproch::AButton* ab111 = new aproch::AButton(AStr("aproch::AButton"), this);
+    theLayout->addWidget(ab111);
+
     QPushButton* pb111 = new QPushButton(AStr("按钮QPushButton001"), this);
     theLayout->addWidget(pb111);
 

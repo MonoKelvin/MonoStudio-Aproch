@@ -45,6 +45,7 @@
 #include "ASplitterHandle.h"
 #include "AFontIcon.h"
 #include "AStaticTrackBar.h"
+#include "AButton.h"
 
 #include "TextEditor/AFontSizeComboBox.h"
 #include "TextEditor/ATextEditor.h"

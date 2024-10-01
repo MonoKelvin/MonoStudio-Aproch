@@ -252,6 +252,28 @@ AFontIcon {
 }
 
 
+/* Button */
+
+AButton {
+    qproperty-normalBkColor: transparent;
+    qproperty-hoveredBkColor: rgba(255, 255, 255, 3%);
+    qproperty-pressedBkColor:rgba(255, 255, 255, 2);
+    qproperty-checkedBkColor: rgba(255, 255, 255, 6%);
+    qproperty-checkHoveredBkColor: rgba(255, 255, 255, 3%);
+    qproperty-normalColor: white;
+    qproperty-hoveredColor: white;
+    qproperty-pressedColor: white;
+    qproperty-checkedColor: white;
+    qproperty-checkHoveredColor: white;
+    qproperty-animationDuration: 200;
+    /* QEasingCurve::OutCubic */
+    qproperty-animationType: 6;
+
+    /* TODO */
+    /* qproperty-checkPressedBkColor: rgba(255, 255, 255, 2); */
+}
+
+
 /* Window bar */
 
 ACaptionBar {
