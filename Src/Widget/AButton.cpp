@@ -15,14 +15,16 @@ public:
     QColor pressedBkColor;
     QColor checkedBkColor;
     QColor checkHoveredBkColor;
+    QColor disabledBkColor;
 
     QColor normalColor;
     QColor hoveredColor;
     QColor pressedColor;
     QColor checkedColor;
     QColor checkHoveredColor;
+    QColor disabledColor;
 
-    QColor currentBgColor;
+    QColor currentBkColor;
     QColor currentColor;
 
     QEasingCurve::Type animationType = QEasingCurve::OutQuart;
@@ -44,6 +46,8 @@ AButton::AButton(const QString& text, QWidget* parent)
     : QPushButton(text, parent)
     , d_ptr(new AButtonPrivate)
 {
+    setAttribute(Qt::WA_StyledBackground);
+    
     // variant
     d_ptr->normalBkColor = palette().color(QPalette::ColorRole::Button);
     d_ptr->hoveredBkColor = palette().color(QPalette::ColorRole::Highlight);
@@ -57,7 +61,7 @@ AButton::AButton(const QString& text, QWidget* parent)
     d_ptr->checkedColor = d_ptr->pressedColor;
     d_ptr->checkHoveredColor = d_ptr->hoveredColor;
 
-    d_ptr->currentBgColor = d_ptr->normalBkColor;
+    d_ptr->currentBkColor = d_ptr->normalBkColor;
     d_ptr->currentColor = d_ptr->normalColor;
 
     // background animation
@@ -65,7 +69,7 @@ AButton::AButton(const QString& text, QWidget* parent)
     d_ptr->bgColorAni->setDuration(200);
     d_ptr->bgColorAni->setEasingCurve(QEasingCurve::OutCubic);
     connect(d_ptr->bgColorAni, &QVariantAnimation::valueChanged, [this](const QVariant& val) {
-        d_ptr->currentBgColor = val.value<QColor>();
+        d_ptr->currentBkColor = val.value<QColor>();
         update();
     });
 
@@ -97,7 +101,7 @@ void AButton::setNormalBkColor(const QColor& color)
 {
     d_ptr->normalBkColor = color;
 
-    d_ptr->bgColorAni->setStartValue(d_ptr->currentBgColor);
+    d_ptr->bgColorAni->setStartValue(d_ptr->currentBkColor);
     d_ptr->bgColorAni->setEndValue(isChecked() ? d_ptr->checkedBkColor : d_ptr->normalBkColor);
     d_ptr->bgColorAni->start();
 
@@ -113,7 +117,7 @@ void AButton::setHoveredBkColor(const QColor& color)
 {
     d_ptr->hoveredBkColor = color;
 
-    d_ptr->bgColorAni->setStartValue(d_ptr->currentBgColor);
+    d_ptr->bgColorAni->setStartValue(d_ptr->currentBkColor);
     d_ptr->bgColorAni->setEndValue(isChecked() ? d_ptr->checkHoveredBkColor : d_ptr->hoveredBkColor);
     d_ptr->bgColorAni->start();
 
@@ -153,6 +157,17 @@ void AButton::setCheckHoveredBkColor(const QColor& color)
     update();
 }
 
+QColor AButton::getDisabledBkColor() const
+{
+    return d_ptr->disabledBkColor;
+}
+
+void AButton::setDisabledBkColor(const QColor& color)
+{
+    d_ptr->disabledBkColor = color;
+    update();
+}
+
 QColor AButton::getNormalColor() const
 {
     return d_ptr->normalColor;
@@ -167,7 +182,7 @@ void AButton::setNormalColor(const QColor& color)
     d_ptr->textColorAni->start();
 
     update();
-}
+} 
 
 QColor AButton::getHoveredColor() const
 {
@@ -218,6 +233,17 @@ void AButton::setCheckHoveredColor(const QColor& color)
     update();
 }
 
+QColor AButton::getDisabledColor() const
+{
+    return d_ptr->disabledColor;
+}
+
+void AButton::setDisabledColor(const QColor& color)
+{
+    d_ptr->disabledColor = color;
+    update();
+}
+
 int AButton::getAnimationDuration() const
 {
     return d_ptr->bgColorAni->duration();
@@ -251,8 +277,16 @@ Qt::Alignment AButton::getTextAlignment() const
 
 void AButton::paintEvent(QPaintEvent* e)
 {
-    //QStyleOptionButton styleOption;
-    //initStyleOption(&styleOption);
+    if (!isEnabled())
+    {
+        d_ptr->currentBkColor = isChecked() ? d_ptr->checkedBkColor.darker(120) : d_ptr->disabledBkColor;
+        d_ptr->currentColor = isChecked() ? d_ptr->checkedColor.darker(120) : d_ptr->disabledColor;
+    }
+
+    QStyleOptionButton styleOption;
+    initStyleOption(&styleOption);
+
+    auto r = styleOption.rect;
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -260,13 +294,29 @@ void AButton::paintEvent(QPaintEvent* e)
     /** -------------------------------------------------- */
 
     // draw background
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(d_ptr->currentBgColor);
+    drawBackground(&painter);
 
-    QPainterPath path;
-    AGraphicsToolkit::drawRoundedRect(path, e->rect(), AprochDefaultBorderRadius);
+    /** draw icon */
 
-    painter.drawPath(path);
+    QRect textRect = r;
+    if (!styleOption.icon.isNull())
+    {
+        QIcon::Mode imode = QIcon::Normal;
+        if (styleOption.state & QStyle::State_Active)
+            imode = QIcon::Active;
+        else if (styleOption.state & QStyle::State_Selected)
+            imode = QIcon::Selected;
+        else if (!this->isEnabled())
+            imode = QIcon::Disabled;
+
+        QIcon::State istate = (styleOption.state & QStyle::State_On) ? QIcon::On : QIcon::Off;
+
+        QRect iconRect(AprochDefaultPaddings.left(), (r.height() - styleOption.iconSize.height()) / 2,
+                       styleOption.iconSize.width(), styleOption.iconSize.height());
+        painter.drawPixmap(iconRect, styleOption.icon.pixmap(styleOption.iconSize, imode, istate));
+        textRect.setLeft(iconRect.right());
+    }
+
 
     /** -------------------------------------------------- */
 
@@ -277,19 +327,41 @@ void AButton::paintEvent(QPaintEvent* e)
     QTextOption textOption;
     textOption.setAlignment(d_ptr->textAlignment);
 
-    //QStyleOption opt;
-    //int paddingLeft = QApplication::style()->pixelMetric(QStyle::PM_ButtonMargin, &opt);
+    painter.drawText(textRect.marginsRemoved(AprochDefaultPaddings), text(), textOption);
+}
 
-    painter.drawText(e->rect().marginsRemoved(AprochDefaultPaddings), text(), textOption);
+void AButton::drawBackground(QPainter* painter)
+{
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(d_ptr->currentBkColor);
+
+    QPainterPath path;
+    AGraphicsToolkit::drawRoundedRect(path, rect(), AprochDefaultBorderRadius);
+
+    painter->drawPath(path);
+}
+
+QColor AButton::getCurrentBackgroundColor() const
+{
+    return d_ptr->currentBkColor;
+}
+
+QColor AButton::getCurrentTextColor() const
+{
+    return d_ptr->currentColor;
 }
 
 bool AButton::event(QEvent* e)
 {
-    const bool checked = isChecked();
+    if (!isEnabled())
+        return QPushButton::event(e);
 
+    QPushButton::event(e);
+
+    const bool checked = isChecked();
     if (e->type() == QEvent::Enter)
     {
-        d_ptr->bgColorAni->setStartValue(d_ptr->currentBgColor);
+        d_ptr->bgColorAni->setStartValue(d_ptr->currentBkColor);
         d_ptr->bgColorAni->setEndValue(checked ? d_ptr->checkHoveredBkColor : d_ptr->hoveredBkColor);
         d_ptr->textColorAni->setStartValue(d_ptr->currentColor);
         d_ptr->textColorAni->setEndValue(checked ? d_ptr->checkHoveredColor : d_ptr->hoveredColor);
@@ -297,7 +369,7 @@ bool AButton::event(QEvent* e)
     }
     else if (e->type() == QEvent::Leave)
     {
-        d_ptr->bgColorAni->setStartValue(d_ptr->currentBgColor);
+        d_ptr->bgColorAni->setStartValue(d_ptr->currentBkColor);
         d_ptr->bgColorAni->setEndValue(checked ? d_ptr->checkedBkColor : d_ptr->normalBkColor);
         d_ptr->textColorAni->setStartValue(d_ptr->currentColor);
         d_ptr->textColorAni->setEndValue(checked ? d_ptr->checkedColor : d_ptr->normalColor);
@@ -309,7 +381,7 @@ bool AButton::event(QEvent* e)
         if (!(me->buttons() & Qt::LeftButton))
             return QPushButton::event(e);
 
-        d_ptr->bgColorAni->setStartValue(d_ptr->currentBgColor);
+        d_ptr->bgColorAni->setStartValue(d_ptr->currentBkColor);
         d_ptr->bgColorAni->setEndValue(d_ptr->pressedBkColor);
         d_ptr->textColorAni->setStartValue(d_ptr->currentColor);
         d_ptr->textColorAni->setEndValue(d_ptr->pressedColor);
@@ -321,15 +393,13 @@ bool AButton::event(QEvent* e)
         if (!d_ptr->isPressed)
             return QPushButton::event(e);
 
-        d_ptr->bgColorAni->setStartValue(d_ptr->currentBgColor);
+        d_ptr->bgColorAni->setStartValue(d_ptr->currentBkColor);
         d_ptr->bgColorAni->setEndValue(checked ? d_ptr->checkHoveredBkColor : d_ptr->hoveredBkColor);
         d_ptr->textColorAni->setStartValue(d_ptr->currentColor);
         d_ptr->textColorAni->setEndValue(checked ? d_ptr->checkHoveredColor : d_ptr->hoveredColor);
         d_ptr->colorAniGroup->start();
         d_ptr->isPressed = false;
     }
-
-    return QPushButton::event(e);
 }
 
 APROCH_NAMESPACE_END

@@ -43,12 +43,14 @@ class APROCH_API AButton : public QPushButton
     Q_PROPERTY(QColor pressedBkColor READ getPressedBkColor WRITE setPressedBkColor);
     Q_PROPERTY(QColor checkedBkColor READ getCheckedBkColor WRITE setCheckedBkColor);
     Q_PROPERTY(QColor checkHoveredBkColor READ getCheckHoveredBkColor WRITE setCheckHoveredBkColor);
+    Q_PROPERTY(QColor disabledBkColor READ getDisabledBkColor WRITE setDisabledBkColor);
 
     Q_PROPERTY(QColor normalColor READ getNormalColor WRITE setNormalColor);
     Q_PROPERTY(QColor hoveredColor READ getHoveredColor WRITE setHoveredColor);
     Q_PROPERTY(QColor pressedColor READ getPressedColor WRITE setPressedColor);
     Q_PROPERTY(QColor checkedColor READ getCheckedColor WRITE setCheckedColor);
     Q_PROPERTY(QColor checkHoveredColor READ getCheckHoveredColor WRITE setCheckHoveredColor);
+    Q_PROPERTY(QColor disabledColor READ getDisabledColor WRITE setDisabledColor);
 
     Q_PROPERTY(int animationDuration READ getAnimationDuration WRITE setAnimationDuration);
     Q_PROPERTY(QEasingCurve::Type animationType READ getAnimationType WRITE setAnimationType);
@@ -73,6 +75,9 @@ public:
     QColor getCheckHoveredBkColor() const;
     void setCheckHoveredBkColor(const QColor& color);
 
+    QColor getDisabledBkColor() const;
+    void setDisabledBkColor(const QColor& color);
+
     QColor getNormalColor() const;
     void setNormalColor(const QColor& color);
 
@@ -88,6 +93,9 @@ public:
     QColor getCheckHoveredColor() const;
     void setCheckHoveredColor(const QColor& color);
 
+    QColor getDisabledColor() const;
+    void setDisabledColor(const QColor& color);
+
     int getAnimationDuration() const;
     void setAnimationDuration(int duration);
 
@@ -100,6 +108,11 @@ public:
 protected:
     virtual void paintEvent(QPaintEvent* e) override;
     virtual bool event(QEvent* e) override;
+
+protected:
+    virtual void drawBackground(QPainter* painter);
+    QColor getCurrentBackgroundColor() const;
+    QColor getCurrentTextColor() const;
 
 private:
     Q_DISABLE_COPY_MOVE(AButton);

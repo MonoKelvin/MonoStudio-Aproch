@@ -124,8 +124,45 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     tb111->setPlaceholderText(AStr("placeholder text"));
     theLayout->addWidget(tb111);*/
 
-    aproch::AButton* ab111 = new aproch::AButton(AStr("aproch::AButton"), this);
-    theLayout->addWidget(ab111);
+    {
+        aproch::AButton* ab111 = new aproch::AButton(AStr("Button"), this);
+        theLayout->addWidget(ab111);
+
+        aproch::AButton* ab112 = new aproch::AButton(AStr("Checked Button"), this);
+        ab112->setCheckable(true);
+        ab112->setChecked(true);
+        theLayout->addWidget(ab112);
+
+        aproch::AButton* ab113 = new aproch::AButton(AStr("Disabled AButton"), this);
+        ab113->setEnabled(false);
+        theLayout->addWidget(ab113);
+
+        aproch::AButton* ab114 = new aproch::AButton(AStr("Disabled Checked Button"), this);
+        ab114->setCheckable(true);
+        ab114->setChecked(true);
+        ab114->setEnabled(false);
+        theLayout->addWidget(ab114);
+    }
+
+    {
+        aproch::AIconButton* aib1 = new aproch::AIconButton(AStr("\uE8F4"), this);
+        theLayout->addWidget(aib1);
+
+        aproch::AIconButton* aib2 = new aproch::AIconButton(AStr("\uE713"), this);
+        aib2->setCheckable(true);
+        aib2->setChecked(true);
+        theLayout->addWidget(aib2);
+
+        aproch::AIconButton* aib3 = new aproch::AIconButton(AStr("\uE8F4"), this);
+        aib3->setEnabled(false);
+        theLayout->addWidget(aib3);
+
+        aproch::AIconButton* aib4 = new aproch::AIconButton(AStr("\uE713"), this);
+        aib4->setCheckable(true);
+        aib4->setChecked(true);
+        aib4->setEnabled(false);
+        theLayout->addWidget(aib4);
+    }
 
     QPushButton* pb111 = new QPushButton(AStr("按钮QPushButton001"), this);
     theLayout->addWidget(pb111);

@@ -490,6 +490,9 @@
     <ClCompile Include="Widget\AButton.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\AIconButton.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -607,6 +610,9 @@
       <Filter>Widget\TextEditor</Filter>
     </QtMoc>
     <QtMoc Include="Widget\AButton.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AIconButton.h">
       <Filter>Widget</Filter>
     </QtMoc>
   </ItemGroup>

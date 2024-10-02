@@ -161,6 +161,7 @@
     <ClCompile Include="Private\AHotKey_win.cpp" />
     <ClCompile Include="Widget\AButton.cpp" />
     <ClCompile Include="Widget\AFontIcon.cpp" />
+    <ClCompile Include="Widget\AIconButton.cpp" />
     <ClCompile Include="Widget\AIndicatorBar.cpp" />
     <ClCompile Include="Widget\ASplitterHandle.cpp" />
     <ClCompile Include="Widget\AStaticTrackBar.cpp" />
@@ -191,6 +192,7 @@
     <QtMoc Include="Widget\AStaticTrackBar.h" />
     <QtMoc Include="Widget\AIndicatorBar.h" />
     <QtMoc Include="Widget\AButton.h" />
+    <QtMoc Include="Widget\AIconButton.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />

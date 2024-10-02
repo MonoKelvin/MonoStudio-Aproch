@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    AIconButton.h
+ * @date    2024-10-02 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,33 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "AStaticTrackBar.h"
 #include "AButton.h"
-#include "AIconButton.h"
 
-#include "TextEditor/AFontSizeComboBox.h"
-#include "TextEditor/ATextEditor.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+class AIconButtonPrivate;
 
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+class APROCH_API AIconButton : public AButton
+{
+    Q_OBJECT;
+public:
+    explicit AIconButton(QWidget* parent = nullptr); 
+    explicit AIconButton(const QString& glyph, QWidget* parent = nullptr);
+    explicit AIconButton(const QIcon& icon, QWidget* parent = nullptr);
+    ~AIconButton();
+
+    virtual QSize sizeHint() const override;
+
+protected:
+    virtual void paintEvent(QPaintEvent* e) override;
+
+private:
+    Q_DISABLE_COPY_MOVE(AIconButton);
+    QSharedPointer<AIconButtonPrivate> d_ptr;
+};
+
+APROCH_NAMESPACE_END
