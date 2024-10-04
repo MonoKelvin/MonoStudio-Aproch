@@ -34,12 +34,12 @@ APROCH_NAMESPACE_BEGIN
 static QMap<int, unsigned int> sFontId2TypeMap = QMap<int, unsigned int>();
 static QMap<unsigned int, int> sType2FontIdMap = QMap<unsigned int, int>();
 static QMap<unsigned int, QPair<QString, QString>> sType2FamilyMap = {
-    QPair<unsigned int, QPair<QString, QString>>(AFontDatabase::SegoeFluentIcons, 
-         QPair<QString, QString>(AStr("Segoe Fluent Icons"), AStr(":/fonts/segoeicons.ttf"))),
-    QPair<unsigned int, QPair<QString, QString>>(AFontDatabase::SegoeMDL2Assets, 
-         QPair<QString, QString>(AStr("Segoe MDL2 Assets"), AStr(":/fonts/segmdl2.ttf"))),
-    QPair<unsigned int, QPair<QString, QString>>(AFontDatabase::SegoeUIEmoji, 
-         QPair<QString, QString>(AStr("Segoe UI Emoji"), AStr(":/fonts/seguiemj.ttf"))),
+    { AFontDatabase::SegoeFluentIcons,
+         QPair<QString, QString>(AStr("Segoe Fluent Icons"), AStr(":/fonts/segoeicons.ttf")) },
+    { AFontDatabase::SegoeMDL2Assets, 
+         QPair<QString, QString>(AStr("Segoe MDL2 Assets"), AStr(":/fonts/segmdl2.ttf")) },
+    { AFontDatabase::SegoeUIEmoji, 
+         QPair<QString, QString>(AStr("Segoe UI Emoji"), AStr(":/fonts/seguiemj.ttf")) },
 };
 static unsigned int sDefaultIconFontType = AFontDatabase::SegoeFluentIcons;
 

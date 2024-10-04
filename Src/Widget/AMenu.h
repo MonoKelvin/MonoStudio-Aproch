@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    AMenu.h
+ * @date    2024-10-04 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,35 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "AprochExportDefine.h"
+#include <QMenu>
 
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "AStaticTrackBar.h"
-#include "AButton.h"
-#include "AIconButton.h"
-#include "AMenu.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "TextEditor/AFontSizeComboBox.h"
-#include "TextEditor/ATextEditor.h"
+class AMenuPrivate;
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+class APROCH_API AMenu : public QMenu
+{
+    Q_OBJECT
 
-#include "Style/AWinUIStyle.h"
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+public:
+    explicit AMenu(QWidget* parent = nullptr);
+    explicit AMenu(const QString& title, QWidget* parent = nullptr);
+    ~AMenu();
+
+    AMenu* addMenu(const QString& title);
+    AMenu* addMenu(const QIcon& icon, const QString& title);
+
+protected:
+    virtual void paintEvent(QPaintEvent* e) override;
+
+private:
+    Q_DISABLE_COPY_MOVE(AMenu);
+    QSharedPointer<AMenuPrivate> d_ptr;
+};
+
+
+APROCH_NAMESPACE_END

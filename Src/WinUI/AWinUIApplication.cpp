@@ -33,7 +33,11 @@ AWinUIApplicationPrivate::AWinUIApplicationPrivate(int& argc, char** argv)
 {
     if (qApp)
     {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
         qFatal() << AStr("Cannot create other QCoreApplication instance");
+#else
+        qFatal("Cannot create other QCoreApplication instance");
+#endif
         return;
     }
 

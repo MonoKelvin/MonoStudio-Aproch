@@ -493,6 +493,8 @@
     <ClCompile Include="Widget\AIconButton.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\Style\AWinUIStyle.cpp" />
+    <ClCompile Include="Widget\AMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -615,6 +617,8 @@
     <QtMoc Include="Widget\AIconButton.h">
       <Filter>Widget</Filter>
     </QtMoc>
+    <QtMoc Include="Widget\Style\AWinUIStyle.h" />
+    <QtMoc Include="Widget\AMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">

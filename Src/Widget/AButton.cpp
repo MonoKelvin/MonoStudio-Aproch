@@ -51,7 +51,13 @@ AButton::AButton(const QString& text, QWidget* parent)
     // variant
     d_ptr->normalBkColor = palette().color(QPalette::ColorRole::Button);
     d_ptr->hoveredBkColor = palette().color(QPalette::ColorRole::Highlight);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     d_ptr->pressedBkColor = palette().color(QPalette::ColorRole::Accent).darker(120);
+#else
+    d_ptr->pressedBkColor = palette().color(QPalette::ColorRole::Highlight).darker(120);
+#endif
+
     d_ptr->checkedBkColor = d_ptr->pressedBkColor;
     d_ptr->checkHoveredBkColor = d_ptr->hoveredBkColor;
 
@@ -275,6 +281,12 @@ Qt::Alignment AButton::getTextAlignment() const
     return d_ptr->textAlignment;
 }
 
+QSize AButton::sizeHint() const
+{
+    const QSize sh = QPushButton::sizeHint();
+    return QSize(sh.width(), 32);
+}
+
 void AButton::paintEvent(QPaintEvent* e)
 {
     if (!isEnabled())
@@ -400,6 +412,8 @@ bool AButton::event(QEvent* e)
         d_ptr->colorAniGroup->start();
         d_ptr->isPressed = false;
     }
+
+    return QPushButton::event(e);
 }
 
 APROCH_NAMESPACE_END

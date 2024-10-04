@@ -29,10 +29,17 @@
 #pragma once
 
 #ifndef QT_NO_OPENGL
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLFunctions>
 #include <QtOpenGL/QOpenGLShaderProgram>
 #include <QtOpenGL/QOpenGLBuffer>
+#else
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
+#include <QopenGLShaderProgram>
+#include <QOpenGLBuffer>
+#endif
 #endif
 
 APROCH_NAMESPACE_BEGIN

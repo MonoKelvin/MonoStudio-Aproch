@@ -81,10 +81,10 @@ bool AWidgetStyleDecoration::isWinUIEnabled() const
 }
 
 static QMap<EWinUIMaterial, QString> s_bkMaterial2Name = {
-    QPair<EWinUIMaterial, QString>(EWinUIMaterial::DWMBlur, AStr("dwm-blur")),
-    QPair<EWinUIMaterial, QString>(EWinUIMaterial::Acrylic, AStr("acrylic-material")),
-    QPair<EWinUIMaterial, QString>(EWinUIMaterial::Mica, AStr("mica")),
-    QPair<EWinUIMaterial, QString>(EWinUIMaterial::MicaAlt, AStr("mica-alt")),
+    { EWinUIMaterial::DWMBlur, AStr("dwm-blur") },
+    { EWinUIMaterial::Acrylic, AStr("acrylic-material") },
+    { EWinUIMaterial::Mica, AStr("mica") },
+    { EWinUIMaterial::MicaAlt, AStr("mica-alt") },
 };
 
 bool AWidgetStyleDecoration::setWinUIMaterial(EWinUIMaterial material)

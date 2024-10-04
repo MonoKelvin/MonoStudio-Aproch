@@ -193,8 +193,8 @@ namespace QWK {
 
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-Q_DECLARE_METATYPE(QMargins)
-#endif
+//#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+//Q_DECLARE_METATYPE(QMargins)
+//#endif
 
 #endif // QWINDOWKIT_WINDOWS_H

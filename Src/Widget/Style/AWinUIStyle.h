@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    AWinUIStyle.h
+ * @date    2024-10-04 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,35 +27,34 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "AprochExportDefine.h"
+#include <QProxyStyle>
 
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "AStaticTrackBar.h"
-#include "AButton.h"
-#include "AIconButton.h"
-#include "AMenu.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "TextEditor/AFontSizeComboBox.h"
-#include "TextEditor/ATextEditor.h"
+class AWinUIStylePrivate;
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+class APROCH_API AWinUIStyle : public QProxyStyle
+{
+    Q_OBJECT
 
-#include "Style/AWinUIStyle.h"
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+public:
+    AWinUIStyle();
+    ~AWinUIStyle();
+
+    void drawPrimitive(PrimitiveElement element, const QStyleOption* option, 
+                       QPainter* painter, const QWidget* widget = nullptr) const override;
+    void drawControl(ControlElement element, const QStyleOption* option, 
+                     QPainter* painter, const QWidget* widget = nullptr) const override;
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, 
+                            QPainter* painter, const QWidget* widget = nullptr) const override;
+    int pixelMetric(PixelMetric pm, const QStyleOption* opt, const QWidget* widget) const override;
+    QPalette standardPalette() const override;
+
+private:
+    Q_DISABLE_COPY_MOVE(AWinUIStyle);
+    QSharedPointer<AWinUIStylePrivate> d_ptr;
+};
+
+
+APROCH_NAMESPACE_END

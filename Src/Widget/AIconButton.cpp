@@ -3,6 +3,7 @@
 #include "Style/AUIStyleObject.h"
 
 #include <QApplication>
+#include <QScreen>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -81,7 +82,9 @@ void AIconButton::paintEvent(QPaintEvent* e)
 
         painter.setPen(currentColor);
         painter.setRenderHint(QPainter::SmoothPixmapTransform);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         painter.setRenderHint(QPainter::VerticalSubpixelPositioning);
+#endif
         painter.setRenderHint(QPainter::LosslessImageRendering);
         painter.drawText(iconRect, d_ptr->glyph, textOp);
     }

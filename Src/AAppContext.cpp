@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <QReadWriteLock>
 #include <QProcess>
+#include <QStyleFactory>
 
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8")
@@ -135,7 +136,11 @@ AAppContext::~AAppContext()
 QWidget* AAppContext::getMainWindow()
 {
     A_D();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     return d->mainWindow.get();
+#else
+    return d->mainWindow;
+#endif
 }
 
 bool AAppContext::setMainWindow(QWidget* mainWindow)
@@ -182,6 +187,10 @@ int AAppContext::run(int argc, char* argv[])
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
+    // 设置控件样式
+    aproch::AWinUIStyle* winUIStyle = new aproch::AWinUIStyle();
+    QApplication::setStyle(winUIStyle);
 
     // 启动程序
     QApplication app(argc, argv);

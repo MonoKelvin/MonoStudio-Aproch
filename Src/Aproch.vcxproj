@@ -87,12 +87,12 @@
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.6.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private;widgets-private;gui-private</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;opengl;openglwidgets;sql;xml;core-private;widgets-private;gui-private</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.6.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;openglwidgets;sql;xml;core-private;widgets-private;gui-private</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;opengl;openglwidgets;sql;xml;core-private;widgets-private;gui-private</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -163,6 +163,7 @@
     <ClCompile Include="Widget\AFontIcon.cpp" />
     <ClCompile Include="Widget\AIconButton.cpp" />
     <ClCompile Include="Widget\AIndicatorBar.cpp" />
+    <ClCompile Include="Widget\AMenu.cpp" />
     <ClCompile Include="Widget\ASplitterHandle.cpp" />
     <ClCompile Include="Widget\AStaticTrackBar.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Widget\NavigationView\ANavigationMenuItem.cpp" />
     <ClCompile Include="Widget\Private\ANavigationPanel.cpp" />
     <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp" />
+    <ClCompile Include="Widget\Style\AWinUIStyle.cpp" />
     <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp" />
     <ClCompile Include="Widget\TextEditor\ATextEditor.cpp" />
     <ClCompile Include="WinUI\AWinUIApplication.cpp" />
@@ -193,6 +195,7 @@
     <QtMoc Include="Widget\AIndicatorBar.h" />
     <QtMoc Include="Widget\AButton.h" />
     <QtMoc Include="Widget\AIconButton.h" />
+    <QtMoc Include="Widget\AMenu.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />
@@ -201,6 +204,7 @@
     <ClInclude Include="Widget\Style\AWidgetStyleDecoration.h" />
     <QtMoc Include="Widget\TextEditor\ATextEditor.h" />
     <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h" />
+    <QtMoc Include="Widget\Style\AWinUIStyle.h" />
     <ClInclude Include="WinUI\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>

@@ -75,7 +75,7 @@
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
-      <Command>"$(SolutionDir)Test/CopyLib.bat" $(SolutionDir) $(Platform) $(Configuration) $(OutDir) $(QMake_QT_INSTALL_PREFIX_)</Command>
+      <Command>"$(SolutionDir)Test/CopyLib.bat" $(SolutionDir) $(Platform) $(Configuration) $(OutDir)  $(QtInstallDir)</Command>
     </PostBuildEvent>
     <Link>
       <AdditionalDependencies>QWKCored.lib;QWKQuickd.lib;QWKWidgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -89,7 +89,7 @@
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
-      <Command>"$(SolutionDir)Test/CopyLib.bat" $(SolutionDir) $(Platform) $(Configuration) $(OutDir) $(QMake_QT_INSTALL_PREFIX_)</Command>
+      <Command>"$(SolutionDir)Test/CopyLib.bat" $(SolutionDir) $(Platform) $(Configuration) $(OutDir)  $(QtInstallDir)</Command>
     </PostBuildEvent>
     <Link>
       <AdditionalDependencies>QWKCore.lib;QWKQuick.lib;QWKWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>

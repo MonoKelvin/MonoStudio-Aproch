@@ -142,6 +142,19 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ab114->setChecked(true);
         ab114->setEnabled(false);
         theLayout->addWidget(ab114);
+
+
+        aproch::AMenu* m1 = new aproch::AMenu(ab111);
+        auto act1 = m1->addAction(AStr("Action1"));
+        act1->setShortcut(Qt::CTRL | Qt::Key_F1); 
+        auto act2 = m1->addAction(AStr("Action2"));
+        act2->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
+        m1->addAction(AStr("Action3"));
+        m1->addSeparator();
+        auto m11 = m1->addMenu(AStr("Actions"));
+        m11->addAction(AStr("Sub Action1"));
+        m11->addAction(AStr("Sub Action2"));
+        ab111->setMenu(m1);
     }
 
     {

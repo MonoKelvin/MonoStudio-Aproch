@@ -109,7 +109,11 @@ void ANavigationMenuItem::setIcon(const QIcon& icon)
 
 QIcon ANavigationMenuItem::getIcon() const
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     return d_ptr->iconLabel->pixmap();
+#else
+    return d_ptr->iconLabel->pixmap(Qt::ReturnByValue);
+#endif
 }
 
 void ANavigationMenuItem::setText(const QString& text)

@@ -31,6 +31,7 @@
 #include "AFontDatabase.h"
 
 #include <QApplication>
+#include <QScreen>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -150,7 +151,9 @@ QIcon AFontIcon::icon(const QString& glyph, const QFont& font, const QColor& col
     painter.setPen(color);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     painter.setRenderHint(QPainter::VerticalSubpixelPositioning);
+#endif
     painter.setRenderHint(QPainter::LosslessImageRendering);
     painter.drawText(QRect(0, 0, size.width(), size.height()), glyph, textOp);
 

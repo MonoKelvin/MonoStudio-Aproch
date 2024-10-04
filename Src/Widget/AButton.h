@@ -105,6 +105,8 @@ public:
     void setTextAlignment(Qt::Alignment a);
     Qt::Alignment getTextAlignment() const;
 
+    virtual QSize sizeHint() const override;
+
 protected:
     virtual void paintEvent(QPaintEvent* e) override;
     virtual bool event(QEvent* e) override;
