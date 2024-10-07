@@ -204,14 +204,14 @@ QMenuBar::item:selected {
 /* Menu */
 
 QMenu {
-    padding: 4px;
-    background: rgb(45, 45, 45);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: rgba(45, 45, 45, 100%);
+    border-radius: 8px;
 }
-
-QMenu::indicator {
-    left: 6px;
-    width: 20px;
-    height: 20px;
+#background-panel {
+    background-color: rgba(45, 45, 45, 100%);
+    border-radius: 8px;
 }
 
 QMenu::icon {
@@ -219,25 +219,50 @@ QMenu::icon {
 }
 
 QMenu::item {
+    height: 32px;
+    border-radius: 4px;
     background: transparent;
-    color: #CCCCCC;
-    padding: 6px 24px;
+    padding: 0px 10px;
+    margin: 2px 4px;
 }
 
-QMenu::item:selected {
-    color: white;
-    background-color: #0060C0;
+QMenu::item:selected  {
+    background-color:rgba(255, 255, 255, 6%);
+}
+
+QMenu::item:pressed  {
+    background-color:rgba(255, 255, 255, 4%);
 }
 
 QMenu::item:disabled {
-    color: #666666;
+    color: rgba(255, 255, 255, 40%);
     background-color: transparent;
 }
 
 QMenu::separator {
-    height: 2px;
-    background-color: #5B5B5B;
-    margin: 6px 0;
+    height: 1px;
+    background-color:rgba(255, 255, 255, 6%);
+    margin: 2px 0;
+}
+
+QMenu::right-arrow {
+    width: 6px;
+    height: 8px;
+    margin-right: 10px;
+    image: url(:/icon/system/arrow-right-line.svg);
+}
+
+QMenu::indicator {
+    left: 10px;
+    padding-right: 10px;
+    width: 4px;
+    height: 4px;
+}
+QMenu::indicator:non-exclusive:checked {
+    image: url(:/icon/system/circle-solid.svg);
+}
+QMenu::indicator:exclusive:checked {
+    image: url(:/icon/system/circle-solid.svg);
 }
 
 

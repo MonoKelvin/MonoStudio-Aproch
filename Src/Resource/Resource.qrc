@@ -23,5 +23,7 @@
         <file>icon/system/arrow-up-solid.svg</file>
         <file>theme/Dark.qss</file>
         <file>theme/Light.qss</file>
+        <file>icon/system/arrow-right-line.svg</file>
+        <file>icon/system/circle-solid.svg</file>
     </qresource>
 </RCC>

@@ -269,6 +269,9 @@
     <ClInclude Include="Widget\Private\ATextEditor_p.h">
       <Filter>Widget\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Widget\Private\AMenu_p.h">
+      <Filter>Widget\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ACommand.cpp">
@@ -493,8 +496,12 @@
     <ClCompile Include="Widget\AIconButton.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\Style\AWinUIStyle.cpp" />
-    <ClCompile Include="Widget\AMenu.cpp" />
+    <ClCompile Include="Widget\Style\AWinUIStyle.cpp">
+      <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AMenu.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -617,8 +624,12 @@
     <QtMoc Include="Widget\AIconButton.h">
       <Filter>Widget</Filter>
     </QtMoc>
-    <QtMoc Include="Widget\Style\AWinUIStyle.h" />
-    <QtMoc Include="Widget\AMenu.h" />
+    <QtMoc Include="Widget\AMenu.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Style\AWinUIStyle.h">
+      <Filter>Widget\Style</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Resource\Resource.qrc">

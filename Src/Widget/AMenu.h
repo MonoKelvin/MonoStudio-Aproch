@@ -29,6 +29,7 @@
 #pragma once
 #include "AprochExportDefine.h"
 #include <QMenu>
+#include <QAction>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -36,22 +37,25 @@ class AMenuPrivate;
 
 class APROCH_API AMenu : public QMenu
 {
-    Q_OBJECT
-
+    Q_OBJECT;
 public:
     explicit AMenu(QWidget* parent = nullptr);
     explicit AMenu(const QString& title, QWidget* parent = nullptr);
     ~AMenu();
 
+    AMenu* addMenu();
     AMenu* addMenu(const QString& title);
-    AMenu* addMenu(const QIcon& icon, const QString& title);
 
 protected:
-    virtual void paintEvent(QPaintEvent* e) override;
+    virtual bool event(QEvent*) override;
+    virtual bool eventFilter(QObject*, QEvent*) override;
+    virtual void paintEvent(QPaintEvent*) override;
+    virtual void actionEvent(QActionEvent*) override;
 
 private:
-    Q_DISABLE_COPY_MOVE(AMenu);
-    QSharedPointer<AMenuPrivate> d_ptr;
+    Q_DISABLE_COPY(AMenu);
+    friend class AMenuPrivate;
+    QSharedPointer<AMenuPrivate> d;
 };
 
 

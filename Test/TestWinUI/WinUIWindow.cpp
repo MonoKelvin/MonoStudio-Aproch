@@ -151,10 +151,28 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         act2->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
         m1->addAction(AStr("Action3"));
         m1->addSeparator();
+
+        QActionGroup* ag1 = new QActionGroup(m1);
+        ag1->setExclusive(true);
+        auto act3 = m1->addAction(AStr("Checked Action1"));
+        act3->setCheckable(true);
+        act3->setActionGroup(ag1);
+        auto act4 = m1->addAction(AStr("Checked Action2"));
+        act4->setCheckable(true);
+        act4->setChecked(true);
+        act4->setActionGroup(ag1);
+
+        auto act5 = m1->addAction(AStr("Disabled Action"));
+        act5->setEnabled(false);
+
         auto m11 = m1->addMenu(AStr("Actions"));
         m11->addAction(AStr("Sub Action1"));
         m11->addAction(AStr("Sub Action2"));
-        ab111->setMenu(m1);
+        
+        //ab111->setMenu(m1);
+        connect(ab111, &QPushButton::clicked, [m1]() {
+            m1->popup(QCursor::pos());
+        });
     }
 
     {
