@@ -27,6 +27,7 @@ AWinUIStyle::~AWinUIStyle()
 void AWinUIStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option,
                                 QPainter* painter, const QWidget* widget) const
 {
+    return QProxyStyle::drawPrimitive(element, option, painter, widget);
     switch (element)
     {
     case PE_FrameMenu: //整个菜单widget的边框色
@@ -143,9 +144,6 @@ void AWinUIStyle::drawComplexControl(ComplexControl control, const QStyleOptionC
 
 int AWinUIStyle::pixelMetric(PixelMetric pm, const QStyleOption* opt, const QWidget* widget) const
 {
-    if (pm == PM_MenuPanelWidth)
-        return 12;        // 调整菜单边框宽度, 以绘制阴影
-
     return QProxyStyle::pixelMetric(pm, opt, widget);
 }
 

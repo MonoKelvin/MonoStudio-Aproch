@@ -42,73 +42,18 @@ class AMenuPrivate
 public:
     AMenuPrivate(AMenu* q_ptr) 
         : q(q_ptr)
-        , itemsDirty(false)
     {
     }
 
     ~AMenuPrivate()
     {
-        delete scroll;
     }
-
-    void init();
-    void updateActionRects() const;
-    void updateActionRects(const QRect& screen) const;
-    QRect popupGeometry(QScreen* screen = nullptr) const;
-    bool useFullScreenForPopup() const;
-    int getLastVisibleAction() const;
-    bool isContextMenu() const;
-
-    //scrolling support
-    struct AMenuScroller
-    {
-        enum ScrollLocation
-        {
-            ScrollStay, ScrollBottom, ScrollTop, ScrollCenter
-        };
-        enum ScrollDirection
-        {
-            ScrollNone = 0, ScrollUp = 0x01, ScrollDown = 0x02
-        };
-        int scrollOffset = 0;
-        QBasicTimer scrollTimer;
-        quint8 scrollFlags = ScrollNone;
-        quint8 scrollDirection = ScrollNone;
-
-        AMenuScroller()
-        {
-        }
-        ~AMenuScroller()
-        {
-        }
-    } *scroll = nullptr;
-    int scrollerHeight() const;
-
-    class ScrollerTearOffItem : public QWidget
-    {
-    public:
-        enum Type
-        {
-            ScrollUp, ScrollDown
-        };
-        ScrollerTearOffItem(Type type, AMenuPrivate* mPrivate,
-                            QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-        void paintEvent(QPaintEvent* e) override;
-        void updateScrollerRects(const QRect& rect);
-
-    private:
-        AMenuPrivate* menuPrivate;
-        Type scrollType;
-    };
-    void drawScroller(QPainter* painter, ScrollerTearOffItem::Type type, const QRect& rect);
 
     AMenu* q = nullptr;
     QWidget* rframe = nullptr;
-    mutable QList<QRect> actionRects;
-    mutable QHash<QAction*, QWidget*> widgetItems;
-    ScrollerTearOffItem* scrollUpTearOffItemEx = nullptr;
-    ScrollerTearOffItem* scrollDownItemEx = nullptr;
-    mutable bool itemsDirty : 1;
+    QGraphicsDropShadowEffect* shadow = nullptr;
+    QMargins shadowMargin;
+    bool isSetFrame = false;
 };
 
 APROCH_NAMESPACE_END

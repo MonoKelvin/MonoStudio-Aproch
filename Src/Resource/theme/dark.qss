@@ -208,10 +208,15 @@ QMenu {
     padding-bottom: 2px;
     background-color: rgba(45, 45, 45, 100%);
     border-radius: 8px;
+    margin: 2px 14px 26px 14px;
+    qproperty-shadowMargin: 2px 14px 26px 14px;
+    qproperty-shadowRadius: 30;
+    qproperty-shadowOffset: 0 6px;
+    qproperty-shadowColor: rgba(0, 0, 0, 80%);
 }
-#background-panel {
-    background-color: rgba(45, 45, 45, 100%);
-    border-radius: 8px;
+
+#aproch-menu-bg-panel {
+    background-color: transparent;
 }
 
 QMenu::icon {

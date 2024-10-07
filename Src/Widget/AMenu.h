@@ -38,6 +38,10 @@ class AMenuPrivate;
 class APROCH_API AMenu : public QMenu
 {
     Q_OBJECT;
+    Q_PROPERTY(qreal shadowRadius READ getShadowRadius WRITE setShadowRadius);
+    Q_PROPERTY(QSize shadowOffset READ getShadowOffset WRITE setShadowOffset);
+    Q_PROPERTY(QColor shadowColor READ getShadowColor WRITE setShadowColor);
+    Q_PROPERTY(QMargins shadowMargin READ getShadowMargin WRITE setShadowMargin);
 public:
     explicit AMenu(QWidget* parent = nullptr);
     explicit AMenu(const QString& title, QWidget* parent = nullptr);
@@ -46,11 +50,22 @@ public:
     AMenu* addMenu();
     AMenu* addMenu(const QString& title);
 
+    qreal getShadowRadius() const;
+    void setShadowRadius(qreal r);
+
+    QSize getShadowOffset() const;
+    void setShadowOffset(const QSize& offset);
+
+    QColor getShadowColor() const;
+    void setShadowColor(const QColor& c);
+
+    QMargins getShadowMargin() const;
+    void setShadowMargin(const QMargins& m);
+
 protected:
     virtual bool event(QEvent*) override;
     virtual bool eventFilter(QObject*, QEvent*) override;
     virtual void paintEvent(QPaintEvent*) override;
-    virtual void actionEvent(QActionEvent*) override;
 
 private:
     Q_DISABLE_COPY(AMenu);
