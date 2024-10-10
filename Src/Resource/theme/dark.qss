@@ -209,14 +209,19 @@ QMenu {
     background-color: rgba(45, 45, 45, 100%);
     border-radius: 8px;
     margin: 2px 14px 26px 14px;
-    qproperty-shadowMargin: 2px 14px 26px 14px;
+}
+
+AMenu {
+    qproperty-shadowHMargin: 14px 14px;
+    qproperty-shadowVMargin: 2px 26px;
     qproperty-shadowRadius: 30;
     qproperty-shadowOffset: 0 6px;
     qproperty-shadowColor: rgba(0, 0, 0, 80%);
 }
 
 #aproch-menu-bg-panel {
-    background-color: transparent;
+    border-radius: 8px;
+    background-color: rgba(45, 45, 45, 100%);
 }
 
 QMenu::icon {

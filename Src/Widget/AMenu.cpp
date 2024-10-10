@@ -52,12 +52,16 @@ AMenu::AMenu(const QString& title, QWidget* parent)
     setWindowFlag(Qt::NoDropShadowWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_StyledBackground);
+    setAutoFillBackground(false);
 
-    d->shadow = new QGraphicsDropShadowEffect();
+    d->shadow = new QGraphicsDropShadowEffect(this);
     d->shadow->setBlurRadius(30);
     d->shadow->setOffset(0, 6);
     d->shadow->setColor(QColor(0, 0, 0, 80));
-    setShadowMargin(QMargins(14, 2, 14, 26));
+    //setGraphicsEffect(d->shadow);
+
+    setShadowHMargin(QSize(14, 14));
+    setShadowVMargin(QSize(2, 26));
 }
 
 AMenu::~AMenu()
@@ -107,19 +111,34 @@ void AMenu::setShadowColor(const QColor& c)
     d->shadow->setColor(c);
 }
 
-QMargins AMenu::getShadowMargin() const
+QSize AMenu::getShadowHMargin() const
 {
-    return d->shadowMargin;
+    return QSize(d->shadowMargin.left(), d->shadowMargin.right());
 }
 
-void AMenu::setShadowMargin(const QMargins& m)
+void AMenu::setShadowHMargin(const QSize& s)
 {
-    d->shadowMargin = m;
+    d->shadowMargin.setLeft(s.width());
+    d->shadowMargin.setRight(s.height());
 
-    // example: (14, 2, 14, 26) -> (0, -12, 0, 12)
-    const int h_2 = (m.left() + m.right()) / 2;
-    const int v_2 = (m.top() + m.bottom()) / 2;
-    setContentsMargins(m.left() - h_2, m.top() - v_2, m.right() - h_2, m.bottom() - v_2);
+    const QMargins cm = contentsMargins();
+    const int h_2 = (s.width() + s.height()) / 2;
+    setContentsMargins(s.width() - h_2, cm.top(), s.height() - h_2, cm.bottom());
+}
+
+QSize AMenu::getShadowVMargin() const
+{
+    return QSize(d->shadowMargin.top(), d->shadowMargin.bottom());
+}
+
+void AMenu::setShadowVMargin(const QSize& s)
+{
+    d->shadowMargin.setTop(s.width());
+    d->shadowMargin.setBottom(s.height());
+
+    const QMargins cm = contentsMargins();
+    const int v_2 = (s.width() + s.height()) / 2;
+    setContentsMargins(cm.left(), s.width() - v_2, cm.right(), s.height() - v_2);
 }
 
 void AMenu::paintEvent(QPaintEvent* e)
@@ -134,7 +153,7 @@ bool AMenu::event(QEvent* e)
     switch (e->type())
     {
 #ifdef Q_OS_WIN
-    case QEvent::WinIdChange:
+    /*case QEvent::WinIdChange:
     {
         static bool class_amended = false;
         HWND hwnd = reinterpret_cast<HWND>(winId());
@@ -146,7 +165,7 @@ bool AMenu::event(QEvent* e)
             ::SetClassLong(hwnd, GCL_STYLE, class_style);
         }
     }
-    break;
+    break;*/
 #endif
     case QEvent::Show:
     {

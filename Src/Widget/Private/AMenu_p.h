@@ -50,7 +50,6 @@ public:
     }
 
     AMenu* q = nullptr;
-    QWidget* rframe = nullptr;
     QGraphicsDropShadowEffect* shadow = nullptr;
     QMargins shadowMargin;
     bool isSetFrame = false;
