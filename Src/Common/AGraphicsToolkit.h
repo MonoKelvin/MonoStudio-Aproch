@@ -66,6 +66,14 @@ public:
     /** @brief 将字体绘制到图片上 */
     static QPixmap drawFontToPixmap(const QFont& font, const QSize& size = QSize(16, 16),
                                     int ptSize = 13, const QString& text = QString(QLatin1Char('A')));
+
+    /** @brief 绘制矩形阴影 */
+    static void drawShadow(QPainter* painter, 
+                           const QSize& size,
+                           qreal blurRadius, 
+                           const QPointF& offset, 
+                           const QColor& color,
+                           const SCornerF& borderRadius = SCornerF());
 };
 
 APROCH_NAMESPACE_END

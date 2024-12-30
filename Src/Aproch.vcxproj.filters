@@ -75,6 +75,9 @@
     <Filter Include="Widget\TextEditor">
       <UniqueIdentifier>{35ba9d54-049b-4193-9d2e-f4e128d03917}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Private">
+      <UniqueIdentifier>{449c240b-b6ef-43d2-84d2-5b058bb8654f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainWindow.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="Widget\Private\AMenu_p.h">
       <Filter>Widget\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Private\AGraphicsHelper_p.h">
+      <Filter>Common\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -498,6 +504,9 @@
     </ClCompile>
     <ClCompile Include="Widget\Style\AWinUIStyle.cpp">
       <Filter>Widget\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Private\AGraphicsHelper_p.cpp">
+      <Filter>Common\Private</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AMenu.cpp">
       <Filter>Widget</Filter>

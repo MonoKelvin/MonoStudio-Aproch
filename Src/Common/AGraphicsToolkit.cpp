@@ -28,6 +28,7 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AGraphicsToolkit.h"
+#include "Private/AGraphicsHelper_p.h"
 
 #include <QPainterPath>
 #include <QCoreApplication>
@@ -230,6 +231,58 @@ QPixmap AGraphicsToolkit::drawFontToPixmap(const QFont& font, const QSize& size,
     p.drawText(QRect(QPoint(0, 0), size), text, t);
 
     return QPixmap::fromImage(img);
+}
+
+void AGraphicsToolkit::drawShadow(QPainter* painter, const QSize& size, qreal blurRadius, 
+                                  const QPointF& offset, const QColor& color, const SCornerF& borderRadius)
+{
+    if (!painter)
+        return;
+
+    painter->save();
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setRenderHint(QPainter::SmoothPixmapTransform);
+
+    QPixmap px(size);
+    px.fill(Qt::transparent);
+
+    QPainter tp(&px);
+    tp.setBrush(Qt::black);
+    tp.setPen(Qt::NoPen);
+    QPainterPath path;
+    QRectF tpRect(blurRadius - offset.x(), blurRadius - offset.y(),
+                 size.width() - 2 * blurRadius, size.height() - 2 * blurRadius);
+    drawRoundedRect(path, tpRect, borderRadius);
+    tp.drawPath(path);
+
+    QImage tmp(px.size(), QImage::Format_ARGB32_Premultiplied);
+    tmp.setDevicePixelRatio(px.devicePixelRatio());
+    tmp.fill(0);
+    QPainter tmpPainter(&tmp);
+    tmpPainter.setCompositionMode(QPainter::CompositionMode_Source);
+    tmpPainter.drawPixmap(offset, px);
+    tmpPainter.end();
+
+    // blur the alpha channel
+    QImage blurred(tmp.size(), QImage::Format_ARGB32_Premultiplied);
+    blurred.setDevicePixelRatio(px.devicePixelRatio());
+    blurred.fill(0);
+    QPainter blurPainter(&blurred);
+    qt_blurImage(&blurPainter, tmp, blurRadius, false, true);
+    blurPainter.end();
+
+    tmp = std::move(blurred);
+
+    // blacken the image...
+    tmpPainter.begin(&tmp);
+    tmpPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    tmpPainter.fillRect(tmp.rect(), color);
+    tmpPainter.end();
+
+    // draw the blurred drop shadow...
+    painter->drawImage(QPoint(0, 0), tmp);
+
+    painter->restore();
 }
 
 APROCH_NAMESPACE_END

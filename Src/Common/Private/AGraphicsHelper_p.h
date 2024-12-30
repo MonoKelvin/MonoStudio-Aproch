@@ -1,6 +1,6 @@
-/****************************************************************************
- * @file    AMenu_p.h
- * @date    2024-10-05 
+﻿/****************************************************************************
+ * @file    AGraphicsHelper_p.h
+ * @date    2024-12-30 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,37 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-#include <QtWidgets/private/qwidget_p.h>
-#include <QtWidgets/private/qmenu_p.h>
-#include <qpa/qplatformmenu.h>
-
-class QEventLoop;
+#include "AprochGlobal.h"
 
 APROCH_NAMESPACE_BEGIN
 
-class AMenu;
-
-class AMenuPrivate
-{
-public:
-    AMenuPrivate(AMenu* q_ptr) 
-        : q(q_ptr)
-    {
-    }
-
-    ~AMenuPrivate()
-    {
-    }
-
-    void updateContentMargins();
-
-    AMenu* q = nullptr;
-    qreal shadowRadius = 0.0;
-    QSize shadowOffset;
-    QColor shadowColor;
-    QSize shadowTopRadius;
-    QSize shadowBottomRadius;
-    bool isSetFrame = false;
-};
+void qt_blurImage(QPainter* p, QImage& blurImage, qreal radius, bool quality, bool alphaOnly, int transposed = 0);
 
 APROCH_NAMESPACE_END

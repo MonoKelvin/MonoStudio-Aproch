@@ -38,11 +38,12 @@ class AMenuPrivate;
 class APROCH_API AMenu : public QMenu
 {
     Q_OBJECT;
+    Q_PROPERTY(int iconSize READ getIconSize WRITE setIconSize);
     Q_PROPERTY(qreal shadowRadius READ getShadowRadius WRITE setShadowRadius);
     Q_PROPERTY(QSize shadowOffset READ getShadowOffset WRITE setShadowOffset);
     Q_PROPERTY(QColor shadowColor READ getShadowColor WRITE setShadowColor);
-    Q_PROPERTY(QSize shadowHMargin READ getShadowHMargin WRITE setShadowHMargin);
-    Q_PROPERTY(QSize shadowVMargin READ getShadowVMargin WRITE setShadowVMargin);
+    Q_PROPERTY(QSize shadowTopRadius READ getShadowTopRadius WRITE setShadowTopRadius);
+    Q_PROPERTY(QSize shadowBottomRadius READ getShadowBottomRadius WRITE setShadowBottomRadius);
 public:
     explicit AMenu(QWidget* parent = nullptr);
     explicit AMenu(const QString& title, QWidget* parent = nullptr);
@@ -50,6 +51,9 @@ public:
 
     AMenu* addMenu();
     AMenu* addMenu(const QString& title);
+
+    int getIconSize() const;
+    void setIconSize(int s);
 
     qreal getShadowRadius() const;
     void setShadowRadius(qreal r);
@@ -60,11 +64,11 @@ public:
     QColor getShadowColor() const;
     void setShadowColor(const QColor& c);
 
-    QSize getShadowHMargin() const;
-    void setShadowHMargin(const QSize& s);
+    QSize getShadowTopRadius() const;
+    void setShadowTopRadius(const QSize& s);
 
-    QSize getShadowVMargin() const;
-    void setShadowVMargin(const QSize& s);
+    QSize getShadowBottomRadius() const;
+    void setShadowBottomRadius(const QSize& s);
 
 protected:
     virtual bool event(QEvent*) override;

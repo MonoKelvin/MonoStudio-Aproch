@@ -156,6 +156,7 @@
     <ClCompile Include="Common\AReflection.cpp" />
     <ClCompile Include="Common\AStringToolkit.cpp" />
     <ClCompile Include="Common\ATimeToolkit.cpp" />
+    <ClCompile Include="Common\Private\AGraphicsHelper_p.cpp" />
     <ClCompile Include="Data\AAbstractDataManager.cpp" />
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Private\AHotKey_win.cpp" />
@@ -201,6 +202,7 @@
     <QtMoc Include="Widget\AButton.h" />
     <QtMoc Include="Widget\AIconButton.h" />
     <QtMoc Include="Widget\AMenu.h" />
+    <ClInclude Include="Common\Private\AGraphicsHelper_p.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\AMenu_p.h" />

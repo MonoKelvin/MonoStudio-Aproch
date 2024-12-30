@@ -36,8 +36,42 @@
 #include <QWidgetAction>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
+#include <QCommonStyle>
 
 APROCH_NAMESPACE_BEGIN
+
+class AMenuStyle : public QProxyStyle
+{
+public:
+    AMenuStyle(int size)
+        : QProxyStyle()
+        , iconSize(size)
+    {
+    }
+
+    int pixelMetric(PixelMetric metric, const QStyleOption* option, const QWidget* widget) const override
+    {
+        if (metric == QStyle::PM_SmallIconSize)
+        {
+            return iconSize;
+        }
+
+        return QCommonStyle::pixelMetric(metric, option, widget);
+    }
+
+    int iconSize;
+};
+
+void AMenuPrivate::updateContentMargins()
+{
+    const int l = shadowRadius - shadowOffset.width();
+    const int r = shadowRadius + shadowOffset.width();
+    const int t = shadowRadius - shadowOffset.height();
+    const int b = shadowRadius + shadowOffset.height();
+    const int h_2 = (l + r) / 2;
+    const int v_2 = (t + b) / 2;
+    q->setContentsMargins(l - h_2, t - v_2, r - h_2, b - v_2);
+}
 
 AMenu::AMenu(QWidget* parent)
     : AMenu(QString(), parent)
@@ -54,14 +88,9 @@ AMenu::AMenu(const QString& title, QWidget* parent)
     setAttribute(Qt::WA_StyledBackground);
     setAutoFillBackground(false);
 
-    d->shadow = new QGraphicsDropShadowEffect(this);
-    d->shadow->setBlurRadius(30);
-    d->shadow->setOffset(0, 6);
-    d->shadow->setColor(QColor(0, 0, 0, 80));
-    //setGraphicsEffect(d->shadow);
-
-    setShadowHMargin(QSize(14, 14));
-    setShadowVMargin(QSize(2, 26));
+    AMenuStyle* menuStyle = new AMenuStyle(AFontIcon::DefaultIconSize.width());
+    menuStyle->setParent(this);
+    setStyle(menuStyle);
 }
 
 AMenu::~AMenu()
@@ -80,70 +109,83 @@ AMenu* AMenu::addMenu(const QString& title)
     return menuAction->menu<AMenu*>();
 }
 
+int AMenu::getIconSize() const
+{
+    AMenuStyle* menuStyle = findChild<AMenuStyle*>();
+    if (menuStyle)
+        return menuStyle->iconSize;
+
+    return AFontIcon::DefaultIconSize.width();
+}
+
+void AMenu::setIconSize(int s)
+{
+    AMenuStyle* menuStyle = findChild<AMenuStyle*>();
+    if (menuStyle)
+        menuStyle->iconSize = s;
+}
+
 qreal AMenu::getShadowRadius() const
 {
-    return d->shadow->blurRadius();
+    return d->shadowRadius;
 }
 
 void AMenu::setShadowRadius(qreal r)
 {
-    d->shadow->setBlurRadius(r);
+    d->shadowRadius = r;
+    d->updateContentMargins();
 }
 
 QSize AMenu::getShadowOffset() const
 {
-    QPointF o = d->shadow->offset();
-    return QSize(o.x(), o.y());
+    return QSize(d->shadowOffset);
 }
 
 void AMenu::setShadowOffset(const QSize& offset)
 {
-    d->shadow->setOffset(offset.width(), offset.height());
+    d->shadowOffset = offset;
+    d->updateContentMargins();
 }
 
 QColor AMenu::getShadowColor() const
 {
-    return d->shadow->color();
+    return d->shadowColor;
 }
 
 void AMenu::setShadowColor(const QColor& c)
 {
-    d->shadow->setColor(c);
+    d->shadowColor = c;
 }
 
-QSize AMenu::getShadowHMargin() const
+QSize AMenu::getShadowTopRadius() const
 {
-    return QSize(d->shadowMargin.left(), d->shadowMargin.right());
+    return d->shadowTopRadius;
 }
 
-void AMenu::setShadowHMargin(const QSize& s)
+void AMenu::setShadowTopRadius(const QSize& s)
 {
-    d->shadowMargin.setLeft(s.width());
-    d->shadowMargin.setRight(s.height());
-
-    const QMargins cm = contentsMargins();
-    const int h_2 = (s.width() + s.height()) / 2;
-    setContentsMargins(s.width() - h_2, cm.top(), s.height() - h_2, cm.bottom());
+    d->shadowTopRadius = s;
 }
 
-QSize AMenu::getShadowVMargin() const
+QSize AMenu::getShadowBottomRadius() const
 {
-    return QSize(d->shadowMargin.top(), d->shadowMargin.bottom());
+    return d->shadowBottomRadius;
 }
 
-void AMenu::setShadowVMargin(const QSize& s)
+void AMenu::setShadowBottomRadius(const QSize& s)
 {
-    d->shadowMargin.setTop(s.width());
-    d->shadowMargin.setBottom(s.height());
-
-    const QMargins cm = contentsMargins();
-    const int v_2 = (s.width() + s.height()) / 2;
-    setContentsMargins(cm.left(), s.width() - v_2, cm.right(), s.height() - v_2);
+    d->shadowBottomRadius = s;
 }
 
-void AMenu::paintEvent(QPaintEvent* e)
+void AMenu::paintEvent(QPaintEvent* evt)
 {
-    return QMenu::paintEvent(e);
+    QPainter painter(this);
+    SCornerF borderRadius(d->shadowTopRadius.width(), d->shadowTopRadius.height(),
+                          d->shadowBottomRadius.width(), d->shadowBottomRadius.height());
+    const QPointF offset(d->shadowOffset.width(), d->shadowOffset.height());
+    AGraphicsToolkit::drawShadow(&painter, size(), d->shadowRadius, offset, d->shadowColor, borderRadius);
+
+    QMenu::paintEvent(evt);
 }
 
 bool AMenu::event(QEvent* e)
@@ -152,24 +194,28 @@ bool AMenu::event(QEvent* e)
 
     switch (e->type())
     {
-#ifdef Q_OS_WIN
-    /*case QEvent::WinIdChange:
-    {
-        static bool class_amended = false;
-        HWND hwnd = reinterpret_cast<HWND>(winId());
-        if (class_amended == false)
-        {
-            class_amended = true;
-            DWORD class_style = ::GetClassLong(hwnd, GCL_STYLE);
-            class_style &= ~CS_DROPSHADOW;
-            ::SetClassLong(hwnd, GCL_STYLE, class_style);
-        }
-    }
-    break;*/
-#endif
     case QEvent::Show:
     {
-        setGeometry(x() - d->shadowMargin.left(), y() - d->shadowMargin.top(), width(), height());
+        // 默认弹出的菜单由于有阴影会有偏差，所以显示的时候进行位置矫正，点击时鼠标位置下就是菜单左上角的位置
+        int newX = 0, newY = 0;
+        if (x() < QCursor::pos().x())
+            newX = x() + (d->shadowRadius + d->shadowOffset.width());
+        else
+            newX = x() - (d->shadowRadius - d->shadowOffset.width());
+        const bool rootMenu = nullptr == qobject_cast<QMenu*>(parentWidget());    // 一级菜单
+        if (y() < QCursor::pos().y() && rootMenu)
+            newY = y() + (d->shadowRadius + d->shadowOffset.height());
+        else if (rootMenu)
+            newY = y() - (d->shadowRadius - d->shadowOffset.height());
+        else 
+            newY = y();
+        setGeometry(newX, newY, width(), height());
+
+        // 有子菜单的情况增加展出箭头的间距
+        if (findChildren<QMenu*>().isEmpty())
+            setStyleSheet("QMenu::item{padding: 0px 10px 0px 10px;}");  // TODO: 不要写死大小
+        else
+            setStyleSheet("QMenu::item{padding: 0px 30px 0px 10px;}");
     }
     break;
     default:

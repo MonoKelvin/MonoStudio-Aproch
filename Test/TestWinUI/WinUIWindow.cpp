@@ -15,10 +15,40 @@
 #include <QMenuBar>
 #include <QActionGroup>
 #include <QDialog>
+#include <QFontComboBox>
 
 #include <QWindowKit/QWKWidgets/widgetwindowagent.h>
 
 using namespace aproch;
+
+#ifdef _DEBUG
+
+ShadowWidget::ShadowWidget(QWidget* parent)
+    : QDialog(parent)
+{ 
+    setWindowFlag(Qt::FramelessWindowHint);
+    setWindowFlag(Qt::NoDropShadowWindowHint);
+    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_StyledBackground);
+}
+
+void ShadowWidget::paintEvent(QPaintEvent* evt)
+{
+    qreal blurRadius = 30.0;
+    QPointF offset(0, 6.0);
+    QColor shadowColor(8, 12, 20, 80);
+    SCornerF borderRadius = { 12 };
+
+    QPainter p(this);
+    AGraphicsToolkit::drawShadow(&p, size(), blurRadius, offset, shadowColor, borderRadius);
+
+    p.setBrush(Qt::lightGray);
+    p.setPen(Qt::NoPen);
+    p.drawRoundedRect(blurRadius - offset.x(), blurRadius - offset.y(),
+                       width() - 2 * blurRadius, height() - 2 * blurRadius, 12, 12);
+}
+
+#endif
 
 WinUIWindow::WinUIWindow(QWidget *parent)
     : aproch::AWindow(parent)
@@ -124,28 +154,40 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     tb111->setPlaceholderText(AStr("placeholder text"));
     theLayout->addWidget(tb111);*/
 
+    QBoxLayout* cbLayout = new QBoxLayout(QBoxLayout::LeftToRight, cw);
+    theLayout->addLayout(cbLayout);
+    {
+        QFontComboBox* fc = new QFontComboBox(cw);
+        cbLayout->addWidget(fc);
+        aproch::AFontSizeComboBox* fsc = new aproch::AFontSizeComboBox(cw);
+        cbLayout->addWidget(fsc);
+    }
+
+    QBoxLayout* abLayout = new QBoxLayout(QBoxLayout::LeftToRight, cw);
+    theLayout->addLayout(abLayout);
     {
         aproch::AButton* ab111 = new aproch::AButton(AStr("Button"), this);
-        theLayout->addWidget(ab111);
+        abLayout->addWidget(ab111);
 
         aproch::AButton* ab112 = new aproch::AButton(AStr("Checked Button"), this);
         ab112->setCheckable(true);
         ab112->setChecked(true);
-        theLayout->addWidget(ab112);
+        abLayout->addWidget(ab112);
 
         aproch::AButton* ab113 = new aproch::AButton(AStr("Disabled AButton"), this);
         ab113->setEnabled(false);
-        theLayout->addWidget(ab113);
+        abLayout->addWidget(ab113);
 
         aproch::AButton* ab114 = new aproch::AButton(AStr("Disabled Checked Button"), this);
         ab114->setCheckable(true);
         ab114->setChecked(true);
         ab114->setEnabled(false);
-        theLayout->addWidget(ab114);
+        abLayout->addWidget(ab114);
 
 
         aproch::AMenu* m1 = new aproch::AMenu(ab111);
         auto act1 = m1->addAction(AStr("Action1"));
+        act1->setIcon(AFontIcon::icon("\uE705"));
         act1->setShortcut(Qt::CTRL | Qt::Key_F1); 
         auto act2 = m1->addAction(AStr("Action2"));
         act2->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
@@ -155,9 +197,12 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         QActionGroup* ag1 = new QActionGroup(m1);
         ag1->setExclusive(true);
         auto act3 = m1->addAction(AStr("Checked Action1"));
+        //act3->setIcon(AFontIcon::icon("\uE77E")); // 不能设置图标，否则会占用互斥勾选的小部件
+        act3->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_M);
         act3->setCheckable(true);
         act3->setActionGroup(ag1);
         auto act4 = m1->addAction(AStr("Checked Action2"));
+        //act4->setIcon(AFontIcon::icon("\uE77A"));
         act4->setCheckable(true);
         act4->setChecked(true);
         act4->setActionGroup(ag1);
@@ -166,8 +211,17 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         act5->setEnabled(false);
 
         auto m11 = m1->addMenu(AStr("Actions"));
+        m11->setIcon(AFontIcon::icon("\uE838"));
         m11->addAction(AStr("Sub Action1"));
         m11->addAction(AStr("Sub Action2"));
+        auto m21 = m11->addMenu(AStr("Sub Menu2"));
+        m21->setIcon(AFontIcon::icon("\uE7F1"));
+        m21->addAction(AStr("SubSubAction1"));
+        m21->addAction(AStr("SubSubAction2"));
+        m21->addAction(AStr("SubSubAction3"));
+        m11->addAction(AStr("Sub Action4"));
+        m11->addAction(AStr("Sub Action5"));
+        m11->addAction(AStr("Sub Action6"));
         
         //ab111->setMenu(m1);
         connect(ab111, &QPushButton::clicked, [m1]() {
@@ -177,22 +231,27 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 
     {
         aproch::AIconButton* aib1 = new aproch::AIconButton(AStr("\uE8F4"), this);
-        theLayout->addWidget(aib1);
+        connect(aib1, &aproch::AIconButton::clicked, [=]() {
+            ShadowWidget s;
+            s.resize(200, 200);
+            s.exec();
+        });
+        abLayout->addWidget(aib1);
 
         aproch::AIconButton* aib2 = new aproch::AIconButton(AStr("\uE713"), this);
         aib2->setCheckable(true);
         aib2->setChecked(true);
-        theLayout->addWidget(aib2);
+        abLayout->addWidget(aib2);
 
         aproch::AIconButton* aib3 = new aproch::AIconButton(AStr("\uE8F4"), this);
         aib3->setEnabled(false);
-        theLayout->addWidget(aib3);
+        abLayout->addWidget(aib3);
 
         aproch::AIconButton* aib4 = new aproch::AIconButton(AStr("\uE713"), this);
         aib4->setCheckable(true);
         aib4->setChecked(true);
         aib4->setEnabled(false);
-        theLayout->addWidget(aib4);
+        abLayout->addWidget(aib4);
     }
 
     QPushButton* pb111 = new QPushButton(AStr("按钮QPushButton001"), this);
