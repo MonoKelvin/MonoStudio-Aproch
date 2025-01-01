@@ -48,6 +48,7 @@
 #include "AButton.h"
 #include "AIconButton.h"
 #include "AMenu.h"
+#include "AComboBox.h"
 
 #include "TextEditor/AFontSizeComboBox.h"
 #include "TextEditor/ATextEditor.h"
@@ -59,3 +60,5 @@
 #include "Style/AWinUIStyle.h"
 #include "Style/ATheme.h"
 #include "Style/AWinUIStyleHelper.h"
+
+#include "Animation/ADropDownAnimation.h"

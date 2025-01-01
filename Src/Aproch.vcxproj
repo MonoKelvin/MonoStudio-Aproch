@@ -161,6 +161,7 @@
     <ClCompile Include="Data\AData.cpp" />
     <ClCompile Include="Private\AHotKey_win.cpp" />
     <ClCompile Include="Widget\AButton.cpp" />
+    <ClCompile Include="Widget\AComboBox.cpp" />
     <ClCompile Include="Widget\AFontIcon.cpp" />
     <ClCompile Include="Widget\AIconButton.cpp" />
     <ClCompile Include="Widget\AIndicatorBar.cpp" />
@@ -170,6 +171,12 @@
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
+    <QtMoc Include="Widget\Animation\ADropDownAnimation.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </QtMoc>
     <ClCompile Include="Widget\ASplitterHandle.cpp" />
     <ClCompile Include="Widget\AStaticTrackBar.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp" />
@@ -178,7 +185,12 @@
     <ClCompile Include="Widget\Private\ANavigationPanel.cpp" />
     <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp" />
     <ClCompile Include="Widget\Style\AWinUIStyle.cpp" />
-    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp" />
+    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="Widget\TextEditor\ATextEditor.cpp" />
     <ClCompile Include="WinUI\AWinUIApplication.cpp" />
     <ClCompile Include="WinUI\AWinUIPlugin.cpp">
@@ -203,6 +215,8 @@
     <QtMoc Include="Widget\AIconButton.h" />
     <QtMoc Include="Widget\AMenu.h" />
     <ClInclude Include="Common\Private\AGraphicsHelper_p.h" />
+    <QtMoc Include="Widget\AComboBox.h" />
+    <ClInclude Include="Widget\Animation\ADropDownAnimation.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\AMenu_p.h" />

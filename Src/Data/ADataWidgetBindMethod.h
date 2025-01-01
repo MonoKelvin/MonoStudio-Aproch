@@ -47,17 +47,21 @@ class ADWBindParameter
 {
 public:
     ADWBindParameter()
-        : ADWBindParameter(nullptr, nullptr, QString(), EDataBindType::None)
+        : ADWBindParameter(nullptr, nullptr, QString(), EDataBindType::None, true)
     {
     }
 
-    ADWBindParameter(AData* data, QWidget* widget, const QString& propName = QString(), EDataBindType type = EDataBindType::TwoWay)
-        : m_data(data), m_widget(widget), m_propName(propName), m_type(type)
+    ADWBindParameter(AData* data, 
+                     QWidget* widget, 
+                     const QString& propName = QString(), 
+                     EDataBindType type = EDataBindType::TwoWay,
+                     bool useBaseBindMethod = true)
+        : m_data(data), m_widget(widget), m_propName(propName), m_type(type), m_useBaseBindMethod(useBaseBindMethod)
     {
     }
 
     ADWBindParameter(const ADWBindParameter& other)
-        : ADWBindParameter(other.m_data, other.m_widget, other.m_propName, other.m_type)
+        : ADWBindParameter(other.m_data, other.m_widget, other.m_propName, other.m_type, other.m_useBaseBindMethod)
     {
     }
 
@@ -105,6 +109,16 @@ public:
         m_type = type;
     }
 
+    Q_ALWAYS_INLINE bool isUseBaseBindMethod() const noexcept
+    {
+        return m_useBaseBindMethod;
+    }
+
+    Q_ALWAYS_INLINE void setUseBaseBindMethod(bool use) noexcept
+    {
+        m_useBaseBindMethod = use;
+    }
+
     /** @brief 是否有效。数据源和控件对象都不为空 */
     Q_ALWAYS_INLINE bool isValid() const noexcept
     {
@@ -115,7 +129,8 @@ public:
     Q_ALWAYS_INLINE bool isEqual(const ADWBindParameter& other) const
     {
         return (m_data == other.m_data) && (m_widget == other.m_widget) &&
-            (m_propName == other.m_propName) && (m_type == other.m_type);
+            (m_propName == other.m_propName) && (m_type == other.m_type) && 
+            (m_useBaseBindMethod == other.m_useBaseBindMethod);
     }
 
     /** @brief 比较参数是否相等。判断时比较数据、控件和属性，不包括类型 */
@@ -135,6 +150,7 @@ public:
         m_widget = other.m_widget;
         m_propName = other.m_propName;
         m_type = other.m_type;
+        m_useBaseBindMethod = other.m_useBaseBindMethod;
         return *this;
     }
 
@@ -150,6 +166,13 @@ private:
 
     /** @brief 绑定类型 */
     EDataBindType m_type = EDataBindType::None;
+
+    /**
+     * @brief 未找到当前控件的绑定方法时，是否使用基类的绑定方法。如AComboBox继承QComboBox，
+     * 若只注册了QComboBox的绑定方法，当该值为false时，则给类型为AComboBox的控件绑定数据时将失败；
+     * 当该值为true时，会搜索基类QComboBox的绑定方法，再没找到则以此类推，直到成功或者失败。
+     */
+    bool m_useBaseBindMethod = true;
 };
 Q_DECLARE_METATYPE(ADWBindParameter);
 using ADWBindParameterList = QList<ADWBindParameter>;

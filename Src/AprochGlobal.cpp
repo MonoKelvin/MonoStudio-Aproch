@@ -107,6 +107,7 @@ const char* APropName_BtnType = "buttonType";
 const char* APropValue_TextBtn = "textButton";
 const char* APropName_WidgetType = "widgetType";
 const char* APropValue_Panel = "panel";
+const char* APropValue_Single = "single";
 
 QSize qBound(QSize minVal, QSize val, QSize maxVal)
 {

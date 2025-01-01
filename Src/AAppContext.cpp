@@ -182,7 +182,8 @@ int AAppContext::run(int argc, char* argv[])
 
     // 设置程序相关属性
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
-    
+    QApplication::setEffectEnabled(Qt::UI_AnimateCombo, false); // 仅用默认动画，使用自定义动画
+
     // 启用高DPI缩放
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);

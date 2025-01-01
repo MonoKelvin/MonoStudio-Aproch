@@ -78,6 +78,9 @@
     <Filter Include="Common\Private">
       <UniqueIdentifier>{449c240b-b6ef-43d2-84d2-5b058bb8654f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Widget\Animation">
+      <UniqueIdentifier>{0b97c938-e6af-4a99-b7fe-2e0f3f359aea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainWindow.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="Common\Private\AGraphicsHelper_p.h">
       <Filter>Common\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Animation\ADropDownAnimation.h">
+      <Filter>Widget\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -493,9 +499,6 @@
     <ClCompile Include="Widget\TextEditor\ATextEditor.cpp">
       <Filter>Widget\TextEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp">
-      <Filter>Widget\TextEditor</Filter>
-    </ClCompile>
     <ClCompile Include="Widget\AButton.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
@@ -509,6 +512,12 @@
       <Filter>Common\Private</Filter>
     </ClCompile>
     <ClCompile Include="Widget\AMenu.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp">
+      <Filter>Widget\TextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\AComboBox.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
   </ItemGroup>
@@ -638,6 +647,12 @@
     </QtMoc>
     <QtMoc Include="Widget\Style\AWinUIStyle.h">
       <Filter>Widget\Style</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AComboBox.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Animation\ADropDownAnimation.cpp">
+      <Filter>Widget\Animation</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

@@ -232,6 +232,7 @@ extern APROCH_API const char* APropName_BtnType;    // 按钮类型
 extern APROCH_API const char* APropValue_TextBtn;   // 文字按钮
 extern APROCH_API const char* APropName_WidgetType; // 控件类型
 extern APROCH_API const char* APropValue_Panel;     // 面板
+extern APROCH_API const char* APropValue_Single;    // 简单风格模式
 
 /** @brief 判断两个类是否有继承关系的静态断言 */
 #define APROCH_ASSERT_IS_DERIVED(_BaseName_, _DerivedName_) \

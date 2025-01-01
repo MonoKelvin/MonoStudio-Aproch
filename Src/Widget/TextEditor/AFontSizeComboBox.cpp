@@ -28,7 +28,7 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AFontSizeComboBox.h"
-#include <private/qcombobox_p.h>
+#include <QListView>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -42,18 +42,12 @@ public:
 };
 
 AFontSizeComboBox::AFontSizeComboBox(QWidget* parent)
-    : QComboBox(parent)
+    : AComboBox(parent)
     , d_ptr(new AFontSizeComboBoxPrivate())
 {
     for (int s : sFontSizeList)
         addItem(QString::number(s));
 
-    QListView* listView = new QListView(this);
-    setView(listView);
-
-    listView->window()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
-    listView->window()->setAttribute(Qt::WA_TranslucentBackground);
-    
     setCurrentFontSize(14); // = 10.5 = 五号
     setMaxVisibleItems(16);
     setMaxCount(sFontSizeList.size());

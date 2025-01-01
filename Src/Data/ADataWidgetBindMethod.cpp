@@ -206,7 +206,23 @@ bool ADataWidgetBindMethod::addBind(const ADWBindParameter& param)
     const char* widgetTypeName = param.getWidget()->metaObject()->className();
     ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
     if (!method)
-        return false;
+    {
+        if (param.isUseBaseBindMethod())
+        {
+            const QMetaObject* metaObj = param.getWidget()->metaObject()->superClass();
+            do
+            {
+                if (nullptr == metaObj)
+                    break;
+                const char* basicWidgetTypeName = metaObj->className();
+                method = getBindMethod(basicWidgetTypeName);
+                metaObj = metaObj->superClass();
+            } while (nullptr == method);
+        }
+
+        if (!method)
+            return false;
+    }
 
     if (!method->checkBind(param))
         return false;
@@ -269,7 +285,20 @@ bool ADataWidgetBindMethod::removeBind(AData* data, QWidget* widget, const QStri
     const char* widgetTypeName = widget->metaObject()->className();
     ADataWidgetBindMethodPtr method = getBindMethod(widgetTypeName);
     if (!method)
-        return false;
+    {
+        const QMetaObject* metaObj = widget->metaObject()->superClass();
+        do
+        {
+            if (nullptr == metaObj)
+                break;
+            const char* basicWidgetTypeName = metaObj->className();
+            method = getBindMethod(basicWidgetTypeName);
+            metaObj = metaObj->superClass();
+        } while (nullptr == method);
+
+        if (!method)
+            return false;
+    }
 
     ADWBindParameter tmpParam(data, widget, propName);
     if (!tmpParam.isValid())

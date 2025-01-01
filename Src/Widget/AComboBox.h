@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    AFontSizeComboBox.h
- * @date    2024-08-18 
+ * @file    AComboBox.h
+ * @date    2024-12-31 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -28,34 +28,39 @@
  *****************************************************************************/
 #pragma once
 #include "AprochExportDefine.h"
-#include "Widget/AComboBox.h"
+#include <QComboBox>
 
 APROCH_NAMESPACE_BEGIN
 
-class AFontSizeComboBoxPrivate;
+class AComboBoxPrivate;
 
-class APROCH_API AFontSizeComboBox : public AComboBox
+class APROCH_API AComboBox : public QComboBox
 {
     Q_OBJECT;
-    Q_PROPERTY(int currentFontSize READ getCurrentFontSize WRITE setCurrentFontSize NOTIFY currentFontSizeChanged)
+    Q_PROPERTY(qreal shadowRadius READ getShadowRadius WRITE setShadowRadius);
+    Q_PROPERTY(QSize shadowOffset READ getShadowOffset WRITE setShadowOffset);
+    Q_PROPERTY(QColor shadowColor READ getShadowColor WRITE setShadowColor);
 public:
-    explicit AFontSizeComboBox(QWidget* parent = nullptr);
-    ~AFontSizeComboBox();
+    explicit AComboBox(QWidget* parent = nullptr);
+    ~AComboBox();
 
-    int getCurrentFontSize() const;
+    qreal getShadowRadius() const;
+    void setShadowRadius(qreal r);
 
-Q_SIGNALS:
-    void currentFontSizeChanged(int s);
+    QSize getShadowOffset() const;
+    void setShadowOffset(const QSize& offset);
 
-public Q_SLOTS:
-    void setCurrentFontSize(int s);
+    QColor getShadowColor() const;
+    void setShadowColor(const QColor& c);
 
-private Q_SLOTS:
-    void _currentTextChanged(const QString&);
+protected:
+    virtual bool eventFilter(QObject*, QEvent*) override;
 
 private:
-    Q_DISABLE_COPY(AFontSizeComboBox);
-    QSharedPointer<AFontSizeComboBoxPrivate> d_ptr;
+    Q_DISABLE_COPY(AComboBox);
+    friend class AComboBoxPrivate;
+    QSharedPointer<AComboBoxPrivate> d;
 };
+
 
 APROCH_NAMESPACE_END

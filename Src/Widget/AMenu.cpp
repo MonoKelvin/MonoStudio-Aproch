@@ -190,39 +190,116 @@ void AMenu::paintEvent(QPaintEvent* evt)
 
 bool AMenu::event(QEvent* e)
 {
-    QMenu::event(e);
-
     switch (e->type())
     {
     case QEvent::Show:
     {
-        // 默认弹出的菜单由于有阴影会有偏差，所以显示的时候进行位置矫正，点击时鼠标位置下就是菜单左上角的位置
-        int newX = 0, newY = 0;
-        if (x() < QCursor::pos().x())
-            newX = x() + (d->shadowRadius + d->shadowOffset.width());
-        else
-            newX = x() - (d->shadowRadius - d->shadowOffset.width());
-        const bool rootMenu = nullptr == qobject_cast<QMenu*>(parentWidget());    // 一级菜单
-        if (y() < QCursor::pos().y() && rootMenu)
-            newY = y() + (d->shadowRadius + d->shadowOffset.height());
-        else if (rootMenu)
-            newY = y() - (d->shadowRadius - d->shadowOffset.height());
-        else 
-            newY = y();
-        setGeometry(newX, newY, width(), height());
+        // 默认弹出的菜单由于有阴影会有偏差，所以显示的时候进行位置矫正
+        const int dx = d->shadowRadius - d->shadowOffset.width();
+        const int dxRight = d->shadowRadius + d->shadowOffset.width();
+        const int dy = d->shadowRadius - d->shadowOffset.height();
+        const int dyBottom = d->shadowRadius + d->shadowOffset.height();
+        const QSize popup_size = sizeHint();
+        QWidget* pw = parentWidget();
 
+        QPoint pos;
+        bool defaultPopDown = true;
+        QRect adjustedActionRect;
+        QMenuBar* mb = qobject_cast<QMenuBar*>(pw);
+        QMenu* mm = qobject_cast<QMenu*>(pw);
+        if (mb)
+        {
+            adjustedActionRect = mb->actionGeometry(mb->activeAction());
+            defaultPopDown = !mb->isDefaultUp();
+            pos = mb->mapToGlobal(QPoint(adjustedActionRect.left(), adjustedActionRect.bottom()));
+        }
+        else if (mm)
+        {
+            adjustedActionRect = mm->actionGeometry(mm->activeAction());
+            pos = mm->mapToGlobal(QPoint(adjustedActionRect.right(), adjustedActionRect.top()));
+        }
+        else if (pw)
+        {
+            adjustedActionRect = pw->rect();
+            //pos = pw->mapToGlobal(QPoint(adjustedActionRect.left(), adjustedActionRect.top()));
+            pos = QCursor::pos();
+        }
+        else
+        {
+            adjustedActionRect = QRect(0, 0, width(), height());
+            pos = mapToGlobal(QPoint(adjustedActionRect.left(), adjustedActionRect.bottom()));
+        }
+
+        // we put the popup menu on the screen containing the bottom-center of the action rect
+        QScreen* menubarScreen = window()->windowHandle()->screen();
+        QScreen* popupScreen = menubarScreen->virtualSiblingAt(pos + QPoint(adjustedActionRect.width() / 2, 0));
+        if (!popupScreen)
+            popupScreen = menubarScreen;
+        QRect screenRect = popupScreen->geometry();
+        QPoint originPos = pos;
+        pos = QPoint(qMax(pos.x(), screenRect.x()), qMax(pos.y(), screenRect.y()));
+        const bool fitDown = (pos.y() + popup_size.height() - dyBottom - dy <= screenRect.bottom());
+        const bool fitRight = (pos.x() + popup_size.width() - dxRight - dx <= screenRect.right());
+
+        if (!fitRight)
+        {
+            if (mm)
+                pos.rx() = originPos.x() - adjustedActionRect.width() - popup_size.width() + dxRight;
+            else
+                pos.rx() = screenRect.right() - popup_size.width() + dxRight;
+        }
+        else
+        {
+            pos.rx() -= dx;
+        }
+
+        if (!defaultPopDown || !fitDown)
+            pos.ry() = screenRect.bottom() - popup_size.height() + dyBottom;
+        else
+            pos.ry() -= dy;
+        setGeometry(pos.x(), pos.y(), width(), height());
+        
         // 有子菜单的情况增加展出箭头的间距
         if (findChildren<QMenu*>().isEmpty())
             setStyleSheet("QMenu::item{padding: 0px 10px 0px 10px;}");  // TODO: 不要写死大小
         else
             setStyleSheet("QMenu::item{padding: 0px 30px 0px 10px;}");
     }
+        break;
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
+    case QEvent::MouseButtonDblClick:
+    case QEvent::MouseMove:
+    {
+        QMouseEvent* me = (QMouseEvent*)e;
+        const QPoint mpos = me->pos();
+        if ((mpos.x() < d->shadowRadius - d->shadowOffset.width()) ||
+            (mpos.x() > width() - d->shadowRadius - d->shadowOffset.width()) ||
+            (mpos.y() < d->shadowRadius - d->shadowOffset.height()) ||
+            (mpos.y() > height() - d->shadowRadius - d->shadowOffset.height()))
+        {
+            // 将事件传递给父控件
+            QWidget* pw = parentWidget();
+            if (pw)
+            {
+                QMouseEvent newEvent(me->type(),
+                                     pw->mapFromGlobal(mapToGlobal(me->pos())),
+                                     me->button(),
+                                     me->buttons(),
+                                     me->modifiers());
+                QCoreApplication::sendEvent(pw, &newEvent);
+            }
+
+            // 阻止事件进一步传播
+            return true;
+        }
+    }
     break;
     default:
         break;
     }
 
-    return false;
+    return QMenu::event(e);
 }
 
 bool AMenu::eventFilter(QObject* watched, QEvent* evt)

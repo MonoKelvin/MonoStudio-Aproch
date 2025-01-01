@@ -59,12 +59,12 @@ WinUIWindow::WinUIWindow(QWidget *parent)
             auto menuBar = new QMenuBar();
 
             // Virtual menu
-            auto file = new QMenu(tr("File(&F)"), menuBar);
+            auto file = new AMenu(tr("File(&F)"), menuBar);
             file->addAction(new QAction(tr("New(&N)"), menuBar));
             file->addAction(new QAction(tr("Open(&O)"), menuBar));
             file->addSeparator();
 
-            auto edit = new QMenu(tr("Edit(&E)"), menuBar);
+            auto edit = new AMenu(tr("Edit(&E)"), menuBar);
             edit->addAction(new QAction(tr("Undo(&U)"), menuBar));
             edit->addAction(new QAction(tr("Redo(&R)"), menuBar));
 
@@ -112,7 +112,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
 #endif
 
             // Real menu
-            auto settings = new QMenu(tr("Settings(&S)"), menuBar);
+            auto settings = new AMenu(tr("Settings(&S)"), menuBar);
 
 #ifdef Q_OS_WIN
             settings->addSeparator();
@@ -298,11 +298,11 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(spinBox005);
         theLayout->addItem(widgetLayout);
 
-        ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox001, QString(), EDataBindType::FirstTime));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox002, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox003, QString(), EDataBindType::OneWayRevise));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox004, QString(), EDataBindType::TwoWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(intData, spinBox005, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(intData, spinBox001, QString(), EDataBindType::FirstTime));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(intData, spinBox002, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(intData, spinBox003, QString(), EDataBindType::OneWayRevise));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(intData, spinBox004, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(intData, spinBox005, QString(), EDataBindType::TwoWay));
     }
 
     if (1)
@@ -325,11 +325,11 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(spinBox005);
         theLayout->addItem(widgetLayout);
 
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox001, QString(), EDataBindType::FirstTime));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox002, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox003, QString(), EDataBindType::OneWayRevise));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox004, QString(), EDataBindType::TwoWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dblData, spinBox005, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dblData, spinBox001, QString(), EDataBindType::FirstTime));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dblData, spinBox002, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dblData, spinBox003, QString(), EDataBindType::OneWayRevise));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dblData, spinBox004, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dblData, spinBox005, QString(), EDataBindType::TwoWay));
     }
 
     if (1)
@@ -351,11 +351,11 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(widget005);
         theLayout->addItem(widgetLayout);
 
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget003, QString(), EDataBindType::OneWayRevise));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget004, QString(), EDataBindType::TwoWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget003, QString(), EDataBindType::OneWayRevise));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget004, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
     }
 
     if (1)
@@ -377,11 +377,11 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(widget005);
         theLayout->addItem(widgetLayout);
 
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget003, QString(), EDataBindType::OneWayRevise));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget004, QString(), EDataBindType::TwoWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget003, QString(), EDataBindType::OneWayRevise));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget004, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
     }
 
     if (1)
@@ -403,11 +403,11 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(widget005);
         theLayout->addItem(widgetLayout);
 
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget003, QString(), EDataBindType::OneWayRevise));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget004, QString(), EDataBindType::TwoWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::FirstTime));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget003, QString(), EDataBindType::OneWayRevise));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget004, QString(), EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::TwoWay));
     }
 
     if (1)
@@ -438,11 +438,11 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         });
 
         QBoxLayout* widgetLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-        QWidget* widget001 = new QComboBox(this);
-        QWidget* widget002 = new QComboBox(this);
-        QWidget* widget003 = new QComboBox(this);
-        QWidget* widget004 = new QComboBox(this);
-        QWidget* widget005 = new QComboBox(this);
+        QWidget* widget001 = new AComboBox(this);
+        QWidget* widget002 = new AComboBox(this);
+        QWidget* widget003 = new AComboBox(this);
+        QWidget* widget004 = new AComboBox(this);
+        QWidget* widget005 = new AComboBox(this);
         widgetLayout->addWidget(widget001);
         widgetLayout->addWidget(widget002);
         widgetLayout->addWidget(widget003);
@@ -450,17 +450,17 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         widgetLayout->addWidget(widget005);
         theLayout->addItem(widgetLayout);
 
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget003, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget004, QString(), EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget001, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget002, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget003, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget004, QString(), EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(dt, widget005, QString(), EDataBindType::OneWay));
 
-        ASpinBoxBindMethod::addBind(ADWBindParameter(currentIndexDt, widget001, AComboBoxBindMethod::CurrentIndex, EDataBindType::FirstTime));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(currentIndexDt, widget002, AComboBoxBindMethod::CurrentIndex, EDataBindType::OneWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(currentIndexDt, widget003, AComboBoxBindMethod::CurrentIndex, EDataBindType::OneWayRevise));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(currentIndexDt, widget004, AComboBoxBindMethod::CurrentIndex, EDataBindType::TwoWay));
-        ASpinBoxBindMethod::addBind(ADWBindParameter(currentIndexDt, widget005, AComboBoxBindMethod::CurrentIndex, EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(currentIndexDt, widget001, AComboBoxBindMethod::CurrentIndex, EDataBindType::FirstTime));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(currentIndexDt, widget002, AComboBoxBindMethod::CurrentIndex, EDataBindType::OneWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(currentIndexDt, widget003, AComboBoxBindMethod::CurrentIndex, EDataBindType::OneWayRevise));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(currentIndexDt, widget004, AComboBoxBindMethod::CurrentIndex, EDataBindType::TwoWay));
+        ADataWidgetBindMethod::addBind(ADWBindParameter(currentIndexDt, widget005, AComboBoxBindMethod::CurrentIndex, EDataBindType::TwoWay));
     }
 }
 

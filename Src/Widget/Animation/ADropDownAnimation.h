@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    AFontSizeComboBox.h
- * @date    2024-08-18 
+ * @file    ADropDownAnimation.h
+ * @date    2025-01-01 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -28,34 +28,23 @@
  *****************************************************************************/
 #pragma once
 #include "AprochExportDefine.h"
-#include "Widget/AComboBox.h"
+
+class QWidget;
 
 APROCH_NAMESPACE_BEGIN
 
-class AFontSizeComboBoxPrivate;
-
-class APROCH_API AFontSizeComboBox : public AComboBox
+enum class EDropDownDirection
 {
-    Q_OBJECT;
-    Q_PROPERTY(int currentFontSize READ getCurrentFontSize WRITE setCurrentFontSize NOTIFY currentFontSizeChanged)
-public:
-    explicit AFontSizeComboBox(QWidget* parent = nullptr);
-    ~AFontSizeComboBox();
-
-    int getCurrentFontSize() const;
-
-Q_SIGNALS:
-    void currentFontSizeChanged(int s);
-
-public Q_SLOTS:
-    void setCurrentFontSize(int s);
-
-private Q_SLOTS:
-    void _currentTextChanged(const QString&);
-
-private:
-    Q_DISABLE_COPY(AFontSizeComboBox);
-    QSharedPointer<AFontSizeComboBoxPrivate> d_ptr;
+    Left = 0x0001,
+    Right = 0x0002,
+    Up = 0x0004,
+    Down = 0x0008,
 };
+Q_DECLARE_FLAGS(EDropDownDirectionFlags, EDropDownDirection)
+Q_DECLARE_OPERATORS_FOR_FLAGS(EDropDownDirectionFlags)
+
+extern void APROCH_API aDropDownEffect(QWidget* widget, 
+                                       EDropDownDirectionFlags orient = EDropDownDirection::Down,
+                                       int time = -1);
 
 APROCH_NAMESPACE_END
