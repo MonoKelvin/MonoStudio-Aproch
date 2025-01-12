@@ -461,6 +461,31 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         ADataWidgetBindMethod::addBind(ADWBindParameter(currentIndexDt, widget004, AComboBoxBindMethod::CurrentIndex, EDataBindType::TwoWay));
         ADataWidgetBindMethod::addBind(ADWBindParameter(currentIndexDt, widget005, AComboBoxBindMethod::CurrentIndex, EDataBindType::TwoWay));
     }
+
+    if (1)
+    {
+        QBoxLayout* tsLayout = new QBoxLayout(QBoxLayout::LeftToRight);
+        AToggleSwitch* ts1 = new AToggleSwitch(AStr("ON"), this);
+        ts1->setOffText(AStr("OFF"));
+        AToggleSwitch* ts2 = new AToggleSwitch(this);
+        AToggleSwitch* ts3 = new AToggleSwitch(AStr("disabled"), this);
+        ts3->setEnabled(false);
+        AToggleSwitch* ts4 = new AToggleSwitch(AStr("checked disabled"), this);
+        ts4->setChecked(true);
+        ts4->setEnabled(false);
+        AToggleSwitch* ts5 = new AToggleSwitch(AStr("Right To Left"), this);
+        ts5->setLayoutDirection(Qt::RightToLeft);
+        AToggleSwitch* ts6 = new AToggleSwitch(this);
+        ts6->setChecked(true);
+        tsLayout->addWidget(ts1);
+        tsLayout->addWidget(ts2);
+        tsLayout->addWidget(ts3);
+        tsLayout->addWidget(ts4);
+        tsLayout->addWidget(ts5);
+        tsLayout->addWidget(ts6);
+        tsLayout->addSpacerItem(new QSpacerItem(1,1, QSizePolicy::Expanding));
+        theLayout->addItem(tsLayout);
+    }
 }
 
 WinUIWindow::~WinUIWindow()

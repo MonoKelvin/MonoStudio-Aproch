@@ -74,6 +74,12 @@ public:
                            const QPointF& offset, 
                            const QColor& color,
                            const SCornerF& borderRadius = SCornerF());
+
+    /** @brief 获取风格样式的dpi缩放 */
+    static qreal dpi(const QStyleOption* option);
+
+    /** @brief 指定值在给定样式下的dpi缩放 */
+    static qreal dpiScaled(qreal value, const QStyleOption* option);
 };
 
 APROCH_NAMESPACE_END

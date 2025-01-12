@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    header.inc
- * @date    2024-07-13 
+ * @file    AToggleSwitch.h
+ * @date    2025-01-12 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,40 +27,41 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
+#include "AprochExportDefine.h"
+#include <QRadioButton>
 
-#include "AAbstractColorPicker.h"
-#include "AAvatar.h"
-#include "ACaptionBar.h"
-#include "AColorPickerIndicator.h"
-#include "AColorSliderControl.h"
-#include "AFlowLayout.h"
-#include "ANavigationBar.h"
-#include "APromptWidget.h"
-#include "AToolBar.h"
-#include "AVerticalLabel.h"
-#include "AWheelColorPicker.h"
-#include "AWheelColorPickerWidget.h"
-#include "AWidgetFactory.h"
-#include "AWindow.h"
-#include "ASplitterHandle.h"
-#include "AFontIcon.h"
-#include "AStaticTrackBar.h"
-#include "AButton.h"
-#include "AIconButton.h"
-#include "AMenu.h"
-#include "AComboBox.h"
-#include "AToggleSwitch.h"
+APROCH_NAMESPACE_BEGIN
 
-#include "TextEditor/AFontSizeComboBox.h"
-#include "TextEditor/AFontComboBox.h"
-#include "TextEditor/ATextEditor.h"
+class AToggleSwitchPrivate;
 
-#include "NavigationView/ANavigationPageView.h"
-#include "NavigationView/ANavigationView.h"
-#include "NavigationView/ANavigationMenuItem.h"
+class APROCH_API AToggleSwitch : public QRadioButton
+{
+    Q_OBJECT;
+    Q_PROPERTY(QString offText READ getOffText WRITE setOffText)
+public:
+    explicit AToggleSwitch(QWidget* parent = nullptr);
+    explicit AToggleSwitch(const QString& text, QWidget* parent = nullptr);
+    ~AToggleSwitch();
 
-#include "Style/AWinUIStyle.h"
-#include "Style/ATheme.h"
-#include "Style/AWinUIStyleHelper.h"
+    QString getOffText() const;
 
-#include "Animation/ADropDownAnimation.h"
+public Q_SLOTS:
+    void setOffText(const QString& offText);
+
+protected:
+    virtual QSize sizeHint() const override;
+    virtual void paintEvent(QPaintEvent*) override;
+    virtual bool event(QEvent*) override;
+    virtual bool eventFilter(QObject*, QEvent*) override;
+
+private Q_SLOTS:
+    void onToggled(bool toggled);
+
+protected:
+    AToggleSwitchPrivate* d = nullptr;
+
+private:
+    Q_DISABLE_COPY(AToggleSwitch);
+};
+
+APROCH_NAMESPACE_END

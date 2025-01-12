@@ -523,6 +523,9 @@
     <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp">
       <Filter>Widget\TextEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\AToggleSwitch.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ADocFile.h">
@@ -662,6 +665,12 @@
     </QtMoc>
     <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h">
       <Filter>Widget\TextEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\AToggleSwitch.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\Private\AToggleSwitch_p.h">
+      <Filter>Widget\Private</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

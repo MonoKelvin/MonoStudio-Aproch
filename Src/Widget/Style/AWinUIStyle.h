@@ -50,6 +50,7 @@ public:
                             QPainter* painter, const QWidget* widget = nullptr) const override;
     int pixelMetric(PixelMetric pm, const QStyleOption* opt, const QWidget* widget) const override;
     QPalette standardPalette() const override;
+    QRect subElementRect(SubElement element, const QStyleOption* option, const QWidget* widget) const override;
 
 private:
     Q_DISABLE_COPY_MOVE(AWinUIStyle);

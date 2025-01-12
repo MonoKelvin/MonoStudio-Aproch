@@ -32,6 +32,7 @@
 
 #include <QPainterPath>
 #include <QCoreApplication>
+#include <QGuiApplication>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -283,6 +284,56 @@ void AGraphicsToolkit::drawShadow(QPainter* painter, const QSize& size, qreal bl
     painter->drawImage(QPoint(0, 0), tmp);
 
     painter->restore();
+}
+
+const bool qt_is_tty_app = false;
+
+#ifdef Q_OS_DARWIN
+static const qreal qstyleBaseDpi = 72;
+#else
+static const qreal qstyleBaseDpi = 96;
+#endif
+
+int qt_defaultDpiX()
+{
+    if (QCoreApplication::instance()->testAttribute(Qt::AA_Use96Dpi))
+        return 96;
+
+    if (qt_is_tty_app)
+        return 75;
+
+    if (const QScreen* screen = QGuiApplication::primaryScreen())
+        return qRound(screen->logicalDotsPerInchX());
+
+    //PI has not been initialised, or it is being initialised. Give a default dpi
+    return 100;
+}
+
+qreal AGraphicsToolkit::dpi(const QStyleOption* option)
+{
+#ifndef Q_OS_DARWIN
+    // Prioritize the application override, except for on macOS where
+    // we have historically not supported the AA_Use96Dpi flag.
+    if (QCoreApplication::testAttribute(Qt::AA_Use96Dpi))
+        return 96;
+#endif
+
+    // Expect that QStyleOption::QFontMetrics::QFont has the correct DPI set
+    if (option)
+        return option->fontMetrics.fontDpi();
+
+    // Fall back to historical Qt behavior: hardocded 72 DPI on mac,
+    // primary screen DPI on other platforms.
+#ifdef Q_OS_DARWIN
+    return qstyleBaseDpi;
+#else
+    return qt_defaultDpiX();
+#endif
+}
+
+qreal AGraphicsToolkit::dpiScaled(qreal value, const QStyleOption* option)
+{
+    return value * dpi(option) / qstyleBaseDpi;
 }
 
 APROCH_NAMESPACE_END

@@ -179,6 +179,12 @@
     </QtMoc>
     <ClCompile Include="Widget\ASplitterHandle.cpp" />
     <ClCompile Include="Widget\AStaticTrackBar.cpp" />
+    <ClCompile Include="Widget\AToggleSwitch.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="Widget\NavigationView\ANavigationPageView.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationView.cpp" />
     <ClCompile Include="Widget\NavigationView\ANavigationMenuItem.cpp" />
@@ -218,6 +224,7 @@
     <ClInclude Include="Common\Private\AGraphicsHelper_p.h" />
     <QtMoc Include="Widget\AComboBox.h" />
     <ClInclude Include="Widget\Animation\ADropDownAnimation.h" />
+    <QtMoc Include="Widget\AToggleSwitch.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
     <ClInclude Include="Widget\Private\AComboBox_p.h" />
@@ -225,6 +232,7 @@
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />
     <ClInclude Include="Widget\Private\ANavigationView_p.h" />
     <ClInclude Include="Widget\Private\ATextEditor_p.h" />
+    <QtMoc Include="Widget\Private\AToggleSwitch_p.h" />
     <ClInclude Include="Widget\Style\AWidgetStyleDecoration.h" />
     <QtMoc Include="Widget\TextEditor\ATextEditor.h" />
     <QtMoc Include="Widget\Style\AWinUIStyle.h" />
