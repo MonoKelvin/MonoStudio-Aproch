@@ -182,7 +182,6 @@ int AAppContext::run(int argc, char* argv[])
 
     // 设置程序相关属性
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
-    QApplication::setEffectEnabled(Qt::UI_AnimateCombo, false); // 仅用默认动画，使用自定义动画
 
     // 启用高DPI缩放
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -195,6 +194,9 @@ int AAppContext::run(int argc, char* argv[])
 
     // 启动程序
     QApplication app(argc, argv);
+
+    // 禁用默认动画，使用自定义动画
+    QApplication::setEffectEnabled(Qt::UI_AnimateCombo, false);
 
     app.installEventFilter(AAppContext::getInstance());
     connect(AAppContext::getInstance(), &AAppContext::exit, &app, &QApplication::exit);

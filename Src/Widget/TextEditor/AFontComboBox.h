@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    AFontSizeComboBox.h
- * @date    2024-08-18 
+ * @file    AFontComboBox.h
+ * @date    2025-01-11 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -30,31 +30,54 @@
 #include "AprochExportDefine.h"
 #include "Widget/AComboBox.h"
 
+#include <QFontComboBox>
+
 APROCH_NAMESPACE_BEGIN
 
-class AFontSizeComboBoxPrivate;
+class AFontComboBoxPrivate;
 
-class APROCH_API AFontSizeComboBox : public AComboBox
+class APROCH_API AFontComboBox : public AComboBox
 {
     Q_OBJECT;
-    Q_PROPERTY(int currentFontSize READ getCurrentFontSize WRITE setCurrentFontSize NOTIFY currentFontSizeChanged)
+    Q_PROPERTY(QFontDatabase::WritingSystem writingSystem READ getWritingSystem WRITE setWritingSystem);
+    Q_PROPERTY(QFontComboBox::FontFilters fontFilters READ getFontFilters WRITE setFontFilters);
+    Q_PROPERTY(QFont currentFont READ getCurrentFont WRITE setCurrentFont NOTIFY currentFontChanged);
 public:
-    explicit AFontSizeComboBox(QWidget* parent = nullptr);
-    ~AFontSizeComboBox();
+    explicit AFontComboBox(QWidget* parent = nullptr);
+    ~AFontComboBox();
 
-    int getCurrentFontSize() const;
+    void setWritingSystem(QFontDatabase::WritingSystem);
+    QFontDatabase::WritingSystem getWritingSystem() const;
 
-Q_SIGNALS:
-    void currentFontSizeChanged(int s);
+    void setFontFilters(QFontComboBox::FontFilters filters);
+    QFontComboBox::FontFilters getFontFilters() const;
+
+    QFont getCurrentFont() const;
+
+    void setSampleTextForSystem(QFontDatabase::WritingSystem writingSystem, const QString& sampleText);
+    QString getSampleTextForSystem(QFontDatabase::WritingSystem writingSystem) const;
+
+    void setSampleTextForFont(const QString& fontFamily, const QString& sampleText);
+    QString getSampleTextForFont(const QString& fontFamily) const;
+
+    void setDisplayFont(const QString& fontFamily, const QFont& font);
+    std::optional<QFont> getDisplayFont(const QString& fontFamily) const;
+
+public:
+    virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setCurrentFontSize(int s);
+    void setCurrentFont(const QFont& f);
 
 private Q_SLOTS:
-    void _currentTextChanged(const QString&);
+    void _currentChanged(const QString&);
+    void _updateModel();
+
+Q_SIGNALS:
+    void currentFontChanged(const QFont& f);
 
 private:
-    Q_DISABLE_COPY(AFontSizeComboBox);
+    Q_DISABLE_COPY(AFontComboBox);
 };
 
 APROCH_NAMESPACE_END

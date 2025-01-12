@@ -9,7 +9,7 @@
 
 void _setStyleSheet(QWidget* widget)
 {
-#if _DEBUG
+//#if _DEBUG
     QPushButton* styleBtn = new QPushButton(QObject::tr("Load Style"), widget);
     QObject::connect(styleBtn, &QPushButton::clicked, [=] {
         QString themeResFile = aproch::ATheme::getSystemTheme() == aproch::EThemeType::Light ? "light" : "dark";
@@ -25,7 +25,7 @@ void _setStyleSheet(QWidget* widget)
     styleBtn->setStyleSheet("background:black; color: white; padding: 4px");
     styleBtn->raise();
     styleBtn->show();
-#endif // _DEBUG
+//#endif // _DEBUG
 }
 
 int main(int argc, char* argv[])

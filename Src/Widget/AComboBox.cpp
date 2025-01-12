@@ -28,37 +28,30 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AComboBox.h"
+#include "Private/AComboBox_p.h"
 #include "Animation/ADropDownAnimation.h"
 
 #include <QListView>
 
 APROCH_NAMESPACE_BEGIN
 
-class AComboBoxPrivate
-{
-public:
-    void updateContentMargins(QWidget* cb);
-
-};
-
 void AComboBoxPrivate::updateContentMargins(QWidget* v)
 {
     auto ge = qobject_cast<QGraphicsDropShadowEffect*>(v->graphicsEffect());
     if (!ge)
         return;
-
-    const int l = ge->blurRadius() - ge->offset().x();
-    const int r = ge->blurRadius() + ge->offset().x();
-    const int t = ge->blurRadius() - ge->offset().y();
-    const int b = ge->blurRadius() + ge->offset().y();
-    const int h_2 = (l + r) / 2;
-    const int v_2 = (t + b) / 2;
-    v->setContentsMargins(l - h_2, t - v_2, r - h_2, b - v_2);
+    const QPointF offset = ge->offset();
+    v->setContentsMargins(-offset.x(), -offset.y(), offset.x(), offset.y());
 }
 
 AComboBox::AComboBox(QWidget* parent)
+    : AComboBox(*new AComboBoxPrivate(), parent)
+{
+}
+
+AComboBox::AComboBox(AComboBoxPrivate& d, QWidget* parent)
     : QComboBox(parent)
-    , d(new AComboBoxPrivate())
+    , d_ptr(&d)
 {
     setAttribute(Qt::WA_StyledBackground);
 
@@ -68,7 +61,6 @@ AComboBox::AComboBox(QWidget* parent)
     setView(listView);
 
     auto viewFrame = listView->window();
-    viewFrame->installEventFilter(this);
     viewFrame->setWindowFlag(Qt::FramelessWindowHint, true);
     viewFrame->setWindowFlag(Qt::NoDropShadowWindowHint, true);
     viewFrame->setAttribute(Qt::WA_TranslucentBackground, true);
@@ -76,10 +68,18 @@ AComboBox::AComboBox(QWidget* parent)
 
     QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect();
     listView->setGraphicsEffect(shadowEffect);
+
+    // 必须让自己的事件过滤最后安装（最终会优先执行），否则走了frame里面的事件过滤，会执行选择逻辑，
+    // 导致鼠标在阴影位置也可能选中下拉项目
+    // note: 见qcombobox.cpp的QComboBoxPrivateContainer::eventFilter中QEvent::MouseMove事件
+    listView->installEventFilter(viewFrame);
+    listView->installEventFilter(this);
+    viewFrame->installEventFilter(this);
 }
 
 AComboBox::~AComboBox()
 {
+    delete d_ptr;
 }
 
 qreal AComboBox::getShadowRadius() const
@@ -98,7 +98,7 @@ void AComboBox::setShadowRadius(qreal r)
         return;
 
     ge->setBlurRadius(r);
-    d->updateContentMargins(view());
+    d_ptr->updateContentMargins(view());
 }
 
 QSize AComboBox::getShadowOffset() const
@@ -118,7 +118,7 @@ void AComboBox::setShadowOffset(const QSize& offset)
         return;
 
     ge->setOffset(offset.width(), offset.height());
-    d->updateContentMargins(view());
+    d_ptr->updateContentMargins(view());
 }
 
 QColor AComboBox::getShadowColor() const
@@ -147,9 +147,15 @@ bool AComboBox::eventFilter(QObject* watched, QEvent* evt)
         {
         case QEvent::Show:
         {
+            /*if (d_ptr->isContainerShow)
+            {
+                evt->accept();
+                d_ptr->isContainerShow = false;
+                return true;
+            }*/
             auto ge = qobject_cast<QGraphicsDropShadowEffect*>(view()->graphicsEffect());
             if (!ge)
-                return false;
+                break;
 
             QPoint gp = mapToGlobal(QPoint(0, height()));  // 控件左下角映射到全局位置
             int newX = w->x() - (ge->blurRadius() - ge->offset().x()) + 1;
@@ -161,8 +167,46 @@ bool AComboBox::eventFilter(QObject* watched, QEvent* evt)
                 down = false;
             }
             w->setGeometry(newX, newY, w->width() + 2 * ge->blurRadius(), w->height());
+            //d->isContainerShow = true;
+            //aDropDownEffect(w, down ? EDropDownDirection::Down : EDropDownDirection::Up, 150);
+        }
+        break;
+        default:
+            break;
+        }
+    }
+    else if (watched == view())
+    {
+        QWidget* w = view();
+        switch (evt->type())
+        {
+        case QEvent::MouseButtonPress:
+        case QEvent::MouseButtonRelease:
+        case QEvent::MouseButtonDblClick:
+        case QEvent::MouseMove:
+        {
+            auto ge = qobject_cast<QGraphicsDropShadowEffect*>(view()->graphicsEffect());
+            if (!ge)
+                break;
 
-            aDropDownEffect(view(), down ? EDropDownDirection::Down : EDropDownDirection::Up, 150);
+            QMouseEvent* me = (QMouseEvent*)evt;
+            const QPoint mpos = me->pos();
+            if ((mpos.x() < ge->blurRadius() - ge->offset().x()) ||
+                (mpos.x() > w->width() - ge->blurRadius() - ge->offset().x()) ||
+                (mpos.y() < ge->blurRadius() - ge->offset().y()) ||
+                (mpos.y() > w->height() - ge->blurRadius() - ge->offset().y()))
+            {
+                // 将事件传递给父控件
+                QMouseEvent newEvent(me->type(),
+                                     w->window()->mapFromGlobal(w->mapToGlobal(me->pos())),
+                                     me->button(),
+                                     me->buttons(),
+                                     me->modifiers());
+                QCoreApplication::sendEvent(w->window(), &newEvent);
+
+                // 阻止事件进一步传播
+                return true;
+            }
         }
         break;
         default:

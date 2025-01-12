@@ -91,8 +91,11 @@ ADropDownAnimation::ADropDownAnimation(QWidget* w, Qt::WindowFlags f, EDropDownD
     Q_ASSERT(widget);
 
     setAttribute(Qt::WA_NoSystemBackground, true);
+    setAttribute(Qt::WA_TranslucentBackground, true);
+    setWindowFlag(Qt::FramelessWindowHint, true);
+    setWindowFlag(Qt::NoDropShadowWindowHint, true);
 
-    if (widget->testAttribute(Qt::WA_Resized))
+    if (widget->testAttribute(Qt::WA_Resized))  
     {
         totalWidth = widget->width();
         totalHeight = widget->height();
@@ -111,7 +114,7 @@ ADropDownAnimation::ADropDownAnimation(QWidget* w, Qt::WindowFlags f, EDropDownD
     if (orientation & (EDropDownDirection::Down | EDropDownDirection::Up))
         currentHeight = 0;
 
-    pm = widget->grab();
+    //pm = widget->grab();
 }
 
 void ADropDownAnimation::paintEvent(QPaintEvent*)
@@ -119,8 +122,13 @@ void ADropDownAnimation::paintEvent(QPaintEvent*)
     int x = orientation & EDropDownDirection::Right ? qMin(0, currentWidth - totalWidth) : 0;
     int y = orientation & EDropDownDirection::Down ? qMin(0, currentHeight - totalHeight) : 0;
 
+    if (pm.isNull())
+        pm = widget->grab();
+
     QPainter p(this);
     p.drawPixmap(x, y, pm);
+    //auto a = widget->contentsMargins();
+    //p.drawPixmap(0, 54, pm, 0, 68, widget->width()+60, widget->height()+60);
 }
 
 void ADropDownAnimation::closeEvent(QCloseEvent* e)
@@ -194,7 +202,6 @@ void ADropDownAnimation::scroll()
             currentHeight = totalHeight * (elapsed / duration)
                 + (2 * totalHeight * (elapsed % duration) + duration)
                 / (2 * duration);
-            currentHeight *= qTan(currentHeight);
             // equiv. to int((totalHeight*elapsed) / duration + 0.5)
         }
         done = (currentHeight >= totalHeight) &&

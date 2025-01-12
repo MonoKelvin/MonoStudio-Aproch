@@ -15,7 +15,6 @@
 #include <QMenuBar>
 #include <QActionGroup>
 #include <QDialog>
-#include <QFontComboBox>
 
 #include <QWindowKit/QWKWidgets/widgetwindowagent.h>
 
@@ -157,7 +156,7 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     QBoxLayout* cbLayout = new QBoxLayout(QBoxLayout::LeftToRight, cw);
     theLayout->addLayout(cbLayout);
     {
-        QFontComboBox* fc = new QFontComboBox(cw);
+        AFontComboBox* fc = new AFontComboBox(cw);
         cbLayout->addWidget(fc);
         aproch::AFontSizeComboBox* fsc = new aproch::AFontSizeComboBox(cw);
         cbLayout->addWidget(fsc);
@@ -232,9 +231,9 @@ WinUIWindow::WinUIWindow(QWidget *parent)
     {
         aproch::AIconButton* aib1 = new aproch::AIconButton(AStr("\uE8F4"), this);
         connect(aib1, &aproch::AIconButton::clicked, [=]() {
-            ShadowWidget s;
+            /*ShadowWidget s;
             s.resize(200, 200);
-            s.exec();
+            s.exec();*/
         });
         abLayout->addWidget(aib1);
 

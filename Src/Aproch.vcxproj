@@ -185,12 +185,13 @@
     <ClCompile Include="Widget\Private\ANavigationPanel.cpp" />
     <ClCompile Include="Widget\Style\AWidgetStyleDecoration.cpp" />
     <ClCompile Include="Widget\Style\AWinUIStyle.cpp" />
-    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp">
+    <QtMoc Include="Widget\TextEditor\AFontComboBox.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
-    </ClCompile>
+    </QtMoc>
+    <ClCompile Include="Widget\TextEditor\AFontSizeComboBox.cpp" />
     <ClCompile Include="Widget\TextEditor\ATextEditor.cpp" />
     <ClCompile Include="WinUI\AWinUIApplication.cpp" />
     <ClCompile Include="WinUI\AWinUIPlugin.cpp">
@@ -219,14 +220,16 @@
     <ClInclude Include="Widget\Animation\ADropDownAnimation.h" />
     <ClInclude Include="Widget\Private\ACaptionBar_p.h" />
     <QtMoc Include="Widget\Private\ANavigationPanel.h" />
+    <ClInclude Include="Widget\Private\AComboBox_p.h" />
     <ClInclude Include="Widget\Private\AMenu_p.h" />
     <ClInclude Include="Widget\Private\ANavigationPanel_p.h" />
     <ClInclude Include="Widget\Private\ANavigationView_p.h" />
     <ClInclude Include="Widget\Private\ATextEditor_p.h" />
     <ClInclude Include="Widget\Style\AWidgetStyleDecoration.h" />
     <QtMoc Include="Widget\TextEditor\ATextEditor.h" />
-    <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h" />
     <QtMoc Include="Widget\Style\AWinUIStyle.h" />
+    <QtMoc Include="Widget\TextEditor\AFontComboBox.h" />
+    <QtMoc Include="Widget\TextEditor\AFontSizeComboBox.h" />
     <ClInclude Include="WinUI\AWinUITheme.h" />
     <QtMoc Include="Data\ADataManager.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>

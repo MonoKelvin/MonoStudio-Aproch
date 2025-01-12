@@ -51,6 +51,7 @@
 #include "AComboBox.h"
 
 #include "TextEditor/AFontSizeComboBox.h"
+#include "TextEditor/AFontComboBox.h"
 #include "TextEditor/ATextEditor.h"
 
 #include "NavigationView/ANavigationPageView.h"

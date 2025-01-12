@@ -1,6 +1,6 @@
 /****************************************************************************
- * @file    AWinUIPlugin.h
- * @date    2024-06-09 
+ * @file    AComboBox_p.h
+ * @date    2025-01-11 
  * @author  MonoKelvin
  * @email   15007083506@qq.com
  * @github  https://github.com/MonoKelvin
@@ -27,21 +27,21 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 #pragma once
-#include <QQmlExtensionPlugin>
+#include "Widget/AComboBox.h"
 
 APROCH_NAMESPACE_BEGIN
 
-/** @brief WinUI QML插件 */
-class AWinUIPlugin : public QQmlExtensionPlugin
+class AComboBoxPrivate
 {
-    Q_OBJECT;
-    //Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid);
-    APROCH_SINGLETON(AWinUIPlugin);
 public:
-    AWinUIPlugin();
+    virtual ~AComboBoxPrivate()
+    {
+    }
 
-    void registerTypes(const char* uri) Q_DECL_OVERRIDE;
-    void initializeEngine(QQmlEngine* engine, const char* uri) Q_DECL_OVERRIDE;
+    void updateContentMargins(QWidget* cb);
+
+public:
+    bool isContainerShow = false;
 };
 
 APROCH_NAMESPACE_END

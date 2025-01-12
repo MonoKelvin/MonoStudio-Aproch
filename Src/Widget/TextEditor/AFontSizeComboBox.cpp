@@ -28,7 +28,7 @@
  *****************************************************************************/
 #include "stdafx.h"
 #include "AFontSizeComboBox.h"
-#include <QListView>
+#include "Widget/Private/AComboBox_p.h"
 
 APROCH_NAMESPACE_BEGIN
 
@@ -36,14 +36,13 @@ const QList<int> sFontSizeList = {
     5,6,7,8,9,10,11,12,14,16,18,20,22,24,26,28,36,48,56,72
 };
 
-class AFontSizeComboBoxPrivate
+class AFontSizeComboBoxPrivate : public AComboBoxPrivate
 {
 public:
 };
 
 AFontSizeComboBox::AFontSizeComboBox(QWidget* parent)
-    : AComboBox(parent)
-    , d_ptr(new AFontSizeComboBoxPrivate())
+    : AComboBox(*new AFontSizeComboBoxPrivate(), parent)
 {
     for (int s : sFontSizeList)
         addItem(QString::number(s));

@@ -56,10 +56,14 @@ public:
 protected:
     virtual bool eventFilter(QObject*, QEvent*) override;
 
+protected:
+    AComboBox(AComboBoxPrivate&, QWidget* parent = nullptr);
+
+protected:
+    AComboBoxPrivate* d_ptr = nullptr;
+
 private:
     Q_DISABLE_COPY(AComboBox);
-    friend class AComboBoxPrivate;
-    QSharedPointer<AComboBoxPrivate> d;
 };
 
 

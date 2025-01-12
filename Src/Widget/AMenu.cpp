@@ -280,7 +280,9 @@ bool AMenu::event(QEvent* e)
         {
             // 将事件传递给父控件
             QWidget* pw = parentWidget();
-            if (pw)
+            QMenuBar* mb = qobject_cast<QMenuBar*>(pw);
+            QMenu* mm = qobject_cast<QMenu*>(pw);
+            if (mb || mm)
             {
                 QMouseEvent newEvent(me->type(),
                                      pw->mapFromGlobal(mapToGlobal(me->pos())),
@@ -288,10 +290,10 @@ bool AMenu::event(QEvent* e)
                                      me->buttons(),
                                      me->modifiers());
                 QCoreApplication::sendEvent(pw, &newEvent);
-            }
 
-            // 阻止事件进一步传播
-            return true;
+                // 阻止事件进一步传播
+                return true;
+            }
         }
     }
     break;

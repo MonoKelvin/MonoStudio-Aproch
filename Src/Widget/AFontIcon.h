@@ -52,7 +52,9 @@ public:
     void setGlyph(const QString& glyph);
 
     static QIcon icon(const QString& glyph, const QSize& size = DefaultIconSize);
+    static QIcon icon(const QString& glyph, AFontDatabase::EAppFontType type, const QSize& size = DefaultIconSize);
     static QIcon icon(const QString& glyph, AFontDatabase::EAppFontType type, const QColor& color, const QSize& size = DefaultIconSize);
+    static QIcon icon(const QString& glyph, const QFont& font, const QSize& size = DefaultIconSize);
     static QIcon icon(const QString& glyph, const QFont& font, const QColor& color, const QSize& size = DefaultIconSize);
 
     virtual QSize sizeHint() const override;
