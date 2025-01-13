@@ -36,6 +36,35 @@
 
 APROCH_NAMESPACE_BEGIN
 
+QLayout* findLayoutContainsWidget(QLayout* theLayout, QWidget* ts)
+{
+    for (int i = 0; i < theLayout->count(); ++i)
+    {
+        QLayoutItem* item = theLayout->itemAt(i);
+        if (item->layout())
+        {
+            if (findLayoutContainsWidget(item->layout(), ts))
+                return item->layout();
+        }
+        else if (item->widget() == ts)
+        {
+            return theLayout;
+        }
+
+        if (item->widget())
+        {
+            auto childWidgetLayout = item->widget()->layout();
+            if (childWidgetLayout)
+            {
+                if (findLayoutContainsWidget(childWidgetLayout, ts))
+                    return childWidgetLayout;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 QPixmap AGraphicsToolkit::fillet(const QPixmap& pixmap,
                                  const SCornerF& borderRadius,
                                  const QRectF& region,
@@ -334,6 +363,30 @@ qreal AGraphicsToolkit::dpi(const QStyleOption* option)
 qreal AGraphicsToolkit::dpiScaled(qreal value, const QStyleOption* option)
 {
     return value * dpi(option) / qstyleBaseDpi;
+}
+
+bool AGraphicsToolkit::updateWidgetLayout(QWidget* widget)
+{
+    if (!widget)
+        return false;
+
+    widget->adjustSize();
+    widget->updateGeometry();
+
+    QWidget* pw = widget->parentWidget();
+    if (pw && pw->layout())
+    {
+        QLayout* theLayoutContainsThis = findLayoutContainsWidget(pw->layout(), widget);
+        if (theLayoutContainsThis)
+        {
+            theLayoutContainsThis->invalidate();
+            return theLayoutContainsThis->activate();
+        }
+
+        return false;
+    }
+
+    return true;
 }
 
 APROCH_NAMESPACE_END

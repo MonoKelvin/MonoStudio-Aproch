@@ -38,14 +38,17 @@ class APROCH_API AToggleSwitch : public QRadioButton
 {
     Q_OBJECT;
     Q_PROPERTY(QString offText READ getOffText WRITE setOffText)
+    Q_PROPERTY(QString onText READ getOnText WRITE setOnText)
 public:
     explicit AToggleSwitch(QWidget* parent = nullptr);
     explicit AToggleSwitch(const QString& text, QWidget* parent = nullptr);
     ~AToggleSwitch();
 
+    QString getOnText() const;
     QString getOffText() const;
 
 public Q_SLOTS:
+    void setOnText(const QString& onText);
     void setOffText(const QString& offText);
 
 protected:

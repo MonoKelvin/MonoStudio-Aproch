@@ -41,7 +41,7 @@ public:
     {
         setObjectName("aproch-toggleswitch-indicator-container");
         setAttribute(Qt::WA_StyledBackground);
-        setAttribute(Qt::WA_TransparentForMouseEvents);
+        //setAttribute(Qt::WA_TransparentForMouseEvents);
     }
 
     QSize sizeHint() const override
@@ -78,7 +78,7 @@ public:
     {
         setObjectName("aproch-toggleswitch-indicator");
         setAttribute(Qt::WA_StyledBackground);
-        setAttribute(Qt::WA_TransparentForMouseEvents);
+        //setAttribute(Qt::WA_TransparentForMouseEvents);
     }
 
     virtual QSize sizeHint() const override
@@ -109,6 +109,8 @@ public:
     QPropertyAnimation* indicatorAnim = nullptr;
     QString offText;
     QString onText;
+    bool isMousePressed = false;
+    QPoint mousePressedPoint;
 };
 
 APROCH_NAMESPACE_END

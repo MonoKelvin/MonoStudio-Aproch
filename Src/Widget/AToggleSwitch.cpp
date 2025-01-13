@@ -31,6 +31,7 @@
 #include "Widget/Private/AToggleSwitch_p.h"
 
 #include <QListView>
+#include <QApplication>
 
 APROCH_NAMESPACE_BEGIN
 
@@ -59,18 +60,16 @@ void AToggleSwitchPrivate::updateIndicatorPosition(bool toggled)
     QRect rct = indicator->geometry();
     int newy = (container->height() - indicator->height()) / 2;
 
+    indicatorAnim->stop();
     if (toggled)
     {
         indicatorAnim->setStartValue(rct);
         rct.moveTo(container->width() - indicator->width() - INDICATOR_PADDING, newy);
         indicatorAnim->setEndValue(rct);
         indicatorAnim->start();
-        //indicator->move(container->width() - indicator->width() - INDICATOR_PADDING, newy);
     }
     else
     {
-        //indicator->move(INDICATOR_PADDING, newy);
-
         QRect rct = indicator->geometry();
         indicatorAnim->setStartValue(rct);
         rct.moveTo(INDICATOR_PADDING, newy);
@@ -111,8 +110,8 @@ AToggleSwitch::AToggleSwitch(const QString& text, QWidget* parent)
     d->indicator->raise();
 
     d->indicatorAnim = new QPropertyAnimation(d->indicator, "geometry", d->indicator);
-    d->indicatorAnim->setEasingCurve(QEasingCurve::OutQuart);
-    d->indicatorAnim->setDuration(150);
+    d->indicatorAnim->setEasingCurve(QEasingCurve::OutCubic);
+    d->indicatorAnim->setDuration(180);
 
     connect(this, &AToggleSwitch::toggled, this, &AToggleSwitch::onToggled);
 }
@@ -120,6 +119,11 @@ AToggleSwitch::AToggleSwitch(const QString& text, QWidget* parent)
 AToggleSwitch::~AToggleSwitch()
 {
     delete d;
+}
+
+QString AToggleSwitch::getOnText() const
+{
+    return d->onText;
 }
 
 QString AToggleSwitch::getOffText() const
@@ -133,6 +137,14 @@ void AToggleSwitch::setOffText(const QString& offText)
 
     if (!isChecked())
         setText(d->offText);
+}
+
+void AToggleSwitch::setOnText(const QString& onText)
+{
+    d->onText = onText;
+
+    if (isChecked())
+        setText(d->onText);
 }
 
 QSize AToggleSwitch::sizeHint() const
@@ -169,31 +181,55 @@ bool AToggleSwitch::event(QEvent* e)
     switch (e->type())
     {
     // TODO
-    /*case QEvent::HoverEnter: 
-    {
-        if (!isEnabled())
-            break;
-        QRect rct = d->indicator->geometry();
-        d->indicatorAnim->setStartValue(rct);
-        d->indicatorAnim->setEndValue(rct.marginsAdded(QMargins(1, 1, 1, 1)));
-        d->indicatorAnim->start();
-    }
-        break;
+    /*case QEvent::HoverEnter:
     case QEvent::HoverLeave:
     {
         if (!isEnabled())
             break;
-        QRect rct = d->indicator->geometry();
-        d->indicatorAnim->setStartValue(rct);
-        d->indicatorAnim->setEndValue(rct.marginsRemoved(QMargins(1, 1, 1, 1)));
-        d->indicatorAnim->start();
+
+        QHoverEvent* he = static_cast<QHoverEvent*>(e);
+        
+        ensurePolished();
+        QStyleOptionButton opt;
+        initStyleOption(&opt);
+        int labelWidth = style()->itemTextRect(fontMetrics(), QRect(), Qt::TextShowMnemonic, false, text()).width();
+        labelWidth += style()->pixelMetric(QStyle::PM_RadioButtonLabelSpacing, &opt, this);
+
+        QPointF cterCenterPos = d->container->rect().center();
+        QHoverEvent newEvent(he->type(), cterCenterPos,
+                             d->container->mapToGlobal(cterCenterPos), 
+                             he->oldPosF(), he->modifiers());
+        QCoreApplication::sendEvent(d->container, &newEvent);
     }
     break;*/
+    case QEvent::MouseButtonPress:
+    {
+        QMouseEvent* mevt = static_cast<QMouseEvent*>(e);
+        d->mousePressedPoint = mevt->pos();
+        d->isMousePressed = true;
+    }
+    break;
+    case QEvent::MouseButtonRelease:
+    {
+        d->isMousePressed = false;
+    }
+    break;
+    case QEvent::MouseMove:
+    {
+        if (!d->isMousePressed)
+            break;
+        QMouseEvent* mevt = static_cast<QMouseEvent*>(e);
+        QPoint pOnTs = mevt->pos();
+        int newX = qMax(INDICATOR_PADDING, qMin(d->indicator->x() + pOnTs.x() - d->mousePressedPoint.x(),
+                    d->container->width() - d->indicator->width() - INDICATOR_PADDING));
+        d->indicator->move(newX, d->indicator->y());
+    }
+    break;
     case QEvent::EnabledChange:
     {
         d->container->setEnabled(this->isEnabled());
     }
-        break;
+    break;
     default:
         break;
     }
@@ -228,12 +264,18 @@ void AToggleSwitch::onToggled(bool toggled)
     if (toggled)
     {
         if (text() != d->onText)
+        {
             setText(d->onText);
+            AGraphicsToolkit::updateWidgetLayout(this);
+        }
     }
     else
     {
         if (text() != d->offText)
+        {
             setText(d->offText);
+            AGraphicsToolkit::updateWidgetLayout(this);
+        }
     }
 
     d->indicator->setProperty("toggled", toggled);

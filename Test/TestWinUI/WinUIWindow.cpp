@@ -470,19 +470,31 @@ WinUIWindow::WinUIWindow(QWidget *parent)
         AToggleSwitch* ts2 = new AToggleSwitch(this);
         AToggleSwitch* ts3 = new AToggleSwitch(AStr("disabled"), this);
         ts3->setEnabled(false);
-        AToggleSwitch* ts4 = new AToggleSwitch(AStr("checked disabled"), this);
+        AToggleSwitch* ts4 = new AToggleSwitch(this);
+        ts4->setOnText(AStr("disabled-checked"));
+        ts4->setOffText(AStr("disabled-unchecked long text test"));
         ts4->setChecked(true);
         ts4->setEnabled(false);
         AToggleSwitch* ts5 = new AToggleSwitch(AStr("Right To Left"), this);
         ts5->setLayoutDirection(Qt::RightToLeft);
         AToggleSwitch* ts6 = new AToggleSwitch(this);
         ts6->setChecked(true);
+        AButton* tsbtn = new AButton(AStr("Toggle"), this);
+        connect(tsbtn, &AButton::clicked, [=]() {
+            ts1->setChecked(!ts1->isChecked());
+            ts2->setChecked(!ts2->isChecked());
+            ts3->setChecked(!ts3->isChecked());
+            ts4->setChecked(!ts4->isChecked());
+            ts5->setChecked(!ts5->isChecked());
+            ts6->setChecked(!ts6->isChecked());
+        });
         tsLayout->addWidget(ts1);
         tsLayout->addWidget(ts2);
         tsLayout->addWidget(ts3);
         tsLayout->addWidget(ts4);
         tsLayout->addWidget(ts5);
         tsLayout->addWidget(ts6);
+        tsLayout->addWidget(tsbtn);
         tsLayout->addSpacerItem(new QSpacerItem(1,1, QSizePolicy::Expanding));
         theLayout->addItem(tsLayout);
     }

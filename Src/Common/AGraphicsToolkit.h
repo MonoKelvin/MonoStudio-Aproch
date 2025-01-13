@@ -80,6 +80,9 @@ public:
 
     /** @brief 指定值在给定样式下的dpi缩放 */
     static qreal dpiScaled(qreal value, const QStyleOption* option);
+
+    /** @brief 当控件处于布局管理器中，且修改了大小，调用该方法用以更新控件大小和所在布局 */
+    static bool updateWidgetLayout(QWidget* widget);
 };
 
 APROCH_NAMESPACE_END
