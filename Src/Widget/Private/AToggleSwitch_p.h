@@ -109,8 +109,10 @@ public:
     QPropertyAnimation* indicatorAnim = nullptr;
     QString offText;
     QString onText;
-    bool isMousePressed = false;
     QPoint mousePressedPoint;
+    QPoint indicatorStartPoint;
+    bool isMousePressed = false;
+    bool isPressedMoving = false;
 };
 
 APROCH_NAMESPACE_END

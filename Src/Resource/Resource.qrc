@@ -25,5 +25,7 @@
         <file>theme/Light.qss</file>
         <file>icon/system/arrow-right-line.svg</file>
         <file>icon/system/circle-solid.svg</file>
+        <file>icon/system/arrow-down-line.svg</file>
+        <file>icon/system/arrow-left-line.svg</file>
     </qresource>
 </RCC>

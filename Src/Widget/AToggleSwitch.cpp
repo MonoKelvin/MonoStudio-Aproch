@@ -91,6 +91,8 @@ AToggleSwitch::AToggleSwitch(const QString& text, QWidget* parent)
 {
     setAttribute(Qt::WA_StyledBackground);
     setAutoExclusive(false);
+    setMouseTracking(true);
+
     d->offText = this->text();
     d->onText = this->text();
 
@@ -180,49 +182,55 @@ bool AToggleSwitch::event(QEvent* e)
 {
     switch (e->type())
     {
-    // TODO
-    /*case QEvent::HoverEnter:
-    case QEvent::HoverLeave:
+    case QEvent::MouseButtonPress:
     {
         if (!isEnabled())
             break;
-
-        QHoverEvent* he = static_cast<QHoverEvent*>(e);
-        
-        ensurePolished();
-        QStyleOptionButton opt;
-        initStyleOption(&opt);
-        int labelWidth = style()->itemTextRect(fontMetrics(), QRect(), Qt::TextShowMnemonic, false, text()).width();
-        labelWidth += style()->pixelMetric(QStyle::PM_RadioButtonLabelSpacing, &opt, this);
-
-        QPointF cterCenterPos = d->container->rect().center();
-        QHoverEvent newEvent(he->type(), cterCenterPos,
-                             d->container->mapToGlobal(cterCenterPos), 
-                             he->oldPosF(), he->modifiers());
-        QCoreApplication::sendEvent(d->container, &newEvent);
-    }
-    break;*/
-    case QEvent::MouseButtonPress:
-    {
         QMouseEvent* mevt = static_cast<QMouseEvent*>(e);
         d->mousePressedPoint = mevt->pos();
+        d->indicatorStartPoint = d->indicator->pos();
         d->isMousePressed = true;
     }
     break;
     case QEvent::MouseButtonRelease:
     {
+        if (!isEnabled())
+            break;
         d->isMousePressed = false;
+        if (!d->isPressedMoving)
+            break;
+        d->isPressedMoving = false;
+        const int cx = d->indicator->geometry().center().x();
+        if (isChecked())
+        {
+            if (cx >= d->container->rect().center().x())
+                d->updateIndicatorPosition(true);
+            else
+                setChecked(false);
+        }
+        else
+        {
+            if (cx <= d->container->rect().center().x())
+                d->updateIndicatorPosition(false);
+            else
+                setChecked(true);
+        }
+        e->accept();
+        return true;
     }
     break;
     case QEvent::MouseMove:
     {
+        if (!isEnabled())
+            break;
         if (!d->isMousePressed)
             break;
         QMouseEvent* mevt = static_cast<QMouseEvent*>(e);
-        QPoint pOnTs = mevt->pos();
-        int newX = qMax(INDICATOR_PADDING, qMin(d->indicator->x() + pOnTs.x() - d->mousePressedPoint.x(),
+        const int dx = mevt->pos().x() - d->mousePressedPoint.x();
+        int newX = qMax(INDICATOR_PADDING, qMin(d->indicatorStartPoint.x() + dx,
                     d->container->width() - d->indicator->width() - INDICATOR_PADDING));
         d->indicator->move(newX, d->indicator->y());
+        d->isPressedMoving = true;
     }
     break;
     case QEvent::EnabledChange:
